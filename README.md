@@ -36,7 +36,7 @@
     - The command line syntax has been extended to support an object notation to indicate accessing an object member or invoking an object method
     - commands returns a **result code** and can returns **values**. When returning values and when specified, a pipe ( **|** ) between commands can **pass objects instead of streams**
   - The **environment variables** are of type **String**
-  - Are getted and setted with **$**, **set** et **=** 
+  - Are getted and setted with **$**, **set** and **=** 
 - **Functions** can be defined by a **shell script** or by a **C# compiled source**
 - **Aliases** for command names
 - **Shell environment** : the shell initialization feature deploy and setup a shell environment for the current user (profile folder and initialization scripts: *.profile*,*.alias*,*.history*,*.orbsh*)
