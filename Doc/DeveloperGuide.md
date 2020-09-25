@@ -9,21 +9,23 @@
 <hr>
 
 ## Index
-<b><ol style="line-height:100%">
-<li>Repositories, projects and namespaces
+- [**Repositories, projects and namespaces**](#repos)
 
-- [dotnet-console-app-toolkit](#dotnet-console-app-toolkit)
-- [orbital-shell](#orbital-shell)
-  - [DotNetCconsoleAppToolkit-Shell](#dotnet-console-app-toolkit-shell)
-  - [OrbitalShell](#orbitalshell)
-  - [OrbitalShell-Android](#orbital-shell-android)
-<li>Set up a developement environment
-<li>Software architecture
-<li>Roadmap
+  - [dotnet-console-app-toolkit](#dotnet-console-app-toolkit)
+  - [orbital-shell](#orbital-shell)
+    - [DotNetCconsoleAppToolkit-Shell](#dotnet-console-app-toolkit-shell)
+    - [OrbitalShell](#orbitalshell)
+    - [OrbitalShell-Android](#orbital-shell-android)
+    
+- [**Set up a developement environment**](#setupdevenv)
+- [**Software architecture**](#archi)
+- [**Roadmap**](#roadmap)
 </ol>
 </b>
 
 <hr>
+
+<a id="repos"/>
 
 ## 1. Repositories, projects and namespaces
 
@@ -141,19 +143,25 @@ the orbital shell build for Xamarin-Mono Android (APK)
 
 <hr>
 
+<a id="setupdevenv"/>
+
 ## 2. Set up a development environment
+
+<a id="archi"/>
 
 ## 3. Software architecture
 ### 3.1. Packages dependencies
 
 <center>  
-<img alt="package dependencies" src="OrbitalShellArchitecture.png"><br>  
+<img alt="package dependencies" src="Assets/OrbitalShellArchitecture.png"><br>  
 <i>packages dependencies</i>
 </center>
 
 ### 3.2. Flow diagram
 
 *coming soon...*
+
+<a id="roadmap"/>
 
 ## 4. Roadmap
 

@@ -13,7 +13,7 @@
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/orbital-shell?style=plastic)
 ![version](https://img.shields.io/github/v/tag/franck-gaspoz/orbital-shell?style=plastic)  
 
-<img src="Doc/orbital-shell.png"/>
+<img src="Doc/Assets/orbital-shell.png"/>
 <small><i>a view of the shell running in terminal WSL2</i></small>
 
 ## Features
@@ -68,7 +68,7 @@
     ```
   - that will be auto documented like this by the shell help feature:
   
-    <img src="Doc/2020-06-13 06_36_43-Window.png"/>
+    <img src="Doc/Assets/2020-06-13 06_36_43-Window.png"/>
 
 
 
