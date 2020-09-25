@@ -1,0 +1,2 @@
+﻿#!orbsh
+# this is the default shell init script
