@@ -73,7 +73,7 @@ library that provides support for developing console applications (ANSI support)
 
 #### project: DotNetConsoleAppToolkit-Shell
 
-**project url**: [https://github.com/franck-gaspoz/orbital-shell/DotNetConsoleAppToolkit-Shell](https://github.com/franck-gaspoz/orbital-shell/OrbitalShell/DotNetConsoleAppToolkit-Shell) 
+**project url**: [https://github.com/franck-gaspoz/orbital-shell/DotNetConsoleAppToolkit-Shell](https://github.com/franck-gaspoz/orbital-shell/tree/master/DotNetConsoleAppToolkit-Shell) 
 
 library extending DotNetConsoleAppToolkit that provides features for building a command shell  
 <b>C# 8 + .NET Standard 2.1</b>  
@@ -122,7 +122,7 @@ library extending DotNetConsoleAppToolkit that provides features for building a 
 
 #### project: OrbitalShell
 
-**project url**: [https://github.com/franck-gaspoz/orbital-shell/OrbitalShell](https://github.com/franck-gaspoz/orbital-shell/OrbitalShell)  
+**project url**: [https://github.com/franck-gaspoz/orbital-shell/OrbitalShell](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell)  
   
 the orbital shell build for .NET Core targeting Windows,Linux and OSX  
 <b>C# 8 + NET Core 3.1</b>  
@@ -134,7 +134,7 @@ the orbital shell build for .NET Core targeting Windows,Linux and OSX
 <a id="orbital-shell-android"/>
 
 #### project: OrbitalShell-Android
-**project url**: [https://github.com/franck-gaspoz/orbital-shell/OrbitalShell-Android](https://github.com/franck-gaspoz/orbital-shell/OrbitalShell-Android) 
+**project url**: [https://github.com/franck-gaspoz/orbital-shell/OrbitalShell-Android](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-Android) 
 
 the orbital shell build for Xamarin-Mono Android (APK)  
 <b>C# 8 + <i>Mono ?</i></b>  
