@@ -122,7 +122,7 @@ library extending DotNetConsoleAppToolkit that provides features for building a 
 
 #### project: OrbitalShell
 
-**project url**: [https://github.com/franck-gaspoz/orbital-shell/OrbitalShell](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell)  
+**project url**: [https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell)  
   
 the orbital shell build for .NET Core targeting Windows,Linux and OSX  
 <b>C# 8 + NET Core 3.1</b>  
