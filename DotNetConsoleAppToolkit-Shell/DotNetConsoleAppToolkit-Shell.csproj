@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>DotNetConsoleAppToolkit</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Component\CommandLine\Defaults\.aliases" />
+    <None Remove="Component\CommandLine\Defaults\.profile" />
+    <None Remove="Shell\Commands\CommandLineProcessor\banner-2.txt" />
+    <None Remove="Shell\Commands\CommandLineProcessor\banner-3.txt" />
+    <None Remove="Shell\Commands\CommandLineProcessor\banner.txt" />
+    <None Remove="Shell\Commands\Test\commandsSamples.txt" />
+    <None Remove="Shell\Commands\Test\testPrintDirectives.txt" />
+    <None Remove="Shell\Commands\TextEditor\edit-help.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Component\CommandLine\Defaults\.aliases">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Component\CommandLine\Defaults\.profile">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shell\Commands\CommandLineProcessor\banner-2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shell\Commands\CommandLineProcessor\banner-3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shell\Commands\CommandLineProcessor\banner.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shell\Commands\Test\commandsSamples.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shell\Commands\Test\testPrintDirectives.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shell\Commands\TextEditor\edit-help.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DotNetConsoleAppToolkit\DotNetConsoleAppToolkit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Component\CommandLine\Data\Table.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,31 @@
+﻿(f=cyan)(uon) Dot Net Shell Edit - version 1.0.0.0 (tdoff)
+
+The command (f=yellow)edit(f=white) runs a text file editor in any VT100/VT52 console on OS Windows,Linux,OSX.
+This text editor supports the (uon)Dot Net Console Toolkit(tdoff) print directives syntax.
+Press the key (f=darkyellow)Esc(f=white) to display/toggle an information bar that displays available commands.
+
+The list of available commands is:
+
+(uon)application commands:(tdoff)
+
+(f=cyan)[Esc](f=white)    :    displays the command bar, toggle to next command bar, hide the command bar 
+(f=cyan)[Esc]V|v(f=white) :    toggle the bar visibility
+(f=cyan)[Esc]I|i(f=white) :    displays the file information bar
+(f=cyan)[F1](f=white)     :    displays the help file (this file)
+(f=cyan)[Esc]S|s(f=white) :    Save the current file
+(f=cyan)[Esc]L|l(f=white) :    Load a file
+(f=cyan)[Esc]Q|q(f=white) :    Quit the current editor and restore the previous file if any, or else returns to underlying shell
+(f=cyan)[Esc]X|x(f=white) :    Exit from all editor and returns to underlying shell. Discard all changes
+
+(uon)edit commands:(tdoff)
+
+(f=cyan)[Esc]T|t (f=white) :   go to top of the file
+(f=cyan)[Esc]B|b (f=white) :   go to bottom of the file
+(f=cyan)[Esc]A|a (f=white) :   go to previous page if any
+(f=cyan)[Esc]Z|z (f=white) :   go to next page if any
+(f=cyan)[Esc]B|c (f=white) :   clear the file
+(f=cyan)[Esc]N|n (f=white) :   leave current file and begin the edition of a new file
+
+(uon)settings:(tdoff)
+
+(f=cyan)[Esc]R|r (f=white) :   toggle raw mode: enable/disable evaluation of print directives
