@@ -75,8 +75,7 @@ library that provides support for developing console applications (ANSI support)
 
 **project url**: [https://github.com/franck-gaspoz/orbital-shell/DotNetConsoleAppToolkit-Shell](https://github.com/franck-gaspoz/orbital-shell/OrbitalShell/DotNetConsoleAppToolkit-Shell) 
 
-library extending DotNetConsoleAppToolkit that provides features for building a command shell
-
+library extending DotNetConsoleAppToolkit that provides features for building a command shell  
 <b>C# 8 + .NET Standard 2.1</b>  
 
 *namespaces*: <b>DotNetConsoleAppToolkit</b>
