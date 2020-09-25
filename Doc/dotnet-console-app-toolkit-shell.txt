@@ -1,5 +1,0 @@
-﻿---------------------------------------------------------------
-Orbital Shell (orbsh)
----------------------------------------------------------------
-first release June 2020 under licence MIT
-a shell built upon the C# tookit 'dotnet console app toolkit'

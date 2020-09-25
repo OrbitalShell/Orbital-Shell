@@ -1,5 +1,3 @@
-<hr>
-
 # Orbital Shell - Developer guide
 **version 1.0 10/9/2020**  
 *franck.gaspoz@gmail.com*
