@@ -134,7 +134,7 @@ the orbital shell build for .NET Core targeting Windows,Linux and OSX
 <a id="orbital-shell-android"/>
 
 #### project: OrbitalShell-Android
-**project url**: [https://github.com/franck-gaspoz/orbital-shell/OrbitalShell-Android](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-Android) 
+**project url**: [https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-Android](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-Android) 
 
 the orbital shell build for Xamarin-Mono Android (APK)  
 <b>C# 8 + <i>Mono ?</i></b>  
