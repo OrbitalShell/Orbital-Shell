@@ -74,9 +74,9 @@
 
 ## About the project
 
-This shell integrates the most usefull shell commands, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (scripts,functions,aliases,parametrization,...)
+This shell integrates the most usefull shell commands, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (scripts, functions, aliases, parametrization,...)
 
-This shell is built on the library [Dot Net Console App Toolkit](https://github.com/franck-gaspoz/dotnet-console-app-toolkit/blob/master/README.md) and the library component [DotNetConsoleAppToolkit-Shell](https://github.com/franck-gaspoz/dotnet-console-app-toolkit-shell/blob/master/README.md)
+This shell is built on the library [Dot Net Console App Toolkit](https://github.com/franck-gaspoz/dotnet-console-app-toolkit/blob/master/README.md) and the library component [DotNetConsoleAppToolkit-Shell](https://github.com/franck-gaspoz/orbital-shell/tree/master/DotNetConsoleAppToolkit-Shell)
 
 The documentation of the **Orbital Shell** is available here: [Developer Guide](https://github.com/franck-gaspoz/orbital-shell/blob/master/Doc/DeveloperGuide.md)
 
