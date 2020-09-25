@@ -15,6 +15,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Component\CommandLine\Defaults\.profile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Component\CommandLine\Defaults\.profile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Settings\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
@@ -23,8 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DotNetConsoleAppToolkit-Shell\DotNetConsoleAppToolkit-Shell.csproj" />
     <ProjectReference Include="..\..\DotNetConsoleAppToolkit\DotNetConsoleAppToolkit.csproj" />
+    <ProjectReference Include="..\DotNetConsoleAppToolkit-Shell\DotNetConsoleAppToolkit-Shell.csproj" />
   </ItemGroup>
 
 </Project>

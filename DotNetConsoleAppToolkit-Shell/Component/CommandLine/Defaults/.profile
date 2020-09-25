@@ -1,5 +1,5 @@
 ﻿#!orbsh
-# this is the default orbsh user profile file
+# this is the default orbsh user profile init script
 
 # set default colors
 echo (df=white)(db=black)

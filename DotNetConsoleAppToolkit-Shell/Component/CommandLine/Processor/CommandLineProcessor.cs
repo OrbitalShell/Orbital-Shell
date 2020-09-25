@@ -32,7 +32,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public const string AppDataFolderName = "OrbitalShell";
         public const string UserProfileFileName = ".profile";
-        public const string LogFileName = ".orbsh";
+        public const string LogFileName = "log";
         public const string HistoryFileName = ".history";
         public const string CommandsAliasFileName = ".aliases";
         public const string DefaultsFolderName = "Defaults";
