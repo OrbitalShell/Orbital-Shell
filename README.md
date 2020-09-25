@@ -1,5 +1,5 @@
 # Orbital Shell
-<b>Orbital Shell</b> is a multi-plateform (windows, linux, macos) command shell, based on <b><i>bash</i></b> and POSIX recommendations. Developed using C# 8, .NET Core 3.1 and .NET Standard 2.1
+<b>Orbital Shell</b> is a multi-plateform (windows, linux, macos) command shell, inspired by <b><i>bash</i></b> and POSIX recommendations. Developed using C# 8, .NET Core 3.1 and .NET Standard 2.1
 
 [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license.md) This project is licensed under the terms of the MIT license: [LICENSE.md](LICENSE.md)  
 ![version](https://img.shields.io/badge/Version-1.0.beta-green)

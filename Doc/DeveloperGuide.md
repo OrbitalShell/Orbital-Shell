@@ -17,7 +17,7 @@
 - [dotnet-console-app-toolkit](#dotnet-console-app-toolkit)
 - [orbital-shell](#orbital-shell)
   - [DotNetCconsoleAppToolkit-Shell](#dotnet-console-app-toolkit-shell)
-  - [OrbitalShell](#orbital-shell)
+  - [OrbitalShell](#orbitalshell)
   - [OrbitalShell-Android](#orbital-shell-android)
 <li>Set up a developement environment
 <li>Software architecture
@@ -57,25 +57,30 @@ library that provides support for developing console applications (ANSI support)
 
 <hr>
 
+<a id="orbital-shell"/>
+
+#### repository: orbital-shell  
+
+[![git repository](https://img.shields.io/badge/GIT-repository-green)](https://github.com/franck-gaspoz/dotnet-console-app-toolkit.git) [https://github.com/franck-gaspoz/orbital-shell.git](https://github.com/franck-gaspoz/orbital-shell.git)
+
+![version](https://img.shields.io/github/v/tag/franck-gaspoz/orbital-shell?style=plastic)  
+![code size](https://img.shields.io/github/languages/code-size/franck-gaspoz/orbital-shell?style=plastic)
+![repo size](https://img.shields.io/github/repo-size/franck-gaspoz/orbital-shell?style=plastic)
+![lines of code](https://img.shields.io/tokei/lines/github/franck-gaspoz/orbital-shell?style=plastic)  
+![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/orbital-shell?style=plastic) 
+
 <a id="dotnet-console-app-toolkit-shell"/>
 
-#### repository: dotnet-console-app-toolkit-shell
 #### project: DotNetConsoleAppToolkit-Shell
+
+**project url**: [https://github.com/franck-gaspoz/orbital-shell/DotNetConsoleAppToolkit-Shell](https://github.com/franck-gaspoz/orbital-shell/OrbitalShell/DotNetConsoleAppToolkit-Shell) 
 
 library extending DotNetConsoleAppToolkit that provides features for building a command shell
 
 <b>C# 8 + .NET Standard 2.1</b>  
-  
-[![git repository](https://img.shields.io/badge/GIT-repository-green)](https://github.com/franck-gaspoz/dotnet-console-app-toolkit.git)
-[https://github.com/franck-gaspoz/dotnet-console-app-toolkit-shell.git](https://github.com/franck-gaspoz/dotnet-console-app-toolkit-shell.git)
-  
-![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit-shell?style=plastic)  
-![code size](https://img.shields.io/github/languages/code-size/franck-gaspoz/dotnet-console-app-toolkit-shell?style=plastic)
-![repo size](https://img.shields.io/github/repo-size/franck-gaspoz/dotnet-console-app-toolkit-shell?style=plastic)
-![lines of code](https://img.shields.io/tokei/lines/github/franck-gaspoz/dotnet-console-app-toolkit-shell?style=plastic)   
-![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit-shell?style=plastic) 
 
 *namespaces*: <b>DotNetConsoleAppToolkit</b>
+
 <ul style="line-height:100%">
 <li>    Component 
 <ul style="line-height:100%;margin:0px">
@@ -114,17 +119,7 @@ library extending DotNetConsoleAppToolkit that provides features for building a 
 
 <hr>
 
-<a id="orbital-shell"/>
-
-#### repository: orbital-shell  
-
-[![git repository](https://img.shields.io/badge/GIT-repository-green)](https://github.com/franck-gaspoz/dotnet-console-app-toolkit.git) [https://github.com/franck-gaspoz/orbital-shell.git](https://github.com/franck-gaspoz/orbital-shell.git)
-
-![version](https://img.shields.io/github/v/tag/franck-gaspoz/orbital-shell?style=plastic)  
-![code size](https://img.shields.io/github/languages/code-size/franck-gaspoz/orbital-shell?style=plastic)
-![repo size](https://img.shields.io/github/repo-size/franck-gaspoz/orbital-shell?style=plastic)
-![lines of code](https://img.shields.io/tokei/lines/github/franck-gaspoz/orbital-shell?style=plastic)  
-![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/orbital-shell?style=plastic) 
+<a id="orbitalshell"/>
 
 #### project: OrbitalShell
 
