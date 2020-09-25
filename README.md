@@ -78,7 +78,8 @@ This shell integrates the most usefull shell commands, and is intented to be ext
 
 This shell is built on the library [Dot Net Console App Toolkit](https://github.com/franck-gaspoz/dotnet-console-app-toolkit/blob/master/README.md) and the library component [DotNetConsoleAppToolkit-Shell](https://github.com/franck-gaspoz/orbital-shell/tree/master/DotNetConsoleAppToolkit-Shell)
 
-The documentation of the **Orbital Shell** is available here: [Developer Guide](https://github.com/franck-gaspoz/orbital-shell/blob/master/Doc/DeveloperGuide.md)
+The documentation of the **Orbital Shell** is available here: [Index](https://github.com/franck-gaspoz/orbital-shell/blob/master/Doc/Index.md)  
+The documentation for development of **Orbital Shell** is available here: [Developer Guide](https://github.com/franck-gaspoz/orbital-shell/blob/master/Doc/DeveloperGuide.md)
 
 ## Packages dependencies:
 
