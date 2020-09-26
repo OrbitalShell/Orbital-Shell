@@ -1,6 +1,6 @@
 ﻿namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 {
-    public enum VariableNameSpace
+    public enum VariableNamespace
     {
         Env,
         Shell,

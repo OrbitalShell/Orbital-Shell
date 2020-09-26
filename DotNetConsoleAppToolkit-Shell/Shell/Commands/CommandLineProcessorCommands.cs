@@ -291,7 +291,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             CommandEvaluationContext context
             )
         {
-            context.Variables.GetDataObject(VariableNameSpace.Env + "",out var envVars);
+            context.Variables.GetDataObject(VariableNamespace.Env + "",out var envVars);
             var values = envVars.GetDataValues();
             envVars.Echo( context.Out, context ) ;
             return new CommandResult<List<IDataObject>>( values );

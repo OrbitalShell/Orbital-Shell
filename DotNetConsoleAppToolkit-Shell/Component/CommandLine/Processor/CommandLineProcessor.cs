@@ -115,7 +115,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 .ShellEnvironmentVariableName;
             var env = new ShellEnvironment(envn);
             env.Initialize(CommandEvaluationContext);
-            CommandEvaluationContext.Variables.Set(VariableNameSpace.Env,envn,env);
+            CommandEvaluationContext.Variables.Set(VariableNamespace.Env,envn,env);
         }
 
         void ShellInit(

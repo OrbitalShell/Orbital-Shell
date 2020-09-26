@@ -28,24 +28,24 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         /// </summary>
         public Variables() {
             // standard namespaces
-            foreach (var ns in Enum.GetValues(typeof(VariableNameSpace)))
+            foreach (var ns in Enum.GetValues(typeof(VariableNamespace)))
                 _dataRegistry.Set(ns + "", new DataObject(ns+"",false));
 
             // Env vars
-            var pfx = Nsp(VariableNameSpace.Env);
+            var pfx = Nsp(VariableNamespace.Env);
             foreach (DictionaryEntry envvar in Environment.GetEnvironmentVariables())
-                _dataRegistry.Set(pfx+envvar.Key, envvar.Value);
+                _dataRegistry.Set(Nsp(pfx,envvar.Key+""), envvar.Value);
         }
 
         #region setters
 
         public void Set( string path, object value) => _dataRegistry.Set( path, value);
         public void Set( string rootPath, string path, object value) => _dataRegistry.Set( Nsp(rootPath,path), value);
-        public void Set( VariableNameSpace rootPath, string path, object value) => _dataRegistry.Set(Nsp(rootPath, path), value);
+        public void Set( VariableNamespace rootPath, string path, object value) => _dataRegistry.Set(Nsp(rootPath, path), value);
 
         public void Unset(string path) => _dataRegistry.Unset(path);
         public void Unset(string rootPath,string path) => _dataRegistry.Unset(Nsp(rootPath,path));
-        public void Unset( VariableNameSpace rootPath, params string[] path) => _dataRegistry.Unset(Nsp(rootPath,path));
+        public void Unset( VariableNamespace rootPath, params string[] path) => _dataRegistry.Unset(Nsp(rootPath,path));
 
         #endregion
 
@@ -63,9 +63,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public bool Get( string path, out object value, bool throwException=true )
         {
             var r = _dataRegistry.Get(path, out value)
-            || _dataRegistry.Get(Nsp(VariableNameSpace.Local, path), out value)
-            || _dataRegistry.Get(Nsp(VariableNameSpace.Env, path), out value)
-            || _dataRegistry.Get(Nsp(VariableNameSpace.Env, path), out value);
+            || _dataRegistry.Get(Nsp(VariableNamespace.Local, path), out value)
+            || _dataRegistry.Get(Nsp(VariableNamespace.Env, path), out value)
+            || _dataRegistry.Get(Nsp(VariableNamespace.Env, path), out value);
             if (!r && throwException)
                 throw new VariableNotFoundException(GetVariableName(path));            
             return r;
@@ -74,12 +74,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public bool Get( string rootPath, string path, out object value, bool throwException = true )
             => Get(Nsp(rootPath, path), out value, throwException);
 
-        public bool Get(VariableNameSpace rootPath, string path, out object value, bool throwException = true)
+        public bool Get(VariableNamespace rootPath, string path, out object value, bool throwException = true)
             => Get(Nsp(rootPath, path), out value, throwException);
 
         public T GetValue<T>(string path) => (T)GetValue(path).Value;
         public T GetValue<T>(string rootPath,string path) => (T)GetValue(Nsp(rootPath,path)).Value;
-        public T GetValue<T>(VariableNameSpace rootPath,string path) => (T)GetValue(Nsp(rootPath,path)).Value;
+        public T GetValue<T>(VariableNamespace rootPath,string path) => (T)GetValue(Nsp(rootPath,path)).Value;
 
         public bool GetDataObject(string path, out IDataObject value, bool throwException = true)
         {
@@ -93,7 +93,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         }
         public bool GetDataObject(string rootPath, string path, out IDataObject value, bool throwException = true)
             => GetDataObject(Nsp(rootPath, path), out value, throwException);
-        public bool GetDataObject(VariableNameSpace rootPath, string path, out IDataObject value, bool throwException = true)
+        public bool GetDataObject(VariableNamespace rootPath, string path, out IDataObject value, bool throwException = true)
             => GetDataObject(Nsp(rootPath, path), out value, throwException);
 
         public DataValue GetValue(string path,bool throwException=true)
@@ -106,7 +106,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         }
         public DataValue GetValue(string rootPath, string path, bool throwException = true)
             => GetValue(Nsp(rootPath, path), throwException);
-        public DataValue GetValue(VariableNameSpace rootPath, string path, bool throwException = true)
+        public DataValue GetValue(VariableNamespace rootPath, string path, bool throwException = true)
             => GetValue(Nsp(rootPath, path), throwException);
 
         public bool GetValue(string path,out DataValue value,bool throwException=true)
@@ -124,7 +124,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
         public bool GetValue(string rootPath, string path, out DataValue value, bool throwException = true)
             => GetValue(Nsp(rootPath, path), out value, throwException);
-        public bool GetValue(VariableNameSpace rootPath, string path, out DataValue value, bool throwException = true)
+        public bool GetValue(VariableNamespace rootPath, string path, out DataValue value, bool throwException = true)
             => GetValue(Nsp(rootPath, path), out value, throwException);
 
         public List<IDataObject> GetDataValues() => _dataRegistry.GetDataValues();
@@ -136,7 +136,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
         public static string Nsp( string @namespace, string key) => @namespace + CommandLineSyntax.VariableNamePathSeparator + key;
         public static string Nsp( params string[] key) => string.Join( CommandLineSyntax.VariableNamePathSeparator , key);
-        public static string Nsp( VariableNameSpace @namespace, string key = "") => @namespace + (CommandLineSyntax.VariableNamePathSeparator + "") + key;
-        public static string Nsp( VariableNameSpace @namespace, params string[] key) => @namespace + (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join( CommandLineSyntax.VariableNamePathSeparator, key);
+        public static string Nsp( VariableNamespace @namespace, params string[] key) => @namespace + ((key.Length==0?"": (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join( CommandLineSyntax.VariableNamePathSeparator, key)));
     }
 }
