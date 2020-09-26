@@ -12,12 +12,15 @@ namespace DotNetConsoleAppToolkit.Console
 {
     public static partial class EchoPrimitives
     {
+        #region private
+
         static Table GetVarsDataTable(
             List<IDataObject> values,
             TableFormattingOptions options)
         {
             var table = new Table();
-            table.AddColumns("name", "type", "value");
+            table.AddColumns("name", "type");
+            table.Columns.Add("value",typeof(object));
             table.SetFormat("name", ColorSettings.DarkLabel + "{0}" + Rsf);
             table.SetFormat("type", ColorSettings.Label + "{0}" + Tab + Rsf);
             table.SetHeaderFormat("type", "{0}" + Tab);
@@ -44,14 +47,17 @@ namespace DotNetConsoleAppToolkit.Console
                 var tab = "".PadLeft((level * 2), ' ');
                 var dv = value as DataValue;
                 var valueType = (dv != null) ? dv.ValueType.Name : value.GetType().Name;
-                var val = (dv != null) ? DumpAsText(dv.Value, false) : string.Empty;
+                //var val = (dv != null) ? DumpAsText(dv.Value, false) : string.Empty;
+                var val = dv?.Value;
                 var valnprefix = (dv == null) ? (ColorSettings.Highlight + "[+] ") : "    ";
                 var valnostfix = (dv == null) ? "" : "";
 
                 table.Rows.Add(
-                    valnprefix + tab + value.Name + (value.IsReadOnly ? "(r)" : "") + valnostfix,
+                    tab + valnprefix + value.Name + (value.IsReadOnly ? "(r)" : "") + valnostfix,
                     valueType,
-                    DumpAsText(val, false));
+                    //DumpAsText(val, false)
+                    val
+                    );
 
                 if ((value is DataObject dao) && options.UnfoldAll)
                 {
@@ -59,6 +65,23 @@ namespace DotNetConsoleAppToolkit.Console
                         AddIDataObjectToTable(table, attr, options, level+1);
                 }
             }
+        }
+
+        #endregion
+
+        public static void Echo(
+            this object obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options)
+        {
+            if (obj.HasEchoMethod())
+            {
+                var mi = obj.GetEchoMethod();
+                mi.Invoke(obj, new object[] { @out, context, options });
+            }
+            else
+                @out.Echo(obj.ToString(),options.LineBreak);
         }
 
         public static void Echo(
@@ -181,9 +204,23 @@ namespace DotNetConsoleAppToolkit.Console
                     if (i == 0) Out.Echo(colsep);
                     var txt = (arr[i] == null) ? "" : arr[i].ToString();
                     var fvalue = /*table.GetFormatedValue*/fhv(table.Columns[i].ColumnName, txt);
-                    var l = Out.GetPrint(fvalue).Length;
-                    var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
-                    @out.Echo(ColorSettings.Default + fvalue + spc + colsep);
+                    var o = arr[i];
+
+                    if (o != null && o.HasEchoMethod())
+                    {
+                        // value dump via Echo primitive
+                        @out.Echo(ColorSettings.Default);
+                        var mi = o.GetEchoMethod();
+                        mi.Invoke(o, new object[] { @out, context, null });
+                        @out.Echo(colsep);
+                    }
+                    else
+                    {
+                        // value dump by ToString
+                        var l = @out.GetPrint(fvalue).Length;
+                        var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
+                        @out.Echo(ColorSettings.Default + fvalue + spc + colsep);
+                    }
                 }
                 @out.Echoln();
             }

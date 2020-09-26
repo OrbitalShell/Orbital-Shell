@@ -2,7 +2,7 @@
 {
     public class FileSystemPathFormattingOptions
     {
-        public bool PrintAttributes = false;
+        public bool PrintAttributes = true;
         public bool ShortPath = false;
         public string Prefix = "";
         public string Postfix = "";
@@ -12,7 +12,7 @@
         public FileSystemPathFormattingOptions() { }
 
         public FileSystemPathFormattingOptions(
-            bool printAttributes=false,
+            bool printAttributes=true,
             bool shortPath=false,
             string prefix="",
             string postfix="",

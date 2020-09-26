@@ -96,7 +96,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
             FileSystemPathFormattingOptions options = null
             )
         {
-            options ??= context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
+            options ??= context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions);
             var bg = GetCmd(EchoDirectives.b + "", DefaultBackground.ToString().ToLower());
             var fg = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
             var color = (IsDirectory) ? NormalDirectoryColorization : FileColorization;
@@ -116,11 +116,15 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
                 var h = IsHidden ? "h" : "-";
                 //var c = IsCompressed ? "c" : "-";
                 var a = IsArchive ? "a" : "-";
-                var size = (IsDirectory) ? "" : HumanFormatOfSize(((FileInfo)FileSystemInfo).Length, 2);
-                var moddat = FileSystemInfo.LastWriteTime;
+                var size = (IsDirectory || FileSystemInfo==null) ? "" : HumanFormatOfSize(((FileInfo)FileSystemInfo).Length, 2);
                 hidden = IsHidden ? "*" : "";
-                var dat = (moddat.Year != System.DateTime.Now.Year) ? moddat.Year + "" : "";
-                var smoddat = $"{dat,4} {moddat.ToString("MMM", CultureInfo.InvariantCulture),-3} {moddat.Day,-2} {moddat.Hour.ToString().PadLeft(2, '0')}:{moddat.Minute.ToString().PadLeft(2, '0')}";
+                string smoddat = "";
+                if (FileSystemInfo != null)
+                {
+                    var moddat = FileSystemInfo.LastWriteTime;
+                    var dat = (moddat.Year != System.DateTime.Now.Year) ? moddat.Year + "" : "";
+                    smoddat = $"{dat,4} {moddat.ToString("MMM", CultureInfo.InvariantCulture),-3} {moddat.Day,-2} {moddat.Hour.ToString().PadLeft(2, '0')}:{moddat.Minute.ToString().PadLeft(2, '0')}";
+                }
                 attr = $" {dir}{ro}{sys}{h}{a} {size,10} {smoddat}  ";
             }
             var name = options.ShortPath ? FileSystemInfo.Name : FileSystemInfo.FullName;

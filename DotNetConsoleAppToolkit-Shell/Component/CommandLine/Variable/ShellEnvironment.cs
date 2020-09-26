@@ -4,6 +4,7 @@ using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib.FileSystem;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -39,7 +40,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             // data values
             AddValue(ShellEnvironmentVar.Debug_Pipeline,true);
             AddValue(ShellEnvironmentVar.Display_TableSettings, new TableFormattingOptions());
-            AddValue(ShellEnvironmentVar.OrbshPath, new DirectoryPath(Assembly.GetExecutingAssembly().Location));
+            AddValue(ShellEnvironmentVar.OrbshPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )));
+            AddValue(ShellEnvironmentVar.UserPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )));
             AddValue(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
         }
 
