@@ -3,8 +3,10 @@
 
 using DotNetConsoleAppToolkit.Component.CommandLine.CommandBatch;
 using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+using DotNetConsoleAppToolkit.Component.CommandLine.Data;
 using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
 using DotNetConsoleAppToolkit.Component.CommandLine.Pipeline;
+using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib;
 using Microsoft.CodeAnalysis;
@@ -14,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -26,48 +29,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 {
     public class CommandLineProcessor
     {
-        public const string AppName = "orbsh";
-        public const string AppLongName = "Orbital Shell";
-        public const string AppEditor = "released on June 2020 under licence MIT";
-
-        public const string AppDataFolderName = "OrbitalShell";
-        public const string UserProfileFileName = ".profile";
-        public const string LogFileName = "log";
-        public const string HistoryFileName = ".history";
-        public const string CommandsAliasFileName = ".aliases";
-        public const string DefaultsFolderName = "Defaults";
-
-        public string AppDataFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),AppDataFolderName);
-        public string UserProfileFilePath => Path.Combine(AppDataFolderPath, UserProfileFileName);
-        public string LogFilePath => Path.Combine(AppDataFolderPath, LogFileName);
-        public string HistoryFilePath => Path.Combine(AppDataFolderPath, HistoryFileName);
-        public string CommandsAliasFilePath => Path.Combine(AppDataFolderPath, CommandsAliasFileName);
         static object _logFileLock = new object();
-        public string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        public string BinFolderPath => Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location);
-        public string DefaultsFolderPath {
-            get
-            {
-                var segs = this.GetType().FullName.Split('.');
-                var splits = segs.AsSpan(1, segs.Count() - 3);
-                var path = BinFolderPath;
-                foreach (var split in splits)
-                    path = Path.Combine(path, split);
-                return Path.Combine(path, DefaultsFolderName);
-            }
-        }
-
-        public bool LogAppendAllLinesErrorIsEnabled = true;
-
-        public const string ErrorPositionMarker = "^";
 
         #region attributes
 
-        public CancellationTokenSource CancellationTokenSource;
+        public CommandLineProcessorSettings Settings { get; protected set; }
 
-        /*public const int ReturnCodeOK = 0;
-        public const int ReturnCodeError = 1;
-        public const int ReturnCodeNotDefined = 1;*/
+        public CancellationTokenSource CancellationTokenSource;
 
         string[] _args;
         bool _isInitialized = false;
@@ -129,17 +97,32 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         #region command engine operations
 
         public CommandLineProcessor(
-            string[] args, 
-            bool printInfo = true,
+            string[] args,
+            CommandLineProcessorSettings settings = null,
             CommandEvaluationContext commandEvaluationContext = null
             )
         {
+            settings ??= new CommandLineProcessorSettings();
             CommandBatchProcessor = new CommandBatchProcessor();
-            InitializeCommandProcessor(args, printInfo, commandEvaluationContext);
+            ShellInit(args, settings, commandEvaluationContext);
         }
 
-        void InitializeCommandProcessor(string[] args, bool printInfo=true, CommandEvaluationContext commandEvaluationContext = null)
+        void SetupShellEnvVar()
         {
+            var envn = CommandEvaluationContext
+                .CommandLineProcessor
+                .Settings
+                .ShellEnvironmentVariableName;
+            var env = new DataObject(envn);
+            CommandEvaluationContext.Variables.Set(VariableNameSpace.Env,envn,env);
+        }
+
+        void ShellInit(
+            string[] args,
+            CommandLineProcessorSettings settings, 
+            CommandEvaluationContext commandEvaluationContext = null)
+        {
+            Settings = settings;
             SetArgs(args);
 
             cons.ForegroundColor = DefaultForeground;
@@ -155,20 +138,22 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 );
             CommandEvaluationContext = commandEvaluationContext;
 
-            if (printInfo) PrintInfo(CommandEvaluationContext);
+            SetupShellEnvVar();
+
+            if (settings.PrintInfo) PrintInfo(CommandEvaluationContext);
 
             // assume the application folder ($env.APPDATA/OrbitalShell) exists and is initialized
 
             var lbr = false;
 
             // creates user app data folders
-            if (!Directory.Exists(AppDataFolderPath))
+            if (!Directory.Exists(Settings.AppDataFolderPath))
             {
-                LogAppendAllLinesErrorIsEnabled = false;
-                Info(ColorSettings.Log + $"creating user shell folder: '{AppDataFolderPath}' ... ",false);
+                Settings.LogAppendAllLinesErrorIsEnabled = false;
+                Info(ColorSettings.Log + $"creating user shell folder: '{Settings.AppDataFolderPath}' ... ",false);
                 try
                 {
-                    Directory.CreateDirectory(AppDataFolderPath);
+                    Directory.CreateDirectory(Settings.AppDataFolderPath);
                     Success();
                 } catch (Exception createAppDataFolderPathException)
                 {
@@ -178,9 +163,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             }
 
             // initialize log file
-            if (!File.Exists(LogFilePath))
+            if (!File.Exists(Settings.LogFilePath))
             {
-                Info(ColorSettings.Log + $"creating log file: '{LogFilePath}' ... ",false);
+                Info(ColorSettings.Log + $"creating log file: '{Settings.LogFilePath}' ... ",false);
                 try
                 {
                     var logError = Log($"file created on {System.DateTime.Now}");
@@ -191,20 +176,20 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 }
                 catch (Exception createLogFileException)
                 {
-                    LogAppendAllLinesErrorIsEnabled = false;
+                    Settings.LogAppendAllLinesErrorIsEnabled = false;
                     Fail(createLogFileException);
                 }
                 lbr = true;
             }
 
             // initialize user profile
-            if (!File.Exists(UserProfileFilePath))
+            if (!File.Exists(Settings.UserProfileFilePath))
             {
-                Info(ColorSettings.Log + $"creating user profile file: '{UserProfileFilePath}' ... ",false);
+                Info(ColorSettings.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ",false);
                 try
                 {
-                    var defaultProfileFilePath = Path.Combine(DefaultsFolderPath,UserProfileFileName);
-                    File.Copy(defaultProfileFilePath, UserProfileFilePath);
+                    var defaultProfileFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.UserProfileFileName);
+                    File.Copy(defaultProfileFilePath, Settings.UserProfileFilePath);
                     Success();
                 }
                 catch (Exception createUserProfileFileException)
@@ -216,16 +201,16 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             // create/restore commands history
             CmdsHistory = new CommandsHistory();
-            var createNewHistoryFile = !File.Exists(HistoryFilePath);
+            var createNewHistoryFile = !File.Exists(Settings.HistoryFilePath);
             if (createNewHistoryFile)                
-                Info(ColorSettings.Log + $"creating user commands history file: '{HistoryFilePath}' ... ", false);
+                Info(ColorSettings.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", false);
             try
             {
                 if (createNewHistoryFile)
 #pragma warning disable CS0642 // Possibilité d'instruction vide erronée
-                    using (var fs = File.Create(HistoryFilePath)) ;
+                    using (var fs = File.Create(Settings.HistoryFilePath)) ;
 #pragma warning restore CS0642 // Possibilité d'instruction vide erronée
-                CmdsHistory.Init(AppDataFolderPath, HistoryFileName);
+                CmdsHistory.Init(Settings.AppDataFolderPath, Settings.HistoryFileName);
                 if (createNewHistoryFile) Success();
             }
             catch (Exception createUserProfileFileException)
@@ -236,15 +221,15 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             // create/restore user aliases
             CommandsAlias = new CommandsAlias();
-            var createNewCommandsAliasFile = !File.Exists(CommandsAliasFilePath);
+            var createNewCommandsAliasFile = !File.Exists(Settings.CommandsAliasFilePath);
             if (createNewCommandsAliasFile)
-                Info(ColorSettings.Log + $"creating user commands aliases file: '{CommandsAliasFilePath}' ... ", false);
+                Info(ColorSettings.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ", false);
             try
             {
                 if (createNewCommandsAliasFile)
                 {
-                    var defaultAliasFilePath = Path.Combine(DefaultsFolderPath, CommandsAliasFileName);
-                    File.Copy(defaultAliasFilePath, CommandsAliasFilePath);
+                    var defaultAliasFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.CommandsAliasFileName);
+                    File.Copy(defaultAliasFilePath, Settings.CommandsAliasFilePath);
                 }
                 if (createNewCommandsAliasFile) Success();                    
             }
@@ -269,9 +254,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         {
             if (_isInitialized) return;
             // run user profile
-            CommandBatchProcessor.RunBatch(CommandEvaluationContext, UserProfileFilePath);
+            CommandBatchProcessor.RunBatch(CommandEvaluationContext, Settings.UserProfileFilePath);
             // run user aliases
-            CommandsAlias.Init(CommandEvaluationContext, AppDataFolderPath, CommandsAliasFileName);
+            CommandsAlias.Init(CommandEvaluationContext, Settings.AppDataFolderPath, Settings.CommandsAliasFileName);
             _isInitialized = true;
         }
 
@@ -309,8 +294,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public void PrintInfo(CommandEvaluationContext context)
         {
-            context.Out.Echoln($"{ColorSettings.Label}{Uon} {AppLongName} ({AppName}) version {Assembly.GetExecutingAssembly().GetName().Version}" + ("".PadRight(18,' ')) + Tdoff);
-            context.Out.Echoln($" {AppEditor}");
+            context.Out.Echoln($"{ColorSettings.Label}{Uon} {Settings.AppLongName} ({Settings.AppName}) version {Assembly.GetExecutingAssembly().GetName().Version}" + ("".PadRight(18,' ')) + Tdoff);
+            context.Out.Echoln($" {Settings.AppEditor}");
             context.Out.Echoln($" {RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture} - {RuntimeInformation.FrameworkDescription}");
 
 #if BannerEnabled
@@ -352,11 +337,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             {
                 try
                 {
-                    File.AppendAllLines(LogFilePath, new List<string> { str });
+                    File.AppendAllLines(Settings.LogFilePath, new List<string> { str });
                     return null;
                 } catch (Exception logAppendAllLinesException)
                 {
-                    if (LogAppendAllLinesErrorIsEnabled)
+                    if (Settings.LogAppendAllLinesErrorIsEnabled)
                         Errorln(logAppendAllLinesException.Message);
                     return logAppendAllLinesException;
                 }
@@ -698,7 +683,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                     for (int i = 0; i < t.Length; i++) t[i] = " ";
                     foreach (var errPos in errPositions)
                     {
-                        t[GetIndex(context, errPos, expr)] = ErrorPositionMarker;
+                        t[GetIndex(context, errPos, expr)] = Settings.ErrorPositionMarker+"";
                     }
                     serr = string.Join("", t);
                     Error(" ".PadLeft(outputX + 1) + serr);
@@ -720,7 +705,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                     for (int j = 0; j < t.Length; j++) t[j] = " ";
                     var err = parseResult.SyntaxParsingResults.First().ParseErrors.First();
                     idx = err.Position;
-                    t[idx] = ErrorPositionMarker;
+                    t[idx] = Settings.ErrorPositionMarker+"";
                     errorText += Red + err.Description;
                     serr = string.Join("", t);
                     Errorln(" ".PadLeft(outputX) + serr);
@@ -733,7 +718,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                     for (int j = 0; j < t.Length; j++) t[j] = " ";
                     var err2 = parseResult.SyntaxParsingResults.First().ParseErrors.First();
                     idx = err2.Index;
-                    t[idx] = ErrorPositionMarker;
+                    t[idx] = Settings.ErrorPositionMarker+"";
                     errorText += Red + err2.Description;
                     serr = string.Join("", t);
                     Errorln(" ".PadLeft(outputX) + serr);

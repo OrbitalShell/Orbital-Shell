@@ -1,17 +1,85 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.Data;
+using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
+using DotNetConsoleAppToolkit.Lib;
 using System;
+using System.Linq;  
+using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+using static DotNetConsoleAppToolkit.Lib.Str;
 
 namespace DotNetConsoleAppToolkit.Console
 {
-    public partial class EchoPrimitives
+    public static partial class EchoPrimitives
     {
-        public static void Print(
+        static Table GetVarsDataTable(List<IDataObject> values)
+        {
+            var table = new Table();
+            table.AddColumns("name", "type", "value");
+            table.SetFormat("name", Yellow + "{0}" + Rsf);
+            table.SetFormat("type", Cyan + "{0}" + Tab + Rsf);
+            table.SetHeaderFormat("type", "{0}" + Tab);
+            foreach (var value in values)
+            {
+                if (value == null)
+                {
+                    table.Rows.Add(string.Empty, string.Empty, string.Empty);
+                }
+                else
+                {
+                    var dv = value as DataValue;
+                    var valueType = (dv!=null) ? dv.ValueType.Name : value.GetType().Name;
+                    var val = (dv!=null) ? DumpAsText(dv.Value, false) : string.Empty;
+
+                    table.Rows.Add(
+                        value.Name + (value.IsReadOnly ? "(r)" : ""),
+                        valueType,
+                        DumpAsText(val, false));
+                }
+            }
+            return table;
+        }
+
+        public static void Echo(
+            this IDataObject dataObject,
             ConsoleTextWriterWrapper @out,
-            CancellationTokenSource cancellationTokenSource,
-            DataTable table,
+            CancellationTokenSource cancellationTokenSource
+            )
+        {
+            var values = dataObject.GetDataValues();
+            values.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+            var dt = GetVarsDataTable(values);
+            dt.Echo(
+                @Out,
+                cancellationTokenSource,
+                true,
+                false);
+        }
+
+        public static void Echo(
+            this Variables variables,
+            ConsoleTextWriterWrapper @out,
+            CancellationTokenSource cancellationTokenSource
+            )
+        {
+            var values = variables.GetDataValues();
+            //var objects = variables.GetDataValues();
+            values.Sort((x, y) => x.Name.CompareTo(y.Name));
+            var dt = GetVarsDataTable(values);
+            dt.Echo(
+                @Out,
+                cancellationTokenSource,
+                true,
+                false);
+        }
+
+        public static void Echo(
+            this DataTable table,
+            ConsoleTextWriterWrapper @out,
+            CancellationTokenSource cancellationTokenSource,            
             bool noBorders=false,
             bool padLastColumn=true)
         {
@@ -72,10 +140,10 @@ namespace DotNetConsoleAppToolkit.Console
             @out.EnableFillLineFromCursor = true;
         }
 
-        public static void Print(
+        public static void Echo(
+            this Table table,
             ConsoleTextWriterWrapper @out,
             CancellationTokenSource cancellationTokenSource,
-            Table table,
             bool noBorders = false,
             bool padLastColumn = true)
         {

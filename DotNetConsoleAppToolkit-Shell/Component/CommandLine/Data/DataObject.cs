@@ -30,15 +30,16 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             IsReadOnly = isReadOnly;
         }
 
-        public List<DataValue> GetDataValues()
+        public List<IDataObject> GetDataValues()
         {
-            var r = new List<DataValue>();
+            var r = new List<IDataObject>();
             foreach ( var attrkv in _attributes )
             {
-                if (attrkv.Value is DataValue dataValue)
+                /*if (attrkv.Value is DataValue dataValue)
                     r.Add(dataValue);
                 else
-                    r.AddRange(attrkv.Value.GetDataValues());
+                    r.AddRange(attrkv.Value.GetDataValues());*/
+                r.Add(attrkv.Value);
             }
             return r;
         }

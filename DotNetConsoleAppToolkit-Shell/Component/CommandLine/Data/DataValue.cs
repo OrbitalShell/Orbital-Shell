@@ -44,9 +44,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             HasValue = true;
         }
 
-        public List<DataValue> GetDataValues()
+        public List<IDataObject> GetDataValues()
         {
-            return new List<DataValue>() { };
+            return new List<IDataObject>() { };
         }
 
         public bool Get(ArraySegment<string> path,out object data)

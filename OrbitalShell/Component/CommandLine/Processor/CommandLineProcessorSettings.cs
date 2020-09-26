@@ -16,7 +16,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
             LogFileName = "orbsh.log";
             HistoryFileName = ".history";
             CommandsAliasFileName = ".aliases";
-            
+
+            ShellEnvironmentVariableName = "Orbsh";
         }
     }
 }

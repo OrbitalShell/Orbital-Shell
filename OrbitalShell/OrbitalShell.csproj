@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Component\CommandLine\Defaults\.profile" />
+    <None Remove="Component\CommandLine\Defaults\.orbsh_profile" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Component\CommandLine\Defaults\.profile">
+    <Content Include="Component\CommandLine\Defaults\.orbsh_profile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

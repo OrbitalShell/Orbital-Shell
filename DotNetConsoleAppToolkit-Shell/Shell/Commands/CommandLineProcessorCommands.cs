@@ -286,7 +286,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
 
         #region variables
 
-        Table GetVarsDataTable(List<DataValue> values)
+        /*Table GetVarsDataTable(List<DataValue> values)
         {
             var table = new Table();
             table.AddColumns("name", "type", "value");
@@ -301,23 +301,24 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                     DumpAsText(value.Value,false));
             }
             return table;
-        }
+        }*/
 
-        [Command("prints the environment variables and values")]
-        public CommandResult<List<DataValue>> Env(
+        [Command("print the environment variables and values")]
+        public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context
             )
         {
             context.Variables.GetDataObject(VariableNameSpace.Env + "",out var envVars);
             var values = envVars.GetDataValues();
-            values.Sort((x,y) => x.Name.CompareTo(y.Name));
+            /*values.Sort((x,y) => x.Name.CompareTo(y.Name));
             var dt = GetVarsDataTable(values);
             dt.Echo(
                 context.Out, 
                 context.CommandLineProcessor.CancellationTokenSource, 
                 true, 
-                false);
-            return new CommandResult<List<DataValue>>( values );
+                false)*/
+            envVars.Echo(context.Out, context.CommandLineProcessor.CancellationTokenSource) ;
+            return new CommandResult<List<IDataObject>>( values );
         }
 
         [Command("set a command alias if a name and a value is provided. If only the name is provided, clear the alias definition. it no parameters is specified, list all alias")]

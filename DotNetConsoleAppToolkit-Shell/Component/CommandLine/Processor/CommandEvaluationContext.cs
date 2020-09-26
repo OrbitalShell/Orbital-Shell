@@ -12,13 +12,15 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         public readonly TextReader In;
         public readonly object InputData;
         public readonly Variables Variables;
+        public readonly CommandEvaluationContext ParentContext;
 
         public CommandEvaluationContext(
             CommandLineProcessor commandLineProcessor, 
             ConsoleTextWriterWrapper @out, 
             TextReader @in, 
             TextWriterWrapper err, 
-            object inputData)
+            object inputData,
+            CommandEvaluationContext parentContext = null)
         {
             CommandLineProcessor = commandLineProcessor;
             Out = @out;
@@ -26,6 +28,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             Err = err;
             InputData = inputData;
             Variables = new Variables();
+            ParentContext = parentContext;
         }
 
         public void Errorln(string s) => Error(s, true);

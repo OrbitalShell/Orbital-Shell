@@ -12,4 +12,5 @@
 
 ## Index
 
+- [User Manual](UserManual.md)
 - [Developer Guide](DeveloperGuide.md)

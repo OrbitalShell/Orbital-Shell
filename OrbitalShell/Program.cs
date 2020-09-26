@@ -1,7 +1,9 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using proc = DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using System;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+
+using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell
 {
@@ -10,7 +12,8 @@ namespace OrbitalShell
         static void Main(string[] args)
         {
             Out.ClearScreen();
-            var commandLineProcessor = new CommandLineProcessor(args);
+            var commandLineProcessor = 
+                new proc.CommandLineProcessor(args,new CommandLineProcessorSettings());
             var commandLineReader = new CommandLineReader(commandLineProcessor);
             commandLineProcessor.Initialize();
             var returnCode = commandLineReader.ReadCommandLine();

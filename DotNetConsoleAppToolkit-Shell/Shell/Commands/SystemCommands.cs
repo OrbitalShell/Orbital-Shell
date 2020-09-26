@@ -68,7 +68,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                     r.Add(process);
                 }
             }
-            Print(context.Out, context.CommandLineProcessor.CancellationTokenSource, table, !borders);
+            table.Echo(context.Out, context.CommandLineProcessor.CancellationTokenSource, !borders);
             return new CommandResult<List<Process>>(r);
         }
 

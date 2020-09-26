@@ -34,12 +34,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine
         {
             var defaultsAliasesFilePath =
                 Path.Combine(
-                    context.CommandLineProcessor.DefaultsFolderPath,
-                    CommandLineProcessor.CommandsAliasFileName);
+                    context.CommandLineProcessor.Settings.DefaultsFolderPath,
+                    context.CommandLineProcessor.Settings.CommandsAliasFileName);
             var lines = File.ReadAllLines(defaultsAliasesFilePath).ToList();
             foreach (var kvp in _aliases)
                 lines.Add(BuildAliasCommand(kvp.Key, kvp.Value));
-            File.WriteAllLines(context.CommandLineProcessor.CommandsAliasFilePath, lines);
+            File.WriteAllLines(context.CommandLineProcessor.Settings.CommandsAliasFilePath, lines);
         }
 
         public void AddOrReplaceAlias(CommandEvaluationContext context,string name,string text)
