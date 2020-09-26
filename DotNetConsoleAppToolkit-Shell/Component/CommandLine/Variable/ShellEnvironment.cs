@@ -16,6 +16,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
     {
         public Variables Vars { get; protected set; }
 
+        public TableFormattingOptions TableFormattingOptions => GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
+        public FileSystemPathFormattingOptions FileSystemPathFormattingOptions => GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions);
+
         public ShellEnvironment(string name) : base(name, false) { }
 
         /// <summary>
@@ -25,11 +28,14 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public void Initialize(CommandEvaluationContext context)
         {
             Vars = context.Variables;
+            Vars.Set( Variables.Nsp(VariableNamespace.Env, Name ), this );
+
             // data objects
             foreach ( var shellNs in Enum.GetValues(typeof(ShellEnvironmentNamespace)) )
             {
                 var key = Nsp((ShellEnvironmentNamespace)shellNs);
             }
+            
             // data values
             AddValue(ShellEnvironmentVar.Debug_Pipeline,true);
             AddValue(ShellEnvironmentVar.Display_TableSettings, new TableFormattingOptions());

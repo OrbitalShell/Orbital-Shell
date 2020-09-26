@@ -1,6 +1,6 @@
 ﻿namespace DotNetConsoleAppToolkit.Console
 {
-    public class TableFormattingOptions : IFormattingOptions
+    public class TableFormattingOptions : FormattingOptions
     {
         public enum TableLayout
         {
@@ -12,6 +12,7 @@
         public bool NoBorders = true;
         public bool PadLastColumn = true;
         public TableLayout Layout = TableLayout.HeaderHorizontalSeparator;
+        public bool UnfoldAll = false;
 
         public TableFormattingOptions() { }
 
@@ -20,16 +21,19 @@
             NoBorders = o.NoBorders;
             PadLastColumn = o.PadLastColumn;
             Layout = o.Layout;
+            UnfoldAll = o.UnfoldAll;
         }
 
         public TableFormattingOptions(
             bool noBorders = true, 
             bool padLastColumn = true, 
-            TableLayout layout = TableLayout.HeaderHorizontalSeparator)
+            TableLayout layout = TableLayout.HeaderHorizontalSeparator,
+            bool unfoldAll = false)
         {
             NoBorders = noBorders;
             PadLastColumn = padLastColumn;
             Layout = layout;
+            UnfoldAll = unfoldAll;
         }
     }
 }

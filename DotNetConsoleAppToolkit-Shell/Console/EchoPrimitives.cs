@@ -12,7 +12,9 @@ namespace DotNetConsoleAppToolkit.Console
 {
     public static partial class EchoPrimitives
     {
-        static Table GetVarsDataTable(List<IDataObject> values)
+        static Table GetVarsDataTable(
+            List<IDataObject> values,
+            TableFormattingOptions options)
         {
             var table = new Table();
             table.AddColumns("name", "type", "value");
@@ -21,25 +23,42 @@ namespace DotNetConsoleAppToolkit.Console
             table.SetHeaderFormat("type", "{0}" + Tab);
             foreach (var value in values)
             {
-                if (value == null)
-                {
-                    table.Rows.Add(DumpAsText(null), DumpAsText(null), DumpAsText(null));
-                }
-                else
-                {
-                    var dv = value as DataValue;
-                    var valueType = (dv!=null) ? dv.ValueType.Name : value.GetType().Name;
-                    var val = (dv!=null) ? DumpAsText(dv.Value, false) : string.Empty;
-                    var valnprefix = (dv == null) ? (ColorSettings.Highlight+"[+] ") : "    ";
-                    var valnostfix = (dv == null) ? "" : "";
-
-                    table.Rows.Add(
-                        valnprefix + value.Name + (value.IsReadOnly ? "(r)" : "") + valnostfix,
-                        valueType,
-                        DumpAsText(val, false));
-                }
+                AddIDataObjectToTable(table, value, options);
             }
             return table;
+        }
+
+        static void AddIDataObjectToTable(
+            Table table,
+            IDataObject value,
+            TableFormattingOptions options,
+            int level = 0
+            )
+        {
+            if (value == null)
+            {
+                table.Rows.Add(DumpAsText(null), DumpAsText(null), DumpAsText(null));
+            }
+            else
+            {
+                var tab = "".PadLeft((level * 2), ' ');
+                var dv = value as DataValue;
+                var valueType = (dv != null) ? dv.ValueType.Name : value.GetType().Name;
+                var val = (dv != null) ? DumpAsText(dv.Value, false) : string.Empty;
+                var valnprefix = (dv == null) ? (ColorSettings.Highlight + "[+] ") : "    ";
+                var valnostfix = (dv == null) ? "" : "";
+
+                table.Rows.Add(
+                    valnprefix + tab + value.Name + (value.IsReadOnly ? "(r)" : "") + valnostfix,
+                    valueType,
+                    DumpAsText(val, false));
+
+                if ((value is DataObject dao) && options.UnfoldAll)
+                {
+                    foreach ( var attr in dao.GetAttributes() )
+                        AddIDataObjectToTable(table, attr, options, level+1);
+                }
+            }
         }
 
         public static void Echo(
@@ -54,7 +73,7 @@ namespace DotNetConsoleAppToolkit.Console
             var attrs = dataObject.GetAttributes();
             attrs.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-            var dt = GetVarsDataTable(attrs);
+            var dt = GetVarsDataTable(attrs,options);
             dt.Echo( @out, context, options);
         }
 
@@ -68,7 +87,7 @@ namespace DotNetConsoleAppToolkit.Console
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
             var values = variables.GetDataValues();
             values.Sort((x, y) => x.Name.CompareTo(y.Name));
-            var dt = GetVarsDataTable(values);
+            var dt = GetVarsDataTable(values,options);
             dt.Echo( @out, context, options );
         }
 

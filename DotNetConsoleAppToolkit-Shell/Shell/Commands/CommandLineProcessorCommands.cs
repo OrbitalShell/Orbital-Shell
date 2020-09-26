@@ -286,14 +286,17 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
 
         #region variables
 
-        [Command("print the environment variables and values")]
+        [Command("outputs a table of environment variables and values")]
         public CommandResult<List<IDataObject>> Env(
-            CommandEvaluationContext context
+            CommandEvaluationContext context,
+            [Option("u","unfold the tree of values")] bool unfoldAll
             )
         {
             context.Variables.GetDataObject(VariableNamespace.Env + "",out var envVars);
             var values = envVars.GetAttributes();
-            envVars.Echo( context.Out, context ) ;
+            envVars.Echo( context.Out, context,
+                new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
+                { UnfoldAll = unfoldAll });
             return new CommandResult<List<IDataObject>>( values );
         }
 

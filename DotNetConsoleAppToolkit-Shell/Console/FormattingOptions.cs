@@ -2,7 +2,7 @@
 
 namespace DotNetConsoleAppToolkit.Console
 {
-    public interface IFormattingOptions
+    public abstract class FormattingOptions
     {
     }
 }

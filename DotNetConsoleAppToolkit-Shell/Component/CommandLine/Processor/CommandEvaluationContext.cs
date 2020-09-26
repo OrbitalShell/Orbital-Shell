@@ -41,7 +41,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 .ShellEnvironmentVariableName;
             ShellEnv = new ShellEnvironment(envn);
             ShellEnv.Initialize(this);
-            Variables.Set(VariableNamespace.Env, envn, ShellEnv);
         }
 
         public void Errorln(string s) => Error(s, true);
