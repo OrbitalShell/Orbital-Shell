@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DotNetConsoleAppToolkit.Console
+﻿namespace DotNetConsoleAppToolkit.Console
 {
     public class TableSettings
     {

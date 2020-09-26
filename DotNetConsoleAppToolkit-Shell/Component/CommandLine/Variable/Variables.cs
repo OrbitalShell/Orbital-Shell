@@ -32,7 +32,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
                 _dataRegistry.Set(ns + "", new DataObject(ns+"",false));
 
             // Env vars
-            var pfx = Nsp(VariableNameSpace.Env,"");
+            var pfx = Nsp(VariableNameSpace.Env);
             foreach (DictionaryEntry envvar in Environment.GetEnvironmentVariables())
                 _dataRegistry.Set(pfx+envvar.Key, envvar.Value);
         }
@@ -136,7 +136,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
         public static string Nsp( string @namespace, string key) => @namespace + CommandLineSyntax.VariableNamePathSeparator + key;
         public static string Nsp( params string[] key) => string.Join( CommandLineSyntax.VariableNamePathSeparator , key);
-        public static string Nsp( VariableNameSpace @namespace, string key) => @namespace + (CommandLineSyntax.VariableNamePathSeparator + "") + key;
+        public static string Nsp( VariableNameSpace @namespace, string key = "") => @namespace + (CommandLineSyntax.VariableNamePathSeparator + "") + key;
         public static string Nsp( VariableNameSpace @namespace, params string[] key) => @namespace + (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join( CommandLineSyntax.VariableNamePathSeparator, key);
     }
 }

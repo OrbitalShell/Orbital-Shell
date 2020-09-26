@@ -11,7 +11,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             ) { }
     }
 
-    public sealed class DataObject : IDataObject
+    public class DataObject : IDataObject
     {
         public string Name { get; private set; }
 
