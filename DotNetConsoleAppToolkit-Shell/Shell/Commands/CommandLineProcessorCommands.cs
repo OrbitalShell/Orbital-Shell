@@ -286,23 +286,6 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
 
         #region variables
 
-        /*Table GetVarsDataTable(List<DataValue> values)
-        {
-            var table = new Table();
-            table.AddColumns("name", "type", "value");
-            table.SetFormat("name", Yellow+"{0}"+Rsf);
-            table.SetFormat("type", Cyan+"{0}"+Tab+Rsf);
-            table.SetHeaderFormat("type", "{0}"+Tab);
-            foreach ( var value in values )
-            {
-                table.Rows.Add(
-                    value.Name + (value.IsReadOnly ? "(r)" : ""),
-                    value.ValueType.Name,
-                    DumpAsText(value.Value,false));
-            }
-            return table;
-        }*/
-
         [Command("print the environment variables and values")]
         public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context
@@ -310,14 +293,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         {
             context.Variables.GetDataObject(VariableNameSpace.Env + "",out var envVars);
             var values = envVars.GetDataValues();
-            /*values.Sort((x,y) => x.Name.CompareTo(y.Name));
-            var dt = GetVarsDataTable(values);
-            dt.Echo(
-                context.Out, 
-                context.CommandLineProcessor.CancellationTokenSource, 
-                true, 
-                false)*/
-            envVars.Echo(context.Out, context.CommandLineProcessor.CancellationTokenSource) ;
+            envVars.Echo( context.Out, context ) ;
             return new CommandResult<List<IDataObject>>( values );
         }
 
@@ -346,7 +322,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             return new CommandResult<List<string>>(r);
         }
 
-        [Command("set the value of shell variables (including shell options), or display the name and values of shell variables")]
+        [Command("set the value of a shell variable, or display the name and values of shell variables")]
         public CommandResult<IDataObject> Set(
             CommandEvaluationContext context
             )

@@ -7,7 +7,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
     public sealed class DataObjectReadOnlyException : Exception
     {
         public DataObjectReadOnlyException(IDataObject dataObject) : base(
-            $"DataObject name='{dataObject}' is read only"
+            $"{dataObject?.GetType().Name} name='{dataObject.Name}' is read only"
             ) { }
     }
 

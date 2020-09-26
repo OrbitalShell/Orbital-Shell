@@ -224,7 +224,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 }
                 table.Rows.Add(row);
             }
-            table.Echo(context.Out,context.CommandLineProcessor.CancellationTokenSource,!borders);
+            table.Echo(context.Out,context,!borders);
             return new CommandResult<List<DriveInfo>>( drives.ToList());
         }
 
