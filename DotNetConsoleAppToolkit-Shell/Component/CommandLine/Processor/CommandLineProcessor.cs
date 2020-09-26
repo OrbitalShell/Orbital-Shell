@@ -129,8 +129,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             cons.ForegroundColor = DefaultForeground;
             cons.BackgroundColor = DefaultBackground;
 
-            commandEvaluationContext = commandEvaluationContext ??
-                new CommandEvaluationContext(
+            commandEvaluationContext ??= new CommandEvaluationContext(
                     this,
                     Out,
                     cons.In,
@@ -143,7 +142,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             if (settings.PrintInfo) PrintInfo(CommandEvaluationContext);
 
-            // assume the application folder ($env.APPDATA/OrbitalShell) exists and is initialized
+            // assume the application folder ($Env.APPDATA/OrbitalShell) exists and is initialized
 
             var lbr = false;
 
@@ -245,9 +244,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             // load kernel commands
             RegisterCommandsAssembly(CommandEvaluationContext,Assembly.GetExecutingAssembly());
-#if enable_test_commands
-            RegisterCommandsClass<TestCommands>();
-#endif
 
         }
 

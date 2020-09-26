@@ -48,7 +48,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
                         if ((dirs || all) && (alwaysSelectDirs || (!hasPattern || MatchWildcard(pattern, checkPatternOnFullName ? sitem.FileSystemInfo.FullName : sitem.FileSystemInfo.Name, ignoreCase))))
                         {
                             items.Add(sitem);
-                            if (print) sitem.Print(attributes, shortPathes, "", Br);
+                            if (print) sitem.Echo(context.Out, context, new FileSystemPathFormattingOptions(attributes, shortPathes, "", Br));
                             counts.FoldersCount++;
                         }
                         else
@@ -79,7 +79,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
                             {
                                 counts.FilesCount++;
                                 items.Add(sitem);
-                                if (print) sitem.Print(attributes, shortPathes, "", Br);
+                                if (print) sitem.Echo(context.Out, context, new FileSystemPathFormattingOptions(attributes, shortPathes, "", Br));
                             }
                         }
                         else

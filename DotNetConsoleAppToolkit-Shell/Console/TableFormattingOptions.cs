@@ -1,6 +1,6 @@
 ﻿namespace DotNetConsoleAppToolkit.Console
 {
-    public class TableSettings
+    public class TableFormattingOptions : IFormattingOptions
     {
         public enum TableLayout
         {
@@ -10,5 +10,7 @@
         }
 
         public TableLayout Layout = TableLayout.HeaderHorizontalSeparator;
+
+        public TableFormattingOptions() { }
     }
 }

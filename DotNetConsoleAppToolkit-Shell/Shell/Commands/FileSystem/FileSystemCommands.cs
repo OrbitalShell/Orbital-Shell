@@ -109,7 +109,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                         if (cancellationTokenSource.IsCancellationRequested)
                             return i;
 
-                        item.Print(!noattributes, !recurse, "", (!wide || recurse || nocol == nbcols - 1) ? Br : "", (wide && !recurse) ? maxitlength : -1);
+                        item.Echo(context.Out,context,new FileSystemPathFormattingOptions(!noattributes, !recurse, "", (!wide || recurse || nocol == nbcols - 1) ? Br : "", (wide && !recurse) ? maxitlength : -1,""));
                         i++;
                         nocol++;
                         if (nocol == nbcols)
@@ -170,7 +170,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
             var path = new DirectoryPath(Environment.CurrentDirectory);
             if (path.CheckExists())
             {
-                path.Print(!noattributes, false, "", Br);
+                path.Echo(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br));
                 return new CommandResult<DirectoryPath>( path );
             }
             else
@@ -300,7 +300,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                         }
                         if (deleted)
                         {
-                            if (verbose) item.Print(!noattributes, !recurse, "", Br, -1, "removed ");
+                            if (verbose) item.Echo(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, !recurse, "", Br, -1, "removed "));
                             r.Add(item);
                         }
                     }
@@ -467,14 +467,14 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                     if (Confirm("rm: remove file "+subfi.GetPrintableName(fullname)))
                     {
                         if (!simulate) subfi.FileSystemInfo.Delete();
-                        if (verbose) subfi.Print(!noattributes, false, "", Br, -1, "removed ");
+                        if (verbose) subfi.Echo(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br, -1, "removed "));
                         r.Add(subfi);
                     }
                 }
                 if (Confirm("rm: remove directory "+dir.GetPrintableName(fullname)))
                 {
                     if (!simulate) dir.DirectoryInfo.Delete(true);
-                    if (verbose) dir.Print(!noattributes, false, "", Br, -1, "removed ");
+                    if (verbose) dir.Echo(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br, -1, "removed "));
                     r.Add(dir);
                 }
             }
