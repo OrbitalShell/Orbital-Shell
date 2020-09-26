@@ -37,14 +37,19 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
                 _dataRegistry.Set(pfx+envvar.Key, envvar.Value);
         }
 
-        public void Set(string rootPath,string path, object value)
-            => _dataRegistry.Set(Nsp(rootPath,path), value);
+        #region setters
 
-        public void Set(VariableNameSpace rootPath, string path, object value)
-            => _dataRegistry.Set(Nsp(rootPath, path), value);
+        public void Set( string path, object value) => _dataRegistry.Set( path, value);
+        public void Set( string rootPath, string path, object value) => _dataRegistry.Set( Nsp(rootPath,path), value);
+        public void Set( VariableNameSpace rootPath, string path, object value) => _dataRegistry.Set(Nsp(rootPath, path), value);
 
-        public void Unset(string path)
-            => _dataRegistry.Unset(path);
+        public void Unset(string path) => _dataRegistry.Unset(path);
+        public void Unset(string rootPath,string path) => _dataRegistry.Unset(Nsp(rootPath,path));
+        public void Unset( VariableNameSpace rootPath, params string[] path) => _dataRegistry.Unset(Nsp(rootPath,path));
+
+        #endregion
+
+        #region getters
 
         /// <summary>
         /// serch in data context the path according to these precedence rules:
@@ -55,7 +60,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public bool Get(string path,out object value,bool throwException=true)
+        public bool Get( string path, out object value, bool throwException=true )
         {
             var r = _dataRegistry.Get(path, out value)
             || _dataRegistry.Get(Nsp(VariableNameSpace.Local, path), out value)
@@ -66,8 +71,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             return r;
         }
 
-        public bool Get(string rootPath, string path, out object value, bool throwException = true)
+        public bool Get( string rootPath, string path, out object value, bool throwException = true )
             => Get(Nsp(rootPath, path), out value, throwException);
+
         public bool Get(VariableNameSpace rootPath, string path, out object value, bool throwException = true)
             => Get(Nsp(rootPath, path), out value, throwException);
 
@@ -121,12 +127,16 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public bool GetValue(VariableNameSpace rootPath, string path, out DataValue value, bool throwException = true)
             => GetValue(Nsp(rootPath, path), out value, throwException);
 
+        public List<IDataObject> GetDataValues() => _dataRegistry.GetDataValues();
+
+        #endregion
+
         public bool GetPathOwner(string path,out object data)
             => _dataRegistry.GetPathOwner(path,out data);
 
-        public List<IDataObject> GetDataValues() => _dataRegistry.GetDataValues();
-
-        public static string Nsp(string @namespace, string key) => @namespace + CommandLineSyntax.VariableNamePathSeparator + key;
-        public static string Nsp(VariableNameSpace @namespace, string key) => @namespace + (CommandLineSyntax.VariableNamePathSeparator+"") + key;
+        public static string Nsp( string @namespace, string key) => @namespace + CommandLineSyntax.VariableNamePathSeparator + key;
+        public static string Nsp( params string[] key) => string.Join( CommandLineSyntax.VariableNamePathSeparator , key);
+        public static string Nsp( VariableNameSpace @namespace, string key) => @namespace + (CommandLineSyntax.VariableNamePathSeparator + "") + key;
+        public static string Nsp( VariableNameSpace @namespace, params string[] key) => @namespace + (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join( CommandLineSyntax.VariableNamePathSeparator, key);
     }
 }
