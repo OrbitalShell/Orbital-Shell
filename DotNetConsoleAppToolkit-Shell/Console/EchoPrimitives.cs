@@ -45,56 +45,58 @@ namespace DotNetConsoleAppToolkit.Console
         public static void Echo(
             this IDataObject dataObject,
             ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context
+            CommandEvaluationContext context,
+            TableFormattingOptions options = null
             )
         {
-            var values = dataObject.GetDataValues();
-            values.Sort((x, y) => x.Name.CompareTo(y.Name));
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
+            options = new TableFormattingOptions(options) { PadLastColumn = false };
+            var attrs = dataObject.GetAttributes();
+            attrs.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-            var dt = GetVarsDataTable(values);
-            dt.Echo( @out, context, true, false);
+            var dt = GetVarsDataTable(attrs);
+            dt.Echo( @out, context, options);
         }
 
         public static void Echo(
             this Variables variables,
             ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context
+            CommandEvaluationContext context,
+            TableFormattingOptions options = null
             )
         {
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
             var values = variables.GetDataValues();
-            //var objects = variables.GetDataValues();
             values.Sort((x, y) => x.Name.CompareTo(y.Name));
             var dt = GetVarsDataTable(values);
-            dt.Echo( @out, context, true, false );
+            dt.Echo( @out, context, options );
         }
 
         public static void Echo(
             this DataTable table,
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
-            bool noBorders = false,
-            bool padLastColumn = true)
+            TableFormattingOptions options = null)
         {
-            _Echo(table, @out, context, noBorders, padLastColumn);
+            _Echo(table, @out, context, options);
         }
 
         public static void Echo(
             this Table table,
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
-            bool noBorders = false,
-            bool padLastColumn = true)
+            TableFormattingOptions options = null)
         {
-            _Echo(table, @out, context, noBorders, padLastColumn);
+            _Echo(table, @out, context, options);
         }
 
         static void _Echo(
             this DataTable table,
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
-            bool noBorders = false,
-            bool padLastColumn = true)
+            TableFormattingOptions options = null)
         {
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
             @out.EnableFillLineFromCursor = false;
             @out.HideCur();
             var colLengths = new int[table.Columns.Count];
@@ -119,29 +121,29 @@ namespace DotNetConsoleAppToolkit.Console
                     }
                 }
             }
-            var colsep = noBorders ? " " : (ColorSettings.TableBorder + " | " + ColorSettings.Default);
-            var colseplength = noBorders ? 0 : 3;
-            var tablewidth = noBorders ? 0 : 3;
+            var colsep = options.NoBorders ? " " : (ColorSettings.TableBorder + " | " + ColorSettings.Default);
+            var colseplength = options.NoBorders ? 0 : 3;
+            var tablewidth = options.NoBorders ? 0 : 3;
             for (int i = 0; i < table.Columns.Count; i++)
                 tablewidth += table.Columns[i].ColumnName.PadRight(colLengths[i], ' ').Length + colseplength;
-            var line = noBorders ? "" : (ColorSettings.TableBorder + "".PadRight(tablewidth, '-'));
+            var line = options.NoBorders ? "" : (ColorSettings.TableBorder + "".PadRight(tablewidth, '-'));
 
-            if (!noBorders) @out.Echoln(line);
+            if (!options.NoBorders) @out.Echoln(line);
             string fxh(string header) => (table is Table t) ? t.GetFormatedHeader(header) : header;
 
             for (int i = 0; i < table.Columns.Count; i++)
             {
                 if (i == 0) @out.Echo(colsep);
                 var col = table.Columns[i];
-                var colName = (i == table.Columns.Count - 1 && !padLastColumn) ?
+                var colName = (i == table.Columns.Count - 1 && !options.PadLastColumn) ?
                     /*table.GetFormatedHeader*/fxh(col.ColumnName) 
                     : /*table.GetFormatedHeader*/fxh(col.ColumnName).PadRight(colLengths[i], ' ');
-                var prfx = (noBorders) ? Uon : "";
-                var pofx = (noBorders) ? Tdoff : "";
+                var prfx = (options.NoBorders) ? Uon : "";
+                var pofx = (options.NoBorders) ? Tdoff : "";
                 @out.Echo(ColorSettings.TableColumnName + prfx + colName + colsep + pofx);
             }
             @out.Echoln();
-            if (!noBorders) @out.Echoln(line);
+            if (!options.NoBorders) @out.Echoln(line);
 
             string fhv(string header, string value) => (table is Table t) ? t.GetFormatedValue(header, value) : value;
             foreach (var rw in table.Rows)
@@ -161,7 +163,7 @@ namespace DotNetConsoleAppToolkit.Console
                     var txt = (arr[i] == null) ? "" : arr[i].ToString();
                     var fvalue = /*table.GetFormatedValue*/fhv(table.Columns[i].ColumnName, txt);
                     var l = Out.GetPrint(fvalue).Length;
-                    var spc = (i == arr.Length - 1 && !padLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
+                    var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
                     @out.Echo(ColorSettings.Default + fvalue + spc + colsep);
                 }
                 @out.Echoln();

@@ -107,7 +107,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             ShellInit(args, settings, commandEvaluationContext);
         }
 
-        void SetupShellEnvVar()
+        /*void SetupShellEnvVar()
         {
             var envn = CommandEvaluationContext
                 .CommandLineProcessor
@@ -116,7 +116,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             var env = new ShellEnvironment(envn);
             env.Initialize(CommandEvaluationContext);
             CommandEvaluationContext.Variables.Set(VariableNamespace.Env,envn,env);
-        }
+        }*/
 
         void ShellInit(
             string[] args,
@@ -138,7 +138,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 );
             CommandEvaluationContext = commandEvaluationContext;
 
-            SetupShellEnvVar();
+            //SetupShellEnvVar();
 
             if (settings.PrintInfo) PrintInfo(CommandEvaluationContext);
 

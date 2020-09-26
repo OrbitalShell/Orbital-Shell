@@ -1,6 +1,7 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
 using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib;
 using DotNetConsoleAppToolkit.Lib.Data;
@@ -224,7 +225,10 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 }
                 table.Rows.Add(row);
             }
-            table.Echo(context.Out,context,!borders);
+            table.Echo(context.Out, context,
+                new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings))
+                    { NoBorders = !borders });
+
             return new CommandResult<List<DriveInfo>>( drives.ToList() );
         }
 

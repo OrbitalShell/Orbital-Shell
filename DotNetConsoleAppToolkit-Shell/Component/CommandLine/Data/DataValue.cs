@@ -44,7 +44,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             HasValue = true;
         }
 
-        public List<IDataObject> GetDataValues()
+        public List<IDataObject> GetAttributes()
         {
             return new List<IDataObject>() { };
         }

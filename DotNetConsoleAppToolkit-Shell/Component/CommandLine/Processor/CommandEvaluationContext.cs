@@ -13,8 +13,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         public readonly object InputData;
         public readonly Variables Variables;
         public readonly CommandEvaluationContext ParentContext;
+        public ShellEnvironment ShellEnv { get; protected set; }
 
-        public CommandEvaluationContext(
+        public CommandEvaluationContext(            
             CommandLineProcessor commandLineProcessor, 
             ConsoleTextWriterWrapper @out, 
             TextReader @in, 
@@ -27,8 +28,20 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             In = @in;
             Err = err;
             InputData = inputData;
-            Variables = new Variables();
+            Variables = new Variables();            
             ParentContext = parentContext;
+            SetupShellEnvVar();
+        }
+
+        void SetupShellEnvVar()
+        {
+            var envn = 
+                CommandLineProcessor
+                .Settings
+                .ShellEnvironmentVariableName;
+            ShellEnv = new ShellEnvironment(envn);
+            ShellEnv.Initialize(this);
+            Variables.Set(VariableNamespace.Env, envn, ShellEnv);
         }
 
         public void Errorln(string s) => Error(s, true);

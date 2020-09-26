@@ -12,7 +12,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
 
         DataObject RootObject = new DataObject("root");
 
-        public List<IDataObject> GetDataValues() => RootObject.GetDataValues();
+        public List<IDataObject> GetDataValues() => RootObject.GetAttributes();
 
         public void Set(string path,object value=null)
         {

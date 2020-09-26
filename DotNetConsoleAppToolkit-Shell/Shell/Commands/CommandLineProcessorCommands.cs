@@ -292,7 +292,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             )
         {
             context.Variables.GetDataObject(VariableNamespace.Env + "",out var envVars);
-            var values = envVars.GetDataValues();
+            var values = envVars.GetAttributes();
             envVars.Echo( context.Out, context ) ;
             return new CommandResult<List<IDataObject>>( values );
         }

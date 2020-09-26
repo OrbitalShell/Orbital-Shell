@@ -16,28 +16,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
     {
         public Variables Vars { get; protected set; }
 
-        /// <summary>
-        /// standard shell environment namespaces
-        /// </summary>
-        public enum ShellEnvironmentNamespace
-        {            
-            CommandsSettings,
-            Debug,
-            Display,
-            Display_Colors,
-        }
-
-        /// <summary>
-        /// standard shell environment namespaces
-        /// </summary>
-        public enum ShellEnvironmentVar
-        {
-            Debug_Pipeline,
-            Display_TableSettings,
-            OrbshPath,
-            UserPath,
-        }
-
         public ShellEnvironment(string name) : base(name, false) { }
 
         /// <summary>
@@ -56,7 +34,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.Debug_Pipeline,true);
             AddValue(ShellEnvironmentVar.Display_TableSettings, new TableFormattingOptions());
             AddValue(ShellEnvironmentVar.OrbshPath, new DirectoryPath(Assembly.GetExecutingAssembly().Location));
-            //AddValue(ShellEnvironmentVar.)
+            AddValue(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
         }
 
         DataValue AddValue(ShellEnvironmentVar var,object value)
@@ -69,6 +47,20 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         }
 
         #region getters
+
+        public bool Get( ShellEnvironmentVar var,out object value, bool throwException = true)
+        {
+            var path = Nsp(var);
+            return Vars.Get(path, out value, throwException);
+        }
+
+        public DataValue GetValue(ShellEnvironmentVar var, bool throwException = true)
+        {
+            var path = Nsp(var);
+            return Vars.GetValue(path,throwException);
+        }
+
+        public T GetValue<T>(ShellEnvironmentVar var) => (T)GetValue(var).Value;
 
         #endregion
 

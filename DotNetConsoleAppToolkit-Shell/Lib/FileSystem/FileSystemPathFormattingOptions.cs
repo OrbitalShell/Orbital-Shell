@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DotNetConsoleAppToolkit.Lib.FileSystem
+﻿namespace DotNetConsoleAppToolkit.Lib.FileSystem
 {
     public class FileSystemPathFormattingOptions
     {

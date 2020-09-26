@@ -10,7 +10,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
         bool IsReadOnly { get; }
         bool HasAttributes { get; }
 
-        List<IDataObject> GetDataValues();
+        List<IDataObject> GetAttributes();
         bool Get(ArraySegment<string> path,out object data );
         bool GetPathOwner(ArraySegment<string> path,out object data);
         bool Has(ArraySegment<string> path,out object data);

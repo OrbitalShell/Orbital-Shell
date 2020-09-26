@@ -6,6 +6,8 @@ using System.Globalization;
 using DotNetConsoleAppToolkit.Console;
 using System;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using System.ComponentModel.Design;
+using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 
 namespace DotNetConsoleAppToolkit.Lib.FileSystem
 {
@@ -88,15 +90,13 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
                 return new FilePath(fsinf.FullName);
         }
 
-        static FileSystemPathFormattingOptions _defaultFileSystemPathFormattingOptions = new FileSystemPathFormattingOptions();
-
         public void Echo(
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
             FileSystemPathFormattingOptions options = null
             )
         {
-            options ??= _defaultFileSystemPathFormattingOptions;
+            options ??= context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
             var bg = GetCmd(EchoDirectives.b + "", DefaultBackground.ToString().ToLower());
             var fg = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
             var color = (IsDirectory) ? NormalDirectoryColorization : FileColorization;

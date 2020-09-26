@@ -1,6 +1,7 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine;
 using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Console;
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,11 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                     r.Add(process);
                 }
             }
-            table.Echo(context.Out, context, !borders);
+            
+            table.Echo(context.Out, context,
+                new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings))
+                { NoBorders = !borders });
+
             return new CommandResult<List<Process>>(r);
         }
 
