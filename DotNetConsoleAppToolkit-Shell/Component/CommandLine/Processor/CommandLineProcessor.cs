@@ -74,6 +74,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public CommandBatchProcessor CommandBatchProcessor { get; protected set; }
 
+        CommandLineProcessorSettings _settings;
+        CommandEvaluationContext _commandEvaluationContext;
+
         #endregion
 
         #region cli methods
@@ -102,21 +105,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             CommandEvaluationContext commandEvaluationContext = null
             )
         {
+            _args = args;
             settings ??= new CommandLineProcessorSettings();
-            CommandBatchProcessor = new CommandBatchProcessor();
-            ShellInit(args, settings, commandEvaluationContext);
+            _settings = settings;
+            CommandBatchProcessor = new CommandBatchProcessor();            
         }
-
-        /*void SetupShellEnvVar()
-        {
-            var envn = CommandEvaluationContext
-                .CommandLineProcessor
-                .Settings
-                .ShellEnvironmentVariableName;
-            var env = new ShellEnvironment(envn);
-            env.Initialize(CommandEvaluationContext);
-            CommandEvaluationContext.Variables.Set(VariableNamespace.Env,envn,env);
-        }*/
 
         void ShellInit(
             string[] args,
@@ -247,9 +240,14 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         }
 
+        /// <summary>
+        /// run init scriptss
+        /// </summary>
         public void Initialize()
         {
             if (_isInitialized) return;
+
+            ShellInit( _args, _settings, _commandEvaluationContext);
             // run user profile
             CommandBatchProcessor.RunBatch(CommandEvaluationContext, Settings.UserProfileFilePath);
             // run user aliases

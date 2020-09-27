@@ -38,7 +38,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             }
             
             // data values
-            AddValue(ShellEnvironmentVar.Debug_Pipeline,true);
+            AddValue(ShellEnvironmentVar.Debug_Pipeline,false);
             
             AddValue(ShellEnvironmentVar.OrbshPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )));
             AddValue(ShellEnvironmentVar.UserPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )));
@@ -47,15 +47,14 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.Display_TableSettings, new TableFormattingOptions());
 
             // bash vars for compat
-            AddValue(ShellEnvironmentVar.ORBSH, GetValue(ShellEnvironmentVar.OrbshPath).Value );
-            AddValue(ShellEnvironmentVar.ORBSH__VERSION, "1.0-beta" );
-            AddValue(ShellEnvironmentVar.ORBSH__NAME, "orbsh");
-            AddValue(ShellEnvironmentVar.ORBSH__LONG__NAME, "Orbital Shell");
-            AddValue(ShellEnvironmentVar.ORBSH__EDITOR, "released on June 2020 under licence MIT");
-            AddValue(ShellEnvironmentVar.ORBSH__LICENSE, "MIT");
+            AddValue(ShellEnvironmentVar.SHELL, GetValue(ShellEnvironmentVar.OrbshPath).Value );
+            AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion );
+            AddValue(ShellEnvironmentVar.SHELL__NAME, context.CommandLineProcessor.Settings.AppName );
+            AddValue(ShellEnvironmentVar.SHELL__LONG__NAME, context.CommandLineProcessor.Settings.AppLongName );
+            AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor );
+            AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense );
 
             AddValue(ShellEnvironmentVar.HOME, GetValue(ShellEnvironmentVar.UserPath).Value);
-            // CommandLineProcessor.CommandLineReader null at this time
             AddValue(ShellEnvironmentVar.PS1, "");      
             AddValue(ShellEnvironmentVar.PS2, "");
             AddValue(ShellEnvironmentVar.PS3, "");

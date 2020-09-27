@@ -10,6 +10,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             AppName = "orbsh";
             AppLongName = "Orbital Shell";
             AppEditor = "released on June 2020 under licence MIT";
+            AppVersion = "1.0-beta";
 
             AppDataFolderName = "OrbitalShell";
             UserProfileFileName = ".orbsh_profile";

@@ -9,9 +9,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
     {
         public string AppName = "CommandLineProcessor";
         public string AppLongName = "DotNetConsoleAppToolkit Component CommandLineProcessor";
-        public string AppEditor = "released on June 2020 under licence MIT";
+        public string AppEditor = "DotNetConsoleAppToolkit-Shell";
+        public string AppVersion = "AppVersion";
+        public string AppLicense = "MIT";
 
-        public string AppDataFolderName = "OrbitalShell";
+        public string AppDataFolderName = "DotNetConsoleAppToolkit-Shell";
+
         public string UserProfileFileName = ".profile";
         public string LogFileName = "log";
         public string HistoryFileName = ".history";
