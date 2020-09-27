@@ -44,12 +44,12 @@ namespace DotNetConsoleAppToolkit.Console
             }
             else
             {
-                var tab = "".PadLeft((level * 2), ' ');
+                var tab = "".PadLeft((level * 4), ' ');
                 var dv = value as DataValue;
                 var valueType = (dv != null) ? dv.ValueType.Name : value.GetType().Name;
                 //var val = (dv != null) ? DumpAsText(dv.Value, false) : string.Empty;
                 var val = dv?.Value;
-                var valnprefix = (dv == null) ? (ColorSettings.Highlight + "[+] ") : "    ";
+                var valnprefix = (dv == null) ? (ColorSettings.Highlight + "[+] ") : ""/*"    "*/;
                 var valnostfix = (dv == null) ? "" : "";
 
                 table.Rows.Add(
@@ -178,8 +178,8 @@ namespace DotNetConsoleAppToolkit.Console
                 if (i == 0) @out.Echo(colsep);
                 var col = table.Columns[i];
                 var colName = (i == table.Columns.Count - 1 && !options.PadLastColumn) ?
-                    /*table.GetFormatedHeader*/fxh(col.ColumnName) 
-                    : /*table.GetFormatedHeader*/fxh(col.ColumnName).PadRight(colLengths[i], ' ');
+                    fxh(col.ColumnName) 
+                    : fxh(col.ColumnName).PadRight(colLengths[i], ' ');
                 var prfx = (options.NoBorders) ? Uon : "";
                 var pofx = (options.NoBorders) ? Tdoff : "";
                 @out.Echo(ColorSettings.TableColumnName + prfx + colName + colsep + pofx);
@@ -203,7 +203,7 @@ namespace DotNetConsoleAppToolkit.Console
                 {
                     if (i == 0) Out.Echo(colsep);
                     var txt = (arr[i] == null) ? "" : arr[i].ToString();
-                    var fvalue = /*table.GetFormatedValue*/fhv(table.Columns[i].ColumnName, txt);
+                    var fvalue = fhv(table.Columns[i].ColumnName, txt);
                     var o = arr[i];
 
                     if (o != null && o.HasEchoMethod())

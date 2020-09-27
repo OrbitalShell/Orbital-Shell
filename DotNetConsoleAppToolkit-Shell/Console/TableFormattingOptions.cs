@@ -35,5 +35,10 @@
             Layout = layout;
             UnfoldAll = unfoldAll;
         }
+
+        public override string ToString()
+        {
+            return $"{{NoBorders={NoBorders},layout={Layout},UnfoldAll={UnfoldAll},PadLastColumn={PadLastColumn},LineBreak={LineBreak}}}";
+        }
     }
 }

@@ -1,7 +1,6 @@
-﻿#define debugParser
-
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+﻿using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Console;
 using System;
 using System.Collections.Generic;
@@ -103,9 +102,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
                 i++;
             }
 
-#if debugParser
-            context.Out.Echoln(Darkcyan+model);
-#endif
+            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.Debug_Pipeline))
+                context.Out.Echoln(Darkcyan+model);
 
             return model;
         }

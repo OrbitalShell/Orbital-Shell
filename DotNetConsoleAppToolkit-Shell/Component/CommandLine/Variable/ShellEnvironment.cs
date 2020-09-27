@@ -34,15 +34,41 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             // data objects
             foreach ( var shellNs in Enum.GetValues(typeof(ShellEnvironmentNamespace)) )
             {
-                var key = Nsp((ShellEnvironmentNamespace)shellNs);
+                AddObject((ShellEnvironmentNamespace)shellNs);
             }
             
             // data values
             AddValue(ShellEnvironmentVar.Debug_Pipeline,true);
-            AddValue(ShellEnvironmentVar.Display_TableSettings, new TableFormattingOptions());
+            
             AddValue(ShellEnvironmentVar.OrbshPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )));
             AddValue(ShellEnvironmentVar.UserPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )));
+            
             AddValue(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
+            AddValue(ShellEnvironmentVar.Display_TableSettings, new TableFormattingOptions());
+
+            // bash vars for compat
+            AddValue(ShellEnvironmentVar.ORBSH, GetValue(ShellEnvironmentVar.OrbshPath).Value );
+            AddValue(ShellEnvironmentVar.ORBSH__VERSION, "1.0-beta" );
+            AddValue(ShellEnvironmentVar.ORBSH__NAME, "orbsh");
+            AddValue(ShellEnvironmentVar.ORBSH__LONG__NAME, "Orbital Shell");
+            AddValue(ShellEnvironmentVar.ORBSH__EDITOR, "released on June 2020 under licence MIT");
+            AddValue(ShellEnvironmentVar.ORBSH__LICENSE, "MIT");
+
+            AddValue(ShellEnvironmentVar.HOME, GetValue(ShellEnvironmentVar.UserPath).Value);
+            // CommandLineProcessor.CommandLineReader null at this time
+            AddValue(ShellEnvironmentVar.PS1, "");      
+            AddValue(ShellEnvironmentVar.PS2, "");
+            AddValue(ShellEnvironmentVar.PS3, "");
+            AddValue(ShellEnvironmentVar.PS4, "");
+        }
+
+        DataObject AddObject(ShellEnvironmentNamespace ns)
+        {
+            var path = Nsp(ns);
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            var obj = new DataObject(name);
+            Vars.Set(path, obj);
+            return obj;
         }
 
         DataValue AddValue(ShellEnvironmentVar var,object value)
@@ -83,7 +109,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
         static string ToNsp(ShellEnvironmentVar @var) => ToNsp(@var + "");
         static string ToNsp(ShellEnvironmentNamespace @namespace) => ToNsp(@namespace + "");
-        static string ToNsp(string shellVar) => (shellVar + "").Replace("_", CommandLineSyntax.VariableNamePathSeparator+"" );
+        static string ToNsp(string shellVar)
+        {
+            var s = (shellVar + "").Replace("__", "¤");
+            s = s.Replace("_", CommandLineSyntax.VariableNamePathSeparator + "");
+            return s.Replace("¤", "_");
+        }
         string ToAbsNsp(string @namespace) => Variables.Nsp(VariableNamespace.Env, Name , @namespace);
     }
 }

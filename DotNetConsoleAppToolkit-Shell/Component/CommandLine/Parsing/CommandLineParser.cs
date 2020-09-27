@@ -1,5 +1,4 @@
 ﻿//#define debugParser
-#define splitFromPipeline
 
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
@@ -116,6 +115,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             return splits.ToArray();
         }
 
+#if NO
         /// <summary>
         /// split an expression to be evaluted at top level syntax level
         /// </summary>
@@ -168,6 +168,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 splits.Add(curStr);
             return splits.ToArray();
         }
+#endif
 
         public static int GetIndex(
             CommandEvaluationContext context,
@@ -254,19 +255,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 var workUnit = pipeline;
                 var splits = new List<StringSegment>();
 
-#if !splitFromPipeline
-                foreach (var split in splits0)
-                {
-                    var argExpr2 = SubstituteVariables(context, split.Text);
-                    splits.Add(new StringSegment(argExpr2, split.X, split.Y));
-                }
-                parseResults.Add(
-                    ParseCmdSplits(
-                        context,
-                        syntaxAnalyzer,
-                        expr,
-                        splits));
-#else
                 while (workUnit != null)
                 {
                     splits.Clear();
@@ -286,9 +274,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                                 splits)));
 
                     workUnit = workUnit.NextUnit;
-                }
-#endif
-                
+                }                
             }
             catch (ParseErrorException parseErrorEx)
             {
