@@ -15,23 +15,25 @@ namespace DotNetConsoleAppToolkit.Console
         #region private
 
         static Table GetVarsDataTable(
+            CommandEvaluationContext context,
             List<IDataObject> values,
             TableFormattingOptions options)
         {
             var table = new Table();
             table.AddColumns("name", "type");
             table.Columns.Add("value",typeof(object));
-            table.SetFormat("name", ColorSettings.DarkLabel + "{0}" + Rsf);
-            table.SetFormat("type", ColorSettings.Label + "{0}" + Tab + Rsf);
+            table.SetFormat("name", context.ShellEnv.Colors.DarkLabel + "{0}" + Rsf);
+            table.SetFormat("type", context.ShellEnv.Colors.Label + "{0}" + Tab + Rsf);
             table.SetHeaderFormat("type", "{0}" + Tab);
             foreach (var value in values)
             {
-                AddIDataObjectToTable(table, value, options);
+                AddIDataObjectToTable(context, table, value, options);
             }
             return table;
         }
 
         static void AddIDataObjectToTable(
+            CommandEvaluationContext context,
             Table table,
             IDataObject value,
             TableFormattingOptions options,
@@ -49,11 +51,11 @@ namespace DotNetConsoleAppToolkit.Console
                 var valueType = (dv != null) ? dv.ValueType?.Name : value?.GetType().Name;
                 //var val = (dv != null) ? DumpAsText(dv.Value, false) : string.Empty;
                 var val = dv?.Value;
-                var valnprefix = (dv == null) ? (ColorSettings.Highlight + "[+] ") : ""/*"    "*/;
+                var valnprefix = (dv == null) ? (context.ShellEnv.Colors.Highlight + "[+] ") : ""/*"    "*/;
                 var valnostfix = (dv == null) ? "" : "";
 
                 table.Rows.Add(
-                    tab + valnprefix + value.Name + (value.IsReadOnly ? $"{ColorSettings.Highlight}*{Rdc}" : "") + valnostfix,
+                    tab + valnprefix + value.Name + (value.IsReadOnly ? $"{context.ShellEnv.Colors.Symbol} r{Rdc}" : "") + valnostfix,
                     valueType,
                     val
                     );
@@ -61,7 +63,7 @@ namespace DotNetConsoleAppToolkit.Console
                 if ((value is DataObject dao) && options.UnfoldAll)
                 {
                     foreach ( var attr in dao.GetAttributes() )
-                        AddIDataObjectToTable(table, attr, options, level+1);
+                        AddIDataObjectToTable(context, table, attr, options, level+1);
                 }
             }
         }
@@ -90,12 +92,12 @@ namespace DotNetConsoleAppToolkit.Console
             TableFormattingOptions options = null
             )
         {
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
             var attrs = dataObject.GetAttributes();
             attrs.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-            var dt = GetVarsDataTable(attrs,options);
+            var dt = GetVarsDataTable(context,attrs,options);
             dt.Echo( @out, context, options);
         }
 
@@ -106,10 +108,10 @@ namespace DotNetConsoleAppToolkit.Console
             TableFormattingOptions options = null
             )
         {
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
             var values = variables.GetDataValues();
             values.Sort((x, y) => x.Name.CompareTo(y.Name));
-            var dt = GetVarsDataTable(values,options);
+            var dt = GetVarsDataTable(context,values,options);
             dt.Echo( @out, context, options );
         }
 
@@ -137,7 +139,7 @@ namespace DotNetConsoleAppToolkit.Console
             CommandEvaluationContext context,
             TableFormattingOptions options = null)
         {
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
             @out.EnableFillLineFromCursor = false;
             @out.HideCur();
             var colLengths = new int[table.Columns.Count];
@@ -162,12 +164,12 @@ namespace DotNetConsoleAppToolkit.Console
                     }
                 }
             }
-            var colsep = options.NoBorders ? " " : (ColorSettings.TableBorder + " | " + ColorSettings.Default);
+            var colsep = options.NoBorders ? " " : (context.ShellEnv.Colors.TableBorder + " | " + context.ShellEnv.Colors.Default);
             var colseplength = options.NoBorders ? 0 : 3;
             var tablewidth = options.NoBorders ? 0 : 3;
             for (int i = 0; i < table.Columns.Count; i++)
                 tablewidth += table.Columns[i].ColumnName.PadRight(colLengths[i], ' ').Length + colseplength;
-            var line = options.NoBorders ? "" : (ColorSettings.TableBorder + "".PadRight(tablewidth, '-'));
+            var line = options.NoBorders ? "" : (context.ShellEnv.Colors.TableBorder + "".PadRight(tablewidth, '-'));
 
             if (!options.NoBorders) @out.Echoln(line);
             string fxh(string header) => (table is Table t) ? t.GetFormatedHeader(header) : header;
@@ -181,7 +183,7 @@ namespace DotNetConsoleAppToolkit.Console
                     : fxh(col.ColumnName).PadRight(colLengths[i], ' ');
                 var prfx = (options.NoBorders) ? Uon : "";
                 var pofx = (options.NoBorders) ? Tdoff : "";
-                @out.Echo(ColorSettings.TableColumnName + prfx + colName + colsep + pofx);
+                @out.Echo(context.ShellEnv.Colors.TableColumnName + prfx + colName + colsep + pofx);
             }
             @out.Echoln();
             if (!options.NoBorders) @out.Echoln(line);
@@ -193,7 +195,7 @@ namespace DotNetConsoleAppToolkit.Console
                 {
                     @out.EnableFillLineFromCursor = true;
                     @out.ShowCur();
-                    @out.Echoln(ColorSettings.Default + "");
+                    @out.Echoln(context.ShellEnv.Colors.Default + "");
                     return;
                 }
                 var row = (DataRow)rw;
@@ -208,7 +210,7 @@ namespace DotNetConsoleAppToolkit.Console
                     if (o != null && o.HasEchoMethod())
                     {
                         // value dump via Echo primitive
-                        @out.Echo(ColorSettings.Default);
+                        @out.Echo(context.ShellEnv.Colors.Default);
                         var mi = o.GetEchoMethod();
                         mi.Invoke(o, new object[] { @out, context, null });
                         @out.Echo(colsep);
@@ -218,12 +220,12 @@ namespace DotNetConsoleAppToolkit.Console
                         // value dump by ToString
                         var l = @out.GetPrint(fvalue).Length;
                         var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
-                        @out.Echo(ColorSettings.Default + fvalue + spc + colsep);
+                        @out.Echo(context.ShellEnv.Colors.Default + fvalue + spc + colsep);
                     }
                 }
                 @out.Echoln();
             }
-            @out.Echoln(line + ColorSettings.Default.ToString());
+            @out.Echoln(line + context.ShellEnv.Colors.Default.ToString());
             @out.ShowCur();
             @out.EnableFillLineFromCursor = true;
         }

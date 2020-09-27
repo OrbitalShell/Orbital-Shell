@@ -16,8 +16,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
     public class ShellEnvironment : DataObject
     {
         public Variables Vars { get; protected set; }
+        public ColorSettings Colors { get; protected set; }
 
-        public TableFormattingOptions TableFormattingOptions => GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings);
+        public TableFormattingOptions TableFormattingOptions => GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
         public FileSystemPathFormattingOptions FileSystemPathFormattingOptions => GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions);
 
         public ShellEnvironment(string name) : base(name, false) { }
@@ -33,28 +34,26 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
             // data objects
             foreach ( var shellNs in Enum.GetValues(typeof(ShellEnvironmentNamespace)) )
-            {
                 AddObject((ShellEnvironmentNamespace)shellNs);
-            }
             
             // data values
             AddValue(ShellEnvironmentVar.Debug_Pipeline,false);
-            
-            AddValue(ShellEnvironmentVar.OrbshPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )), true);
             AddValue(ShellEnvironmentVar.UserPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )) );
             
             AddValue(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
-            AddValue(ShellEnvironmentVar.Display_TableSettings, new TableFormattingOptions());
+            AddValue(ShellEnvironmentVar.Display_TableFormattingOptions, new TableFormattingOptions());
+            var colorSettingsDV = AddValue(ShellEnvironmentVar.Display_Colors_ColorSettings, new ColorSettings());
+            Colors = (ColorSettings)colorSettingsDV.Value;
 
             // bash vars for compat
-            AddValue(ShellEnvironmentVar.SHELL, GetValue(ShellEnvironmentVar.OrbshPath).Value, true);
+            AddValue(ShellEnvironmentVar.SHELL, new DirectoryPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), true);
             AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion );
             AddValue(ShellEnvironmentVar.SHELL__NAME, context.CommandLineProcessor.Settings.AppName );
             AddValue(ShellEnvironmentVar.SHELL__LONG__NAME, context.CommandLineProcessor.Settings.AppLongName );
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor );
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense );
 
-            var v = AddValue(ShellEnvironmentVar.HOME, GetValue(ShellEnvironmentVar.UserPath).Value, true);
+            AddValue(ShellEnvironmentVar.HOME, GetValue(ShellEnvironmentVar.UserPath).Value, true);
             AddValue(ShellEnvironmentVar.PS1, "");      
             AddValue(ShellEnvironmentVar.PS2, "");
             AddValue(ShellEnvironmentVar.PS3, "");

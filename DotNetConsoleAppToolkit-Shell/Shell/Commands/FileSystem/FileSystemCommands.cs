@@ -47,7 +47,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 var f = DefaultForegroundCmd;
                 counts.Elapsed = DateTime.Now - counts.BeginDateTime;
                 if (items.Count > 0) context.Out.Echoln();
-                context.Out.Echoln($"found {ColorSettings.Numeric}{Plur("file",counts.FilesCount,f)} and {ColorSettings.Numeric}{Plur("folder",counts.FoldersCount,f)}. scanned {ColorSettings.Numeric}{Plur("file",counts.ScannedFilesCount,f)} in {ColorSettings.Numeric}{Plur("folder",counts.ScannedFoldersCount,f)} during {TimeSpanDescription(counts.Elapsed, ColorSettings.Numeric.ToString(), f)}");
+                context.Out.Echoln($"found {context.ShellEnv.Colors.Numeric}{Plur("file",counts.FilesCount,f)} and {context.ShellEnv.Colors.Numeric}{Plur("folder",counts.FoldersCount,f)}. scanned {context.ShellEnv.Colors.Numeric}{Plur("file",counts.ScannedFilesCount,f)} in {context.ShellEnv.Colors.Numeric}{Plur("folder",counts.ScannedFoldersCount,f)} during {TimeSpanDescription(counts.Elapsed, context.ShellEnv.Colors.Numeric.ToString(), f)}");
                 return new CommandResult<(List<FileSystemPath>, FindCounts)>( (items,counts));
             }
             return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
@@ -75,8 +75,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 void postCmd(object o, EventArgs e)
                 {
                     sc.CancelKeyPress -= cancelCmd;
-                    context.Out.Echoln($"{Tab}{ColorSettings.Numeric}{Plur("file", counts.FilesCount, f),-30}{HumanFormatOfSize(totFileSize, 2," ", ColorSettings.Numeric.ToString(), f)}");
-                    context.Out.Echoln($"{Tab}{ColorSettings.Numeric}{Plur("folder", counts.FoldersCount, f),-30}{Drives.GetDriveInfo(path.FileSystemInfo.FullName,false, ColorSettings.Numeric.ToString(), f," ",2)}");
+                    context.Out.Echoln($"{Tab}{context.ShellEnv.Colors.Numeric}{Plur("file", counts.FilesCount, f),-30}{HumanFormatOfSize(totFileSize, 2," ", context.ShellEnv.Colors.Numeric.ToString(), f)}");
+                    context.Out.Echoln($"{Tab}{context.ShellEnv.Colors.Numeric}{Plur("folder", counts.FoldersCount, f),-30}{Drives.GetDriveInfo(path.FileSystemInfo.FullName,false, context.ShellEnv.Colors.Numeric.ToString(), f," ",2)}");
                 }
                 void cancelCmd(object o, ConsoleCancelEventArgs e)
                 {
@@ -201,14 +201,14 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 var row = table.NewRow();
                 try
                 {
-                    row["name"] = $"{ColorSettings.Highlight}{di.Name}{f}";
-                    row["label"] = $"{ColorSettings.Highlight}{di.VolumeLabel}{f}";
-                    row["type"] = $"{ColorSettings.Name}{di.DriveType}{f}";
-                    row["format"] = $"{ColorSettings.Name}{di.DriveFormat}{f}";
-                    row["bytes"] = (di.TotalSize==0)?"": $"{HumanFormatOfSize(di.TotalFreeSpace, 2, " ", ColorSettings.Numeric.ToString(), f)}{f}/{ColorSettings.Numeric}{HumanFormatOfSize(di.TotalSize, 2, " ", ColorSettings.Numeric.ToString(), f)} {f}({ColorSettings.Highlight}{Math.Round((double)di.TotalFreeSpace / (double)di.TotalSize * 100d, 2)}{f} %)";
+                    row["name"] = $"{context.ShellEnv.Colors.Highlight}{di.Name}{f}";
+                    row["label"] = $"{context.ShellEnv.Colors.Highlight}{di.VolumeLabel}{f}";
+                    row["type"] = $"{context.ShellEnv.Colors.Name}{di.DriveType}{f}";
+                    row["format"] = $"{context.ShellEnv.Colors.Name}{di.DriveFormat}{f}";
+                    row["bytes"] = (di.TotalSize==0)?"": $"{HumanFormatOfSize(di.TotalFreeSpace, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)}{f}/{context.ShellEnv.Colors.Numeric}{HumanFormatOfSize(di.TotalSize, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)} {f}({context.ShellEnv.Colors.Highlight}{Math.Round((double)di.TotalFreeSpace / (double)di.TotalSize * 100d, 2)}{f} %)";
                 } catch (UnauthorizedAccessException) {
                     Errorln($"unauthorized access to drive {di.Name}");
-                    row["name"] = $"{ColorSettings.Highlight}{di.Name}{f}";
+                    row["name"] = $"{context.ShellEnv.Colors.Highlight}{di.Name}{f}";
                     row["label"] = "?";
                     row["type"] = "?";
                     row["format"] = "?";
@@ -217,7 +217,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 catch (Exception ex)
                 {
                     Errorln($"error when accessing drive {di.Name}: {ex.Message}");
-                    row["name"] = $"{ColorSettings.Highlight}{di.Name}{f}";
+                    row["name"] = $"{context.ShellEnv.Colors.Highlight}{di.Name}{f}";
                     row["label"] = "?";
                     row["type"] = "?";
                     row["format"] = "?";
@@ -226,7 +226,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 table.Rows.Add(row);
             }
             table.Echo(context.Out, context,
-                new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings))
+                new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions))
                     { NoBorders = !borders });
 
             return new CommandResult<List<DriveInfo>>( drives.ToList() );

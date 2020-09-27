@@ -62,15 +62,15 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
             bool hideLineNumbers)
         {
             const int cl = -14;
-            string quit = $"{ColorSettings.ParameterName}{$"q|Q",cl}{ColorSettings.Default}quit";
-            string help = $"{ColorSettings.ParameterName}{$"h|H",cl}{ColorSettings.Default}print this help";
-            string scrollnext = $"{ColorSettings.ParameterName}{$"space",cl}{ColorSettings.Default}display next lines of text, according to current screen size";
-            string scrolllinedown = $"{ColorSettings.ParameterName}{$"down arrow",cl}{ColorSettings.Default}scroll one line down";
-            string scrolllineup = $"{ColorSettings.ParameterName}{$"up arrow",cl}{ColorSettings.Default}scroll one line up";
-            string pagedown = $"{ColorSettings.ParameterName}{$"right arrow",cl}{ColorSettings.Default}jump one page down, according to current screen size";
-            string pageup = $"{ColorSettings.ParameterName}{$"left arrow",cl}{ColorSettings.Default}jump one page up, according to current screen size";
-            string totop = $"{ColorSettings.ParameterName}{$"t|T",cl}{ColorSettings.Default}jump to the top of the file";
-            string toend = $"{ColorSettings.ParameterName}{$"e|E",cl}{ColorSettings.Default}jump to the end of the file";
+            string quit = $"{context.ShellEnv.Colors.ParameterName}{$"q|Q",cl}{context.ShellEnv.Colors.Default}quit";
+            string help = $"{context.ShellEnv.Colors.ParameterName}{$"h|H",cl}{context.ShellEnv.Colors.Default}print this help";
+            string scrollnext = $"{context.ShellEnv.Colors.ParameterName}{$"space",cl}{context.ShellEnv.Colors.Default}display next lines of text, according to current screen size";
+            string scrolllinedown = $"{context.ShellEnv.Colors.ParameterName}{$"down arrow",cl}{context.ShellEnv.Colors.Default}scroll one line down";
+            string scrolllineup = $"{context.ShellEnv.Colors.ParameterName}{$"up arrow",cl}{context.ShellEnv.Colors.Default}scroll one line up";
+            string pagedown = $"{context.ShellEnv.Colors.ParameterName}{$"right arrow",cl}{context.ShellEnv.Colors.Default}jump one page down, according to current screen size";
+            string pageup = $"{context.ShellEnv.Colors.ParameterName}{$"left arrow",cl}{context.ShellEnv.Colors.Default}jump one page up, according to current screen size";
+            string totop = $"{context.ShellEnv.Colors.ParameterName}{$"t|T",cl}{context.ShellEnv.Colors.Default}jump to the top of the file";
+            string toend = $"{context.ShellEnv.Colors.ParameterName}{$"e|E",cl}{context.ShellEnv.Colors.Default}jump to the end of the file";
 
             var inputMaps = new List<InputMap>
             {
@@ -94,9 +94,9 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
             var infos = $"    ({Plur("line", nblines)},encoding={(fileEncoding != null ? fileEncoding.EncodingName : "?")},eol={filePlatform})";
             var n = file.Name.Length + TabLength + infos.Length;
             var sep = "".PadRight(n + 1, '-');
-            context.Out.Echoln($"{ColorSettings.TitleBar}{sep}");
-            context.Out.Echoln($"{ColorSettings.TitleBar} {file.Name}{ColorSettings.TitleDarkText}{infos.PadRight(n - file.Name.Length, ' ')}");
-            context.Out.Echoln($"{ColorSettings.TitleBar}{sep}{ColorSettings.Default}");
+            context.Out.Echoln($"{context.ShellEnv.Colors.TitleBar}{sep}");
+            context.Out.Echoln($"{context.ShellEnv.Colors.TitleBar} {file.Name}{context.ShellEnv.Colors.TitleDarkText}{infos.PadRight(n - file.Name.Length, ' ')}");
+            context.Out.Echoln($"{context.ShellEnv.Colors.TitleBar}{sep}{context.ShellEnv.Colors.Default}");
 
             var preambleHeight = 3;
             var linecollength = nblines.ToString().Length;
@@ -127,8 +127,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
                         {
                             if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested) 
                                 return new TextFileInfo(file, rlines, filePlatform, eol);
-                            var prefix = hideLineNumbers ? "" : (ColorSettings.Dark + "  " + (pos + decpos + i + 1).ToString().PadRight(linecollength, ' ') + "  ");
-                            context.Out.Echoln(prefix + ColorSettings.Default + lines[pos + decpos + i]);
+                            var prefix = hideLineNumbers ? "" : (context.ShellEnv.Colors.Dark + "  " + (pos + decpos + i + 1).ToString().PadRight(linecollength, ' ') + "  ");
+                            context.Out.Echoln(prefix + context.ShellEnv.Colors.Default + lines[pos + decpos + i]);
                             i++;
                         }
                         context.Out.ShowCur();
@@ -226,9 +226,9 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
                     var sp = string.IsNullOrWhiteSpace(pattern) ? "*" : pattern;
                     var counts = new FindCounts();
                     var items = FindItems(context, fileOrDir.FullName, sp, top, false, false, printAttr, false, null, false, counts, false, false, ignoreCase);
-                    var f = ColorSettings.Default.ToString();
+                    var f = context.ShellEnv.Colors.Default.ToString();
                     var elapsed = DateTime.Now - counts.BeginDateTime;
-                    context.Out.Echoln($"found {ColorSettings.Numeric}{Plur("file", counts.FilesCount, f)} and {ColorSettings.Numeric}{Plur("folder", counts.FoldersCount, f)}. scanned {ColorSettings.Numeric}{Plur("file", counts.ScannedFilesCount, f)} in {ColorSettings.Numeric}{Plur("folder", counts.ScannedFoldersCount, f)} during {TimeSpanDescription(elapsed, ColorSettings.Numeric.ToString(), f)}");
+                    context.Out.Echoln($"found {context.ShellEnv.Colors.Numeric}{Plur("file", counts.FilesCount, f)} and {context.ShellEnv.Colors.Numeric}{Plur("folder", counts.FoldersCount, f)}. scanned {context.ShellEnv.Colors.Numeric}{Plur("file", counts.ScannedFilesCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("folder", counts.ScannedFoldersCount, f)} during {TimeSpanDescription(elapsed, context.ShellEnv.Colors.Numeric.ToString(), f)}");
                     if (items.Count > 0)
                     {
                         context.Out.Echoln($"analyzing files ({counts.FilesCount})...");
@@ -246,7 +246,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
                         }
                         if (corruptedFilesCount > 0) context.Out.Echoln();
                         var crprt = (double)corruptedFilesCount / (double)counts.FilesCount * 100d;
-                        context.Out.Echoln($"found {ColorSettings.Numeric}{Plur("corrupted file", corruptedFilesCount, f)} in {ColorSettings.Numeric}{Plur("file", counts.FilesCount, f)} corruption ratio={Cyan}{crprt}%");
+                        context.Out.Echoln($"found {context.ShellEnv.Colors.Numeric}{Plur("corrupted file", corruptedFilesCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("file", counts.FilesCount, f)} corruption ratio={Cyan}{crprt}%");
                         return new CommandResult<List<FilePath>>( r);
                     } else
                         return new CommandResult<List<FilePath>>(r);

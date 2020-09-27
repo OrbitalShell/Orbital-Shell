@@ -75,7 +75,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         public CommandBatchProcessor CommandBatchProcessor { get; protected set; }
 
         CommandLineProcessorSettings _settings;
-        CommandEvaluationContext _commandEvaluationContext;
+        CommandEvaluationContext _commandEvaluationContext = null;
 
         #endregion
 
@@ -106,6 +106,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             )
         {
             _args = args;
+            _commandEvaluationContext = commandEvaluationContext;
             settings ??= new CommandLineProcessorSettings();
             _settings = settings;
             CommandBatchProcessor = new CommandBatchProcessor();            
@@ -143,7 +144,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             if (!Directory.Exists(Settings.AppDataFolderPath))
             {
                 Settings.LogAppendAllLinesErrorIsEnabled = false;
-                Info(ColorSettings.Log + $"creating user shell folder: '{Settings.AppDataFolderPath}' ... ",false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user shell folder: '{Settings.AppDataFolderPath}' ... ",false);
                 try
                 {
                     Directory.CreateDirectory(Settings.AppDataFolderPath);
@@ -158,7 +159,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // initialize log file
             if (!File.Exists(Settings.LogFilePath))
             {
-                Info(ColorSettings.Log + $"creating log file: '{Settings.LogFilePath}' ... ",false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating log file: '{Settings.LogFilePath}' ... ",false);
                 try
                 {
                     var logError = Log($"file created on {System.DateTime.Now}");
@@ -178,7 +179,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // initialize user profile
             if (!File.Exists(Settings.UserProfileFilePath))
             {
-                Info(ColorSettings.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ",false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ",false);
                 try
                 {
                     var defaultProfileFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.UserProfileFileName);
@@ -196,7 +197,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             CmdsHistory = new CommandsHistory();
             var createNewHistoryFile = !File.Exists(Settings.HistoryFilePath);
             if (createNewHistoryFile)                
-                Info(ColorSettings.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", false);
             try
             {
                 if (createNewHistoryFile)
@@ -216,7 +217,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             CommandsAlias = new CommandsAlias();
             var createNewCommandsAliasFile = !File.Exists(Settings.CommandsAliasFilePath);
             if (createNewCommandsAliasFile)
-                Info(ColorSettings.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ", false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ", false);
             try
             {
                 if (createNewCommandsAliasFile)
@@ -257,27 +258,27 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         void Success(string message = null)
         {
-            var logMessage = ColorSettings.Success + "Success" + (message==null?"":$" : {message}");
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + "Success" + (message==null?"":$" : {message}");
             Out.Echoln(logMessage);
             Log(logMessage);
         }
 
         void Info(string message,bool lineBreak=true) {
-            var logMessage = ColorSettings.Log + message;
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Log + message;
             Out.Echo(logMessage,lineBreak);
             Log(logMessage);
         }
 
         void Fail(string message=null, bool lineBreak = true)
         {
-            var logMessage = ColorSettings.Error + "Fail" + (message == null ? "" : $" : {message}");
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + "Fail" + (message == null ? "" : $" : {message}");
             Out.Echo(logMessage, lineBreak);
             Log(logMessage);
         }
 
         void Fail(Exception exception)
         {
-            var logMessage = ColorSettings.Error + "Fail : " + exception?.Message ;
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + "Fail : " + exception?.Message ;
             Out.Echoln(logMessage);
             LogError(logMessage);
         }
@@ -289,7 +290,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public void PrintInfo(CommandEvaluationContext context)
         {
-            context.Out.Echoln($"{ColorSettings.Label}{Uon} {Settings.AppLongName} ({Settings.AppName}) version {Assembly.GetExecutingAssembly().GetName().Version}" + ("".PadRight(18,' ')) + Tdoff);
+            context.Out.Echoln($"{CommandEvaluationContext.ShellEnv.Colors.Label}{Uon} {Settings.AppLongName} ({Settings.AppName}) version {Assembly.GetExecutingAssembly().GetName().Version}" + ("".PadRight(18,' ')) + Tdoff);
             context.Out.Echoln($" {Settings.AppEditor}");
             context.Out.Echoln($" {RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture} - {RuntimeInformation.FrameworkDescription}");
 
@@ -322,7 +323,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public Exception LogError(string text)
         {
-            return LogInternal(text, ColorSettings.Error+"ERR");
+            return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Error+"ERR");
         }
 
         Exception LogInternal(string text,string logPrefix="INF")

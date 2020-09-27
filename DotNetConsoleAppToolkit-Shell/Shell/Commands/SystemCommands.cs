@@ -71,7 +71,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             }
             
             table.Echo(context.Out, context,
-                new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableSettings))
+                new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions))
                 { NoBorders = !borders });
 
             return new CommandResult<List<Process>>(r);
@@ -82,7 +82,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             CommandEvaluationContext context
             )
         {
-            context.Out.Echoln($"{Environment.UserName} [{ColorSettings.Highlight}{Environment.UserDomainName}{ColorSettings.Default}]");
+            context.Out.Echoln($"{Environment.UserName} [{context.ShellEnv.Colors.Highlight}{Environment.UserDomainName}{context.ShellEnv.Colors.Default}]");
             return new CommandResult<(string,string)>((Environment.UserName,Environment.UserDomainName));
         }
     }

@@ -70,11 +70,11 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
                     str2 += Set3BitsColors(i | 0b1000, j) + $" [3{i}m   ";
                 }
 
-                context.Out.Echoln(str1 + ColorSettings.Default);
-                context.Out.Echoln(str2 + ColorSettings.Default);
+                context.Out.Echoln(str1 + context.ShellEnv.Colors.Default);
+                context.Out.Echoln(str2 + context.ShellEnv.Colors.Default);
                 context.Out.Echoln(hsep);
             }
-            context.Out.Echoln(ColorSettings.Default + "");
+            context.Out.Echoln(context.ShellEnv.Colors.Default + "");
 
             // 8 bits colors
             context.Out.Echoln("8 bits (256 color mode)");
@@ -98,7 +98,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
                 context.Out.Echo(r);
             }
 
-            context.Out.Echoln(ColorSettings.Default + "");
+            context.Out.Echoln(context.ShellEnv.Colors.Default + "");
             context.Out.Echoln("grayscale colors (24 colors) : 232 + l (0 <= l <= 24)(br)");
             r = White;
             x2 = 0;
@@ -112,7 +112,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             }
             context.Out.Echo(r);
 
-            context.Out.Echoln(ColorSettings.Default + "");
+            context.Out.Echoln(context.ShellEnv.Colors.Default + "");
             context.Out.Echoln("24 bits (16777216 colors): 0 <= r,g,b <= 255 (br) ");
 
             string cl(int r, int v, int b) =>

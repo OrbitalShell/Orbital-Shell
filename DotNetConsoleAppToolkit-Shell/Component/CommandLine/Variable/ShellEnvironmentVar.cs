@@ -6,9 +6,9 @@
     public enum ShellEnvironmentVar
     {
         Debug_Pipeline,
-        Display_TableSettings,
+        Display_TableFormattingOptions,
         Display_FileSystemPathFormattingOptions,
-        OrbshPath,
+        Display_Colors_ColorSettings,
         UserPath,
 
         HOME,

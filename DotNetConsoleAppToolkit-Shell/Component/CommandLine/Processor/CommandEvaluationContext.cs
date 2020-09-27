@@ -31,6 +31,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             Variables = new Variables();            
             ParentContext = parentContext;
             SetupShellEnvVar();
+            @out.ColorSettings = ShellEnv.Colors;
         }
 
         void SetupShellEnvVar()
@@ -50,7 +51,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             lock (Out.Lock)
             {
                 Out.RedirecToErr = true;
-                Out.Echo($"{ColorSettings.Error}{s}{ColorSettings.Default}", lineBreak);
+                Out.Echo($"{ShellEnv.Colors.Error}{s}{ShellEnv.Colors.Default}", lineBreak);
                 Out.RedirecToErr = false;
             }
         }

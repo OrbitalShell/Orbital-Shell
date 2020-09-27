@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotNetConsoleAppToolkit.Console;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -136,7 +137,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
             return r+((parameters.Values.Count==0)?"":(" "+string.Join(' ',parameters.Values)));
         }
 
-        public string ToColorizedString()
+        public string ToColorizedString(ColorSettings colorSettings)
         {
             var r = $"{Name}";
             var parameters = new SortedList<int, string>();
@@ -145,11 +146,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
                 if (p.Index > -1)
                 {
                     maxIndex = Math.Max(p.Index, maxIndex);
-                    parameters.Add(p.Index, p.ToColorizedString());
+                    parameters.Add(p.Index, p.ToColorizedString(colorSettings));
                 }
             foreach (var p in _parametersSpecifications.Values)
                 if (p.Index == -1)
-                    parameters.Add(++maxIndex, p.ToColorizedString());
+                    parameters.Add(++maxIndex, p.ToColorizedString(colorSettings));
             return r + ((parameters.Values.Count == 0) ? "" : (" " + string.Join(' ', parameters.Values)));
         }
     }

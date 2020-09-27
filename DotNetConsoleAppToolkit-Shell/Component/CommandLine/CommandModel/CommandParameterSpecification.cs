@@ -75,16 +75,16 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
             return r;
         }
 
-        public string ToColorizedString(bool grammarSymbolsVisible=true)
+        public string ToColorizedString(ColorSettings colors,bool grammarSymbolsVisible=true)
         {
             var f = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
-            var r = $"{ColorSettings.ParameterName}{ParameterName}{f}";
+            var r = $"{colors.ParameterName}{ParameterName}{f}";
             if (IsOption)
             {
-                var optVal = (HasValue) ? $" {ColorSettings.ParameterValueType}{ParameterValueTypeName}" : "";
-                r = $"{ColorSettings.OptionPrefix}{ParameterSyntax.OptionPrefix}{ColorSettings.OptionName}{OptionName}{optVal}{f}";
+                var optVal = (HasValue) ? $" {colors.ParameterValueType}{ParameterValueTypeName}" : "";
+                r = $"{colors.OptionPrefix}{ParameterSyntax.OptionPrefix}{colors.OptionName}{OptionName}{optVal}{f}";
             }
-            if (IsOptional && grammarSymbolsVisible) r = $"{ColorSettings.SyntaxSymbol}[{r}{ColorSettings.SyntaxSymbol}]{f}";
+            if (IsOptional && grammarSymbolsVisible) r = $"{colors.SyntaxSymbol}[{r}{colors.SyntaxSymbol}]{f}";
 #if printDefaultValueInSyntax
             if (HasDefaultValue && grammarSymbolsVisible) r += $"{Cyan}{{={($"{Darkyellow}{DumpAsText(DefaultValue)}{Cyan}}}{f}")}";
 #endif

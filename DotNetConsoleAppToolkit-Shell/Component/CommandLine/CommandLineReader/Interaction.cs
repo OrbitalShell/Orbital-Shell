@@ -35,7 +35,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
         public static object InputBar(string text,List<InputMap> inputMaps)
         {
             object r = null;
-            Out.Echo($"{ColorSettings.Inverted}{text}{ColorSettings.Default}");
+            Out.Echo($"{Colors.Inverted}{text}{Colors.Default}");
             bool end = false;
             string input = "";
             while (!end)

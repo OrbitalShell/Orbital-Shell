@@ -151,22 +151,22 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             if (list)
             {
                 if (!shortView)
-                    context.Out.Echoln($"{Darkcyan}{com.ModuleName.PadRight(maxmodlength, ' ')}   {com.DeclaringTypeShortName.PadRight(maxcmdtypelength, ' ')}{Tab}{ColorSettings.Highlight}{com.Name.PadRight(maxcnamelength, ' ')}{Tab}{f}{com.Description}{ColorSettings.Default}");
+                    context.Out.Echoln($"{Darkcyan}{com.ModuleName.PadRight(maxmodlength, ' ')}   {com.DeclaringTypeShortName.PadRight(maxcmdtypelength, ' ')}{Tab}{context.ShellEnv.Colors.Highlight}{com.Name.PadRight(maxcnamelength, ' ')}{Tab}{f}{com.Description}{context.ShellEnv.Colors.Default}");
                 else
-                    context.Out.Echoln($"{ColorSettings.Highlight}{com.Name.PadRight(maxcnamelength, ' ')}{f}{Tab}{com.Description}{ColorSettings.Default}");
+                    context.Out.Echoln($"{context.ShellEnv.Colors.Highlight}{com.Name.PadRight(maxcnamelength, ' ')}{f}{Tab}{com.Description}{context.ShellEnv.Colors.Default}");
             }
             else
             {
                 if (singleout)
                 {
                     context.Out.Echoln(com.Description);
-                    if (com.ParametersCount > 0) context.Out.Echo($"{Br}{col}{ColorSettings.Label}syntax: {f}{com.ToColorizedString()}{(!shortView ? Br : "")}");
+                    if (com.ParametersCount > 0) context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}{(!shortView ? Br : "")}");
                     context.Out.Echoln(GetPrintableDocText(com.LongDescription, list, shortView, 0));
                 }
                 else
                 {
                     context.Out.Echoln($"{com.Name.PadRight(maxcnamelength, ' ')}{com.Description}");
-                    if (com.ParametersCount > 0) context.Out.Echo($"{Br}{col}{ColorSettings.Label}syntax: {f}{com.ToColorizedString()}{(!shortView ? Br : "")}");
+                    if (com.ParametersCount > 0) context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}{(!shortView ? Br : "")}");
                     context.Out.Echo(GetPrintableDocText(com.LongDescription, list, shortView, maxcnamelength));
                 }
             }
@@ -183,7 +183,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                             var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.Name}{f}" : "";
                             var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue!=null && (!p.IsOption || p.ParameterValueTypeName!=typeof(bool).Name )) ? ((ptype!=""?". ":"") + $"default value: {Darkyellow}{DumpAsText(p.DefaultValue)}{f}") : "";
                             var supdef = $"{ptype}{pdef}";
-                            context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");
+                            // method 'Echo if has' else to string (with stream capture ?)
+                            context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors,false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");
                             if (!string.IsNullOrWhiteSpace(supdef)) context.Out.Echoln($"{col}{Tab}{" ".PadRight(mpl)}{supdef}");
                         }
 
@@ -197,8 +198,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                 }
                 if (!shortView)
                 {
-                    context.Out.Echoln($"{col}{ColorSettings.Label}type  : {ColorSettings.DarkLabel}{com.DeclaringTypeShortName}");
-                    context.Out.Echoln($"{col}{ColorSettings.Label}module: {ColorSettings.DarkLabel}{com.ModuleName}{ColorSettings.Default}");
+                    context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}type  : {context.ShellEnv.Colors.DarkLabel}{com.DeclaringTypeShortName}");
+                    context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}module: {context.ShellEnv.Colors.DarkLabel}{com.ModuleName}{context.ShellEnv.Colors.Default}");
                 }
             }
 #pragma warning restore IDE0071WithoutSuggestion // Simplifier l’interpolation
@@ -231,15 +232,15 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             [Option("u", "unload the module having the given name ", true, true)] string unloadModuleName = null
             )
                 {
-                    var f = ColorSettings.Default.ToString();
+                    var f = context.ShellEnv.Colors.Default.ToString();
                     if (loadModulePath == null && unloadModuleName == null)
                     {
                         var col1length = context.CommandLineProcessor.Modules.Values.Select(x => x.Name.Length).Max() + 1;
                         foreach (var kvp in context.CommandLineProcessor.Modules)
                         {
                             context.Out.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description} [types count={Cyan}{kvp.Value.TypesCount}{f} commands count={Cyan}{kvp.Value.CommandsCount}{f}]");
-                            context.Out.Echoln($"{"".PadRight(col1length, ' ')}{ColorSettings.Label}assembly:{ColorSettings.HalfDark}{kvp.Value.Assembly.FullName}");
-                            context.Out.Echoln($"{"".PadRight(col1length, ' ')}{ColorSettings.Label}path:    {ColorSettings.HalfDark}{kvp.Value.Assembly.Location}");
+                            context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}assembly:{context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.FullName}");
+                            context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}path:    {context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.Location}");
                         }
                         return new CommandResult<List<CommandsModule>>(context.CommandLineProcessor.Modules.Values.ToList());
                     }
@@ -255,7 +256,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                                 return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
                             }
                             else
-                                context.Out.Echoln($"loaded {ColorSettings.Numeric}{Plur("command", commandsCount, f)} in {ColorSettings.Numeric}{Plur("type", typesCount, f)}");
+                                context.Out.Echoln($"loaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
                         }
                         else
                             return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
@@ -271,7 +272,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                                 return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
                             }
                             else
-                                context.Out.Echoln($"unloaded {ColorSettings.Numeric}{Plur("command", commandsCount, f)} in {ColorSettings.Numeric}{Plur("type", typesCount, f)}");
+                                context.Out.Echoln($"unloaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
                         }
                         else
                         {
@@ -462,7 +463,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             {
                 if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
                     break; 
-                var hp = $"  {ColorSettings.Numeric}{i.ToString().PadRight(max + 2, ' ')}{f}";
+                var hp = $"  {context.ShellEnv.Colors.Numeric}{i.ToString().PadRight(max + 2, ' ')}{f}";
                 context.Out.Echo(hp);
                 Out.ConsolePrint(h, true);
                 i++;

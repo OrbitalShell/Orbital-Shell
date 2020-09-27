@@ -427,7 +427,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
                             default:
                                 // invalid
                                 hideBar = false;
-                                _statusText = $"{Bred}Invalid comand key: '{c.Key}'.{ColorSettings.Default} {_pressCmdKeyText} " + GetBarIndex();
+                                _statusText = $"{Bred}Invalid comand key: '{c.Key}'.{Context.ShellEnv.Colors.Default} {_pressCmdKeyText} " + GetBarIndex();
                                 printOnlyCursorInfo = false;
                                 break;
                         }
@@ -523,7 +523,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
             lock (ConsoleLock)
             {
                 var bVis = ShowEmptyBar();
-                PrintBarMessage(Bred + text + ". Press a key to continue..."+ColorSettings.Default);
+                PrintBarMessage(Bred + text + ". Press a key to continue..."+Context.ShellEnv.Colors.Default);
                 var c = sc.ReadKey(true);
                 if (bVis) ToggleBarVisibility();
             }
@@ -912,7 +912,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
         void PrintLineSplit(string s,bool eol)
         {
             Context.Out.Echo(s, false, _rawMode);
-            if (!_rawMode) Context.Out.Echo(ColorSettings.Default.ToString());
+            if (!_rawMode) Context.Out.Echo(Context.ShellEnv.Colors.Default.ToString());
         }
 
         List<StringSegment> GetLineSplits(int lineIndex, int x,int y) => Context.Out.GetWorkAreaStringSplits(_text[lineIndex], new Point(x, y), true, false, !_rawMode).Splits;
@@ -1014,8 +1014,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
 
         string GetCmdsInfo()
         {
-            string ShcutOpt(string shortCut,bool ifNotReadOnly=false,bool addCmdKeyStr=true) => $"{((ifNotReadOnly && _readOnly) ? Bwhite:Bwhite)}{( (ifNotReadOnly&&_readOnly) ?Gray:Black)}{(addCmdKeyStr?_cmdKeyStr:"")}{shortCut}{ColorSettings.Default}";
-            string Opt(string shortCut,string label, bool ifNotReadOnly = false, bool addCmdKeyStr = true) => $"{ShcutOpt(shortCut, ifNotReadOnly, addCmdKeyStr)} {((ifNotReadOnly&&_readOnly)?$"{Bgray}":"")}{label}{ColorSettings.Default}";
+            string ShcutOpt(string shortCut,bool ifNotReadOnly=false,bool addCmdKeyStr=true) => $"{((ifNotReadOnly && _readOnly) ? Bwhite:Bwhite)}{( (ifNotReadOnly&&_readOnly) ?Gray:Black)}{(addCmdKeyStr?_cmdKeyStr:"")}{shortCut}{Context.ShellEnv.Colors.Default}";
+            string Opt(string shortCut,string label, bool ifNotReadOnly = false, bool addCmdKeyStr = true) => $"{ShcutOpt(shortCut, ifNotReadOnly, addCmdKeyStr)} {((ifNotReadOnly&&_readOnly)?$"{Bgray}":"")}{label}{Context.ShellEnv.Colors.Default}";
             return _cmdBarIndex switch
             {
                 2 => $" {Opt("t", "Top")} | {Opt("b", "Bottom")} | {Opt("z", "Next page")} | {Opt("a", "Previous page")}",
