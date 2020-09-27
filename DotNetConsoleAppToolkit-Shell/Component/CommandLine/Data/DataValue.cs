@@ -44,6 +44,26 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             HasValue = true;
         }
 
+        public DataValue(
+            string name,
+            object value,
+            bool isReadOnly)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(Name));
+            ValueType = value?.GetType();
+            IsReadOnly = isReadOnly;
+            Value = value;
+            HasValue = true;
+        }
+
+        public DataValue(
+            string name,
+            bool isReadOnly)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(Name));
+            IsReadOnly = isReadOnly;
+        }
+
         public List<IDataObject> GetAttributes()
         {
             return new List<IDataObject>() { };

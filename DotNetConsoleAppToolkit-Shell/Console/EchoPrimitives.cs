@@ -46,16 +46,15 @@ namespace DotNetConsoleAppToolkit.Console
             {
                 var tab = "".PadLeft((level * 4), ' ');
                 var dv = value as DataValue;
-                var valueType = (dv != null) ? dv.ValueType.Name : value.GetType().Name;
+                var valueType = (dv != null) ? dv.ValueType?.Name : value?.GetType().Name;
                 //var val = (dv != null) ? DumpAsText(dv.Value, false) : string.Empty;
                 var val = dv?.Value;
                 var valnprefix = (dv == null) ? (ColorSettings.Highlight + "[+] ") : ""/*"    "*/;
                 var valnostfix = (dv == null) ? "" : "";
 
                 table.Rows.Add(
-                    tab + valnprefix + value.Name + (value.IsReadOnly ? "(r)" : "") + valnostfix,
+                    tab + valnprefix + value.Name + (value.IsReadOnly ? $"{ColorSettings.Highlight}*{Rdc}" : "") + valnostfix,
                     valueType,
-                    //DumpAsText(val, false)
                     val
                     );
 

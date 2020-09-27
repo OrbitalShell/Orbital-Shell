@@ -40,21 +40,21 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             // data values
             AddValue(ShellEnvironmentVar.Debug_Pipeline,false);
             
-            AddValue(ShellEnvironmentVar.OrbshPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )));
-            AddValue(ShellEnvironmentVar.UserPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )));
+            AddValue(ShellEnvironmentVar.OrbshPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )), true);
+            AddValue(ShellEnvironmentVar.UserPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )) );
             
             AddValue(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
             AddValue(ShellEnvironmentVar.Display_TableSettings, new TableFormattingOptions());
 
             // bash vars for compat
-            AddValue(ShellEnvironmentVar.SHELL, GetValue(ShellEnvironmentVar.OrbshPath).Value );
+            AddValue(ShellEnvironmentVar.SHELL, GetValue(ShellEnvironmentVar.OrbshPath).Value, true);
             AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion );
             AddValue(ShellEnvironmentVar.SHELL__NAME, context.CommandLineProcessor.Settings.AppName );
             AddValue(ShellEnvironmentVar.SHELL__LONG__NAME, context.CommandLineProcessor.Settings.AppLongName );
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor );
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense );
 
-            AddValue(ShellEnvironmentVar.HOME, GetValue(ShellEnvironmentVar.UserPath).Value);
+            var v = AddValue(ShellEnvironmentVar.HOME, GetValue(ShellEnvironmentVar.UserPath).Value, true);
             AddValue(ShellEnvironmentVar.PS1, "");      
             AddValue(ShellEnvironmentVar.PS2, "");
             AddValue(ShellEnvironmentVar.PS3, "");
@@ -70,12 +70,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             return obj;
         }
 
-        DataValue AddValue(ShellEnvironmentVar var,object value)
+        DataValue AddValue(ShellEnvironmentVar var,object value,bool readOnly=false)
         {
             var path = Nsp(var);
             var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
-            var val = new DataValue(name, value);
-            Vars.Set(path, value);
+            var val = new DataValue(name, value, readOnly );
+            Vars.Set(path, val);
             return val;
         }
 
