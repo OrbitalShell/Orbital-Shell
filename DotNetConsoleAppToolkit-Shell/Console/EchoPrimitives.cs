@@ -5,6 +5,7 @@ using DotNetConsoleAppToolkit.Lib;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.Str;
 
@@ -49,7 +50,6 @@ namespace DotNetConsoleAppToolkit.Console
                 var tab = "".PadLeft((level * 4), ' ');
                 var dv = value as DataValue;
                 var valueType = (dv != null) ? dv.ValueType?.Name : value?.GetType().Name;
-                //var val = (dv != null) ? DumpAsText(dv.Value, false) : string.Empty;
                 var val = dv?.Value;
                 var valnprefix = (dv == null) ? (context.ShellEnv.Colors.Highlight + "[+] ") : ""/*"    "*/;
                 var valnostfix = (dv == null) ? "" : "";
@@ -60,7 +60,7 @@ namespace DotNetConsoleAppToolkit.Console
                     val
                     );
 
-                if ((value is DataObject dao) && options.UnfoldAll)
+                if ((value is DataObject dao) && options.UnfoldCategories)
                 {
                     foreach ( var attr in dao.GetAttributes() )
                         AddIDataObjectToTable(context, table, attr, options, level+1);
@@ -84,6 +84,31 @@ namespace DotNetConsoleAppToolkit.Console
             else
                 @out.Echo(obj.ToString(),options.LineBreak);
         }
+
+        public static void Echo(
+            this TextColor obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options)
+        {
+            var smbcol = context.ShellEnv.Colors.Highlight;
+            var foregroundCol = (obj.Foreground.HasValue) ? (obj.Foreground.ToString() + $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.Foreground.Value.ToString().ToLower())}  {context.ShellEnv.Colors.Default}") : "";
+            var backgroundCol = (obj.Background.HasValue) ? (obj.Background.ToString() + $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.Background.Value.ToString().ToLower())}  {context.ShellEnv.Colors.Default}") : "";
+            var twice = !string.IsNullOrWhiteSpace(foregroundCol) && !string.IsNullOrWhiteSpace(backgroundCol);
+
+            if (twice) @out.Echo(smbcol + "{");
+            if (!string.IsNullOrWhiteSpace(foregroundCol)) @out.Echo(context.ShellEnv.Colors.Default + "f" + smbcol + "=" + context.ShellEnv.Colors.Name + foregroundCol);
+            if (twice) @out.Echo(smbcol + ",");
+            if (!string.IsNullOrWhiteSpace(backgroundCol)) @out.Echo( context.ShellEnv.Colors.Default + "g" + smbcol + "=" + context.ShellEnv.Colors.Name + backgroundCol);
+            if (twice) @out.Echo(smbcol + "}");
+        }
+
+        public static void Echo(
+            this ColorSettings obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            TableFormattingOptions options = null
+            ) => DynamicallyEchoable.Instance.EchoObj(obj, @out, context, options);        
 
         public static void Echo(
             this IDataObject dataObject,
@@ -207,12 +232,16 @@ namespace DotNetConsoleAppToolkit.Console
                     var fvalue = fhv(table.Columns[i].ColumnName, txt);
                     var o = arr[i];
 
-                    if (o != null && o.HasEchoMethod())
+                    MethodInfo mi = null;
+                    if (o != null && (mi=o.GetEchoMethod())!=null)
                     {
                         // value dump via Echo primitive
                         @out.Echo(context.ShellEnv.Colors.Default);
-                        var mi = o.GetEchoMethod();
-                        mi.Invoke(o, new object[] { @out, context, null });
+                        /*if (mi.GetParameters().Length == 3)
+                            mi.Invoke(o, new object[] { @out, context, null });
+                        else
+                            mi.Invoke(o, new object[] { o, @out, context, null });*/
+                        mi.InvokeEcho(o, @out, context, null);
                         @out.Echo(colsep);
                     }
                     else

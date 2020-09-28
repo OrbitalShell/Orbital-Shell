@@ -290,14 +290,18 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         [Command("outputs a table of environment variables and values")]
         public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context,
-            [Option("u","unfold the tree of values")] bool unfoldAll
+            [Option("n","unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o","unfold values of type object")] bool unfoldObjects = false
             )
         {
             context.Variables.GetDataObject(VariableNamespace.Env + "",out var envVars);
             var values = envVars.GetAttributes();
             envVars.Echo( context.Out, context,
                 new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
-                { UnfoldAll = unfoldAll });
+                { 
+                    UnfoldCategories = unfoldNamespaces ,
+                    UnfoldItems = unfoldObjects
+                });
             return new CommandResult<List<IDataObject>>( values );
         }
 

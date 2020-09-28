@@ -1,6 +1,8 @@
-﻿namespace DotNetConsoleAppToolkit.Lib.FileSystem
+﻿using DotNetConsoleAppToolkit.Console;
+
+namespace DotNetConsoleAppToolkit.Lib.FileSystem
 {
-    public class FileSystemPathFormattingOptions
+    public class FileSystemPathFormattingOptions : FormattingOptions
     {
         public bool PrintAttributes = true;
         public bool ShortPath = false;

@@ -1,10 +1,28 @@
-﻿using System;
+﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using DotNetConsoleAppToolkit.Console;
+using System;
+using System.Linq;
 using System.Reflection;
 
 namespace DotNetConsoleAppToolkit.Lib
 {
     public static partial class TypesExt
     {
+        public static void InvokeEcho(
+            this MethodInfo echoMethodInfo,
+            object obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null
+            )
+        {
+            @out.Echo(context.ShellEnv.Colors.Default);
+            if (echoMethodInfo.GetParameters().Length == 3)
+                echoMethodInfo.Invoke(obj, new object[] { @out, context, options });
+            else
+                echoMethodInfo.Invoke(obj, new object[] { obj, @out, context, options });
+        }
+
         public static MethodInfo GetEchoMethod( this object o )
         {
             if (o == null) throw new ArgumentNullException(nameof(o));
@@ -12,10 +30,20 @@ namespace DotNetConsoleAppToolkit.Lib
             try
             {
                 var mi = t.GetMethod(
-                    "Echo", 
+                    "Echo",
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static
                     );
+                
+                // extension of a type not in this assembly is not found
+                // search in extension class to fix it
+                if (mi==null)
+                {
+                    var mis = typeof(EchoPrimitives).GetMethods();
+                    mi = mis.Where(x => x.Name == "Echo" && x.GetParameters()[0].ParameterType == o.GetType()).FirstOrDefault();
+                }
+
                 return mi;
+
             } catch (Exception)
             {
                 return null;
