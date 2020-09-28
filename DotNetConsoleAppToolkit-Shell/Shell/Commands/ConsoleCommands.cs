@@ -1,6 +1,7 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine;
 using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using System.ComponentModel;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands
 {
@@ -77,14 +78,14 @@ current print directives are:
         [Command("write text to the output stream followed by a line break", null, _printDocText)]
         public CommandResult<string> Echo(
             CommandEvaluationContext context,
-            [Parameter("text to be writen to output", true)] string expr = "",
+            [Parameter("text or other (value of type object) to be writen to output", true, "")] object obj,
             [Option("n","no line break: do not add a line break after output")] bool avoidLineBreak = false
             )
         {
             lock (context.Out.Lock)
             {
                 context.Out.EchoOn();
-                context.Out.Echo(expr,!avoidLineBreak);
+                context.Out.Echo(obj,!avoidLineBreak);
 
                 var str = context.Out.EchoOff();
                 return new CommandResult<string>(str);

@@ -92,8 +92,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             var ptype = comspec.ParameterInfo.ParameterType;
             convertedValue = null;
             bool result = false;
+            bool found = false;
 
-            var customAttrType = ptype.GetCustomAttribute<CustomParamaterType>();
+            var customAttrType = ptype.GetCustomAttribute<CustomParameterType>();
             if (customAttrType != null)
             {
                 try
@@ -111,96 +112,124 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 {
                     result = int.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(Int16))
                 {
                     result = Int16.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(Int32))
                 {
                     result = Int32.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(Int64))
                 {
                     result = Int64.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(UInt16))
                 {
                     result = UInt16.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(UInt32))
                 {
                     result = UInt32.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(UInt64))
                 {
                     result = UInt64.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(short))
                 {
                     result = short.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(long))
                 {
                     result = long.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(double))
                 {
                     result = double.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(float))
                 {
                     result = float.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(decimal))
                 {
                     result = decimal.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(string))
                 {
                     result = true;
                     convertedValue = value;
+                    found = true;
                 }
                 if (ptype == typeof(bool))
                 {
                     result = bool.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(sbyte))
                 {
                     result = sbyte.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(byte))
                 {
                     result = byte.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(char))
                 {
                     result = char.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(Single))
                 {
                     result = Single.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
                 }
                 if (ptype == typeof(DateTime))
                 {
                     result = DateTime.TryParse(value, out var intv);
                     convertedValue = intv;
+                    found = true;
+                }
+
+                // unknown type, not CustomParameter
+
+                if (!found)
+                {
+                    found = true;
+                    result = true;
+                    convertedValue = value;
                 }
             }
 
@@ -213,7 +242,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             var comspec = CommandParameterSpecification;
             var ptype = comspec.ParameterInfo.ParameterType;
 
-            var customAttrType = ptype.GetCustomAttribute<CustomParamaterType>();
+            var customAttrType = ptype.GetCustomAttribute<CustomParameterType>();
             if (customAttrType != null)
             {
                 mparam = new MatchingParameter<object>(comspec,true);
@@ -258,11 +287,16 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                     mparam = new MatchingParameter<Single>(comspec);
                 if (ptype == typeof(DateTime))
                     mparam = new MatchingParameter<DateTime>(comspec);
+
+                if (mparam==null)
+                    // unknown type, not CustomParameter
+                    mparam = new MatchingParameter<object>(comspec);
             }
 
-            return mparam;
+            if (mparam==null)
+                throw new NotSupportedException($"command parameter type not supported: {ptype.FullName} in command specification: {CommandParameterSpecification}");
 
-            throw new NotSupportedException($"command parameter type not supported: {ptype.FullName} in command specification: {CommandParameterSpecification}");
+            return mparam;
         }
 
         public override string ToString()

@@ -11,7 +11,7 @@ using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 
 namespace DotNetConsoleAppToolkit.Lib.FileSystem
 {
-    [CustomParamaterType]
+    [CustomParameterType]
     public class FileSystemPath
     {
         public static string ErrorColorization = $"{Red}";

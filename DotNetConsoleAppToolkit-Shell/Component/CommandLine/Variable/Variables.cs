@@ -14,10 +14,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
     /// </summary>
     public class Variables
     {
+        public sealed class WrongVariableTypeException : Exception
+        {
+            public WrongVariableTypeException(Type attempted, Type getted)
+                : base($"variable type not as expected ({attempted?.Name}): {getted?.Name}")
+            { }
+        }
+
         public sealed class VariableNotFoundException : Exception
         {
-            public VariableNotFoundException(string variableName)
-                : base($"variable not found: '{variableName}'")
+            public VariableNotFoundException(string variablePath)
+                : base($"variable not found: '{variablePath}'")
             { }
         }
 
@@ -53,7 +60,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
         /// <summary>
         /// serch in data context the path according to these precedence rules:
-        /// - full path
+        /// - absolute path
         /// - path related to Local
         /// - path related to Env
         /// - path related to Global
@@ -64,10 +71,10 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         {
             var r = _dataRegistry.Get(path, out value)
             || _dataRegistry.Get(Nsp(VariableNamespace.Local, path), out value)
-            || _dataRegistry.Get(Nsp(VariableNamespace.Env, path), out value)
+            || _dataRegistry.Get(Nsp(VariableNamespace.Global, path), out value)
             || _dataRegistry.Get(Nsp(VariableNamespace.Env, path), out value);
             if (!r && throwException)
-                throw new VariableNotFoundException(GetVariableName(path));            
+                throw new VariableNotFoundException(path);            
             return r;
         }
 
@@ -101,7 +108,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             if (Get(path, out var data, false))
                 return (DataValue)data;
             if (throwException)
-                    throw new VariableNotFoundException(GetVariableName(path));
+                    throw new VariableNotFoundException(path);
             return null;
         }
         public DataValue GetValue(string rootPath, string path, bool throwException = true)
@@ -113,11 +120,16 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         {
             if (Get(path, out var data, false))
             {
-                value = (DataValue)data;
-                return true;
+                if (data is DataValue dv)
+                {
+                    value = dv;
+                    return true;
+                }
+                else
+                    throw new WrongVariableTypeException(typeof(DataValue), data?.GetType());
             }
             if (throwException)
-                throw new VariableNotFoundException(GetVariableName(path));
+                throw new VariableNotFoundException(path);
             value = null;
             return false;
         }

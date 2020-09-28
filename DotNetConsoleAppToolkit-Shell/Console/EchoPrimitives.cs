@@ -74,7 +74,7 @@ namespace DotNetConsoleAppToolkit.Console
             this object obj,
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
-            FormattingOptions options)
+            FormattingOptions options = null)
         {
             if (obj.HasEchoMethod())
             {
@@ -89,7 +89,7 @@ namespace DotNetConsoleAppToolkit.Console
             this TextColor obj,
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
-            FormattingOptions options)
+            FormattingOptions options = null)
         {
             var smbcol = context.ShellEnv.Colors.Highlight;
             var foregroundCol = (obj.Foreground.HasValue) ? (obj.Foreground.ToString() + $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.Foreground.Value.ToString().ToLower())}  {context.ShellEnv.Colors.Default}") : "";

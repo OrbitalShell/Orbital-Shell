@@ -132,8 +132,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 );
             CommandEvaluationContext = commandEvaluationContext;
 
-            //SetupShellEnvVar();
-
             if (settings.PrintInfo) PrintInfo(CommandEvaluationContext);
 
             // assume the application folder ($Env.APPDATA/OrbitalShell) exists and is initialized

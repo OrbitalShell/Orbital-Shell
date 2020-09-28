@@ -1,8 +1,10 @@
 ﻿//#define debugParser
 
+using DotNetConsoleAppToolkit.Component.CommandLine.Data;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Console;
+using DotNetConsoleAppToolkit.Lib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -182,11 +184,24 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             return n;
         }
 
+        /// <summary>
+        /// substitue any var ($..) found in expr (expr is a word from the command line)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="expr"></param>
+        /// <returns></returns>
         public static string SubstituteVariables(
             CommandEvaluationContext context,
             string expr
             )
         {
+            /*
+             * if expr is equal to a var ref :
+             *  - var
+             * if expr contains a var ref :
+             *  - var.ToString()
+             */
+
             var t = expr.ToCharArray();
             var i = 0;
             var vars = new List<StringSegment>();
@@ -215,13 +230,19 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                     nexpr.Append(expr.Substring(x, vr.X-x));
                     try
                     {
-                        context.Variables.GetValue(vr.Text,out var value);
-                        nexpr.Append(value.Value);
+                        context.Variables.Get(vr.Text,out var value);
+
+                        // here: value is transformed by his ToString method
+                        // (var is substituted by its text)
+                        if (value is DataValue dv)
+                            nexpr.Append(dv.Value);
+                        else
+                            nexpr.Append(value?.ToString());
                     }
                     catch (VariableNotFoundException ex)
                     {
                         Errorln(ex.Message);
-                        // keep bad var name in place
+                        // keep bad var name in place (? can be option of the shell. Bash let it blank)
                         nexpr.Append("$" + vr.Text);
                     }
                     x = vr.Y + 1;

@@ -9,6 +9,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
         public readonly string Description;
         public readonly string OptionName = null;
         public readonly bool HasValue = false;
+        public object? DefaultValue;
 
         public OptionAttribute(string optionName, string description, bool isOptional)
         {
@@ -30,6 +31,31 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
             OptionName = optionName;
             Description = description ?? throw new ArgumentNullException(nameof(description));
             IsOptional = true;
+        }
+
+        public OptionAttribute(string optionName, string description, bool isOptional, object defaultValue)
+        {
+            OptionName = optionName;
+            Description = description ?? throw new ArgumentNullException(nameof(description));
+            IsOptional = isOptional;
+            DefaultValue = defaultValue;
+        }
+
+        public OptionAttribute(string optionName, string description, bool hasValue, bool isOptional, object defaultValue)
+        {
+            HasValue = hasValue;
+            OptionName = optionName;
+            Description = description ?? throw new ArgumentNullException(nameof(description));
+            IsOptional = isOptional;
+            DefaultValue = defaultValue;
+        }
+
+        public OptionAttribute(string optionName, string description, object defaultValue)
+        {
+            OptionName = optionName;
+            Description = description ?? throw new ArgumentNullException(nameof(description));
+            IsOptional = true;
+            DefaultValue = defaultValue;
         }
     }
 }

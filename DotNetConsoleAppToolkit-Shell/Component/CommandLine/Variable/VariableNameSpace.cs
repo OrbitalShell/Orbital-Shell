@@ -2,9 +2,19 @@
 {
     public enum VariableNamespace
     {
+        /// <summary>
+        /// environment
+        /// </summary>
         Env,
-        Shell,
+
+        /// <summary>
+        /// local to the command context
+        /// </summary>
         Local,
+
+        /// <summary>
+        /// global
+        /// </summary>
         Global
     }
 }
