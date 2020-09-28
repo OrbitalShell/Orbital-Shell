@@ -608,6 +608,14 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             return PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
         }
 
+        /// <summary>
+        /// react after parse within a parse unit result
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="expr"></param>
+        /// <param name="outputX"></param>
+        /// <param name="parseResult"></param>
+        /// <returns></returns>
         ExpressionEvaluationResult EvalParse(
             CommandEvaluationContext context,
             string expr,

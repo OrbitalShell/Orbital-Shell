@@ -76,10 +76,12 @@ namespace DotNetConsoleAppToolkit.Console
             CommandEvaluationContext context,
             FormattingOptions options = null)
         {
-            if (obj.HasEchoMethod())
+            options ??= FormattingOptions.Instance;
+            MethodInfo mi;
+            if ((mi=obj.GetEchoMethod())!=null)
             {
-                var mi = obj.GetEchoMethod();
-                mi.Invoke(obj, new object[] { @out, context, options });
+                //mi.Invoke(obj, new object[] { @out, context, options });
+                mi.InvokeEcho(obj, @out, context, options);
             }
             else
                 @out.Echo(obj.ToString(),options.LineBreak);

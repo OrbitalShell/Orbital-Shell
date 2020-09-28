@@ -3,6 +3,16 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 {
     public class CommandVoidResult : ICommandResult
     {
+        static CommandVoidResult _Instance;
+        public static CommandVoidResult Instance
+        {
+            get
+            {
+                if (_Instance == null) _Instance = new CommandVoidResult();
+                return _Instance;
+            }
+        }
+
         public int ReturnCode { get; protected set; }
 
         public object GetOuputData()

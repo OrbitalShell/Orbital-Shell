@@ -92,7 +92,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             return Vars.GetValue(path,throwException);
         }
 
-        public T GetValue<T>(ShellEnvironmentVar var) => (T)GetValue(var).Value;
+        public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true) => (T)GetValue(var, throwException).Value;
 
         #endregion
 

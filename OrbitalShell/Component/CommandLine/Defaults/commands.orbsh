@@ -7,3 +7,4 @@ cd $APPDATA/OrbitalShell
 dir Component/CommandLine/Defaults
 more Component/CommandLine/Defaults/.profile
 more $APPDATA/OrbitalShell/.profile
+echo $Env.Orbsh.Display.Colors.ColorSettings.Dark

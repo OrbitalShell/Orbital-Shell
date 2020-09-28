@@ -184,23 +184,48 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             return n;
         }
 
+#if experiment
+
+        public static void StoreReference(
+            CommandEvaluationContext context,
+            string reference,
+            object obj
+            )
+        {
+            context.Variables.Set(VariableNamespace.Local, reference, obj);
+        }
+
+        public static object GetReference(
+            CommandEvaluationContext context,
+            string reference
+            )
+        {
+            context.Variables.Get(VariableNamespace.Local, reference, out var value, false);
+            return value;
+        }
+
+#endif
+
         /// <summary>
         /// substitue any var ($..) found in expr (expr is a word from the command line)
         /// </summary>
         /// <param name="context"></param>
         /// <param name="expr"></param>
         /// <returns></returns>
-        public static string SubstituteVariables(
+        public static (string expr,Dictionary<string,object> references) SubstituteVariables(
             CommandEvaluationContext context,
             string expr
             )
         {
+            Dictionary<string, object> references = new Dictionary<string, object>();
+
             /*
-             * if expr is equal to a var ref :
-             *  - var
-             * if expr contains a var ref :
+             * if expr is equal to a single var ref :
+             *  - var (propagate object to the command...)
+             * if expr contains one or several var refs :
              *  - var.ToString()
              */
+            var origStr = new string(expr);
 
             var t = expr.ToCharArray();
             var i = 0;
@@ -234,16 +259,29 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
 
                         // here: value is transformed by his ToString method
                         // (var is substituted by its text)
-                        if (value is DataValue dv)
-                            nexpr.Append(dv.Value);
+
+                        if (vars.Count == 1 &&
+                            ((CommandLineSyntax.VariablePrefix + vr.Text) == origStr))
+                        {
+                            // single var (no conversion)
+                            // keep var ref in place (arbitrary convention)
+                            var varName = CommandLineSyntax.VariablePrefix + vr.Text;
+                            nexpr.Append(varName);
+                            references.AddOrReplace(varName, value);
+                        }
                         else
-                            nexpr.Append(value?.ToString());
+                        {
+                            if (value is DataValue dv)
+                                nexpr.Append(dv.Value);
+                            else
+                                nexpr.Append(value?.ToString());
+                        }
                     }
                     catch (VariableNotFoundException ex)
                     {
                         Errorln(ex.Message);
                         // keep bad var name in place (? can be option of the shell. Bash let it blank)
-                        nexpr.Append("$" + vr.Text);
+                        nexpr.Append( CommandLineSyntax.VariablePrefix + vr.Text);
                     }
                     x = vr.Y + 1;
                 }
@@ -254,7 +292,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 expr = nexpr.ToString();
             }
 
-            return expr;
+            return (expr,references);
         }
 
         public static List<PipelineParseResult> Parse(
@@ -275,14 +313,15 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 var pipeline = GetPipeline(context, splits0);
                 var workUnit = pipeline;
                 var splits = new List<StringSegment>();
-
+                var references = new Dictionary<string, object>();
                 while (workUnit != null)
                 {
                     splits.Clear();
                     foreach (var split in workUnit.Segments)
                     {
-                        var argExpr2 = SubstituteVariables(context, split.Text);
-                        splits.Add(new StringSegment(argExpr2, split.X, split.Y));
+                        (string argExpr2, Dictionary<string, object> refs) = SubstituteVariables(context, split.Text);
+                        foreach (var kv in refs) references.AddOrReplace(kv.Key, kv.Value);
+                        splits.Add(new StringSegment(argExpr2, split.X, split.Y, refs));
                     }
                                         
                     parseResults.Add(
@@ -329,8 +368,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             string expr,
             List<StringSegment> splits)
         { 
-            // <----------------------
-
             var segments = splits.Skip(1).ToArray();
             var token = splits.First().Text;
 
@@ -351,7 +388,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
 
                 foreach (var syntax in ctokens)
                 {
-                    var (matchingParameters, parseErrors) = syntax.Match(SyntaxMatchingRule, segments.Select(x => x.Text).ToArray(), token.Length + 1);
+                    var (matchingParameters, parseErrors) = 
+                        syntax.Match(
+                            SyntaxMatchingRule,
+                            segments,
+                            token.Length + 1);
                     if (parseErrors.Count == 0)
                     {
                         nbValid++;

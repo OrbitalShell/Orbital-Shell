@@ -1,4 +1,5 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+using DotNetConsoleAppToolkit.Console;
 using System;
 using System.Data;
 using System.Linq;
@@ -25,11 +26,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
         public (ParseError parseError, ParameterSyntax parameterSyntax) MatchSegment(
             StringComparison syntaxMatchingRule,
             MatchingParameters matchingParameters,
-            string segment, 
+            StringSegment segment, 
             int position, 
             int index,
-            string[] rightSegments, 
-            string[] segments)
+            StringSegment[] rightSegments,
+            StringSegment[] segments)
         {
             var cs = CommandSpecification;
             var csp = CommandParameterSpecification;
@@ -49,7 +50,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             {
                 var optsyntax = $"{ParameterSyntax.OptionPrefix}{csp.OptionName}";
                 // option
-                if (optsyntax.Equals(segment, syntaxMatchingRule))
+                if (optsyntax.Equals(segment.Text, syntaxMatchingRule))
                 {
                     if ((csp.SegmentsCount == 2 || (csp.SegmentsCount==1 && csp.RequiredParameterName!=null && !cs.ParametersSpecifications[csp.RequiredParameterName].IsOptional) ) && rightSegments.Length == 0)
                         return (new ParseError($"missing value at position {position+1} for parameter {optsyntax}", position+1, index, CommandSpecification), this);
@@ -86,7 +87,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             return mparam;
         }
 
-        public bool TryGetValue(string value,out object convertedValue)
+        public bool TryGetValue(object ovalue,out object convertedValue)
         {
             var comspec = CommandParameterSpecification;
             var ptype = comspec.ParameterInfo.ParameterType;
@@ -99,7 +100,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             {
                 try
                 {
-                    convertedValue = Activator.CreateInstance(ptype, new object[] { value });
+                    convertedValue = Activator.CreateInstance(ptype, new object[] { ovalue });
                     return true;
                 } catch (Exception)
                 {
@@ -108,128 +109,129 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             }
             else
             {
-                if (ptype == typeof(int))
+                if (ovalue is string value)
                 {
-                    result = int.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(Int16))
-                {
-                    result = Int16.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(Int32))
-                {
-                    result = Int32.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(Int64))
-                {
-                    result = Int64.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(UInt16))
-                {
-                    result = UInt16.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(UInt32))
-                {
-                    result = UInt32.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(UInt64))
-                {
-                    result = UInt64.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(short))
-                {
-                    result = short.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(long))
-                {
-                    result = long.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(double))
-                {
-                    result = double.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(float))
-                {
-                    result = float.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(decimal))
-                {
-                    result = decimal.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(string))
-                {
-                    result = true;
-                    convertedValue = value;
-                    found = true;
-                }
-                if (ptype == typeof(bool))
-                {
-                    result = bool.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(sbyte))
-                {
-                    result = sbyte.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(byte))
-                {
-                    result = byte.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(char))
-                {
-                    result = char.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(Single))
-                {
-                    result = Single.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
-                }
-                if (ptype == typeof(DateTime))
-                {
-                    result = DateTime.TryParse(value, out var intv);
-                    convertedValue = intv;
-                    found = true;
+                    if (ptype == typeof(int))
+                    {
+                        result = int.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(Int16))
+                    {
+                        result = Int16.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(Int32))
+                    {
+                        result = Int32.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(Int64))
+                    {
+                        result = Int64.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(UInt16))
+                    {
+                        result = UInt16.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(UInt32))
+                    {
+                        result = UInt32.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(UInt64))
+                    {
+                        result = UInt64.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(short))
+                    {
+                        result = short.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(long))
+                    {
+                        result = long.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(double))
+                    {
+                        result = double.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(float))
+                    {
+                        result = float.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(decimal))
+                    {
+                        result = decimal.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(string))
+                    {
+                        result = true;
+                        convertedValue = value;
+                        found = true;
+                    }
+                    if (ptype == typeof(bool))
+                    {
+                        result = bool.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(sbyte))
+                    {
+                        result = sbyte.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(byte))
+                    {
+                        result = byte.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(char))
+                    {
+                        result = char.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(Single))
+                    {
+                        result = Single.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(DateTime))
+                    {
+                        result = DateTime.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
                 }
 
                 // unknown type, not CustomParameter
-
                 if (!found)
                 {
-                    found = true;
                     result = true;
-                    convertedValue = value;
+                    convertedValue = ovalue;
                 }
             }
 

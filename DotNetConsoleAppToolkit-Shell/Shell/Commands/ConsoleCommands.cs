@@ -1,7 +1,10 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine;
 using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using DotNetConsoleAppToolkit.Console;
+using DotNetConsoleAppToolkit.Lib;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands
 {
@@ -76,7 +79,7 @@ current print directives are:
 ";
 
         [Command("write text to the output stream followed by a line break", null, _printDocText)]
-        public CommandResult<string> Echo(
+        public CommandVoidResult Echo(
             CommandEvaluationContext context,
             [Parameter("text or other (value of type object) to be writen to output", true, "")] object obj,
             [Option("n","no line break: do not add a line break after output")] bool avoidLineBreak = false
@@ -84,11 +87,23 @@ current print directives are:
         {
             lock (context.Out.Lock)
             {
+                /* // sample: capture the echo output
                 context.Out.EchoOn();
                 context.Out.Echo(obj,!avoidLineBreak);
-
                 var str = context.Out.EchoOff();
-                return new CommandResult<string>(str);
+                return new CommandResult<string>(str);*/
+
+                if (obj != null)
+                {
+                    if (obj is string s)
+                        context.Out.Echo(s, !avoidLineBreak);
+                    else
+                    {
+                        obj.Echo(context.Out, context, new FormattingOptions(false));
+                        if (!avoidLineBreak) context.Out.Echo("",true);
+                    }
+                }
+                return CommandVoidResult.Instance;
             }
         }
 
@@ -96,21 +111,21 @@ current print directives are:
         public CommandVoidResult Cls(CommandEvaluationContext context)
         {
             context.Out.ClearScreen();
-            return new CommandVoidResult();
+            return CommandVoidResult.Instance;
         }
 
         [Command("hide cursor")]
         public CommandVoidResult HideCursor(CommandEvaluationContext context)
         {
             context.Out.HideCur();
-            return new CommandVoidResult();
+            return CommandVoidResult.Instance;
         }
 
         [Command("show cursor")]
         public CommandVoidResult ShowCursor(CommandEvaluationContext context)
         {
             context.Out.ShowCur();
-            return new CommandVoidResult();
+            return CommandVoidResult.Instance;
         }
     }
 }

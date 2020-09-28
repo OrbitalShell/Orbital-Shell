@@ -1,4 +1,5 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+using DotNetConsoleAppToolkit.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 _parameterSyntaxes.Add(new ParameterSyntax(commandSpecification,kvp.Value));
         }
 
-        public (MatchingParameters matchingParameters,List<ParseError> parseErrors) Match(
+        public (MatchingParameters matchingParameters,List<ParseError> parseErrors) 
+            Match(
             StringComparison syntaxMatchingRule,
-            string[] segments,
+            //string[] segments,
+            StringSegment[] segments,
             int firstIndex=0)
         {
             var matchingParameters = new MatchingParameters();
@@ -44,11 +47,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             int posjump;
             while (position<segments.Length)
             {
-                string[] rightSegments;
+                StringSegment[] rightSegments;
                 if (position + 1 < segments.Length)
                     rightSegments = segments[(position + 1)..^0];
                 else
-                    rightSegments = new string[] { };
+                    rightSegments = new StringSegment[] { };
 
                 var (rparseErrors,parameterSyntax) = MatchSegment(
                     syntaxMatchingRule,
@@ -72,10 +75,27 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                     else
                     {
                         var decp = (cps.SegmentsCount == 2) ? 1 : 0;
-                        if (parameterSyntax.TryGetValue(segments[position+decp], out var cvalue))
-                            mparam.SetValue(cvalue);
+                        var seg = segments[position + decp];
+                        if (seg.Map != null
+                            && seg.Map.Count > 0
+                            && seg.Map.TryGetValue(
+                                seg.Text,out var objValue
+                                ))
+                        {
+                            // assign cmd parameter from var value
+                            // try to convert from 
+                            if (parameterSyntax.TryGetValue(objValue, out var cvalue))
+                                mparam.SetValue(cvalue);
+                            else
+                                parseErrors.Add(new ParseError($"value {CommandLineSyntax.VariablePrefix}{seg.Text}={objValue?.ToString()} doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                        }
                         else
-                            parseErrors.Add(new ParseError($"value '{segments[position+decp]}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ",position+decp,index,CommandSpecification,cps));
+                        {
+                            if (parameterSyntax.TryGetValue(seg.Text, out var cvalue))
+                                mparam.SetValue(cvalue);
+                            else
+                                parseErrors.Add(new ParseError($"value '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                        }
                     }
                     matchingParameters.Add(
                         parameterSyntax.CommandParameterSpecification.ParameterName,
@@ -132,17 +152,25 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
         (List<ParseError> parseError,ParameterSyntax parameterSyntax) MatchSegment(
             StringComparison syntaxMatchingRule, 
             MatchingParameters matchingParameters, 
-            string segment, 
+            StringSegment segment, 
             int position,
             int index,
-            string[] rightSegments, 
-            string[] segments)
+            StringSegment[] rightSegments,
+            StringSegment[] segments)
         {
             List<ParseError> parseErrors = new List<ParseError>();
             var cparamSytxs = new List<ParameterSyntax>();
             for (int i = 0; i < _parameterSyntaxes.Count; i++)
             {
-                var (prsError,parameterSyntax) = _parameterSyntaxes[i].MatchSegment(syntaxMatchingRule, matchingParameters,segment, position, index, rightSegments, segments);
+                var (prsError,parameterSyntax) = _parameterSyntaxes[i]
+                    .MatchSegment(
+                        syntaxMatchingRule, 
+                        matchingParameters,
+                        segment, 
+                        position, 
+                        index, 
+                        rightSegments, 
+                        segments);
                 if (prsError == null)
                     cparamSytxs.Add(parameterSyntax);
                 if (prsError != null && prsError.Description!=null)
