@@ -9,7 +9,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
         public readonly string Description;
         public readonly string OptionName = null;
         public readonly bool HasValue = false;
-        public object? DefaultValue;
+        public object DefaultValue;
+        public bool HasDefaultValue { get; protected set; }
 
         public OptionAttribute(string optionName, string description, bool isOptional)
         {
@@ -39,6 +40,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
             Description = description ?? throw new ArgumentNullException(nameof(description));
             IsOptional = isOptional;
             DefaultValue = defaultValue;
+            HasDefaultValue = true;
         }
 
         public OptionAttribute(string optionName, string description, bool hasValue, bool isOptional, object defaultValue)
@@ -48,6 +50,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
             Description = description ?? throw new ArgumentNullException(nameof(description));
             IsOptional = isOptional;
             DefaultValue = defaultValue;
+            HasDefaultValue = true;
         }
 
         public OptionAttribute(string optionName, string description, object defaultValue)
@@ -56,6 +59,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
             Description = description ?? throw new ArgumentNullException(nameof(description));
             IsOptional = true;
             DefaultValue = defaultValue;
+            HasDefaultValue = true;
         }
     }
 }

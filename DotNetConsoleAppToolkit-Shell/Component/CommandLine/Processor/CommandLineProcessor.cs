@@ -464,11 +464,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                             else
                             {
                                 CommandParameterSpecification pspec = null;
-                                var paramAttr = parameter.GetCustomAttribute<ParameterAttribute>();
                                 object defval = null;
                                 if (!parameter.HasDefaultValue && parameter.ParameterType.IsValueType)
-                                    defval = Activator.CreateInstance(parameter.ParameterType);
-
+                                    defval = Activator.CreateInstance(parameter.ParameterType); 
+                                
+                                var paramAttr = parameter.GetCustomAttribute<ParameterAttribute>();
                                 if (paramAttr != null)
                                 {
                                     // TODO: validate command specification (eg. indexs validity)
@@ -480,8 +480,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                                         null,
                                         true,
                                         parameter.HasDefaultValue,
-                                        (parameter.HasDefaultValue) ? parameter.DefaultValue : defval,
-                                        parameter);
+
+                                        paramAttr.HasDefaultValue ?
+                                            paramAttr.DefaultValue
+                                            : ((parameter.HasDefaultValue) ? parameter.DefaultValue : defval),
+                                                parameter);
                                 }
                                 var optAttr = parameter.GetCustomAttribute<OptionAttribute>();
                                 if (optAttr != null)
@@ -497,7 +500,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                                             optAttr.OptionName ?? parameter.Name,
                                             optAttr.HasValue,
                                             parameter.HasDefaultValue,
-                                            (parameter.HasDefaultValue) ? parameter.DefaultValue : defval,
+                                            optAttr.HasDefaultValue ?
+                                                optAttr.DefaultValue
+                                                : ((parameter.HasDefaultValue) ? parameter.DefaultValue : defval),
                                             parameter,
                                             reqParamAttr?.RequiredParameterName);
                                     }
