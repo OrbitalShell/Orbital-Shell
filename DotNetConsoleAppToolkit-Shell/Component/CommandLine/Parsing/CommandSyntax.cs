@@ -87,14 +87,14 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                             if (parameterSyntax.TryGetValue(objValue, out var cvalue))
                                 mparam.SetValue(cvalue);
                             else
-                                parseErrors.Add(new ParseError($"value {CommandLineSyntax.VariablePrefix}{seg.Text}={objValue?.ToString()} doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                                parseErrors.Add(new ParseError($"value: '{CommandLineSyntax.VariablePrefix}{seg.Text}={objValue?.ToString()}' of type '{objValue?.GetType().Name}'  doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
                         }
                         else
                         {
                             if (parameterSyntax.TryGetValue(seg.Text, out var cvalue))
                                 mparam.SetValue(cvalue);
                             else
-                                parseErrors.Add(new ParseError($"value '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                                parseErrors.Add(new ParseError($"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
                         }
                     }
                     matchingParameters.Add(
