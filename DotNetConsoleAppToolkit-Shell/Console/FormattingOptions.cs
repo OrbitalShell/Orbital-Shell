@@ -2,7 +2,7 @@
 
 namespace DotNetConsoleAppToolkit.Console
 {
-    public class FormattingOptions : DynamicallyEchoable
+    public class FormattingOptions : ShellObject
     {
         static new FormattingOptions _instance;
         public new static FormattingOptions Instance

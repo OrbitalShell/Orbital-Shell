@@ -110,7 +110,7 @@ namespace DotNetConsoleAppToolkit.Console
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
             TableFormattingOptions options = null
-            ) => DynamicallyEchoable.Instance.EchoObj(obj, @out, context, options);        
+            ) => ShellObject.Instance.EchoObj(obj, @out, context, options);        
 
         public static void Echo(
             this IDataObject dataObject,
