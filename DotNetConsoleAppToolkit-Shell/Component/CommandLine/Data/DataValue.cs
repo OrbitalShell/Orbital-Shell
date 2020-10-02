@@ -150,9 +150,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             throw new DataValueReadOnlyException(this);
         }
 
-        public override string ToString()
+        /*public override string ToString()
         {
             return $"{Name}{(IsReadOnly ? " (r) " : "")} [{ValueType.Name}] {(HasValue ? ("= " + DumpAsText(Value,false)) : "")}";
-        }
+        }*/
     }
 }

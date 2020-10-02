@@ -76,7 +76,6 @@ namespace DotNetConsoleAppToolkit.Console
             CommandEvaluationContext context,
             FormattingOptions options = null)
         {
-            options ??= FormattingOptions.Instance;
             MethodInfo mi;
             if ((mi=obj.GetEchoMethod())!=null)
             {

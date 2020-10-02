@@ -16,12 +16,20 @@ namespace DotNetConsoleAppToolkit.Lib
             FormattingOptions options = null
             )
         {
-            @out.Echo(context.ShellEnv.Colors.Default);
+            @out.Echo(context.ShellEnv.Colors.Default);           
+
             if (echoMethodInfo.GetParameters().Length == 3)
-                echoMethodInfo.Invoke(obj, new object[] { @out, context, options });
+                echoMethodInfo.Invoke(obj, new object[] { @out, context,
+                    (options != null) ? options : GetParameterDefaultValue(echoMethodInfo, 2)
+                });
             else
-                echoMethodInfo.Invoke(obj, new object[] { obj, @out, context, options });
+                echoMethodInfo.Invoke(obj, new object[] { obj, @out, context, 
+                    (options != null) ? options : GetParameterDefaultValue(echoMethodInfo, 3)
+                });
         }
+
+        static object GetParameterDefaultValue(MethodInfo mi,int pindex) 
+            => Activator.CreateInstance(mi.GetParameters()[pindex].ParameterType);
 
         public static MethodInfo GetEchoMethod( this object o )
         {

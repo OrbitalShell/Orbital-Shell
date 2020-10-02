@@ -99,7 +99,7 @@ current print directives are:
                         context.Out.Echo(s, !avoidLineBreak);
                     else
                     {
-                        obj.Echo(context.Out, context, new FormattingOptions(false));
+                        obj.Echo(context.Out, context, null);
                         if (!avoidLineBreak) context.Out.Echo("",true);
                     }
                 }

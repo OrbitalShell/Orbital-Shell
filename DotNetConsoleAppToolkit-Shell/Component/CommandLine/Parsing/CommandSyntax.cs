@@ -1,4 +1,5 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+using DotNetConsoleAppToolkit.Component.CommandLine.Data;
 using DotNetConsoleAppToolkit.Console;
 using System;
 using System.Collections.Generic;
@@ -79,15 +80,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                         if (seg.Map != null
                             && seg.Map.Count > 0
                             && seg.Map.TryGetValue(
-                                seg.Text,out var objValue
-                                ))
+                                seg.Text,out var objValue)
+                                && objValue is IDataObject var)
                         {
-                            // assign cmd parameter from var value
-                            // try to convert from 
-                            if (parameterSyntax.TryGetValue(objValue, out var cvalue))
+                            var varValue = (objValue is DataValue dv) ? dv.Value
+                                : objValue;
+                            // assign cmd parameter from var value (case: no implicit type conversion in the expression containing the var)
+                            // 1. try to convert from real value type
+                            if (parameterSyntax.TryGetValue(/*objValue*/varValue, out var cvalue))
                                 mparam.SetValue(cvalue);
                             else
-                                parseErrors.Add(new ParseError($"value: '{CommandLineSyntax.VariablePrefix}{seg.Text}={objValue?.ToString()}' of type '{objValue?.GetType().Name}'  doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                                parseErrors.Add(new ParseError($"variable '{seg.Text}' value: '{varValue?.ToString()}' wrong type: '{varValue?.GetType().Name}'. Attempted parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
                         }
                         else
                         {

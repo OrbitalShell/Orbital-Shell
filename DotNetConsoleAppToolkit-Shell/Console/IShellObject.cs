@@ -3,7 +3,7 @@
 namespace DotNetConsoleAppToolkit.Console
 {
     /// <summary>
-    /// recommended but not mandatory interface of an object that should almost be display in the shell and used a a command parameter
+    /// recommended but not mandatory interface of an object that might almost be displayed in the shell and used a a command parameter
     /// </summary>
     public interface IShellObject
     {
