@@ -83,7 +83,7 @@ namespace DotNetConsoleAppToolkit.Console
                 mi.InvokeEcho(obj, @out, context, options);
             }
             else
-                @out.Echo(obj.ToString(),options.LineBreak);
+                @out.Echo(obj.ToString(),(options!=null)?options.LineBreak:false);
         }
 
         public static void Echo(

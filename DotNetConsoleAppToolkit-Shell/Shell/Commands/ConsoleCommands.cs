@@ -113,20 +113,27 @@ current print directives are:
             CommandEvaluationContext context,
             [Parameter( 0, "start char index",true, 32)] int startIndex,
             [OptionRequireParameter("startIndex")]
-            [Parameter( 1, "end char index",true,255)] int endIndex
+            [Parameter( 1, "end char index",true,255)] int endIndex,
+            [Option("f","turns output to a flat list instead of a table view")] bool flatList
             )
         {
             int nbCols = 8;
             int col = 0;
             for (int i = startIndex; i <= endIndex; i++)
             {
-                context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {(char)i,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
+                if (!flatList)
+                    context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {(char)i,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
+                else
+                    context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,-8}{Rdc}{(char)i,-2}",true);
                 if ((col++) > nbCols)
                 {
                     col = 0;
                     var ln = context.Out.CursorLeft;
-                    context.Out.Echo("", true);
-                    context.Out.Echo(context.ShellEnv.Colors.Symbol + "".PadLeft(ln, '-'), true);
+                    if (!flatList)
+                    {
+                        context.Out.Echo("", true);
+                        context.Out.Echo(context.ShellEnv.Colors.Symbol + "".PadLeft(ln, '-'), true);
+                    }
                 }
             }
             context.Out.Echo("", true);
