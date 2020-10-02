@@ -14,7 +14,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
 {
     [Commands("tests commands")]
     public class TestCommands : ICommandsDeclaringType
-    {
+    {        
         [Command("print cursor info")]
         public CommandResult<Point> CursorInfo(CommandEvaluationContext context)
         {

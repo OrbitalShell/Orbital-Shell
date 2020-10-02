@@ -71,33 +71,63 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 {
                     var cps = parameterSyntax.CommandParameterSpecification;
                     var mparam = parameterSyntax.BuildMatchingParameter(cps.DefaultValue);
-                    if (cps.IsOption && !cps.HasValue )
-                        mparam.SetValue(true);
+                    var decp = (cps.SegmentsCount == 2) ? 1 : 0; 
+                    var seg = segments[position + decp];
+                    Action perr0 = () => parseErrors.Add(new ParseError($"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                    if (cps.IsOption && !cps.HasValue)
+                    {
+                        try
+                        {
+                            mparam.SetValue(true);
+                        } catch (InvalidCastException)
+                        {
+                            perr0();
+                        }
+                    }
                     else
                     {
-                        var decp = (cps.SegmentsCount == 2) ? 1 : 0;
-                        var seg = segments[position + decp];
                         if (seg.Map != null
                             && seg.Map.Count > 0
                             && seg.Map.TryGetValue(
-                                seg.Text,out var objValue)
+                                seg.Text, out var objValue)
                                 && objValue is IDataObject var)
                         {
+                            // VAR : value converted from object, or from text if object conversion to attempted type fail
                             var varValue = (objValue is DataValue dv) ? dv.Value
                                 : objValue;
                             // assign cmd parameter from var value (case: no implicit type conversion in the expression containing the var)
                             // 1. try to convert from real value type
+                            Action perr = () => parseErrors.Add(new ParseError($"variable '{seg.Text}' value: '{varValue?.ToString()}' bad type: '{varValue?.GetType().Name}'. Attempted parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
                             if (parameterSyntax.TryGetValue(/*objValue*/varValue, out var cvalue))
-                                mparam.SetValue(cvalue);
+                            {
+                                try
+                                {
+                                    mparam.SetValue(cvalue);
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    try
+                                    {
+                                        // 2. try to convert from AsText method if available
+                                        perr();
+                                    }
+                                    catch (InvalidCastException)
+                                    {
+                                        perr();
+                                    }
+                                }
+                            }
                             else
-                                parseErrors.Add(new ParseError($"variable '{seg.Text}' value: '{varValue?.ToString()}' wrong type: '{varValue?.GetType().Name}'. Attempted parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                                perr();
                         }
                         else
                         {
+                            // value converted from string input
                             if (parameterSyntax.TryGetValue(seg.Text, out var cvalue))
                                 mparam.SetValue(cvalue);
                             else
-                                parseErrors.Add(new ParseError($"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                                //parseErrors.Add(new ParseError($"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                                perr0();
                         }
                     }
                     matchingParameters.Add(

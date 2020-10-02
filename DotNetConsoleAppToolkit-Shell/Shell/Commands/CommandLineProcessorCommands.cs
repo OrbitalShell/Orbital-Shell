@@ -290,11 +290,16 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         [Command("outputs a table of environment variables and values")]
         public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context,
+            [Parameter(0,"variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this",true)] string varPath,
             [Option("n","unfold namespaces")] bool unfoldNamespaces = false,
             [Option("o","unfold values of type object")] bool unfoldObjects = false
             )
         {
-            context.Variables.GetDataObject(VariableNamespace.Env + "",out var envVars);
+            IDataObject envVars;
+            if (varPath == null)
+                context.Variables.GetDataObject(VariableNamespace.Env + "", out envVars);
+            else
+                context.Variables.GetDataObject(VariableNamespace.Env, varPath, out envVars);
             var values = envVars.GetAttributes();
             envVars.Echo( context.Out, context,
                 new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
@@ -355,7 +360,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         [Command("set the command line prompt")]
         public CommandResult<string> Prompt(
             CommandEvaluationContext context, 
-            [Parameter("set the text of command line prompt if it is specified, else prints the current prompt text", true)] string prompt = null
+            [Parameter("outputs the text of command line prompt if it is specified, else outputs the current prompt text", true)] string prompt = null
             )
         {
             context.CommandLineProcessor.AssertCommandLineProcessorHasACommandLineReader();

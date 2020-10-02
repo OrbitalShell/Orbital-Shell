@@ -5,6 +5,7 @@ using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib;
 using System.ComponentModel;
 using System.Reflection;
+using static DotNetConsoleAppToolkit.DotNetConsole;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands
 {
@@ -105,6 +106,31 @@ current print directives are:
                 }
                 return CommandVoidResult.Instance;
             }
+        }
+
+        [Command("outputs the table of characters")]
+        public CommandVoidResult CharTable(
+            CommandEvaluationContext context,
+            [Parameter( 0, "start char index",true, 32)] int startIndex,
+            [OptionRequireParameter("startIndex")]
+            [Parameter( 1, "end char index",true,255)] int endIndex
+            )
+        {
+            int nbCols = 8;
+            int col = 0;
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {(char)i,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
+                if ((col++) > nbCols)
+                {
+                    col = 0;
+                    var ln = context.Out.CursorLeft;
+                    context.Out.Echo("", true);
+                    context.Out.Echo(context.ShellEnv.Colors.Symbol + "".PadLeft(ln, '-'), true);
+                }
+            }
+            context.Out.Echo("", true);
+            return CommandVoidResult.Instance;
         }
 
         [Command("clear console screen")]

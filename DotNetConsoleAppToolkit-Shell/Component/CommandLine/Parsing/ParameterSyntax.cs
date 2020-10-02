@@ -227,7 +227,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                     }
                 }
 
-                // unknown type, not CustomParameter
+                // unknown type, not CustomParameter: converted value = original value
                 if (!found)
                 {
                     result = true;
