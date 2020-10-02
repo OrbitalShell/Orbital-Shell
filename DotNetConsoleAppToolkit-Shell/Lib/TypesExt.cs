@@ -28,9 +28,12 @@ namespace DotNetConsoleAppToolkit.Lib
                 });
         }
 
-        public static string InvokeAsText()
+        public static string InvokeAsText(this MethodInfo asTextMethodInfo,object obj)
         {
-            return null;
+            if (asTextMethodInfo.GetParameters().Length == 3)
+                return (string)asTextMethodInfo.Invoke(obj, new object[] { });
+            else
+                return (string)asTextMethodInfo.Invoke(obj, new object[] { obj });
         }
 
         static object GetParameterDefaultValue(MethodInfo mi,int pindex) 

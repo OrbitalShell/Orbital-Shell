@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DotNetConsoleAppToolkit.Lib;
+using System.Reflection;
+using Microsoft.CodeAnalysis;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
 {
@@ -73,7 +76,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                     var mparam = parameterSyntax.BuildMatchingParameter(cps.DefaultValue);
                     var decp = (cps.SegmentsCount == 2) ? 1 : 0; 
                     var seg = segments[position + decp];
-                    Action perr0 = () => parseErrors.Add(new ParseError($"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+
+                    Action perr0 = () => parseErrors.Add(
+                        new ParseError(
+                            $"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                    
                     if (cps.IsOption && !cps.HasValue)
                     {
                         try
@@ -97,7 +104,71 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                                 : objValue;
                             // assign cmd parameter from var value (case: no implicit type conversion in the expression containing the var)
                             // 1. try to convert from real value type
-                            Action perr = () => parseErrors.Add(new ParseError($"variable '{seg.Text}' value: '{varValue?.ToString()}' bad type: '{varValue?.GetType().Name}'. Attempted parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                            Action perr = () => parseErrors.Add(
+                                new ParseError(
+                                    $"failed to convert value of variable {seg.Text}, the value='{varValue?.ToString()}' of type: '{varValue?.GetType().Name}' can't be converted to the attempted parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                            (bool success, string strValue) tryCastToString()
+                            {
+                                if (varValue == null)
+                                {
+                                    return (true, null);
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        // 2. try to convert from AsText method if available, fall back to ToString
+                                        string strValue = null;
+                                        MethodInfo mi;
+                                        if ((mi = varValue.GetAsTextMethod()) != null)
+                                            strValue = mi.InvokeAsText(varValue);
+                                        else
+                                            strValue = varValue.ToString();
+                                        return (true, strValue);
+                                    }
+                                    catch (InvalidCastException)
+                                    {
+                                        perr();
+                                        return (false, null);
+                                    }
+                                }
+                            }
+
+                            bool trySetValueFromConvertedStr(string txt)
+                            {
+                                // value converted from string input
+                                if (parameterSyntax.TryGetValue(txt, out var cvalue))
+                                {
+                                    mparam.SetValue(cvalue);
+                                    return true;
+                                }
+                                else
+                                {
+                                    //parseErrors.Add(new ParseError($"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                                    perr();
+                                    return false;
+                                }
+                            }
+
+                            void trySetValueFromStr()
+                            {
+                                var (success, strValue) = tryCastToString();
+                                if (!success)
+                                    perr();
+                                else
+                                {
+                                    try
+                                    {
+                                        if (!trySetValueFromConvertedStr(strValue))
+                                            mparam.SetValue(strValue);
+                                    }
+                                    catch (InvalidCastException)
+                                    {
+                                        perr();
+                                    }
+                                }
+                            }
+
                             if (parameterSyntax.TryGetValue(/*objValue*/varValue, out var cvalue))
                             {
                                 try
@@ -106,19 +177,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                                 }
                                 catch (InvalidCastException)
                                 {
-                                    try
-                                    {
-                                        // 2. try to convert from AsText method if available
-                                        perr();
-                                    }
-                                    catch (InvalidCastException)
-                                    {
-                                        perr();
-                                    }
+                                    trySetValueFromStr();
                                 }
                             }
                             else
-                                perr();
+                            {
+                                trySetValueFromStr();
+                            }
                         }
                         else
                         {
