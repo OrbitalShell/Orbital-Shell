@@ -30,7 +30,7 @@ namespace DotNetConsoleAppToolkit.Lib
 
         public static string InvokeAsText(this MethodInfo asTextMethodInfo,object obj)
         {
-            if (asTextMethodInfo.GetParameters().Length == 3)
+            if (asTextMethodInfo.GetParameters().Length == 0)
                 return (string)asTextMethodInfo.Invoke(obj, new object[] { });
             else
                 return (string)asTextMethodInfo.Invoke(obj, new object[] { obj });

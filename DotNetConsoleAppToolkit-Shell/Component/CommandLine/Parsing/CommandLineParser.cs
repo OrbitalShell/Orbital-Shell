@@ -271,13 +271,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                         }
                         else
                         {
-                            if (value is DataValue dv)
-                                nexpr.Append(dv.Value);
+                            var o = (value is DataValue dv) ? dv.Value : value;
+                            if (o == null)
+                                nexpr.Append(o);
                             else
-                                nexpr.Append(value?.ToString());
+                            {
+                                var (success, strValue) = CommandSyntax.TryCastToString(o);
+                                nexpr.Append(strValue);
+                            }
                         }
                     }
-                    catch (VariableNotFoundException ex)
+                    catch (VariablePathNotFoundException ex)
                     {
                         Errorln(ex.Message);
                         // keep bad var name in place (? can be option of the shell. Bash let it blank)

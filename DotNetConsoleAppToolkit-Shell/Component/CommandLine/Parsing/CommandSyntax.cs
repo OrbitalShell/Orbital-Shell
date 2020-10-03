@@ -107,7 +107,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                             Action perr = () => parseErrors.Add(
                                 new ParseError(
                                     $"failed to convert value of variable {seg.Text}, the value='{varValue?.ToString()}' of type: '{varValue?.GetType().Name}' can't be converted to the attempted parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
-                            (bool success, string strValue) tryCastToString()
+                            /*(bool success, string strValue) tryCastToString()
                             {
                                 if (varValue == null)
                                 {
@@ -132,7 +132,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                                         return (false, null);
                                     }
                                 }
-                            }
+                            }*/
 
                             bool trySetValueFromConvertedStr(string txt)
                             {
@@ -152,7 +152,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
 
                             void trySetValueFromStr()
                             {
-                                var (success, strValue) = tryCastToString();
+                                var (success, strValue) = TryCastToString(varValue);
                                 if (!success)
                                     perr();
                                 else
@@ -232,6 +232,33 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
             }
 
             return (matchingParameters,parseErrors);
+        }
+
+        public static (bool success, string strValue) TryCastToString(
+            object varValue)
+        {
+            if (varValue == null)
+            {
+                return (true, null);
+            }
+            else
+            {
+                try
+                {
+                    // 2. try to convert from AsText method if available, fall back to ToString
+                    string strValue = null;
+                    MethodInfo mi;
+                    if ((mi = varValue.GetAsTextMethod()) != null)
+                        strValue = mi.InvokeAsText(varValue);
+                    else
+                        strValue = varValue.ToString();
+                    return (true, strValue);
+                }
+                catch (InvalidCastException)
+                {
+                    return (false, null);
+                }
+            }
         }
 
         int MinAttemptedSegments => CommandSpecification.FixedParametersCount

@@ -21,17 +21,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             { }
         }
 
-        public sealed class VariableNotFoundException : Exception
+        public sealed class VariablePathNotFoundException : Exception
         {
-            public VariableNotFoundException(string variablePath)
-                : base($"variable not found: '{variablePath}'")
+            public VariablePathNotFoundException(string variablePath)
+                : base($"variable path not found: '{variablePath}'")
             { }
         }
 
         protected readonly DataRegistry _dataRegistry = new DataRegistry();
 
         /// <summary>
-        /// creates a standard variable rush with known namespaces
+        /// creates a standard variable rush with known namespacesnot 
         /// </summary>
         public Variables() {
             // standard namespaces
@@ -74,7 +74,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             || _dataRegistry.Get(Nsp(VariableNamespace.Global, path), out value)
             || _dataRegistry.Get(Nsp(VariableNamespace.Env, path), out value);
             if (!r && throwException)
-                throw new VariableNotFoundException(path);            
+                throw new VariablePathNotFoundException(path);            
             return r;
         }
 
@@ -108,7 +108,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             if (Get(path, out var data, false))
                 return (DataValue)data;
             if (throwException)
-                    throw new VariableNotFoundException(path);
+                    throw new VariablePathNotFoundException(path);
             return null;
         }
         public DataValue GetValue(string rootPath, string path, bool throwException = true)
@@ -129,7 +129,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
                     throw new WrongVariableTypeException(typeof(DataValue), data?.GetType());
             }
             if (throwException)
-                throw new VariableNotFoundException(path);
+                throw new VariablePathNotFoundException(path);
             value = null;
             return false;
         }
