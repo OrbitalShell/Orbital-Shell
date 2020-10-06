@@ -17,20 +17,48 @@ namespace DotNetConsoleAppToolkit.Console
 
         static Table GetVarsDataTable(
             CommandEvaluationContext context,
+            object container,
             List<IDataObject> values,
             TableFormattingOptions options)
         {
             var table = new Table();
             table.AddColumns("name", "type");
             table.Columns.Add("value",typeof(object));
-            table.SetFormat("name", context.ShellEnv.Colors.DarkLabel + "{0}" + Rsf);
-            table.SetFormat("type", context.ShellEnv.Colors.Label + "{0}" + Tab + Rsf);
+            table.SetFormat("name", context.ShellEnv.Colors.Label + "{0}" + Rsf);
+            table.SetFormat("type", context.ShellEnv.Colors.MediumDarkLabel + "{0}" + Tab + Rsf);
             table.SetHeaderFormat("type", "{0}" + Tab);
             foreach (var value in values)
             {
                 AddIDataObjectToTable(context, table, value, options);
             }
+            if (container!=null && options.UnfoldItems)
+            {
+                AddObjectToTable(context, table, container, options);
+            }
             return table;
+        }
+
+        static void AddObjectToTable(
+            CommandEvaluationContext context,
+            Table table,
+            object obj,
+            TableFormattingOptions options,
+            int level = 0
+            )
+        {
+            var tab = "".PadLeft((level * 4), ' ');
+            var prfx = context.ShellEnv.Colors.HalfDarkLabel;
+            foreach (var (name, value,inf) in obj.GetMemberValues())
+            {
+                if (value == null)
+                {
+                    table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name , DumpAsText(null));
+                }
+                else
+                {
+                    table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name, value);
+                }
+            }            
         }
 
         static void AddIDataObjectToTable(
@@ -46,7 +74,7 @@ namespace DotNetConsoleAppToolkit.Console
                 table.Rows.Add(DumpAsText(null), DumpAsText(null), DumpAsText(null));
             }
             else
-            {
+            {                
                 var tab = "".PadLeft((level * 4), ' ');
                 var dv = value as DataValue;
                 var valueType = (dv != null) ? dv.ValueType?.Name : value?.GetType().Name;
@@ -54,11 +82,27 @@ namespace DotNetConsoleAppToolkit.Console
                 var valnprefix = (dv == null) ? (context.ShellEnv.Colors.Highlight + "[+] ") : ""/*"    "*/;
                 var valnostfix = (dv == null) ? "" : "";
 
-                table.Rows.Add(
-                    tab + valnprefix + value.Name + (value.IsReadOnly ? $"{context.ShellEnv.Colors.Symbol} r{Rdc}" : "") + valnostfix,
-                    valueType,
-                    val
-                    );
+                if (val == null)
+                {
+                    table.Rows.Add(
+                        tab + valnprefix + value.Name + (value.IsReadOnly ? $"{context.ShellEnv.Colors.Symbol} r{Rdc}" : "") + valnostfix,
+                        valueType,
+                        DumpAsText(val)
+                        );
+                }
+                else
+                {
+                    table.Rows.Add(
+                        tab + valnprefix + value.Name + (value.IsReadOnly ? $"{context.ShellEnv.Colors.Symbol} r{Rdc}" : "") + valnostfix,
+                        valueType,
+                        val
+                        );
+
+                    if (options.UnfoldItems && val != null)
+                    {
+                        AddObjectToTable(context, table, val, options, level + 1);
+                    }
+                }
 
                 if ((value is DataObject dao) && options.UnfoldCategories)
                 {
@@ -69,6 +113,15 @@ namespace DotNetConsoleAppToolkit.Console
         }
 
         #endregion
+
+        public static void Echo(
+            this KeyValuePair<string,object> obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null)
+        {
+            @out.Echo($"{obj.Key}{context.ShellEnv.Colors.Symbol}={context.ShellEnv.Colors.Numeric}{obj.Value}{Rdc}");
+        }
 
         public static void Echo(
             this object obj,
@@ -123,7 +176,14 @@ namespace DotNetConsoleAppToolkit.Console
             var attrs = dataObject.GetAttributes();
             attrs.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-            var dt = GetVarsDataTable(context,attrs,options);
+            object container = null;
+            if (dataObject is DataValue dataValue
+                    && !(dataValue.Value is IDataObject))
+            {
+                container = dataValue.Value;
+            } 
+
+            var dt = GetVarsDataTable(context,container,attrs,options);
             dt.Echo( @out, context, options);
         }
 
@@ -137,7 +197,7 @@ namespace DotNetConsoleAppToolkit.Console
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
             var values = variables.GetDataValues();
             values.Sort((x, y) => x.Name.CompareTo(y.Name));
-            var dt = GetVarsDataTable(context,values,options);
+            var dt = GetVarsDataTable(context,null,values,options);
             dt.Echo( @out, context, options );
         }
 

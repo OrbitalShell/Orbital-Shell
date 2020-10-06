@@ -103,6 +103,21 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public bool GetDataObject(VariableNamespace rootPath, string path, out IDataObject value, bool throwException = true)
             => GetDataObject(Nsp(rootPath, path), out value, throwException);
 
+        public bool GetObject(string path, out object value, bool throwException = true)
+        {
+            if (Get(path, out var obj, throwException))
+            {
+                value = obj;
+                return true;
+            }
+            value = null;
+            return false;
+        }
+        public bool GetObject(string rootPath, string path, out object value, bool throwException = true)
+            => GetObject(Nsp(rootPath, path), out value, throwException);
+        public bool GetObject(VariableNamespace rootPath, string path, out object value, bool throwException = true)
+            => GetObject(Nsp(rootPath, path), out value, throwException);
+
         public DataValue GetValue(string path,bool throwException=true)
         {
             if (Get(path, out var data, false))

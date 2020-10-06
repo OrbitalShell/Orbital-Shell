@@ -3,7 +3,11 @@ using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib;
+using System;
+using System.Text;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Reflection;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 
@@ -108,6 +112,57 @@ current print directives are:
             }
         }
 
+        [Command("get/set console output encoding")]
+        public CommandVoidResult Encoding(
+            CommandEvaluationContext context,
+            [Parameter(0,"encoding name",true)] string encodingName
+            )
+        {
+            var setEncoding = !string.IsNullOrWhiteSpace(encodingName);
+            var e = System.Console.OutputEncoding;
+            
+            var @out = context.Out;
+            void echokv(string name, object value)
+            {
+                new KeyValuePair<string, object>(name, value).Echo(@out, context);
+            };
+
+            if (setEncoding)
+            {
+                try
+                {
+                    var ne = System.Text.Encoding.GetEncoding(encodingName);
+                    System.Console.OutputEncoding = ne;
+                } catch (ArgumentException)
+                {
+                    Errorln($"encoding not found: '{encodingName}'");
+                    setEncoding = true;
+                }
+            } else
+            {
+                echokv("name", e.EncodingName);
+                echokv(" code page", e.CodePage);
+            }
+
+            if (!setEncoding)
+            {
+                @out.Echoln();
+                @out.Echoln($"{Br}{Uon}available encodings are:{Tdoff}{Br}");
+
+                var lst = new List<object>(System.Text.Encoding.GetEncodings());
+                foreach (var o in lst )
+                {
+                    if (o is EncodingInfo encoding)
+                    {
+                        echokv("name", encoding.Name);
+                        echokv(" code page", encoding.CodePage);
+                        @out.Echoln();
+                    }
+                }
+            }
+            return CommandVoidResult.Instance;
+        }
+
         [Command("outputs the table of characters")]
         public CommandVoidResult CharTable(
             CommandEvaluationContext context,
@@ -116,23 +171,26 @@ current print directives are:
             [Parameter( 1, "end char index",true,255)] int endIndex,
             [Option("f","turns output to a flat list instead of a table view")] bool flatList
             )
-        {
+        {            
             int nbCols = 8;
             int col = 0;
             for (int i = startIndex; i <= endIndex; i++)
             {
-                if (!flatList)
-                    context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {(char)i,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
-                else
-                    context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,-8}{Rdc}{(char)i,-2}",true);
-                if ((col++) > nbCols)
+                if (!context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
                 {
-                    col = 0;
-                    var ln = context.Out.CursorLeft;
                     if (!flatList)
+                        context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {(char)i,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
+                    else
+                        context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,-8}{Rdc}{(char)i,-2}", true);
+                    if ((col++) > nbCols)
                     {
-                        context.Out.Echo("", true);
-                        context.Out.Echo(context.ShellEnv.Colors.Symbol + "".PadLeft(ln, '-'), true);
+                        col = 0;
+                        var ln = context.Out.CursorLeft;
+                        if (!flatList)
+                        {
+                            context.Out.Echo("", true);
+                            context.Out.Echo(context.ShellEnv.Colors.Symbol + "".PadLeft(ln, '-'), true);
+                        }
                     }
                 }
             }
