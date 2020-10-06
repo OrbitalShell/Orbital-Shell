@@ -115,12 +115,96 @@ namespace DotNetConsoleAppToolkit.Console
         #endregion
 
         public static void Echo(
+            bool obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null)
+        {
+            @out.Echo($"{context.ShellEnv.Colors.Boolean}");
+            @out.Echo(obj.ToString().ToLower());
+            @out.Echo(Rdc);
+        }
+
+        public static void Echo(
+            int obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null)
+        {
+            @out.Echo($"{context.ShellEnv.Colors.Integer}");
+            @out.Echo(obj.ToString());
+            @out.Echo(Rdc);
+        }
+
+        public static void Echo(
+            double obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null)
+        {
+            @out.Echo($"{context.ShellEnv.Colors.Double}");
+            @out.Echo(obj.ToString());
+            @out.Echo(Rdc);
+        }
+
+        public static void Echo(
+            float obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null)
+        {
+            @out.Echo($"{context.ShellEnv.Colors.Float}");
+            @out.Echo(obj.ToString());
+            @out.Echo(Rdc);
+        }
+
+        public static void Echo(
+            decimal obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null)
+        {
+            @out.Echo($"{context.ShellEnv.Colors.Decimal}");
+            @out.Echo(obj);
+            @out.Echo(Rdc);
+        }
+
+        public static void Echo(
+            char obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null)
+        {
+            @out.Echo($"{context.ShellEnv.Colors.Char}");
+            @out.Echo(obj);
+            @out.Echo(Rdc);
+        }
+
+        public static void Echo(
             this KeyValuePair<string,object> obj,
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
             FormattingOptions options = null)
         {
-            @out.Echo($"{obj.Key}{context.ShellEnv.Colors.Symbol}={context.ShellEnv.Colors.Numeric}{obj.Value}{Rdc}");
+            @out.Echo($"{obj.Key}{context.ShellEnv.Colors.HighlightSymbol}={context.ShellEnv.Colors.Value}");
+            Echo(obj.Value, @out, context, options);
+            @out.Echo(Rdc);
+        }
+
+        public static void InvokeEcho(
+            object obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            FormattingOptions options = null)
+        {
+            MethodInfo mi;
+            if ((mi = obj.GetEchoMethod()) != null)
+                mi.InvokeEcho(obj, @out, context, options);
+            else
+            {
+                var str = obj == null ? DumpAsText(obj) : obj.ToString();
+                @out.Echo(str, (options != null) ? options.LineBreak : false);
+            }
         }
 
         public static void Echo(
@@ -131,10 +215,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             MethodInfo mi;
             if ((mi=obj.GetEchoMethod())!=null)
-            {
-                //mi.Invoke(obj, new object[] { @out, context, options });
                 mi.InvokeEcho(obj, @out, context, options);
-            }
             else
                 @out.Echo(obj.ToString(),(options!=null)?options.LineBreak:false);
         }
@@ -145,7 +226,7 @@ namespace DotNetConsoleAppToolkit.Console
             CommandEvaluationContext context,
             FormattingOptions options = null)
         {
-            var smbcol = context.ShellEnv.Colors.Highlight;
+            var smbcol = context.ShellEnv.Colors.HighlightSymbol;
             var foregroundCol = (obj.Foreground.HasValue) ? (obj.Foreground.ToString() + $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.Foreground.Value.ToString().ToLower())}  {context.ShellEnv.Colors.Default}") : "";
             var backgroundCol = (obj.Background.HasValue) ? (obj.Background.ToString() + $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.Background.Value.ToString().ToLower())}  {context.ShellEnv.Colors.Default}") : "";
             var twice = !string.IsNullOrWhiteSpace(foregroundCol) && !string.IsNullOrWhiteSpace(backgroundCol);
