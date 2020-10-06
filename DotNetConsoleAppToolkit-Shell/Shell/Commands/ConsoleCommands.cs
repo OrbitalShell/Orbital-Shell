@@ -178,10 +178,11 @@ current print directives are:
             {
                 if (!context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
                 {
+                    var c = Convert.ToChar(i);
                     if (!flatList)
-                        context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {(char)i,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
+                        context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {c,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
                     else
-                        context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,-8}{Rdc}{(char)i,-2}", true);
+                        context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,-8}{Rdc}{c,-2}", true);
                     if ((col++) > nbCols)
                     {
                         col = 0;
