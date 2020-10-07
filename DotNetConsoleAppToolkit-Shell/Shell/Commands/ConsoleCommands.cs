@@ -113,14 +113,15 @@ current print directives are:
         }
 
         [Command("get/set console output encoding")]
-        public CommandVoidResult Encoding(
+        public CommandResult<Encoding> Encoding(
             CommandEvaluationContext context,
             [Parameter(0,"encoding name",true)] string encodingName
             )
         {
             var setEncoding = !string.IsNullOrWhiteSpace(encodingName);
             var e = System.Console.OutputEncoding;
-            
+            Encoding ret = e;
+
             var @out = context.Out;
             void echokv(string name, object value)
             {
@@ -133,6 +134,7 @@ current print directives are:
                 {
                     var ne = System.Text.Encoding.GetEncoding(encodingName);
                     System.Console.OutputEncoding = ne;
+                    ret = ne;
                 } catch (ArgumentException)
                 {
                     Errorln($"encoding not found: '{encodingName}'");
@@ -160,7 +162,7 @@ current print directives are:
                     }
                 }
             }
-            return CommandVoidResult.Instance;
+            return new CommandResult<Encoding>(ret);
         }
 
         [Command("outputs the table of characters")]
