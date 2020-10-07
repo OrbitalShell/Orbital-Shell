@@ -97,7 +97,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                             && seg.Map.Count > 0
                             && seg.Map.TryGetValue(
                                 seg.Text, out var objValue)
-                                && objValue is IDataObject var)
+                                /*&& objValue is IDataObject var*/)
                         {
                             // VAR : value converted from object, or from text if object conversion to attempted type fail
                             var varValue = (objValue is DataValue dv) ? dv.Value
@@ -107,6 +107,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                             Action perr = () => parseErrors.Add(
                                 new ParseError(
                                     $"failed to convert value of variable {seg.Text}, the value='{varValue?.ToString()}' of type: '{varValue?.GetType().Name}' can't be converted to the attempted parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+
+#if obsolete
                             /*(bool success, string strValue) tryCastToString()
                             {
                                 if (varValue == null)
@@ -133,6 +135,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                                     }
                                 }
                             }*/
+#endif
 
                             bool trySetValueFromConvertedStr(string txt)
                             {

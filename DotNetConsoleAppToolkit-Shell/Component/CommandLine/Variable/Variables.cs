@@ -59,7 +59,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         #region getters
 
         /// <summary>
-        /// serch in data context the path according to these precedence rules:
+        /// serch in variables the path according to these precedence rules:
         /// - absolute path
         /// - path related to Local
         /// - path related to Env
