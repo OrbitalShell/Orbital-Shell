@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using static DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Lib.Str;
 
 namespace DotNetConsoleAppToolkit.Console
 {
@@ -52,7 +51,7 @@ namespace DotNetConsoleAppToolkit.Console
             {
                 if (value == null)
                 {
-                    table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name, DumpAsText(null));
+                    table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name, DumpAsText(context,null));
                 }
                 else
                 {
@@ -71,7 +70,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             if (value == null)
             {
-                table.Rows.Add(DumpAsText(null), DumpAsText(null), DumpAsText(null));
+                table.Rows.Add(DumpAsText(context, null), DumpAsText(context, null), DumpAsText(context, null));
             }
             else
             {
@@ -87,7 +86,7 @@ namespace DotNetConsoleAppToolkit.Console
                     table.Rows.Add(
                         tab + valnprefix + value.Name + (value.IsReadOnly ? $"{context.ShellEnv.Colors.Symbol} r{Rdc}" : "") + valnostfix,
                         valueType,
-                        DumpAsText(val)
+                        DumpAsText(context, val)
                         );
                 }
                 else
@@ -184,6 +183,15 @@ namespace DotNetConsoleAppToolkit.Console
 
         #endregion
 
+        public static string NUllText = "{null}";
+
+        public static string DumpAsText(CommandEvaluationContext context,object o, bool quoteStrings = true)
+        {
+            if (o == null) return context.ShellEnv.Colors.Debug+NUllText+Rdc ?? null;
+            if (o is string s && quoteStrings) return $"\"{s}\"";
+            return o.ToString();
+        }
+
         public static void Echo(
             this KeyValuePair<string, object> obj,
             ConsoleTextWriterWrapper @out,
@@ -206,7 +214,7 @@ namespace DotNetConsoleAppToolkit.Console
                 mi.InvokeEcho(obj, @out, context, options);
             else
             {
-                var str = obj == null ? DumpAsText(obj) : obj.ToString();
+                var str = obj == null ? DumpAsText(context, obj) : obj.ToString();
                 @out.Echo(str, (options != null) ? options.LineBreak : false);
             }
         }
@@ -341,7 +349,7 @@ namespace DotNetConsoleAppToolkit.Console
                     string s = null, s2 = null;
                     if (table is Table t)
                     {
-                        s = @out.GetPrint(t.GetFormatedValue(table.Columns[i].ColumnName, cols[i]?.ToString())) ?? "";
+                        s = @out.GetPrint(t.GetFormatedValue(context,table.Columns[i].ColumnName, cols[i]?.ToString())) ?? "";
                         colLengths[i] = Math.Max(s.Length, colLengths[i]);
                         s2 = @out.GetPrint(t.GetFormatedHeader(table.Columns[i].ColumnName)) ?? "";
                         colLengths[i] = Math.Max(s2.Length, colLengths[i]);
@@ -378,7 +386,7 @@ namespace DotNetConsoleAppToolkit.Console
             @out.Echoln();
             if (!options.NoBorders) @out.Echoln(line);
 
-            string fhv(string header, string value) => (table is Table t) ? t.GetFormatedValue(header, value) : value;
+            string fhv(string header, string value) => (table is Table t) ? t.GetFormatedValue(context,header, value) : value;
             foreach (var rw in table.Rows)
             {
                 if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)

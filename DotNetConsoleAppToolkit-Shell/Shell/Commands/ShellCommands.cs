@@ -181,7 +181,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                         foreach (var p in com.ParametersSpecifications.Values)
                         {
                             var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.Name}{f}" : "";
-                            var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue!=null && (!p.IsOption || p.ParameterValueTypeName!=typeof(bool).Name )) ? ((ptype!=""?". ":"") + $"default value: {Darkyellow}{DumpAsText(p.DefaultValue)}{f}") : "";
+                            var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue!=null && (!p.IsOption || p.ParameterValueTypeName!=typeof(bool).Name )) ? ((ptype!=""?". ":"") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context,p.DefaultValue)}{f}") : "";
                             var supdef = $"{ptype}{pdef}";
                             // method 'Echo if has' else to string (with stream capture ?)
                             context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors,false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");

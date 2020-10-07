@@ -24,6 +24,6 @@ namespace DotNetConsoleAppToolkit.Console
         /// <para>this method must be in place of ToString() to provide a string value to describe the object. ToString must be reserved for debug purpose only</para>
         /// </summary>
         /// <returns>readable value representing the object</returns>
-        string AsText();
+        string AsText(CommandEvaluationContext context);
     }
 }

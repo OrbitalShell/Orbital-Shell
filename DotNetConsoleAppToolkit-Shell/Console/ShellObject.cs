@@ -2,6 +2,7 @@
 using DotNetConsoleAppToolkit.Lib;
 using System.Reflection;
 using System.Text;
+using static DotNetConsoleAppToolkit.Console.EchoPrimitives;
 
 namespace DotNetConsoleAppToolkit.Console
 {
@@ -68,7 +69,7 @@ namespace DotNetConsoleAppToolkit.Console
                 }
                 else
                 {
-                    @out.Echo(Str.DumpAsText(m.Item2));
+                    @out.Echo(DumpAsText(context, m.Item2));
                 }
             }
             @out.Echo(smbcol + "}");
@@ -79,7 +80,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <para>this method must be in place of ToString() to provide a string value to describe the object. ToString must be reserved for debug purpose only</para>
         /// </summary>
         /// <returns>readable value representing the object</returns>
-        public string AsText()
+        public string AsText(CommandEvaluationContext context)
         {
             var sb = new StringBuilder();
             sb.Append('{');
@@ -87,7 +88,7 @@ namespace DotNetConsoleAppToolkit.Console
             foreach (var m in this.GetMemberValues())
             {
                 if (!firstElement) sb.Append(','); else firstElement = false;
-                sb.Append($"{m.Item1}={Str.DumpAsText(m.Item2)}");
+                sb.Append($"{m.Item1}={DumpAsText(context, m.Item2)}");
             }
             sb.Append('}');
             return sb.ToString();
@@ -97,6 +98,18 @@ namespace DotNetConsoleAppToolkit.Console
         /// debug print
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => AsText();        
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append('{');
+            bool firstElement = true;
+            foreach (var m in this.GetMemberValues())
+            {
+                if (!firstElement) sb.Append(','); else firstElement = false;
+                sb.Append($"{m.Item1}={Str.DumpAsText( m.Item2 )}");
+            }
+            sb.Append('}');
+            return sb.ToString();
+        }
     }
 }

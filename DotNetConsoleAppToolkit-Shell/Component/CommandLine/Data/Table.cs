@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Data;
-using static DotNetConsoleAppToolkit.Lib.Str;
+using static DotNetConsoleAppToolkit.Console.EchoPrimitives;
+using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
 {
@@ -52,13 +53,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             _columnHeadersTextFormats[columnName] = format;
         }
 
-        public string GetFormatedValue(string columnName,object value)
+        public string GetFormatedValue(CommandEvaluationContext context,string columnName,object value)
         {
             var textFormat = ColumnsTextFormats[columnName];
             return
                 (textFormat == null) ?
-                    DumpAsText(value, false)
-                    : string.Format( textFormat, DumpAsText(value, false) );
+                    DumpAsText(context,value, false)
+                    : string.Format( textFormat, DumpAsText(context,value, false) );
         }
 
         public string GetFormatedHeader(string columnName)
