@@ -34,13 +34,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
         {
             var r = new List<IDataObject>();
             foreach ( var attrkv in _attributes )
-            {
-                /*if (attrkv.Value is DataValue dataValue)
-                    r.Add(dataValue);
-                else
-                    r.AddRange(attrkv.Value.GetDataValues());*/
                 r.Add(attrkv.Value);
-            }
             return r;
         }
 

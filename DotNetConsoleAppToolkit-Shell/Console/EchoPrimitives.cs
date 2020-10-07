@@ -23,7 +23,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             var table = new Table();
             table.AddColumns("name", "type");
-            table.Columns.Add("value",typeof(object));
+            table.Columns.Add("value", typeof(object));
             table.SetFormat("name", context.ShellEnv.Colors.Label + "{0}" + Rsf);
             table.SetFormat("type", context.ShellEnv.Colors.MediumDarkLabel + "{0}" + Tab + Rsf);
             table.SetHeaderFormat("type", "{0}" + Tab);
@@ -31,7 +31,7 @@ namespace DotNetConsoleAppToolkit.Console
             {
                 AddIDataObjectToTable(context, table, value, options);
             }
-            if (container!=null && options.UnfoldItems)
+            if (container != null && options.UnfoldItems)
             {
                 AddObjectToTable(context, table, container, options);
             }
@@ -48,17 +48,17 @@ namespace DotNetConsoleAppToolkit.Console
         {
             var tab = "".PadLeft((level * 4), ' ');
             var prfx = context.ShellEnv.Colors.HalfDarkLabel;
-            foreach (var (name, value,inf) in obj.GetMemberValues())
+            foreach (var (name, value, inf) in obj.GetMemberValues())
             {
                 if (value == null)
                 {
-                    table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name , DumpAsText(null));
+                    table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name, DumpAsText(null));
                 }
                 else
                 {
                     table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name, value);
                 }
-            }            
+            }
         }
 
         static void AddIDataObjectToTable(
@@ -74,7 +74,7 @@ namespace DotNetConsoleAppToolkit.Console
                 table.Rows.Add(DumpAsText(null), DumpAsText(null), DumpAsText(null));
             }
             else
-            {                
+            {
                 var tab = "".PadLeft((level * 4), ' ');
                 var dv = value as DataValue;
                 var valueType = (dv != null) ? dv.ValueType?.Name : value?.GetType().Name;
@@ -106,13 +106,15 @@ namespace DotNetConsoleAppToolkit.Console
 
                 if ((value is DataObject dao) && options.UnfoldCategories)
                 {
-                    foreach ( var attr in dao.GetAttributes() )
-                        AddIDataObjectToTable(context, table, attr, options, level+1);
+                    foreach (var attr in dao.GetAttributes())
+                        AddIDataObjectToTable(context, table, attr, options, level + 1);
                 }
             }
         }
 
         #endregion
+
+        #region natives types
 
         public static void Echo(
             bool obj,
@@ -180,8 +182,10 @@ namespace DotNetConsoleAppToolkit.Console
             @out.Echo(Rdc);
         }
 
+        #endregion
+
         public static void Echo(
-            this KeyValuePair<string,object> obj,
+            this KeyValuePair<string, object> obj,
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
             FormattingOptions options = null)
@@ -214,10 +218,10 @@ namespace DotNetConsoleAppToolkit.Console
             FormattingOptions options = null)
         {
             MethodInfo mi;
-            if ((mi=obj.GetEchoMethod())!=null)
+            if ((mi = obj.GetEchoMethod()) != null)
                 mi.InvokeEcho(obj, @out, context, options);
             else
-                @out.Echo(obj.ToString(),(options!=null)?options.LineBreak:false);
+                @out.Echo(obj.ToString(), (options != null) ? options.LineBreak : false);
         }
 
         public static void Echo(
@@ -234,7 +238,7 @@ namespace DotNetConsoleAppToolkit.Console
             if (twice) @out.Echo(smbcol + "{");
             if (!string.IsNullOrWhiteSpace(foregroundCol)) @out.Echo(context.ShellEnv.Colors.Default + "f" + smbcol + "=" + context.ShellEnv.Colors.Name + foregroundCol);
             if (twice) @out.Echo(smbcol + ",");
-            if (!string.IsNullOrWhiteSpace(backgroundCol)) @out.Echo( context.ShellEnv.Colors.Default + "g" + smbcol + "=" + context.ShellEnv.Colors.Name + backgroundCol);
+            if (!string.IsNullOrWhiteSpace(backgroundCol)) @out.Echo(context.ShellEnv.Colors.Default + "g" + smbcol + "=" + context.ShellEnv.Colors.Name + backgroundCol);
             if (twice) @out.Echo(smbcol + "}");
         }
 
@@ -243,7 +247,22 @@ namespace DotNetConsoleAppToolkit.Console
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext context,
             TableFormattingOptions options = null
-            ) => ShellObject.Instance.EchoObj(obj, @out, context, options);        
+            ) => ShellObject.Instance.EchoObj(obj, @out, context, options);
+
+        #region variables & objects
+
+        public static void DumpObject(
+            object obj,
+            ConsoleTextWriterWrapper @out,
+            CommandEvaluationContext context,
+            TableFormattingOptions options = null
+            )
+        {
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
+            options = new TableFormattingOptions(options) { PadLastColumn = false };
+            var dt = GetVarsDataTable(context, obj,new List<IDataObject>(), options);
+            dt.Echo(@out, context, options);
+        }
 
         public static void Echo(
             this IDataObject dataObject,
@@ -281,6 +300,10 @@ namespace DotNetConsoleAppToolkit.Console
             var dt = GetVarsDataTable(context,null,values,options);
             dt.Echo( @out, context, options );
         }
+
+        #endregion
+
+        #region tables
 
         public static void Echo(
             this DataTable table,
@@ -400,5 +423,7 @@ namespace DotNetConsoleAppToolkit.Console
             @out.ShowCur();
             @out.EnableFillLineFromCursor = true;
         }
+
+        #endregion
     }
 }

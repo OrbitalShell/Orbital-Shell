@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using DotNetConsoleAppToolkit.Lib;
+using System.Collections.Generic;
 using static DotNetConsoleAppToolkit.Component.CommandLine.Variable.VariableSyntax;
-using DotNetConsoleAppToolkit.Lib;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
 {

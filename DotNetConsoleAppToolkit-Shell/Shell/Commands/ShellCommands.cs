@@ -301,20 +301,22 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             else
                 context.Variables.GetObject(VariableNamespace.Env, varPath, out obj);
 
+            var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
+            {
+                UnfoldCategories = unfoldNamespaces,
+                UnfoldItems = unfoldObjects
+            };
+
             if (obj is IDataObject envVars)
             {
                 var values = envVars.GetAttributes();
-                envVars.Echo(context.Out, context,
-                    new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
-                    {
-                        UnfoldCategories = unfoldNamespaces,
-                        UnfoldItems = unfoldObjects
-                    });
+                envVars.Echo(context.Out, context,options);
                 return new CommandResult<List<IDataObject>>(values);
             }
             else
             {
-                // need the parent for a dump of member values
+                // directly dump object members
+                EchoPrimitives.DumpObject(obj,context.Out, context, options);
                 return new CommandResult<List<IDataObject>>(null);
             }
         }

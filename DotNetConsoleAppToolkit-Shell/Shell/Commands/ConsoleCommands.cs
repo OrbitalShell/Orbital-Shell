@@ -1,14 +1,10 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine;
-using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib;
 using System;
-using System.Text;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Reflection;
+using System.Text;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands
