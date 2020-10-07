@@ -86,7 +86,7 @@ namespace DotNetConsoleAppToolkit.Console
                     table.Rows.Add(
                         tab + valnprefix + value.Name + (value.IsReadOnly ? $"{context.ShellEnv.Colors.Symbol} r{Rdc}" : "") + valnostfix,
                         valueType,
-                        DumpAsText(context, val)
+                        ""
                         );
                 }
                 else
