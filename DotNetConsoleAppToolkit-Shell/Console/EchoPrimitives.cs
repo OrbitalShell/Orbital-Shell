@@ -270,6 +270,21 @@ namespace DotNetConsoleAppToolkit.Console
         }
 
         public static void Echo(
+            this ConsoleColor obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
+            var smbcol = context.ShellEnv.Colors.HighlightSymbol;
+            var str = $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.ToString().ToLower())}  {context.ShellEnv.Colors.Default}";
+
+            @out.Echo(smbcol + "{");
+            @out.Echo(context.ShellEnv.Colors.Default + obj.ToString() + " " + context.ShellEnv.Colors.Name + str);
+            @out.Echo(smbcol + "}");
+        }
+
+        public static void Echo(
             this ColorSettings obj,
             EchoEvaluationContext ctx)
         {
