@@ -49,15 +49,62 @@ namespace DotNetConsoleAppToolkit.Console
             var prfx = context.ShellEnv.Colors.HalfDarkLabel;
             foreach (var (name, value, inf) in obj.GetMemberValues())
             {
+                var attrs = GetMemberConstraintsText(context,inf);
                 if (value == null)
                 {
-                    table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name, DumpAsText(context,null));
+                    table.Rows.Add(tab + prfx + name + attrs + Rdc, inf.GetMemberValueType().Name, DumpAsText(context,null));
                 }
                 else
                 {
-                    table.Rows.Add(tab + prfx + name + Rsf, inf.GetMemberValueType().Name, value);
+                    table.Rows.Add(tab + prfx + name + attrs + Rdc, inf.GetMemberValueType().Name, value);
                 }
             }
+        }
+
+        static string GetMemberConstraintsText(
+            CommandEvaluationContext context,
+            MemberInfo mi)
+        {
+            string r = null;
+            bool isStatic = false;
+            bool readOnly = false;
+            bool canRead = true;
+            if (mi is FieldInfo f)
+            {
+                isStatic = f.IsStatic;
+                readOnly = f.IsInitOnly;
+                canRead = f.IsPublic;
+            }
+            if (mi is PropertyInfo p)
+            {
+                isStatic = p.GetGetMethod().IsStatic;
+                readOnly = !p.CanWrite;
+                canRead = p.CanRead;
+            }
+            if (isStatic) r += "s";
+            if (readOnly) r += "r";
+            if (!canRead) r += "-";
+            if (r != null)
+                r = context.ShellEnv.Colors.Symbol.ToString() + " " + r + Rdc;
+            return r;
+        }
+
+        static string GetIDataOjbectContraintsText(
+            CommandEvaluationContext context,
+            IDataObject obj)
+        {
+            string r = null;
+
+            bool isStatic = false;
+            bool readOnly = obj.IsReadOnly;
+            bool canRead = true;
+            
+            if (isStatic) r += "s";
+            if (readOnly) r += "r";
+            if (!canRead) r += "-";
+            if (r != null)
+                r = context.ShellEnv.Colors.Symbol.ToString() + " " + r + Rdc;
+            return r;
         }
 
         static void AddIDataObjectToTable(
@@ -78,13 +125,16 @@ namespace DotNetConsoleAppToolkit.Console
                 var dv = value as DataValue;
                 var valueType = (dv != null) ? dv.ValueType?.Name : value?.GetType().Name;
                 var val = dv?.Value;
-                var valnprefix = (dv == null) ? (context.ShellEnv.Colors.Highlight + "[+] ") : ""/*"    "*/;
-                var valnostfix = (dv == null) ? "" : "";
+                var foldSymbol = options.UnfoldCategories ? "[-]" : "[+]";
+                var valnprefix = (dv == null) ? (context.ShellEnv.Colors.Highlight + foldSymbol + " ") : "";
+                var attrs = GetIDataOjbectContraintsText(context,value);
+
+                var str = tab + valnprefix + value.Name + attrs;
 
                 if (val == null)
                 {
                     table.Rows.Add(
-                        tab + valnprefix + value.Name + (value.IsReadOnly ? $"{context.ShellEnv.Colors.Symbol} r{Rdc}" : "") + valnostfix,
+                        str,
                         valueType,
                         ""
                         );
@@ -92,7 +142,7 @@ namespace DotNetConsoleAppToolkit.Console
                 else
                 {
                     table.Rows.Add(
-                        tab + valnprefix + value.Name + (value.IsReadOnly ? $"{context.ShellEnv.Colors.Symbol} r{Rdc}" : "") + valnostfix,
+                        str,
                         valueType,
                         val
                         );
@@ -231,6 +281,11 @@ namespace DotNetConsoleAppToolkit.Console
 
         // -------------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// echo fallback method
+        /// </summary>
+        /// <param name="obj">any object</param>
+        /// <param name="ctx">echo evaluation context</param>
         public static void Echo(
             this object obj,
             EchoEvaluationContext ctx)
