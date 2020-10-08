@@ -1,6 +1,9 @@
-﻿using System;
+﻿using DotNetConsoleAppToolkit.Lib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using static DotNetConsoleAppToolkit.Lib.Str;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
@@ -78,17 +81,26 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             if (target == null) return false;
             if (path.Count == 0) return false;
             var attrname = path[0];
-            var fieldsInfos = target.GetType().GetFields().ToDictionary((x) => x.Name);
-            if (fieldsInfos.TryGetValue(attrname, out var fieldInfo))
+            /*var membersInfos = target.GetType().GetFields().ToDictionary((x) => x.Name);
+            if (membersInfos.TryGetValue(attrname, out var memberInfo))
             {
                 if (path.Count == 1)
                 {
-                    data = fieldInfo.GetValue(target);
+                    data = memberInfo.GetValue(target);
                     return true;
                 }
                 return Get(target, path.Slice(1),out data);
+            }*/
+            var membersInfos = target.GetFieldsAndProperties();
+            var memberInfo = membersInfos.FirstOrDefault(x => x.Name == attrname);
+            if (memberInfo == null) return false;
+            if (path.Count == 1)
+            {
+                data = memberInfo.GetMemberValue(target);
+                return true;
             }
-            return false;
+            target = memberInfo.GetMemberValue(target);
+            return Get(target, path.Slice(1), out data);
         }
 
         public bool GetPathOwner(ArraySegment<string> path,out object data)
