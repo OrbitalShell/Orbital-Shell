@@ -366,6 +366,11 @@ namespace DotNetConsoleAppToolkit.Console
         }
 
         public static void Echo(
+            this DataObject dataObject,
+            EchoEvaluationContext ctx
+            ) => Echo((IDataObject)dataObject, ctx);
+
+        public static void Echo(
             this IDataObject dataObject,
             EchoEvaluationContext ctx)
         {
