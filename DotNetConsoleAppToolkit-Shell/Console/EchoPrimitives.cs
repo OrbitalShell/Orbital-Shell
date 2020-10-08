@@ -120,7 +120,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Boolean}");
             @out.Echo(obj.ToString().ToLower());
@@ -132,7 +132,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
     {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Integer}");
             @out.Echo(obj.ToString());
@@ -144,7 +144,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Double}");
             @out.Echo(obj.ToString());
@@ -156,7 +156,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Float}");
             @out.Echo(obj.ToString());
@@ -168,7 +168,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Decimal}");
             @out.Echo(obj);
@@ -180,7 +180,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Char}");
             @out.Echo(obj);
@@ -203,7 +203,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj,ctx)) return;
+            if (context.EchoMap.MappedCall(obj,ctx)) return;
 
             @out.Echo($"{obj.Key}{context.ShellEnv.Colors.HighlightSymbol}={context.ShellEnv.Colors.Value}");
             Echo(obj.Value, ctx);
@@ -216,7 +216,7 @@ namespace DotNetConsoleAppToolkit.Console
             )
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             // TODO map invoke
             MethodInfo mi;
@@ -239,7 +239,7 @@ namespace DotNetConsoleAppToolkit.Console
             // mandatory for having both :
             // 1. static extension methods to nicely write Echo calls from the code (eg. DataTable.Echo , object.Echo ...)
             // 2. Echo calls that can be remapped to others methods than the class one's (extension or owned method)
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             MethodInfo mi;
             if ((mi = obj.GetEchoMethod()) != null)
@@ -255,7 +255,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             var smbcol = context.ShellEnv.Colors.HighlightSymbol;
             var foregroundCol = (obj.Foreground.HasValue) ? (obj.Foreground.ToString() + $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.Foreground.Value.ToString().ToLower())}  {context.ShellEnv.Colors.Default}") : "";
@@ -273,8 +273,8 @@ namespace DotNetConsoleAppToolkit.Console
             this ConsoleColor obj,
             EchoEvaluationContext ctx)
         {
-            var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            var (@out, context, _) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             var smbcol = context.ShellEnv.Colors.HighlightSymbol;
             var str = $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.ToString().ToLower())}  {context.ShellEnv.Colors.Default}";
@@ -289,7 +289,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             ShellObject.Instance.EchoObj(obj, ctx);
         }
@@ -301,7 +301,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, opts) = ctx;
-            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             var options = opts as TableFormattingOptions;
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
@@ -315,7 +315,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, opts) = ctx;
-            if (context.EchoMap.RelayEcho(dataObject, ctx)) return;
+            if (context.EchoMap.MappedCall(dataObject, ctx)) return;
 
             var options = opts as TableFormattingOptions;
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
@@ -339,7 +339,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, opts) = ctx;
-            if (context.EchoMap.RelayEcho(variables, ctx)) return;
+            if (context.EchoMap.MappedCall(variables, ctx)) return;
 
             var options = opts as TableFormattingOptions;
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
@@ -358,7 +358,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(table, ctx)) return;
+            if (context.EchoMap.MappedCall(table, ctx)) return;
             _Echo(table, @out, context, (TableFormattingOptions)options);
         }
 
@@ -367,7 +367,7 @@ namespace DotNetConsoleAppToolkit.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.RelayEcho(table, ctx)) return;
+            if (context.EchoMap.MappedCall(table, ctx)) return;
             _Echo(table, @out, context, (TableFormattingOptions)options);
         }
 

@@ -7,7 +7,7 @@ namespace DotNetConsoleAppToolkit.Console
 {
     public class EchoPrimitiveMap
     {
-        public bool RelayEcho(
+        public bool MappedCall(
             object obj,
             EchoEvaluationContext context
             )
@@ -15,5 +15,6 @@ namespace DotNetConsoleAppToolkit.Console
             obj = obj ?? throw new NullReferenceException();
             return false;
         }
+
     }
 }

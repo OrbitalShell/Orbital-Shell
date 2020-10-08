@@ -93,7 +93,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
         public void Echo(EchoEvaluationContext ctx)
         {
             var (@out, context, opts) = ctx;
-            if (context.EchoMap.RelayEcho(this, ctx)) return;
+            if (context.EchoMap.MappedCall(this, ctx)) return;
 
             var options = opts as FileSystemPathFormattingOptions;
             options ??= context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions);

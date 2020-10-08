@@ -1,5 +1,4 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using System;
 
 namespace DotNetConsoleAppToolkit.Console
 {
@@ -19,11 +18,25 @@ namespace DotNetConsoleAppToolkit.Console
             Options = options;
         }
 
-        internal void Deconstruct(out ConsoleTextWriterWrapper @out, out CommandEvaluationContext context, out FormattingOptions options)
+        public void Deconstruct(
+            out ConsoleTextWriterWrapper @out, 
+            out CommandEvaluationContext context, 
+            out FormattingOptions options)
         {
             @out = Out;
             context = CmdContext;
             options = Options;
+        }
+
+        public void Echo(object o)
+        {
+            if (o==null)
+            {
+                Out.Echo(EchoPrimitives.DumpAsText(CmdContext,null));
+            } else
+            {
+                o.Echo(this);
+            }
         }
     }
 }
