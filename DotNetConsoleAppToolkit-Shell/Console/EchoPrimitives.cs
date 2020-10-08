@@ -12,7 +12,7 @@ namespace DotNetConsoleAppToolkit.Console
 {
     public static partial class EchoPrimitives
     {
-        #region private
+        #region echo tanble builders
 
         static Table GetVarsDataTable(
             CommandEvaluationContext context,
@@ -117,10 +117,11 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             bool obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
             @out.Echo($"{context.ShellEnv.Colors.Boolean}");
             @out.Echo(obj.ToString().ToLower());
             @out.Echo(Rdc);
@@ -128,10 +129,11 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             int obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
-        {
+            EchoEvaluationContext ctx)
+    {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
             @out.Echo($"{context.ShellEnv.Colors.Integer}");
             @out.Echo(obj.ToString());
             @out.Echo(Rdc);
@@ -139,10 +141,11 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             double obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
             @out.Echo($"{context.ShellEnv.Colors.Double}");
             @out.Echo(obj.ToString());
             @out.Echo(Rdc);
@@ -150,10 +153,11 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             float obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
             @out.Echo($"{context.ShellEnv.Colors.Float}");
             @out.Echo(obj.ToString());
             @out.Echo(Rdc);
@@ -161,10 +165,11 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             decimal obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
             @out.Echo($"{context.ShellEnv.Colors.Decimal}");
             @out.Echo(obj);
             @out.Echo(Rdc);
@@ -172,10 +177,11 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             char obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
             @out.Echo($"{context.ShellEnv.Colors.Char}");
             @out.Echo(obj);
             @out.Echo(Rdc);
@@ -194,24 +200,28 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             this KeyValuePair<string, object> obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj,ctx)) return;
+
             @out.Echo($"{obj.Key}{context.ShellEnv.Colors.HighlightSymbol}={context.ShellEnv.Colors.Value}");
-            Echo(obj.Value, @out, context, options);
+            Echo(obj.Value, ctx);
             @out.Echo(Rdc);
         }
 
         public static void InvokeEcho(
             object obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx
+            )
         {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
+            // TODO map invoke
             MethodInfo mi;
             if ((mi = obj.GetEchoMethod()) != null)
-                mi.InvokeEcho(obj, @out, context, options);
+                mi.InvokeEcho(obj, ctx);
             else
             {
                 var str = obj == null ? DumpAsText(context, obj) : obj.ToString();
@@ -219,25 +229,34 @@ namespace DotNetConsoleAppToolkit.Console
             }
         }
 
+        // -------------------------------------------------------------------------------------------------
+
         public static void Echo(
             this object obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, options) = ctx;
+            // mandatory for having both :
+            // 1. static extension methods to nicely write Echo calls from the code (eg. DataTable.Echo , object.Echo ...)
+            // 2. Echo calls that can be remapped to others methods than the class one's (extension or owned method)
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
             MethodInfo mi;
             if ((mi = obj.GetEchoMethod()) != null)
-                mi.InvokeEcho(obj, @out, context, options);
+                mi.InvokeEcho(obj, ctx);
             else
                 @out.Echo(obj.ToString(), (options != null) ? options.LineBreak : false);
         }
 
+        // -------------------------------------------------------------------------------------------------
+
         public static void Echo(
             this TextColor obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
             var smbcol = context.ShellEnv.Colors.HighlightSymbol;
             var foregroundCol = (obj.Foreground.HasValue) ? (obj.Foreground.ToString() + $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.Foreground.Value.ToString().ToLower())}  {context.ShellEnv.Colors.Default}") : "";
             var backgroundCol = (obj.Background.HasValue) ? (obj.Background.ToString() + $" {smbcol}{GetCmd(EchoDirectives.b + "", obj.Background.Value.ToString().ToLower())}  {context.ShellEnv.Colors.Default}") : "";
@@ -252,33 +271,38 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             this ColorSettings obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            TableFormattingOptions options = null
-            ) => ShellObject.Instance.EchoObj(obj, @out, context, options);
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
+            ShellObject.Instance.EchoObj(obj, ctx);
+        }
 
         #region variables & objects
 
         public static void DumpObject(
             object obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            TableFormattingOptions options = null
-            )
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, opts) = ctx;
+            if (context.EchoMap.RelayEcho(obj, ctx)) return;
+
+            var options = opts as TableFormattingOptions;
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
             var dt = GetVarsDataTable(context, obj,new List<IDataObject>(), options);
-            dt.Echo(@out, context, options);
+            dt.Echo( new EchoEvaluationContext(@out,context,options));
         }
 
         public static void Echo(
             this IDataObject dataObject,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            TableFormattingOptions options = null
-            )
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, opts) = ctx;
+            if (context.EchoMap.RelayEcho(dataObject, ctx)) return;
+
+            var options = opts as TableFormattingOptions;
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
             var attrs = dataObject.GetAttributes();
@@ -292,21 +316,22 @@ namespace DotNetConsoleAppToolkit.Console
             } 
 
             var dt = GetVarsDataTable(context,container,attrs,options);
-            dt.Echo( @out, context, options);
+            dt.Echo( new EchoEvaluationContext(@out,context,options));
         }
 
         public static void Echo(
             this Variables variables,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            TableFormattingOptions options = null
-            )
+            EchoEvaluationContext ctx)
         {
+            var (@out, context, opts) = ctx;
+            if (context.EchoMap.RelayEcho(variables, ctx)) return;
+
+            var options = opts as TableFormattingOptions;
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
             var values = variables.GetDataValues();
             values.Sort((x, y) => x.Name.CompareTo(y.Name));
             var dt = GetVarsDataTable(context,null,values,options);
-            dt.Echo( @out, context, options );
+            dt.Echo( new EchoEvaluationContext(@out,context,options));
         }
 
         #endregion
@@ -315,20 +340,20 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static void Echo(
             this DataTable table,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            TableFormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
-            _Echo(table, @out, context, options);
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(table, ctx)) return;
+            _Echo(table, @out, context, (TableFormattingOptions)options);
         }
 
         public static void Echo(
             this Table table,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            TableFormattingOptions options = null)
+            EchoEvaluationContext ctx)
         {
-            _Echo(table, @out, context, options);
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.RelayEcho(table, ctx)) return;
+            _Echo(table, @out, context, (TableFormattingOptions)options);
         }
 
         static void _Echo(
@@ -410,11 +435,7 @@ namespace DotNetConsoleAppToolkit.Console
                     {
                         // value dump via Echo primitive
                         @out.Echo(context.ShellEnv.Colors.Default);
-                        /*if (mi.GetParameters().Length == 3)
-                            mi.Invoke(o, new object[] { @out, context, null });
-                        else
-                            mi.Invoke(o, new object[] { o, @out, context, null });*/
-                        mi.InvokeEcho(o, @out, context, null);
+                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, null));
                         @out.Echo(colsep);
                     }
                     else

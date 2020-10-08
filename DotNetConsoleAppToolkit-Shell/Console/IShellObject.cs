@@ -11,13 +11,8 @@ namespace DotNetConsoleAppToolkit.Console
         /// Echo method : ouptut a formatted text display of the object into @out, eventually using the formatting options.
         /// must works with a given command evaluation context
         /// </summary>
-        /// <param name="out">output stream</param>
-        /// <param name="context">command eval context</param>
-        /// <param name="options">formatting options</param>
-        void Echo(
-            ConsoleTextWriterWrapper @out, 
-            CommandEvaluationContext context, 
-            FormattingOptions options = null );
+        /// <param name="context">echo context from command eval context</param>
+        void Echo( EchoEvaluationContext context );
 
         /// <summary>
         /// returns the object as text representation of its value (the returned value might be convertible to a native value)

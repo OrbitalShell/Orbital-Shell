@@ -310,13 +310,13 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             if (obj is IDataObject envVars)
             {
                 var values = envVars.GetAttributes();
-                envVars.Echo(context.Out, context,options);
+                envVars.Echo(new EchoEvaluationContext(context.Out, context,options));
                 return new CommandResult<List<IDataObject>>(values);
             }
             else
             {
                 // directly dump object members
-                EchoPrimitives.DumpObject(obj,context.Out, context, options);
+                EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(context.Out, context, options));
                 return new CommandResult<List<IDataObject>>(null);
             }
         }

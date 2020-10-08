@@ -110,7 +110,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                         if (cancellationTokenSource.IsCancellationRequested)
                             return i;
 
-                        item.Echo(context.Out,context,new FileSystemPathFormattingOptions(!noattributes, !recurse, "", (!wide || recurse || nocol == nbcols - 1) ? Br : "", (wide && !recurse) ? maxitlength : -1,""));
+                        item.Echo(new EchoEvaluationContext(context.Out,context,new FileSystemPathFormattingOptions(!noattributes, !recurse, "", (!wide || recurse || nocol == nbcols - 1) ? Br : "", (wide && !recurse) ? maxitlength : -1,"")));
                         i++;
                         nocol++;
                         if (nocol == nbcols)
@@ -171,7 +171,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
             var path = new DirectoryPath(Environment.CurrentDirectory);
             if (path.CheckExists())
             {
-                path.Echo(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br));
+                path.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br)));
                 return new CommandResult<DirectoryPath>( path );
             }
             else
@@ -225,9 +225,10 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 }
                 table.Rows.Add(row);
             }
-            table.Echo(context.Out, context,
-                new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions))
-                    { NoBorders = !borders });
+            table.Echo(
+                new EchoEvaluationContext(context.Out, context,
+                    new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions))
+                        { NoBorders = !borders }));
 
             return new CommandResult<List<DriveInfo>>( drives.ToList() );
         }
@@ -304,7 +305,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                         }
                         if (deleted)
                         {
-                            if (verbose) item.Echo(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, !recurse, "", Br, -1, "removed "));
+                            if (verbose) item.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, !recurse, "", Br, -1, "removed ")));
                             r.Add(item);
                         }
                     }
@@ -465,20 +466,24 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
             {
                 foreach ( var subdir in dir.DirectoryInfo.EnumerateDirectories())
                     r.Merge(RecurseInteractiveDeleteDir(context,new DirectoryPath(subdir.FullName), simulate, noattributes, verbose, cancellationTokenSource));
+
+                var options = new FileSystemPathFormattingOptions(!noattributes, false, "", Br, -1, "removed ");
+                var echoContext = new EchoEvaluationContext(context.Out, context, options);
+
                 foreach ( var subfile in dir.DirectoryInfo.EnumerateFiles())
                 {
                     var subfi = new FilePath(subfile.FullName);
                     if (Confirm("rm: remove file "+subfi.GetPrintableName(fullname)))
                     {
                         if (!simulate) subfi.FileSystemInfo.Delete();
-                        if (verbose) subfi.Echo(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br, -1, "removed "));
+                        if (verbose) subfi.Echo(echoContext);
                         r.Add(subfi);
                     }
                 }
                 if (Confirm("rm: remove directory "+dir.GetPrintableName(fullname)))
                 {
                     if (!simulate) dir.DirectoryInfo.Delete(true);
-                    if (verbose) dir.Echo(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br, -1, "removed "));
+                    if (verbose) dir.Echo(echoContext);
                     r.Add(dir);
                 }
             }

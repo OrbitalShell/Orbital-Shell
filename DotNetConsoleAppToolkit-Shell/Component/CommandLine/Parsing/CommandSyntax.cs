@@ -8,6 +8,7 @@ using System.Text;
 using DotNetConsoleAppToolkit.Lib;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
+using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
 {
@@ -26,6 +27,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
 
         public (MatchingParameters matchingParameters,List<ParseError> parseErrors) 
             Match(
+            CommandEvaluationContext context,
             StringComparison syntaxMatchingRule,
             //string[] segments,
             StringSegment[] segments,
@@ -155,7 +157,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
 
                             void trySetValueFromStr()
                             {
-                                var (success, strValue) = TryCastToString(varValue);
+                                var (success, strValue) = TryCastToString(context,varValue);
                                 if (!success)
                                     perr();
                                 else
@@ -238,7 +240,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
         }
 
         public static (bool success, string strValue) TryCastToString(
-            object varValue)
+            CommandEvaluationContext context,
+            object varValue
+            )
         {
             if (varValue == null)
             {
@@ -252,7 +256,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                     string strValue = null;
                     MethodInfo mi;
                     if ((mi = varValue.GetAsTextMethod()) != null)
-                        strValue = mi.InvokeAsText(varValue);
+                        strValue = mi.InvokeAsText(varValue,context);
                     else
                         strValue = varValue.ToString();
                     return (true, strValue);

@@ -1,4 +1,5 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib.Data;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
                         if ((dirs || all) && (alwaysSelectDirs || (!hasPattern || MatchWildcard(pattern, checkPatternOnFullName ? sitem.FileSystemInfo.FullName : sitem.FileSystemInfo.Name, ignoreCase))))
                         {
                             items.Add(sitem);
-                            if (print) sitem.Echo(context.Out, context, new FileSystemPathFormattingOptions(attributes, shortPathes, "", Br));
+                            if (print) sitem.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(attributes, shortPathes, "", Br)));
                             counts.FoldersCount++;
                         }
                         else
@@ -79,7 +80,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
                             {
                                 counts.FilesCount++;
                                 items.Add(sitem);
-                                if (print) sitem.Echo(context.Out, context, new FileSystemPathFormattingOptions(attributes, shortPathes, "", Br));
+                                if (print) sitem.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(attributes, shortPathes, "", Br)));
                             }
                         }
                         else

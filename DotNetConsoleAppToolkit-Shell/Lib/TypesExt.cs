@@ -11,32 +11,31 @@ namespace DotNetConsoleAppToolkit.Lib
         public static void InvokeEcho(
             this MethodInfo echoMethodInfo,
             object obj,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null
+            EchoEvaluationContext ctx
             )
         {
-            @out.Echo(context.ShellEnv.Colors.Default);           
-
-            if (echoMethodInfo.GetParameters().Length == 3)
-                echoMethodInfo.Invoke(obj, new object[] { @out, context,
-                    (options != null) ? options : GetParameterDefaultValue(echoMethodInfo, 2)
-                });
+            var (@out, context, _) = ctx;
+            
+            @out.Echo(context.ShellEnv.Colors.Default);
+            if (echoMethodInfo.GetParameters().Length == 1)
+            {
+                echoMethodInfo.Invoke(obj, new object[] { ctx });
+            }
             else
-                echoMethodInfo.Invoke(obj, new object[] { obj, @out, context, 
-                    (options != null) ? options : GetParameterDefaultValue(echoMethodInfo, 3)
-                });
+            {
+                echoMethodInfo.Invoke(obj, new object[] { obj, ctx });
+            }
         }
 
-        public static string InvokeAsText(this MethodInfo asTextMethodInfo,object obj)
+        public static string InvokeAsText(this MethodInfo asTextMethodInfo,object obj,CommandEvaluationContext context)
         {
-            if (asTextMethodInfo.GetParameters().Length == 0)
-                return (string)asTextMethodInfo.Invoke(obj, new object[] { });
+            if (asTextMethodInfo.GetParameters().Length == 1)
+                return (string)asTextMethodInfo.Invoke(obj, new object[] { context });
             else
-                return (string)asTextMethodInfo.Invoke(obj, new object[] { obj });
+                return (string)asTextMethodInfo.Invoke(obj, new object[] { obj, context });
         }
 
-        static object GetParameterDefaultValue(MethodInfo mi,int pindex) 
+        public static object GetParameterDefaultValue(this MethodInfo mi,int pindex) 
             => Activator.CreateInstance(mi.GetParameters()[pindex].ParameterType);
 
         public static MethodInfo GetAsTextMethod(this object o)

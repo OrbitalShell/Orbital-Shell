@@ -100,7 +100,7 @@ current print directives are:
                         context.Out.Echo(s, !avoidLineBreak);
                     else
                     {
-                        obj.Echo(context.Out, context, null);
+                        obj.Echo(new EchoEvaluationContext(context.Out, context, null));
                         if (!avoidLineBreak) context.Out.Echo("",true);
                     }
                 }
@@ -121,7 +121,7 @@ current print directives are:
             var @out = context.Out;
             void echokv(string name, object value)
             {
-                new KeyValuePair<string, object>(name, value).Echo(@out, context);
+                new KeyValuePair<string, object>(name, value).Echo(new EchoEvaluationContext(@out,context));
             };
 
             if (setEncoding)

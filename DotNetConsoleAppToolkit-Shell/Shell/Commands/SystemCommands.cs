@@ -70,9 +70,10 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                 }
             }
             
-            table.Echo(context.Out, context,
-                new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions))
-                { NoBorders = !borders });
+            table.Echo(
+                new EchoEvaluationContext(context.Out, context,
+                    new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions))
+                        { NoBorders = !borders }));
 
             return new CommandResult<List<Process>>(r);
         }

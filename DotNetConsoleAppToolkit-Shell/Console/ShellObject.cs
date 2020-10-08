@@ -25,29 +25,20 @@ namespace DotNetConsoleAppToolkit.Console
         /// <summary>
         /// Echo method
         /// </summary>
-        /// <param name="out"></param>
         /// <param name="context"></param>
-        /// <param name="options"></param>
-        public void Echo(
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null
-            ) => EchoObj(this, @out, context, options);
+        public void Echo( EchoEvaluationContext context ) => EchoObj(this, context);
 
         /// <summary>
         /// Echo method for any object
         /// </summary>
         /// <param name="o"></param>
-        /// <param name="out"></param>
         /// <param name="context"></param>
-        /// <param name="options"></param>
         public void EchoObj(
             object o,
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FormattingOptions options = null
+            EchoEvaluationContext ctx
             )
         {
+            var (@out, context, options) = ctx;
             var smbcol = context.ShellEnv.Colors.Highlight;
             @out.Echo(smbcol + "{");
             bool firstElement = true;
@@ -64,7 +55,7 @@ namespace DotNetConsoleAppToolkit.Console
                 var value = m.Item2;
                 if (value != null && (mi = value.GetEchoMethod()) != null)
                 {
-                    mi.InvokeEcho(value, @out, context, null);
+                    mi.InvokeEcho(value,new EchoEvaluationContext(@out, context, null));
                     @out.Echo(context.ShellEnv.Colors.Default);
                 }
                 else

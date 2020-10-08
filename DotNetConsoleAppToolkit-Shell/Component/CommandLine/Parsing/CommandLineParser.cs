@@ -276,7 +276,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                                 nexpr.Append(o);
                             else
                             {
-                                var (success, strValue) = CommandSyntax.TryCastToString(o);
+                                var (success, strValue) = CommandSyntax.TryCastToString(context,o);
                                 nexpr.Append(strValue);
                             }
                         }
@@ -394,6 +394,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 {
                     var (matchingParameters, parseErrors) = 
                         syntax.Match(
+                            context,
                             SyntaxMatchingRule,
                             segments,
                             token.Length + 1);

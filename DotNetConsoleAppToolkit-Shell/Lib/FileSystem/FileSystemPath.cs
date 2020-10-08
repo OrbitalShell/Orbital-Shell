@@ -90,12 +90,12 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
                 return new FilePath(fsinf.FullName);
         }
 
-        public void Echo(
-            ConsoleTextWriterWrapper @out,
-            CommandEvaluationContext context,
-            FileSystemPathFormattingOptions options = null
-            )
+        public void Echo(EchoEvaluationContext ctx)
         {
+            var (@out, context, opts) = ctx;
+            if (context.EchoMap.RelayEcho(this, ctx)) return;
+
+            var options = opts as FileSystemPathFormattingOptions;
             options ??= context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions);
             var bg = GetCmd(EchoDirectives.b + "", DefaultBackground.ToString().ToLower());
             var fg = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());

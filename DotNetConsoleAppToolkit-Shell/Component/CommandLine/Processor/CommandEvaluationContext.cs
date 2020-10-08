@@ -10,10 +10,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         public readonly ConsoleTextWriterWrapper Out;
         public readonly TextWriterWrapper Err;
         public readonly TextReader In;
-        public readonly object InputData;
-        public readonly Variables Variables;
+        public readonly object InputData;        
         public readonly CommandEvaluationContext ParentContext;
+
+        public readonly Variables Variables;
         public ShellEnvironment ShellEnv { get; protected set; }
+        public EchoPrimitiveMap EchoMap { get; protected set; }
 
         public CommandEvaluationContext(            
             CommandLineProcessor commandLineProcessor, 
@@ -28,7 +30,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             In = @in;
             Err = err;
             InputData = inputData;
-            Variables = new Variables();            
+            Variables = new Variables();
+            EchoMap = new EchoPrimitiveMap();
             ParentContext = parentContext;
             SetupShellEnvVar();
             @out.ColorSettings = ShellEnv.Colors;

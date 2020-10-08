@@ -285,7 +285,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
             r &= rt <= maxRatio;
             if (!r)
             {
-                filePath.Echo(context.Out, context, new FileSystemPathFormattingOptions(printAttr, false, "", !quiet ? $"{Red} seems corrupted from index {cti}: bad chars ratio={rt}%":""));
+                filePath.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(printAttr, false, "", !quiet ? $"{Red} seems corrupted from index {cti}: bad chars ratio={rt}%":"")));
                 context.Out.LineBreak();
             }
             return (r,filePath);
