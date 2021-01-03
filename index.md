@@ -2,7 +2,7 @@
 
 ### Index
 
-[about GitHub Pages](https://github.com/franck-gaspoz/orbital-shell/blob/gh-pages/about-gh-pages.md)
+[about GitHub Pages](https://franck-gaspoz.github.io/orbital-shell/about-gh-pages.md)
 
 
 ### Support or Contact
