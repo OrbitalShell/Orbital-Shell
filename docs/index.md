@@ -3,8 +3,8 @@ layout: home
 header:
   title: Orbital Shell
   text: >
-    Free open source C# Net Core command line shell. Just
-     download the tool and start running commands and customizing the sell, interacting with C# objects !
+    Free open source command line shell coded in C# Net Core. Just
+     download the tool and start running commands and customizing the sell, interacting with the system, streams and with C# objects !
   action: # action button is optional
     label: Find Out More
     url: '#about'
@@ -15,15 +15,15 @@ sections:
     section_id: about
     background_style: bg-primary
     title: Orbital Shell got what you need!
-    text: Start Orbital Shell has everything you need to get your command line environment up and running in no time! The command line tool **"orbsh"**, and all of the commands modules and scripts are open source, free to download, and easy to use. Get involved in the project on GitHub !
+    text: Orbital Shell has everything you need to get your command line environment up and running in no time! The command line tool **"orbsh"**, and all of the commands modules and scripts are open source, free to download, and easy to use. Get involved in the project on GitHub ! <br><br><img style="margin-bottom:4em;display:block;transform:rotate(-25deg);" src="assets/img/shelltrview.png"><br><br>
     actions:
       - title: Get Started!
-        url: '#page-top'
-        class: btn-light
+        url: '#services'
+        class: btn-primary
 
   - type: services.html
     section_id: services
-    #background_style: bg-info
+    background_style: bg-light
     title: Orbital Shell Services
     services:
       - title: Sturdy Templates
@@ -39,82 +39,64 @@ sections:
       - title: Made with Love
         text: You have to make your websites with love these days!
         icon: fa-heart
-      - title: Other 1
-        text: Some not-so long text here.
-        icon: fa-heart
-      - title: Other 2
-        text: Some not-so long text here.
-        icon: fa-heart
+    actions:
+      - title: See Orbital Shell in action!
+        url: '#portfolio'
+        class: btn-primary
 
   - type: portfolio.html
     # this section has always ID 'portfolio'
     #section_id: portfolio
     #background_style: bg-dark
     projects:
-      - title: Project 1
-        text: This is a very short project description.
+      - title: Orbital Shell running on Windows Terminal
+        text: Orbital Shell | Start up and overview
         # the images are located in:
         # img/portfolio/fullsize
         # img/portfolio/thumbnails
         icon: 1.jpg
         url: '#'
-      - title: Project 2
-        text: This is a very short project description.
+      - title: Shell modularity
+        text: Commands type providers | Modules | DotNet assemblies
         icon: 2.jpg
         url: '#'
-      - title: Project 3
-        text: This is a very short project description.
+      - title: Environment variables
+        text: Full colorized dump of variables according to their object type and output decorator
         icon: 3.jpg
         url: '#'
-      - title: Project 4
-        text: This is a very short project description.
+      - title: advanced echo directives
+        text: help echo explaining the 'echo directives' and their special syntaxes
         icon: 4.jpg
         url: '#'
-      - title: Project 5
-        text: This is a very short project description.
+      - title: advanced display capabilities
+        text: use ANSI (VT 100) display features that can be supported by your console or terminal emulator"
         icon: 5.jpg
         url: '#'
-      - title: Project 6
-        text: This is a very short project description.
+      - title: shell commands implementation in C#
+        text: A fast and simple way to implements new shell commands
         icon: 6.jpg
         url: '#'
 
   - type: aside.html
     section_id: aside
-    title: Free Download at Start Bootstrap!
+    title: Free Download Orbital Shell for any plateform!
     actions:
       - title: Download Now!
-        url: https://startbootstrap.com/themes/creative/
-        class: btn-light
+        url: download.html
+        class: btn-primary
 
   - type: members.html
     section_id: members
     title: Our Crew!
     background_style: bg-info text-white
     members:
-      - title: Christina M. Aponte
-        text: Singer and Songwriter
-        image: assets/img/members/person1.jpg
+      - title: Franck Gaspoz
+        text: Designer developer
+        image: assets/img/members/franckgaspoz.gif
         url: '#'
-      - title: Gary D. Stevens
-        text: Bass guitar.
+      - title: Gaspard Moyrand
+        text: Designer developer
         image: assets/img/members/person2.jpg
-        url: '#'
-      - title: Devon J. Fletcher
-        text: Lead guitar.
-        image: assets/img/members/person3.jpg
-        url: '#'
-      - title: Todd E. Anderson
-        text: Drums, percussion.
-        image: assets/img/members/person5.jpg
-        url: '#'
-      - title: Daniel T. Riley
-        text: Musician, songwriter, producer.
-        image: assets/img/members/person6.jpg
-        url: '#'
-      - title: Ella P. Walter
-        text: PR.
-        image: assets/img/members/person7.jpg
         url: '#'
 
   - type: timeline.html
@@ -125,14 +107,14 @@ sections:
     actions:
       - image: assets/img/portfolio/thumbnails/1.jpg
         title: >+
-          2017-2018
+          June 2020
           **Humble Beginnings**
         text: >-
           We begun with small group of people willing to work hard and make our
           teaching skills worth , in front of all others!
       - image: assets/img/portfolio/thumbnails/2.jpg
         title: >+
-          November 2019
+          January 2021
           An Coaching started
         text: >-
           We started to gather like minded people and started our stategies
@@ -140,23 +122,27 @@ sections:
 
   - type: contact.html
     section_id: contacts
-    title: Let's Get In Touch!
+    title: Let's Get In Touch! Join the project on GitHub!
     text: >-
-      Ready to start your next project with us? Give us a call or send us an email
+      Ready to start on the project with us? Give us a call or send us an email
       and we will get back to you as soon as possible!
-    actions:
-    - title: +1 (202) 555-014
-      icon: fa-phone
+    actions:    
     - title: E-Mail
-      icon: fa-envelope
-      url: mailto:contact@yourwebsite.com
-    - title: Twitter
-      icon: fa-twitter
-      icon_type: fab
-      url: '#'
-    - title: Facebook
-      icon: fa-facebook
-      icon_type: fab
-      url: '#'
-
+      icon: fas fa-envelope
+      url: mailto:franck.gaspoz@gmail.com
+    - title: >+
+        Orbital Shell GitHub 
+        offical repository pages
+      icon: fab fa-github
+      url: https://github.com/franck-gaspoz/orbital-shell
+      new_window: true
+    - title: Orbital Shell GitHub documentation pages
+      icon: fab fa-github
+      url: https://github.com/franck-gaspoz/orbital-shell/tree/master/Doc
+      new_window: true
+    - title: Orbital Shell project on GitHub project
+      icon: fab fa-github
+      url: https://github.com/users/franck-gaspoz/projects/1
+      new_window: true
+      
 ---

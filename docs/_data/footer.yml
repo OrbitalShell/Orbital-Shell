@@ -1,5 +1,5 @@
-copyright: '&copy; Start Bootstrap'
+copyright: '&copy; Orbital Shell Licence MIT'
 links:
-  - text: Creative
-    url: 'https://startbootstrap.com/themes/creative/'
-    new_window: true
+  - text: Orbital Shell
+    url: '.'
+    new_window: false

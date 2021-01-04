@@ -7,6 +7,8 @@ header:
   url: /#about
 - title: Services
   url: /#services
+- title: Portfolio
+  url: /#portfolio
 - title: Members
   url: /#members
 - title: History

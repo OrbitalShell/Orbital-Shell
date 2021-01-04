@@ -44,6 +44,11 @@
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+.home-title {
+  zoom: 1.5;
+  font-weight: normal;
+}
+
 *,
 *::before,
 *::after {
@@ -2441,32 +2446,32 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #f4623a;
-  border-color: #f4623a;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
 }
 .btn-primary:hover {
   color: #fff;
-  background-color: #f24516;
-  border-color: #ee3e0d;
+  background-color: #138496;
+  border-color: #117a8b;
 }
 .btn-primary:focus, .btn-primary.focus {
   color: #fff;
-  background-color: #f24516;
-  border-color: #ee3e0d;
-  box-shadow: 0 0 0 0.2rem rgba(246, 122, 88, 0.5);
+  background-color: #138496;
+  border-color: #117a8b;
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
 }
 .btn-primary.disabled, .btn-primary:disabled {
   color: #fff;
-  background-color: #f4623a;
-  border-color: #f4623a;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
 }
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
   color: #fff;
-  background-color: #ee3e0d;
-  border-color: #e23a0d;
+  background-color: #117a8b;
+  border-color: #10707f;
 }
 .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus, .show > .btn-primary.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.2rem rgba(246, 122, 88, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
 }
 
 .btn-secondary {
@@ -6076,13 +6081,29 @@ a.close.disabled {
 }
 
 .bg-primary {
-  background-color: #f4623a !important;
+  background-color: black !important;
+}
+
+.maxheight { height: 100% }
+
+section#about {
+  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%),url(../img/backgrounds/nightsky.jpg);
+}
+
+section#services {
+  /*background: linear-gradient(to bottom, #daf5ff 0%, transparent 100%),url(../img/backgrounds/clouds.jpg);*/
+  background-size: cover;
+}
+
+section#aside, section#timeline {
+  background: linear-gradient(to bottom, black 0%, transparent 100%),url(../img/backgrounds/nsky.jpg);
+  background-size: cover;
 }
 
 a.bg-primary:hover, a.bg-primary:focus,
 button.bg-primary:hover,
 button.bg-primary:focus {
-  background-color: #ee3e0d !important;
+  background-color: #444444 !important;
 }
 
 .bg-secondary {
@@ -9989,7 +10010,7 @@ html {
 hr.divider {
   max-width: 3.25rem;
   border-width: 0.2rem;
-  border-color: #f4623a;
+  border-color: #5ef1d7;
 }
 
 hr.light {
@@ -10040,9 +10061,13 @@ hr.light {
   #mainNav {
     box-shadow: none;
     background-color: transparent;
+    border-width: 0px 0px 1px 0px;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-style: solid;
   }
   #mainNav .navbar-brand {
     color: rgba(255, 255, 255, 0.7);
+
   }
   #mainNav .navbar-brand:hover {
     color: #fff;
@@ -10058,20 +10083,23 @@ hr.light {
     padding-right: 0;
   }
   #mainNav.navbar-scrolled {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    background-color: #fff;
+    box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.5);
+    background-color: black;
+    border-width: 0px 0px 1px 0px;
+    border-color: white;
+    border-style: solid;
   }
   #mainNav.navbar-scrolled .navbar-brand {
-    color: #212529;
+    color: white;
   }
   #mainNav.navbar-scrolled .navbar-brand:hover {
-    color: #f4623a;
+    color: dodgerblue;
   }
   #mainNav.navbar-scrolled .navbar-nav .nav-item .nav-link {
-    color: #212529;
+    color: white;
   }
   #mainNav.navbar-scrolled .navbar-nav .nav-item .nav-link:hover {
-    color: #f4623a;
+    color: dodgerblue;
   }
 }
 
@@ -10107,6 +10135,13 @@ header.masthead h1 {
   }
 }
 
+a.portfolio-box {
+  width: 100%;
+  height: 100%;
+  display:block;
+  min-height: 400px;
+}
+
 #portfolio .container-fluid, #portfolio .container-sm, #portfolio .container-md, #portfolio .container-lg, #portfolio .container-xl {
   max-width: 1920px;
 }
@@ -10126,7 +10161,7 @@ header.masthead h1 {
   text-align: center;
   opacity: 0;
   color: #fff;
-  background: rgba(244, 98, 58, 0.9);
+  background: rgba(97, 212, 247, 0.7);
   transition: opacity 0.25s ease;
   text-align: center;
 }
