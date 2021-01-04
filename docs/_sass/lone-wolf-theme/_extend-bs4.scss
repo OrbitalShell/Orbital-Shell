@@ -1,0 +1,210 @@
+@import "../bootstrap/scss/variables";
+
+// set top and bottom margins to all headings
+h1, h2, h3, h4, h5, h6 {
+    margin: 1rem 0rem;
+}
+
+// add bottom border to heading 2
+h2 {
+    @extend .border-bottom;
+    @extend .pb-1;
+}
+
+// remove bottom border in heading 2 when in <a> or class=".card"
+a h2, .card h2 {
+    @extend .border-0;
+}
+
+/*
+ home page jumbotron background
+=============================*/
+.home-page {
+    &-header {
+        @extend .jumbotron;
+        @extend .jumbotron-fluid;
+
+        /* default backgrounds */
+        $color-top: $primary;
+        $color-bottom: $light;
+        /* fallback for old browsers */
+        background: $color-bottom;
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to top, $color-bottom, $color-top);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to top, $color-bottom, $color-top);
+    }
+}
+
+/*
+ archive-posts list of blog posts
+=============================*/
+/* TODO
+.archive-list {
+    &-items {
+
+    }
+} */
+
+/*
+ Blog post author info
+======================*/
+.blog-post {
+    &-hero-img {
+        max-height: 640px;
+    }
+
+    &-toc {
+        ul {
+            @extend .pl-2;
+            list-style: none;
+        }
+    }
+
+    &-author {
+        &-avatar {
+            width: 64px;
+            height: 64px;
+            padding: 0.15rem;
+
+            @include media-breakpoint-down(md) {
+                width: 32px;
+                height: 32px;
+                padding: 0.10rem;
+            }
+        }
+
+        &-name {
+            font-size: 1.0rem;
+            line-height: 1.8;
+            font-weight: bold;
+
+            @include media-breakpoint-down(md) {
+                font-size: 0.8rem;
+                line-height: 1.6;
+                font-weight: bold;
+            }
+        }
+
+        &-headline {
+            font-size: 0.8rem;
+            line-height: 1.6;
+            font-weight: normal;
+
+            @include media-breakpoint-down(md) {
+                font-size: 0.6rem;
+                line-height: 1.4;
+                font-weight: normal;
+            }
+        }
+
+        &-follow button {
+            font-size: 1.0rem;
+            padding: 4px 9px;
+            line-height: 1.8;
+
+            @include media-breakpoint-down(md) {
+                font-size: 0.8rem;
+                line-height: 1.6;
+                padding: 2px 4px;
+            }
+        }
+    }
+
+    &-article {
+        /* Tables inside blog post */
+        >table {
+            @extend .table;
+            @extend .table-bordered;
+
+            thead {
+                @extend .bg-info;
+
+                th {
+                    @extend .p-2;
+                    @extend .font-weight-bold;
+                    @extend .text-white;
+                }
+            }
+
+            tbody {
+                td {
+                    @extend .p-2;
+                }
+            }
+        }
+
+        img {
+            @extend .img-fluid;
+            @extend .shadow-sm;
+            @extend .rounded;
+            @extend .my-2;
+        }
+
+        img.emoji {
+            @extend .img-fluid;
+            @extend .rounded;
+            @extend .my-0;
+            @extend .shadow-none;
+        }
+    }
+
+    &-social-share {
+        @extend .my-3;
+        @extend .border-top;
+        @extend .border-bottom;
+        @extend .border-primary;
+
+        >h4 {
+            @extend .text-dark;
+        }
+
+        >a {
+            @extend .mb-1;
+
+            >span {
+                @extend .d-none;
+                @extend .d-sm-inline-block;
+            }
+        }
+    }
+
+    &-sidebar {
+        >div {
+            @extend .p-3;
+            background-color: $gray-200;
+
+            h4 {
+                @extend .pb-1;
+                @extend .border-bottom;
+                @extend .border-info;
+            }
+
+            ul {
+                @extend .pl-3;
+                @extend .pb-1;
+
+                li {
+                    @extend .text-truncate;
+                }
+            }
+        }
+    }
+}
+
+/*
+ site footer decoration
+ ======================*/
+.page-footer {
+    @extend .text-white;
+
+    &-owner {
+        @extend .py-5;
+        background: $gray-800;
+    }
+
+    &-copyright {
+        @extend .py-3;
+        background: $gray-900;
+    }
+}

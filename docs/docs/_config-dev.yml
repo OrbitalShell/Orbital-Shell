@@ -1,0 +1,6 @@
+# Settings for development environment
+
+url: http://localhost:4000
+
+analytics:
+  provider: false

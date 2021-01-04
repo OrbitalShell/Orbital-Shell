@@ -1,0 +1,30 @@
+<script>
+  (function () {
+    var cx = '{{ site.google.search_engine_id }}';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+
+  function googleCustomSearchExecute() {
+    var input = document.getElementById('lwt-form-search-input');
+    var element = google.search.cse.element.getElement('searchresults-only0');
+    if (input.value == '') {
+      element.clearAllResults();
+    } else {
+      element.execute(input.value);
+    }
+    return false;
+  }
+
+  {% if site.google.instant_search %}
+    $(document).ready(function () {
+      $('input#lwt-form-search-input').on('keyup', function () {
+        googleCustomSearchExecute();
+      });
+    });
+  {% endif %}
+</script>

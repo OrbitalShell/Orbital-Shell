@@ -1,0 +1,31 @@
+<header class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <nav class="container">
+    <!-- site home -->
+    <a class="navbar-brand" href="{{ '/' | absolute_url }}">
+      <img src="{{ '/assets/images/' | relative_url | append: site.logo }}" alt="{{ site.title }} logo" height="32" width="32">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+      aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor01">
+      <ul class="navbar-nav mr-auto">
+        <!-- TODO add theme version dropdown here -->
+        {%- for link in site.data.nav.header -%}
+          {%- if link.url contains '://' -%}
+            {%- assign url = link.url -%}
+          {%- else -%}
+            {%- assign url = link.url | relative_url -%}
+          {%- endif -%}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url }}" {% if link.description %} title="{{ link.description }}"
+            {% endif %}>{{ link.title }}</a>
+        </li>
+        {%- endfor -%}
+      </ul>
+      {% if site.search == true %}
+        {%- include search-providers/search_form.html -%}
+      {% endif %}
+    </div>
+  </nav>
+</header>
