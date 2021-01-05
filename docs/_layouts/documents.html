@@ -1,0 +1,67 @@
+---
+layout: basedoc
+---
+
+<!-- Header  -->
+<header class="masthead pagehead2" style="" >
+
+  <!--<div class="container center">
+    <h1 class="text-white font-weight-bold">Documentation</h1>
+    <hr class="divider my-4">
+  </div>
+ -->
+
+  <div class="container h-90 mbottom1em">
+    <div class="column h-100">
+
+      <div class="row doc-content doc-content-title">
+
+        <style type="text/css" media="screen">
+          p {
+            margin: 0px;
+          }
+        </style>
+
+        <p>
+          {% capture docindexinclude %}{% include docindex.md %}{% endcapture %}
+          {{ docindexinclude | markdownify }}
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+
+</header>
+
+<div class="container mh-90 mbottom1em">
+  <div class="column h-100">
+
+    <!--
+    <div class="row">
+      <p><strong>no documents yet.(</strong></p>
+    </div>
+    -->
+
+    <div class="row doc-content">
+
+      <style type="text/css" media="screen">
+        p {
+          margin: 0px;
+        }
+        div.enlighter {
+          font-size: 10px;
+        }
+        div.enlighter-default {
+          margin-top: 1em;
+        }
+      </style>
+
+      <h2>{{ page.doctitle }}</h2>
+
+      <p>{{ content }}</p>
+
+    </div>
+
+  </div>
+</div>

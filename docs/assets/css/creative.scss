@@ -7464,6 +7464,10 @@ button.bg-dark:focus {
   height: 75% !important;
 }
 
+.h-90 {
+  height: 90% !important;
+}
+
 .h-100 {
   height: 100% !important;
 }
@@ -10117,7 +10121,7 @@ hr.light {
 
 header.masthead {
   padding-top: 10rem;
-  padding-bottom: calc(10rem - 4.5rem);
+  padding-bottom: calc(10rem - 4.5rem + 3rem);
   background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%),url(../img/bg-masthead.jpg);
   background-position: center;
   background-repeat: no-repeat;

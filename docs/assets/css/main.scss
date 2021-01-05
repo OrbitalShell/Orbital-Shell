@@ -11,9 +11,15 @@
         "icons"
 ;
 
+.pagehead {
+  height: 22em !important;
+  min-height: 22em !important;
+}
+
 .pagehead2 {
   /*height: 15em !important;*/
   min-height: 15em !important;
+  margin-top: 3em !important;
 }
 
 .member-box img {
@@ -60,3 +66,46 @@ section#dwnghcliclone {
 section#dwnghclone {
   background-color: white;
 }
+
+.center { margin-left: auto; margin-right: auto; }
+.redborder {border: red solid 1px;}
+
+.doc-content {
+  background-color: white;
+  border: black solid 1px;
+  color: black !important;
+  padding-top: 1em;
+  padding-left: 1.2em;
+  padding-right: 1.2em;
+  padding-bottom: 1.2em;
+  box-shadow: 0 1rem 1rem rgba(0,0,0,0.5);
+  border-radius: 1em;
+  display: block;
+  text-align: left;
+  font-size: 0.8em;
+}
+
+.doc-content-title {
+  padding-bottom: 0.2em;
+}
+
+.doc-content h2 {
+  font-size: 2rem;
+}
+.doc-content h3 {
+  font-size: 1.2rem;
+}
+
+.mtop1em {
+  margin-top: 1em !important;
+}
+.mbottom1em {
+  margin-bottom: 1em !important;
+}
+#mainNav {
+  background-color:black;
+}
+.mh-90 {
+  min-height: 90% !important;
+}
+
