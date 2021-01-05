@@ -15,3 +15,48 @@
   /*height: 15em !important;*/
   min-height: 15em !important;
 }
+
+.member-box img {
+  width: 210px;
+  height: 210px;
+  object-fit: cover;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.page-full {
+  background: linear-gradient(to bottom, #000 0%, transparent 100%),url(../img/bg-masthead.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
+}
+
+.page-Links {
+  background: linear-gradient(to bottom, #000 0%, transparent 100%),url(../img/bg-masthead.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
+}
+
+section {
+  background-color: white;
+}
+
+section#help  {
+  background-color: black;
+  color: white;
+}
+
+section#dwnghclone {
+  background-color: white;
+}
+
+section#dwnghcliclone {
+  background-color: #f0f0f0d3;
+}
+
+section#dwnghclone {
+  background-color: white;
+}
