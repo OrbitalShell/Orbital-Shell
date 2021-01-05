@@ -8,7 +8,7 @@
 
   <title>{% assign title_is_not_empty = page.title | is_not_empty %}{% if title_is_not_empty %}{{ page.title }} - {% endif %}{{ site.title }}</title>
   <!-- Favicon-->
-  <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="{{site.baseurl}}assets/img/favicon.ico" />
   <!-- Font Awesome icons (free version)-->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" crossorigin="anonymous">
   <!-- Google fonts-->
@@ -17,9 +17,9 @@
   <!-- Third party plugin CSS-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha512-+EoPw+Fiwh6eSeRK7zwIKG2MA8i3rV/DGa3tdttQGgWyatG/SkncT53KHQaS5Jh9MNOT3dmFL0FjTY08And/Cw==" crossorigin="anonymous" />
   <!-- Core theme CSS (includes Bootstrap)-->
-  <link href="/assets/css/creative.css" rel="stylesheet">
+  <link href="{{site.baseurl}}assets/css/creative.css" rel="stylesheet">
   <!-- Custom CSS -->
-  <link href="/assets/css/main.css" rel="stylesheet">
+  <link href="{{site.baseurl}}assets/css/main.css" rel="stylesheet">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -29,7 +29,7 @@
   <![endif]-->
 
   <!-- EnlighterJS Themes !-->
-  <link rel="stylesheet" href="/assets/css/enlighterjs.min.css" >
+  <link rel="stylesheet" href="{{site.baseurl}}assets/css/enlighterjs.min.css" >
 
   <!-- basedoc styles fixes and addons -->
   <style type="text/css" media="screen">
@@ -73,10 +73,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g5bLhfVzSqxe9GERORsKhIn1IrpxDAgUsbBGz/V7iSav2zzW325XGd1OMLdL4UiqRJj702IeqnQ==" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js" integrity="sha512-IsNh5E3eYy3tr/JiX2Yx4vsCujtkhwl7SLqgnwLNgf04Hrt9BT9SXlLlZlWx+OK4ndzAoALhsMNcCmkggjZB1w==" crossorigin="anonymous"></script>
   <!-- Core theme JS-->
-  <script src="/assets/js/creative.min.js"></script>
+  <script src="{{site.baseurl}}assets/js/creative.min.js"></script>
 
   <!-- EnlighterJS Library -->
-  <script type="text/javascript" src="/assets/js/enlighterjs.min.js"></script>
+  <script type="text/javascript" src="{{site.baseurl}}assets/js/enlighterjs.min.js"></script>
 
   <!-- EnlighterJS Initialization (see Initialization.md for further examples) -->
   <script type="text/javascript">
