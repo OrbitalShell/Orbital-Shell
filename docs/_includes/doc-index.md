@@ -1,5 +1,3 @@
-## Documentation index
-
 ### About linux shell
 
 * read about the **bash** command line syntax

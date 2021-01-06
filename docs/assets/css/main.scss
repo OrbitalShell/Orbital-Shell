@@ -109,3 +109,32 @@ section#dwnghclone {
   min-height: 90% !important;
 }
 
+.border-bottom-black {
+  border-bottom: black solid 1px;
+}
+.docblock-title {
+  border-bottom: black solid 1px;
+}
+.docblock-content {
+  padding: 1em;
+  line-height: 1.9;
+}
+
+.docblock-content h3, .docblock-content h2 {
+  margin-top: 1em;
+}
+
+.doc-ico {
+  /*font-size:24px;*/
+  vertical-align: baseline;
+  /*margin-left: 1em;*/
+}
+
+.doc-index {
+  max-height: 15em;
+  overflow-y: scroll;
+  padding: 1em;
+  margin-bottom: 0.5em;
+  border: lightgray solid 1px;
+  border-top: black solid 1px;
+}

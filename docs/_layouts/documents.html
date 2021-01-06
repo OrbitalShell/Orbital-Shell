@@ -23,7 +23,7 @@ layout: basedoc
         </style>
 
         <p>
-          {% capture docindexinclude %}{% include docindex.md %}{% endcapture %}
+          {% capture docindexinclude %}{% include docindex.html %}{% endcapture %}
           {{ docindexinclude | markdownify }}
         </p>
 
@@ -43,7 +43,7 @@ layout: basedoc
     </div>
     -->
 
-    <div class="row doc-content">
+    <div class="row doc-content" id="doc-content">
 
       <style type="text/css" media="screen">
         p {
@@ -57,9 +57,9 @@ layout: basedoc
         }
       </style>
 
-      <h2>{{ page.doctitle }}</h2>
+      <h2 class="docblock-title">{{ page.doctitle }}</h2>
 
-      <p>{{ content }}</p>
+      <div class="docblock-content">{{ content }}</div>
 
     </div>
 
