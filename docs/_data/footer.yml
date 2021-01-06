@@ -1,5 +1,6 @@
 copyright: '&copy; Orbital Shell Licence MIT'
 links:
   - text: Orbital Shell
-    url: '.'
+    url: ./
+    internal: true
     new_window: false
