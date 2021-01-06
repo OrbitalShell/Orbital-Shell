@@ -3,12 +3,10 @@ layout: documents
 title: Implements a new command using the orbsh SDK
 doctitle: Implements a new command using the orbsh SDK
 ---
-<p></p>
 <h3>Sample: write a command relating to file system</h3>
 
 First add the necessary imports:
 
-<p></p>
 <pre data-enlighter-language="csharp" data-enlighter-theme="classic" >
   using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
   using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
@@ -34,10 +32,10 @@ First add the necessary imports:
 
 Then you can write a method and its body for your new command implementation:
 
-<p></p>
 <pre data-enlighter-language="csharp" data-enlighter-theme="classic" >
+  // <!--
   [Command("search for files and/or folders")]
-  public CommandResult<(List<FileSystemPath> items,FindCounts counts)> Find(
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
       CommandEvaluationContext context,
       [Parameter("search path")] DirectoryPath path,
       [Option("p", "select names that matches the pattern", true, true)] string pattern,
@@ -57,15 +55,13 @@ Then you can write a method and its body for your new command implementation:
       }
       return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
     }
-  </pre>
-
+  // -->
+</pre>
 
 If you build your code as a .net standard 2.1 class library, it will be usable as a module in Orbital Shell:
 
-<p></p>
-<pre data-enlighter-language="shell" >
+<pre data-enlighter-language="shell" class="a11y-dark">
   # orbsh
   module -l MyCommands.dll
 </pre>
-
 

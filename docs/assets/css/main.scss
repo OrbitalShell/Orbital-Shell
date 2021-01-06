@@ -124,6 +124,16 @@ section#dwnghclone {
   margin-top: 1em;
 }
 
+.doc-content a {
+  color: rgb(49, 49, 49);
+  text-decoration: none;
+  background-color: transparent;
+}
+.doc-content a:hover {
+  color: dodgerblue;
+  text-decoration: underline;
+}
+
 .doc-ico {
   /*font-size:24px;*/
   vertical-align: baseline;
