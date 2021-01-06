@@ -1,5 +1,6 @@
 ---
 layout: home
+permalink: /index.html
 header:
   title: Orbital Shell
   text: >
