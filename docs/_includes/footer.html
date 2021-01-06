@@ -5,6 +5,7 @@
       {{ site.data.footer.copyright }}
       &nbsp;
       {% for link in site.data.footer.links %}
+          {% assign internal_is_not_empty = link.internal | is_not_empty %}
           <a href="{% if internal_is_not_empty %}{{ site.baseurl }}{% endif %}{{ link.url }}" {% assign new_window_is_not_empty = link.new_window | is_not_empty %}
           {% if new_window_is_not_empty %}target="_blank" rel="noopener"
           {% endif %}>{{ link.text }}</a>
