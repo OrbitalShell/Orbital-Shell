@@ -149,6 +149,10 @@ section#dwnghclone {
   border-top: black solid 1px;
 }
 
+.bg-light {
+  background-color: #e4e4e4 !important;
+}
+
 /* responsive layout fixes */
 
 #mainNav.navbar-scrolled {
@@ -261,3 +265,9 @@ body.page-home header.masthead {
   background-repeat: no-repeat;
 }*/
 
+.page-section-smaller {
+  padding-top: 2rem;
+  padding-right: 1em;
+  padding-bottom: 2rem;
+  padding-left: 1em;
+}

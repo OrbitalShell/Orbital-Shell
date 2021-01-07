@@ -18,9 +18,9 @@ sections:
   text: >+
     There is the list of the available downloads of **Orbital Shell** :
 
-    * [Get the full source code from GitHub and the binary of the CLI (join to the project as an active team member!)](#dwnghclone).
+    * <a href="#dwnghclone" class="js-scroll-trigger">Get the full source code from GitHub and the binary of the CLI (join to the project as an active team member!</a>
 
-    * [Get Orbital Shell SDK package from NuGet](#dwnnuget).
+    * <a href="#dwnnuget" class="js-scroll-trigger">Get Orbital Shell SDK package from NuGet</a>
 
 - type: paragraph.html
   section_id: dwnghclone
@@ -40,7 +40,7 @@ sections:
 - type: rawparagraph.html
   section_id: dwnnuget
   title: Get Orbital Shell SDK package from NuGet
-#  background_style: bg-info
+  background_style: bg-light
 #  text_style: text-left text-white
   text-style: text-left
   text: >+
