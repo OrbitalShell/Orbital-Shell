@@ -1,5 +1,6 @@
 ---
 layout: home
+title: home
 permalink: /index.html
 header:
   title: Orbital Shell
