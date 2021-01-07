@@ -28,13 +28,13 @@ sections:
 #  background_style: bg-info
 #  text_style: text-left text-white
   text-style: text-left
-  text: >
+  text: |
     using <b>PowerShell</b>, <b>git</b>, <b>dotnet</b>, <b>vscode</b> or <b>Visual Studio</b>, get and compile the projects from the GitHub repository of the Orbital Shell project:
 
     <pre data-enlighter-language="shell" >
-      cd MyProjects
-      git clone https://github.com/franck-gaspoz/orbital-shell.git
-      cd ./orbital-shell
+    cd MyProjects
+    git clone https://github.com/franck-gaspoz/orbital-shell.git
+    cd ./orbital-shell
     </pre>
 
 - type: rawparagraph.html
@@ -43,13 +43,13 @@ sections:
   background_style: bg-light
 #  text_style: text-left text-white
   text-style: text-left
-  text: >+
+  text: |
     using <b>PowerShell</b>,<b>dotnet</b>, get and link to the Orbital Shell SDK nuget package from your C# project:
 
     <p></p>
     <pre data-enlighter-language="shell" >
-      cd MyProject
-      dotnet add package OrbitalShell --version 1.0.0.0      
+    cd MyProject
+    dotnet add package OrbitalShell --version 1.0.0.0      
     </pre>
 
     then you can use the Orbital Shell SDK from your C# code.    
