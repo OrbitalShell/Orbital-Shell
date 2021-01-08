@@ -1,13 +1,13 @@
 ---
 layout: documents
-title: Implements a new command using the orbsh SDK
-doctitle: Implements a new command using the orbsh SDK
+title: Develop a new command using the orbsh SDK
+doctitle: Develop a new command using the orbsh SDK
 ---
 <h3>Sample: write a command relating to file system</h3>
 
 First add the necessary imports:
 
-<pre data-enlighter-language="csharp" data-enlighter-theme="beyond" data-enlighter-linenumbers="false">
+<pre data-enlighter-language="csharp" data-enlighter-theme="{{site.data.settings.enjs_cs_theme}}" data-enlighter-linenumbers="false">
   using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
   using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
   using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
@@ -32,7 +32,7 @@ First add the necessary imports:
 
 Then you can write a method and its body for your new command implementation:
 
-<pre data-enlighter-language="csharp" data-enlighter-theme="{{enjs_cs_theme}}" data-enlighter-linenumbers="false">
+<pre data-enlighter-language="csharp" data-enlighter-theme="{{site.data.settings.enjs_cs_theme}}" data-enlighter-linenumbers="false">
   // <!--
   [Command("search for files and/or folders")]
   public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
@@ -60,8 +60,8 @@ Then you can write a method and its body for your new command implementation:
 
 If you build your code as a .net standard 2.1 class library, it will be usable as a module in Orbital Shell:
 
-<pre data-enlighter-language="shell" class="a11y-dark">
+<pre data-enlighter-language="shell" data-enlighter-theme="{{site.data.settings.enjs_shell_theme}}" data-enlighter-linenumbers="false">
   # orbsh
   module -l MyCommands.dll
-</pre>
+</pre><!-- class="a11y-dark" -->
 
