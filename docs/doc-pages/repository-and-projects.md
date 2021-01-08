@@ -30,7 +30,6 @@ d-----       26/09/2020     00:49                OrbitalShell
 </pre>
 
 Let's see what are these files and folders in detail :
-<br><br>
 
 |------+------+-------------| 
 | name | type | description |
@@ -41,4 +40,23 @@ Let's see what are these files and folders in detail :
 |**DotNetConsoleAppToolkit**|DotNet standard lib 2.1|.net console application toolkit|
 |**DotNetConsoleAppToolkit-Shell**|DotNet standard lib 2.1|.net console application toolkit : shell extension |
 |**OrbitalShell**|DotNet Core 5 console app|Orbital Shell CLI|
-{:.light-table}
+{:.rsp-table .light-table}
+
+So we have 3 .NetCore projects folders and 2 documentation folders.
+We also have two **solution** projects files:
+* **.vscode** is used by **vscode** when opening the repository as a solution (<code>vscode .</code>)
+* **.sln** is used to open project files in a **Visual Studio** (2019) solution.
+
+Let's watch to these folders in detail:
+{:.marginbottom}
+
+<h4 class="doc-subtitle">Doc</h4>
+
+Any files related to GitHub markdown files that can be browsed at GitHub web repository location: [https://github.com/franck-gaspoz/orbital-shell](https://github.com/franck-gaspoz/orbital-shell)
+These files are linked by the files at repository root:
+* README.md
+
+<h4 class="doc-subtitle">docs</h4>
+
+These is the **gh-pages** folder, containing the files for the **GitHub** pages of Orbital Shell [GitHub Project](https://github.com/users/franck-gaspoz/projects/1)
+This is the content of a **Jekyll** static web site generator based on **Liquid**, **kramdown**, **Ruby**

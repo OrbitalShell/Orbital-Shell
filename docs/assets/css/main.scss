@@ -83,6 +83,15 @@ section#dwnghclone {
   display: block;
   text-align: left;
   font-size: 0.95em;
+  font-family: Nunito,sans-serif;
+}
+
+.doc-subtitle {
+  background: #E0E0E0;
+  padding: 4px;
+  padding-left: 6px;
+  border: lightgray solid 1px;
+  font-size: 1.3em;
 }
 
 .doc-content-title {
@@ -126,7 +135,7 @@ section#dwnghclone {
 }
 
 .doc-content a {
-  color: rgb(49, 49, 49);
+  color: #4284ae;
   text-decoration: none;
   background-color: transparent;
 }
@@ -169,6 +178,11 @@ body.page-page404 > header.pagehead2 {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
+table.rsp-table {
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
 table.light-table th {
   background-color:lightgray;
   padding-left:0.5em;
@@ -180,6 +194,10 @@ table.light-table td {
   padding-left:0.5em;
   padding-right:0.5em;
   border: white solid 2px;
+}
+
+.marginbottom {
+  margin-bottom: 1em;
 }
 
 .bg-light {
