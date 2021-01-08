@@ -1,0 +1,316 @@
+---
+layout: documents
+title: EnlighterJS themes
+doctitle: EnlighterJS themes
+---
+<h4 id="enlighterjs-themes">beyond:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="beyond" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>bootstrap4:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="bootstrap4" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>classic:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="classic" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>dracula:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="dracula" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>droide:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="droide" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>eclipse:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="eclipse" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>enlighter:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="enlighter" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>godzilla:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="godzilla" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>minimal:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="minimal" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>monokai:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="monokai" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>mowtwo:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="mowtwo" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>rowhammer:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="rowhammer" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>
+
+<h4>atomic:</h4>
+
+<pre data-enlighter-language="csharp" data-enlighter-theme="atomic" data-enlighter-linenumbers="false">
+  // <!--
+  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+
+  [Command("search for files and/or folders")]
+  public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(
+      CommandEvaluationContext context,
+      [Parameter("search path")] DirectoryPath path,
+      [Option("p", "select names that matches the pattern", true, true)] string pattern,
+      [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+      )
+    {
+      if (path.CheckExists())
+      {
+        /* ... @todo .. */
+      }
+      return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+    }
+  // -->
+</pre>

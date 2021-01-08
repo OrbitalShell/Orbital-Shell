@@ -1,6 +1,15 @@
-## <span style="margin-right:2em;">Documentation index</span> [<i class="fas fa-home doc-ico"></i>]({{site.baseurl}}documentation.html) [<i class="far fa-arrow-alt-circle-down doc-ico"></i>](#doc-content)
+<div style="float:left">
 
-<div class="redborder doc-index">
+  <h2>Documentation index</h2>
+
+</div>
+<div style="float:right">
+
+  <a href="{{site.baseurl}}documentation.html"><i class="fas fa-home doc-ico"></i></a><a href="#doc-content"><i class="far fa-arrow-alt-circle-down doc-ico"></i></a>
+
+</div>
+
+<div class="redborder doc-index" style="clear:both">
 {% capture docindexinclude %}{% include doc-index.md %}{% endcapture %}
 {{ docindexinclude | markdownify }}
 </div>

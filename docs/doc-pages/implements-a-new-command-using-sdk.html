@@ -7,7 +7,7 @@ doctitle: Implements a new command using the orbsh SDK
 
 First add the necessary imports:
 
-<pre data-enlighter-language="csharp" data-enlighter-theme="classic" >
+<pre data-enlighter-language="csharp" data-enlighter-theme="beyond" data-enlighter-linenumbers="false">
   using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
   using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
   using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
@@ -32,7 +32,7 @@ First add the necessary imports:
 
 Then you can write a method and its body for your new command implementation:
 
-<pre data-enlighter-language="csharp" data-enlighter-theme="classic" >
+<pre data-enlighter-language="csharp" data-enlighter-theme="{{enjs_cs_theme}}" data-enlighter-linenumbers="false">
   // <!--
   [Command("search for files and/or folders")]
   public CommandResult<(List<FileSystemPath&gt; items,FindCounts counts)> Find(

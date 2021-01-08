@@ -13,3 +13,4 @@
 
 * command implementation pattern : model and dynamics
 * [implements a new command using the orbsh SDK]({{site.baseurl}}doc-pages/implements-a-new-command-using-sdk.html#implements-a-new-command-using-sdk){: id="implements-a-new-command-using-sdk" }
+* [EnlighterJS themes]({{site.baseurl}}doc-pages/enlighterjs-themes#enlighterjs-themes){: id="enlighterjs-themes" }

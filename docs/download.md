@@ -31,7 +31,7 @@ sections:
   text: |
     using <b>PowerShell</b>, <b>git</b>, <b>dotnet</b>, <b>vscode</b> or <b>Visual Studio</b>, get and compile the projects from the GitHub repository of the Orbital Shell project:
 
-    <pre data-enlighter-language="shell" >
+    <pre data-enlighter-language="shell" data-enlighter-linenumbers="false">
     cd MyProjects
     git clone https://github.com/franck-gaspoz/orbital-shell.git
     cd ./orbital-shell
@@ -47,7 +47,7 @@ sections:
     using <b>PowerShell</b>,<b>dotnet</b>, get and link to the Orbital Shell SDK nuget package from your C# project:
 
     <p></p>
-    <pre data-enlighter-language="shell" >
+    <pre data-enlighter-language="shell" data-enlighter-linenumbers="false">
     cd MyProject
     dotnet add package OrbitalShell --version 1.0.0.0      
     </pre>
