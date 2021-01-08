@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "dotnet-console-sdk": {
+      "commandName": "Project"
+    }
+  }
+}
