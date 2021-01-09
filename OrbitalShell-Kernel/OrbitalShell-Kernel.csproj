@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <RootNamespace>DotNetConsoleAppToolkit</RootNamespace>
+    <RootNamespace>OrbitalShell</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DotNetConsoleAppToolkit\DotNetConsoleAppToolkit.csproj" />
+    <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>

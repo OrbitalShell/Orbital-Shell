@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <RootNamespace>DotNetConsoleAppToolkit</RootNamespace>
-    <AssemblyName>dotnet-console-app-toolkit</AssemblyName>
+    <RootNamespace>OrbitalShell</RootNamespace>
+    <AssemblyName>OrbitalShell-ConsoleApp</AssemblyName>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
