@@ -3,9 +3,9 @@ using proc = DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using System;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 
-using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.CLI.Component.CommandLine.Processor;
 
-namespace OrbitalShell
+namespace OrbitalShell.CLI
 {
     class Program
     {

@@ -6,6 +6,7 @@
     <RootNamespace>OrbitalShell</RootNamespace>
     <AssemblyName>orbsh</AssemblyName>
     <ApplicationIcon>Images\robotazteque.ico</ApplicationIcon>
+    <StartupObject>OrbitalShell.CLI.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

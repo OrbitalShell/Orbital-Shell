@@ -1,0 +1,1 @@
+./dotnet-console-app-toolkit-shell/bin/Release/ubuntu.18.04-x64/mupsh
