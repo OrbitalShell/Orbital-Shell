@@ -68,7 +68,38 @@ section#dwnghclone {
 }
 
 .center { margin-left: auto; margin-right: auto; }
+
 .redborder {border: red solid 1px;}
+
+.block-text {
+  margin-left: 2em;
+  background: #f1f1f1;
+  border-radius: 4px;
+  padding: 0.5em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border: lightgray solid 1px;
+  display: inline-block;
+  font-size: 0.9em;
+  line-height: 1.4em;
+  padding-right:2em;
+}
+
+.text-tech {
+    text-transform: uppercase;
+    font-size: 0.6em;
+    font-weight: bold;
+    font-family: sans-serif;
+    vertical-align: text-top;
+    margin-left: 1em;
+}
+
+.ico-yellow {
+  color: #ffeb00;
+  text-shadow: 0 0 2px black;
+}
 
 .doc-content {
   background-color: white;
@@ -92,6 +123,7 @@ section#dwnghclone {
   padding-left: 6px;
   border: lightgray solid 1px;
   font-size: 1.3em;
+  margin-top: 1em;
 }
 
 .doc-content-title {
@@ -178,21 +210,26 @@ body.page-page404 > header.pagehead2 {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
-table.rsp-table {
+table.table-rsp {
   margin-bottom: 1em;
   margin-top: 1em;
   max-width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
+  display: block;
 }
 
-table.light-table th {
+table.table-rsp td {
+  font-size: 0.9em;
+}
+
+table.table-light th {
   background-color:lightgray;
   padding-left:0.5em;
   padding-right:0.5em;
   border: white solid 2px;
 }
 
-table.light-table td {
+table.table-light td {
   padding-left:0.5em;
   padding-right:0.5em;
   border: white solid 2px;
@@ -200,6 +237,18 @@ table.light-table td {
 
 .marginbottom {
   margin-bottom: 1em;
+}
+.margintop {
+  margin-top:1em;
+}
+.marginright {
+  margin-right: 1em;
+}
+.marginrighthalf {
+  margin-right: 0.5em;
+}
+.paddingleft {
+  padding-left: 1em;
 }
 
 .bg-light {

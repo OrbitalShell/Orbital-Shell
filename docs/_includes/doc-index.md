@@ -1,4 +1,4 @@
-### About linux shell
+### User manual
 
 * [read about the **bash** command line syntax]({{site.baseurl}}doc-pages/doc-missing.html#bash-cmd-line-syntax){: id="bash-cmd-line-syntax" }{:.doc-missing}
 
