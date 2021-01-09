@@ -181,6 +181,8 @@ body.page-page404 > header.pagehead2 {
 table.rsp-table {
   margin-bottom: 1em;
   margin-top: 1em;
+  max-width: 100%;
+  overflow-x: scroll;
 }
 
 table.light-table th {
