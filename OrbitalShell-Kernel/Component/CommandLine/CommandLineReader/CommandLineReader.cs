@@ -61,7 +61,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
         void Initialize(ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
         {
             if (evalCommandDelegate==null && CommandLineProcessor!=null) _evalCommandDelegate = CommandLineProcessor.Eval;
-            ViewSizeChanged += (o, e) =>
+            /*ViewSizeChanged += (o, e) =>
             {
                 if (_inputReaderThread != null)
                 {
@@ -109,7 +109,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                         }
                     }
                 }
-            };
+            };*/
         }
 
         #endregion
@@ -512,6 +512,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                         var s = _inputReaderStringBuilder.ToString();
                         _inputReaderStringBuilder.Clear();
 
+                        var _enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
                         if (noWorkArea)
                             EnableConstraintConsolePrintInsideWorkArea = false;
 
@@ -520,7 +521,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                             );
 
                         if (noWorkArea)
-                            EnableConstraintConsolePrintInsideWorkArea = true;
+                            EnableConstraintConsolePrintInsideWorkArea = _enableConstraintConsolePrintInsideWorkArea;
 
                         _readingStarted = false;
                         if (_nextPrompt!=null)

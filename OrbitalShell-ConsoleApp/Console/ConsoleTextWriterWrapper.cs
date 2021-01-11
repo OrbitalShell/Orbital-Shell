@@ -779,11 +779,12 @@ namespace DotNetConsoleAppToolkit.Console
         {
             lock (Lock)
             {
-                var (id, x, y, w, h) = ActualWorkArea();
-                var x0 = CursorLeft;
-                var y0 = CursorTop;
                 if (EnableConstraintConsolePrintInsideWorkArea)
                 {
+                    var (id, x, y, w, h) = ActualWorkArea();
+                    var x0 = CursorLeft;
+                    var y0 = CursorTop;
+
                     var croppedLines = new List<string>();
                     var xr = x0 + s.Length - 1;
                     var xm = x + w - 1;
@@ -829,20 +830,21 @@ namespace DotNetConsoleAppToolkit.Console
                 }
                 else
                 {
-                    var dep = CursorLeft + s.Length - 1 > x + w - 1;
+                    /*var dep = CursorLeft + s.Length - 1 > x + w - 1;
                     if (dep)
                     {
                         Write(s);
                         // removed: too slow & buggy (s.Length is wrong due to ansi codes)
                         //if (!IsRedirected) FillLineFromCursor(' ');   // this fix avoid background color to fill the full line on wsl/linux
                     }
-                    else
+                    else*/
                         Write(s);
                     
                     EchoDebug(s);
                     
                     if (lineBreak)
                     {
+#if fix_colors_on_br
                         var f = _cachedForegroundColor;
                         var b = _cachedBackgroundColor;
                         if (!IsRedirected)
@@ -852,14 +854,19 @@ namespace DotNetConsoleAppToolkit.Console
                             SetBackground( ColorSettings.Default.Background.Value );
                             _textWriter.WriteLine(string.Empty);
                         }
+#else
+                         _textWriter.WriteLine(string.Empty);
+#endif
 
                         EchoDebug(string.Empty, true);
 
+#if fix_colors_on_br
                         if (!IsRedirected)
                         {
                             SetForeground( f );
                             SetBackground( b );
                         }
+#endif
                     }
                 }
             }
