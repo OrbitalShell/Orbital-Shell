@@ -248,6 +248,22 @@ namespace DotNetConsoleAppToolkit
         /// </summary>
         public static bool AvoidConsoleAutoLineBreakAtEndOfLine = false;
 
+    /// <summary>
+    /// true until the contrary is detected (exception in GetCoords : sc.WindowLeft)
+    /// </summary>
+    /// <value></value>
+        static bool IsConsoleGeometryEnabled = true;
+
+        public static bool CheckConsoleHasGeometry() {
+            try {
+                var x = sc.WindowLeft;
+            } catch (Exception) {
+                IsConsoleGeometryEnabled = false;
+                return false;
+            }
+            return true;
+        }
+
         public static (int x, int y, int w, int h) GetCoords(int x, int y, int w, int h, bool fitToVisibleArea = true)
         {
             // (1) dos console (eg. vs debug consolehep) set WindowTop as y scroll position. WSL console doesn't (still 0)
@@ -256,6 +272,8 @@ namespace DotNetConsoleAppToolkit
             // CursorLeft and CursorTop are always good
             lock (ConsoleLock)
             {
+                if (!CheckConsoleHasGeometry()) return (x,y,1000,1000);
+
                 if (x < 0) x = sc.WindowLeft + sc.WindowWidth + x;
 
                 if (y < 0) y = /*sc.WindowTop (fix 1) */ +sc.WindowHeight + y;

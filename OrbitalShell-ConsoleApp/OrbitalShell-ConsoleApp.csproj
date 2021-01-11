@@ -5,6 +5,7 @@
     <RootNamespace>OrbitalShell</RootNamespace>
     <AssemblyName>OrbitalShell-ConsoleApp</AssemblyName>
     <NeutralLanguage>en-US</NeutralLanguage>
+	<IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

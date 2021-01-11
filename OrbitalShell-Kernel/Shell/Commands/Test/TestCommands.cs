@@ -20,6 +20,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
         {
             int x = sc.CursorLeft, y = sc.CursorTop;
             context.Out.Echoln($"crx={x} cry={y}");
+            context.Out.Echoln($"{(char)27}[6n");
             return new CommandResult<Point>( new Point(x, y));
         }
 

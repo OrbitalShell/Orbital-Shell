@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata minClientVersion="3.3">
+		
+		<id>OrbitalShell-win-anycpu</id>
+        <version>1.0.0-beta-preview-3</version>
+        <description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core and.Net Standard 2.1. Binaries for Windows Any Cpu</description>
+        <authors>Franck Gaspoz</authors>
+		<projectUrl>https://franck-gaspoz.github.io/orbital-shell/</projectUrl>
+		<license type="expression">MIT</license>
+		<iconUrl>https://github.com/franck-gaspoz/orbital-shell/blob/master/OrbitalShell-CLI/Images/robotazteque.png?raw=true</iconUrl>
+		<releaseNotes>beta preview 1.0.0-3</releaseNotes>
+		<copyright>(c) 2020 Licence MIT</copyright>
+		<tags>bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</tags>
+		<repository type="git" url="https://github.com/franck-gaspoz/orbital-shell.git" branch="main"/>
+		<title>Orbital Shell win anycpu - version 1.0.0 Beta Preview 2</title>
+				
+		<references></references>
+		
+    </metadata>
+
+	<files>
+		<file src="bin\debug\netcoreapp3.1\**" />
+	</files>
+	
+</package>

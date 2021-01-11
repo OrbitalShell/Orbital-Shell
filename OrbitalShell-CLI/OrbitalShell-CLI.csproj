@@ -7,16 +7,29 @@
     <AssemblyName>orbsh</AssemblyName>
     <ApplicationIcon>Images\robotazteque.ico</ApplicationIcon>
     <StartupObject>OrbitalShell.CLI.Program</StartupObject>
+    <Authors>Franck Gaspoz</Authors>
+    <Company>franck.gaspoz@gmail.com</Company>
+    <Product>Orbital Shell</Product>
+    <Description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core and.Net Standard 2.1</Description>
+    <Copyright>(c) 2020 Licence MIT</Copyright>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Version>1.0.0-beta-preview</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Images\**" />
     <EmbeddedResource Remove="Images\**" />
     <None Remove="Images\**" />
+    <None Include="Images\robotazteque.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Component\CommandLine\Defaults\.orbsh_profile" />
+    <None Remove="LICENSE.md" />
+    <None Remove="LICENSE.md" />
   </ItemGroup>
 
   <ItemGroup>

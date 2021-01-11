@@ -1,6 +1,7 @@
 ### User manual
 
 * [read about the **bash** command line syntax]({{site.baseurl}}doc-pages/doc-missing.html#bash-cmd-line-syntax){: id="bash-cmd-line-syntax" }{:.doc-missing}
+* [get, compile and run Orbital Shell]({{site.baseurl}}doc-pages/get-compile-run.html#get-compile-run){: id="get-compile-run" }
 
 ### Developing Orbital Shell
 

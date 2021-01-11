@@ -332,8 +332,12 @@ namespace DotNetConsoleAppToolkit.Console
             Locked(() =>
             {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
+                
                 RestoreDefaultColors();
-                sc.Clear();
+                try {
+                    sc.Clear();
+                } catch (System.IO.IOException) {
+                }
                 //Write(Esc+"[2J" + Esc + "[0;0H"); // bugged on windows
                 //UpdateUI(true, false);
             });

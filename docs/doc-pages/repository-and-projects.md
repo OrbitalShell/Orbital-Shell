@@ -1,12 +1,11 @@
 ---
 layout: documents
-title: Repository And Projects
-doctitle: Repository And Projects
+title: Repository and Projects
+doctitle: Repository and Projects
 ---
 <h3>Contents of the Orbital Shell project repository</h3>
 Use **PowerShell** and **git** to get a clone of the Orbital Shell repository in the folder **orbital-shell** :
 <pre data-enlighter-language="shell" data-enlighter-theme="{{site.data.settings.enjs_shell_theme}}" data-enlighter-linenumbers="false">
-# PowerShell
 cd ~
 git clone https://github.com/franck-gaspoz/orbital-shell.git
 cd ./orbital-shell
@@ -35,7 +34,6 @@ Let's see what are these files and folders in detail :
 | name | type | description |
 |------+------+-------------|
 |**[docs](#docs){:.js-scroll-trigger}**|Jekyll web site|Orbital Shell project Git Pages|
-|**util**|Scripts|Utilitary scripts (application build/deployment)|
 |=================+============+=================+================|
 |**[OrbitalShell-ConsoleApp](#apptlk){:.js-scroll-trigger}**|DotNet standard lib 2.1|.net console application toolkit|
 |**[OrbitalShell-Kernel](#apptlkshell){:.js-scroll-trigger}**|DotNet standard lib 2.1|.net console application toolkit : shell extension |
@@ -45,7 +43,7 @@ Let's see what are these files and folders in detail :
 So we have 3 .NetCore projects folders, 1 documentation folder and 1 utilitary (mainly scripts) folder.
 We also have two **solution** projects files:
 * **.vscode** is used by **vscode** when opening the repository as a solution (<code>vscode .</code>)
-* **.sln** is used to open project files in a **Visual Studio** (2019) solution.
+* **OrbitalShell.sln** is used to open project files in a **Visual Studio** (2019) solution.
 
 Let's watch to these folders in detail:
 {:.marginbottom}
