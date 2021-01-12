@@ -7,7 +7,8 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/OrbitalShell/OrbitalShell.csproj",
+                //"${workspaceFolder}/OrbitalShell/OrbitalShell.csproj",
+                "${workspaceFolder}/OrbitalShell.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +20,8 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/OrbitalShell/OrbitalShell.csproj",
+                //"${workspaceFolder}/OrbitalShell/OrbitalShell.csproj",
+                "${workspaceFolder}/OrbitalShell.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +34,8 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/OrbitalShell/OrbitalShell.csproj",
+                //"${workspaceFolder}/OrbitalShell/OrbitalShell.csproj",
+                "${workspaceFolder}/OrbitalShell.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

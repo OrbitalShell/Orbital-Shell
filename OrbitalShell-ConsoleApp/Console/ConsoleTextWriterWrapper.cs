@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 using cons= DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.Str;
@@ -20,10 +21,14 @@ namespace DotNetConsoleAppToolkit.Console
 
         public ColorSettings ColorSettings = Colors;
 
+        #endregion
+
         #region console output settings
 
         public int CropX = -1;
         public bool EnableFillLineFromCursor = true;
+
+        #endregion
 
         protected int _cursorLeftBackup;
         protected int _cursorTopBackup;
@@ -40,6 +45,7 @@ namespace DotNetConsoleAppToolkit.Console
                 _cachedForegroundColor = DefaultForeground;
                 // reset default colors to fix end of line filled with last colors
                 return $"{DefaultColors}{CRLF}";        // {ESC}[0m
+                //return $"{CRLF}";        // {ESC}[0m
             }
         }
 
@@ -49,10 +55,6 @@ namespace DotNetConsoleAppToolkit.Console
         protected Size _cachedBufferSize = Size.Empty;
         ConsoleColor _cachedForegroundColor;
         ConsoleColor _cachedBackgroundColor;
-
-        #endregion
-
-        #endregion
 
         #endregion
 
@@ -333,9 +335,13 @@ namespace DotNetConsoleAppToolkit.Console
             {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
                 
-                RestoreDefaultColors();
-                try {
-                    sc.Clear();
+                //RestoreDefaultColors();       // removed for the moment - can be restored in the future
+                try {                    
+                    sc.Clear();         // before coz fail on low ansi terminals
+                    //Write(Esc + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
+                    //Write(Esc + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
+                    //base._textWriter.Flush();
+                    //Write(Esc + "[2J");         // bug set arbitrary cursor pos on low-ansi terminals
                 } catch (System.IO.IOException) {
                 }
                 //Write(Esc+"[2J" + Esc + "[0;0H"); // bugged on windows
@@ -352,23 +358,49 @@ namespace DotNetConsoleAppToolkit.Console
             });
         }
 
+        public void ConsoleCursorPosBackup() {
+            lock (Lock) {
+                Write(ANSI.DECSC);
+            }
+        }
+
+        public void ConsoleCursorPosBackupAndRestore() {
+            ConsoleCursorPosBackup();
+            ConsoleCursorPosRestore();
+        }
+
+        public void ConsoleCursorPosRestore() {
+            lock (Lock) {
+                Write(ANSI.DECRC);
+            }
+        }
+
+        public Task ConsoleCursorPosRestoreAsync() {
+            lock (Lock) {
+                return WriteAsync(ANSI.DECRC);
+            }
+        }
+
         public void BackupCursorPos()
         {
-            Locked(() =>
+            lock (Lock)
             {
                 _cursorLeftBackup = CursorLeft;
                 _cursorTopBackup = CursorTop;
-            });
+            };
         }
         
+        /// <summary>
+        /// compat problem on low ansi
+        /// </summary>
         public void RestoreCursorPos()
         {
-            Locked(() =>
+            lock (Lock)
             {
                 Write(Esc + "[2J" + Esc + $"[{_cursorTopBackup+1};{_cursorLeftBackup+1}H");
                 //_textWriter.CursorLeft = _cursorLeftBackup;
-                //textWriter.CursorTop = _cursorTopBackup;
-            });
+                //_textWriter.CursorTop = _cursorTopBackup;
+            };
         }
         
         //public void SetCursorLeft(int x) => Locked(() => _textWriter.CursorLeft = FixX(x));
@@ -842,8 +874,7 @@ namespace DotNetConsoleAppToolkit.Console
                     
                     EchoDebug(s);
                     
-                    if (lineBreak)
-                    {
+                    if (lineBreak) {
 #if fix_colors_on_br
                         var f = _cachedForegroundColor;
                         var b = _cachedBackgroundColor;

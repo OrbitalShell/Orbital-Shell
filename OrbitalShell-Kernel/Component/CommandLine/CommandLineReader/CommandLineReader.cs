@@ -1,4 +1,5 @@
 ﻿//#define dbg
+#define FIX_LOW_ANSI
 
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 using static DotNetConsoleAppToolkit.Component.CommandLine.Processor.CommandLineProcessor;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 using sc = System.Console;
-
+using DotNetConsoleAppToolkit.Console;
 namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
 {
     public class CommandLineReader
@@ -61,7 +62,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
         void Initialize(ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
         {
             if (evalCommandDelegate==null && CommandLineProcessor!=null) _evalCommandDelegate = CommandLineProcessor.Eval;
-            /*ViewSizeChanged += (o, e) =>
+            
+#if manage_embeded_view
+            ViewSizeChanged += (o, e) =>
             {
                 if (_inputReaderThread != null)
                 {
@@ -109,7 +112,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                         }
                     }
                 }
-            };*/
+            };
+#endif
         }
 
         #endregion
@@ -245,7 +249,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                             {
                                 Out.Echo(prompt);
                                 _beginOfLineCurPos = Out.CursorPos;
+                                Out.ConsoleCursorPosBackup();
                             }
+#if FIX_LOW_ANSI
+                            Thread.Sleep(25);
+                            Out.ConsoleCursorPosRestore();                            
+#endif                            
                             _readingStarted = true;
                         }
                         var eol = false;
@@ -280,9 +289,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                             eol = true;
                                             break;
                                         case ConsoleKey.Escape:
-                                            Out.HideCur();
+                                            //Out.HideCur();
                                             CleanUpReadln();
-                                            Out.ShowCur();
+                                            //Out.ShowCur();
                                             break;
                                         case ConsoleKey.Home:
                                             lock (ConsoleLock)
@@ -557,7 +566,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
             {
                 lock (ConsoleLock)
                 {
-                    var (id,left, top, right, bottom) = ActualWorkArea();
+                    /*var (id,left, top, right, bottom) = ActualWorkArea();
                     Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
                     var txt = _inputReaderStringBuilder.ToString();
                     var slines = Out.GetWorkAreaStringSplits(txt, _beginOfLineCurPos).Splits;
@@ -570,7 +579,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                             Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
                         }
                     EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
-                    Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
+                    Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);*/
+                    Out.ConsoleCursorPosRestore();
+                    //Out.Write($"{(char)27}[0J");   // CSI n J
+                    var txt = ANSI.ED(ANSI.EDparameter.p0);
+                    Out.Write( ANSI.ED(ANSI.EDparameter.p0) );
                     _inputReaderStringBuilder.Clear();
                 }
             }

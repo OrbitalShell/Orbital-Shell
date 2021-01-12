@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DotNetConsoleAppToolkit.Console
 {
@@ -202,6 +203,13 @@ namespace DotNetConsoleAppToolkit.Console
         #endregion
 
         #region buffering operations
+        public virtual void Flush() {
+            lock (Lock)
+            {
+                if (IsBufferEnabled) return;
+                _textWriter.Flush();
+            }
+        }
 
         public virtual void EnableBuffer()
         {
@@ -252,8 +260,28 @@ namespace DotNetConsoleAppToolkit.Console
         /// writes a string to the stream
         /// </summary>
         /// <param name="s">string to be written to the stream</param>
+        public virtual Task WriteAsync(string s)
+        {
+            if (IsEchoEnabled)
+                _replicateStreamWriter.WriteAsync(s);
+            if (IsBufferEnabled)
+            {
+                return _bufferWriter.WriteAsync(s);
+            }
+            else
+            {
+                return _textWriter.WriteAsync(s);
+            }
+        }
+
+        /// <summary>
+        /// writes a string to the stream
+        /// </summary>
+        /// <param name="s">string to be written to the stream</param>
         public virtual void WriteLine(string s)
         {
+            if (IsEchoEnabled)
+                _replicateStreamWriter.WriteLine(s);
             if (IsBufferEnabled)
             {
                 _bufferWriter.WriteLine(s);

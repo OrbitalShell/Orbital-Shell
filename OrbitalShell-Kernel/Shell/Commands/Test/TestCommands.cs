@@ -20,7 +20,23 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
         {
             int x = sc.CursorLeft, y = sc.CursorTop;
             context.Out.Echoln($"crx={x} cry={y}");
-            context.Out.Echoln($"{(char)27}[6n");
+            //context.Out.Echoln($"{(char)27}[6n"); // test query cursor - no return in vscode conPty integrated terminal , return ok in windows terminal
+            return new CommandResult<Point>( new Point(x, y));
+        }
+
+        [Command("backup ansi cursor pos")]
+        public CommandResult<Point> CursorPosBackup(CommandEvaluationContext context)
+        {
+            int x = sc.CursorLeft, y = sc.CursorTop;
+            context.Out.Echo(ANSI.DECSC);
+            return new CommandResult<Point>( new Point(x, y));
+        }
+
+        [Command("restore ansi cursor pos")]
+        public CommandResult<Point> CursorPosRestore(CommandEvaluationContext context)
+        {
+            int x = sc.CursorLeft, y = sc.CursorTop;
+            context.Out.Echo(ANSI.DECRC);
             return new CommandResult<Point>( new Point(x, y));
         }
 
