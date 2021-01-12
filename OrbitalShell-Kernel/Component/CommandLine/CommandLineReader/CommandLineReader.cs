@@ -582,7 +582,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                     Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);*/
                     Out.ConsoleCursorPosRestore();
                     //Out.Write($"{(char)27}[0J");   // CSI n J
-                    var txt = ANSI.ED(ANSI.EDparameter.p0);
                     Out.Write( ANSI.ED(ANSI.EDparameter.p0) );
                     _inputReaderStringBuilder.Clear();
                 }

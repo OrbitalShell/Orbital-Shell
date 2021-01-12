@@ -248,9 +248,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             ShellInit( _args, _settings, _commandEvaluationContext);
             // run user profile
-            CommandBatchProcessor.RunBatch(CommandEvaluationContext, Settings.UserProfileFilePath);
+            try {
+                CommandBatchProcessor.RunBatch(CommandEvaluationContext, Settings.UserProfileFilePath);
+            } catch (Exception ex) {
+                Warning($"Run 'user profile file' skipped. Reason is : {ex.Message}");
+            }
             // run user aliases
-            CommandsAlias.Init(CommandEvaluationContext, Settings.AppDataFolderPath, Settings.CommandsAliasFileName);
+            try {
+                CommandsAlias.Init(CommandEvaluationContext, Settings.AppDataFolderPath, Settings.CommandsAliasFileName);            
+            } catch (Exception ex) {
+                Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
+            }
             _isInitialized = true;
         }
 
@@ -270,6 +278,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         void Fail(string message=null, bool lineBreak = true)
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + "Fail" + (message == null ? "" : $" : {message}");
+            Out.Echo(logMessage, lineBreak);
+            Log(logMessage);
+        }
+
+        void Warning(string message=null, bool lineBreak = true)
+        {
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Warning + "Warning" + (message == null ? "" : $" : {message}");
             Out.Echo(logMessage, lineBreak);
             Log(logMessage);
         }
