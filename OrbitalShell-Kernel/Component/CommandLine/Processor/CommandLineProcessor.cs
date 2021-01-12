@@ -286,7 +286,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Warning + "Warning" + (message == null ? "" : $" : {message}");
             Out.Echo(logMessage, lineBreak);
-            Log(logMessage);
+            LogWarning(logMessage);
         }
 
         void Fail(Exception exception)
@@ -337,6 +337,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         public Exception LogError(string text)
         {
             return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Error+"ERR");
+        }
+
+        public Exception LogWarning(string text)
+        {
+            return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Warning+"ERR");
         }
 
         Exception LogInternal(string text,string logPrefix="INF")
