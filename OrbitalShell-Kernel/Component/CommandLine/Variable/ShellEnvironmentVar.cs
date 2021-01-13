@@ -5,6 +5,12 @@
     /// </summary>
     public enum ShellEnvironmentVar
     {
+        Settings_EnableFixLowANSITerminals,
+
+        Settings_ConsoleInitialBufferWidth,
+
+        Settings_ConsoleInitialBufferHeight,
+
         Debug_Pipeline,
         Display_TableFormattingOptions,
         Display_FileSystemPathFormattingOptions,

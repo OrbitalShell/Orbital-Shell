@@ -58,6 +58,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.PS2, "");
             AddValue(ShellEnvironmentVar.PS3, "");
             AddValue(ShellEnvironmentVar.PS4, "");
+
+            // shell settings
+
+            AddValue(ShellEnvironmentVar.Settings_ConsoleInitialBufferWidth,-1);
+            AddValue(ShellEnvironmentVar.Settings_ConsoleInitialBufferHeight,-1);
+            AddValue(ShellEnvironmentVar.Settings_EnableFixLowANSITerminals,false);
         }
 
         DataObject AddObject(ShellEnvironmentNamespace ns)

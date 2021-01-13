@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 {
+    /// <summary>
+    /// @TODO: move in Orbsh settings
+    /// </summary>
     public class CommandLineProcessorSettings
     {
         public string AppName = "CommandLineProcessor";
