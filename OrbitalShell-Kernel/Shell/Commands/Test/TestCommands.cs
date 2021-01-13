@@ -40,6 +40,28 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             return new CommandResult<Point>( new Point(x, y));
         }
 
+        [Command("set console windows size")]        
+        public CommandVoidResult ConsoleSetWindowSize(
+            CommandEvaluationContext context,
+            [Parameter(0,"width")]  int w,
+            [Parameter(1,"height")] int h)
+        {
+            System.Console.WindowWidth = w;
+            System.Console.WindowHeight = h;
+            return CommandVoidResult.Instance;
+        }
+
+        [Command("set console buffer size")]        
+        public CommandVoidResult ConsoleSetBufferSize(
+            CommandEvaluationContext context,
+            [Parameter(0,"width")] int w,
+            [Parameter(1,"height")] int h)
+        {
+            System.Console.WindowWidth = w;
+            System.Console.WindowHeight = h;
+            return CommandVoidResult.Instance;
+        }
+
         [Command("check end of line symbols of a file")]
         public CommandResult<List<string>> Fileeol(
             CommandEvaluationContext context,
