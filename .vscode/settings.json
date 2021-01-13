@@ -1,0 +1,48 @@
+{
+    "workbench.settings.editor": "json",
+    "shellLauncher.shells.windows": [
+        {
+            //"shell": "C:\\Users\\franc\\Documents\\Visual Studio 2019\\Projects\\Applications\\dotnet-console-app-toolkit\\OrbitalShell\\OrbitalShell-CLI\\bin\\Debug\\netcoreapp3.1\\orbsh.exe",
+            "shell": "orbsh.exe",
+            "label": "Orbital Shell"
+        },
+        {
+            "shell": "C:\\Windows\\System32\\cmd.exe",
+            "label": "cmd"
+        },
+        {
+            "shell": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "label": "PowerShell"
+        },
+        {
+            "shell": "C:\\Program Files\\Git\\bin\\bash.exe",
+            "label": "Git bash"
+        },
+        {
+            "shell": "C:\\Windows\\System32\\bash.exe",
+            "label": "WSL Bash"
+        }
+    ],
+    
+    "explorer.confirmDelete": false,
+    "python.pythonPath": "C:\\Users\\franc\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+    "todo-tree.tree.showScanModeButton": false,
+    "workbench.iconTheme": "vscode-icons",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": false,
+    "editor.formatOnType": false,
+    "window.zoomLevel": 0,
+    "terminal.external.windowsExec": "C:\\Users\\franc\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe",
+    "terminal.explorerKind": "external",
+    "terminal.integrated.shell.windows": "C:\\windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "terminal.integrated.copyOnSelection": true,
+    "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.detectLocale": "on",
+    "terminal.integrated.environmentChangesIndicator": "on",
+    "terminal.integrated.localEchoLatencyThreshold": 0,
+    "terminal.integrated.shellArgs.windows": "",
+    "terminal.integrated.rendererType": "canvas",
+    "debug.onTaskErrors": "showErrors"
+}
