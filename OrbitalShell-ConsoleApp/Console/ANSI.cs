@@ -2,40 +2,56 @@
 
 namespace DotNetConsoleAppToolkit.Console
 {
+    /// <summary>
+    /// all ansi valid codes, even for 'low ansi terminals'.
+    /// from https://en.wikipedia.org/wiki/ANSI_escape_code
+    /// </summary>
     public static class ANSI
     {
         public static readonly string ESC = ((char)27) + "";
         public static readonly string CSI = $"{ESC}[";
         public static readonly string CRLF = (char)13 + ((char)10 + "");
 
+        /// <summary>
+        /// backup cursor position
+        /// </summary>
         public static readonly string DECSC = ESC+"7";
+
+        /// <summary>
+        /// restore cursor position
+        /// </summary>
         public static readonly string DECRC = ESC+"8";
 
+        /// <summary>
+        /// from https://en.wikipedia.org/wiki/ANSI_escape_code#DL
+        /// </summary>
         public enum EDparameter {
 
             /// <summary>
-            /// clear from cursor the end of screen
+            /// If n is 0 (or missing), clear from cursor to end of screen
             /// </summary>
             p0 = 0,
 
             /// <summary>
-            /// 
+            /// If n is 1, clear from cursor to beginning of the screen
             /// </summary>
             p1 = 1,
 
             /// <summary>
-            /// 
+            ///  If n is 2, clear entire screen (and moves cursor to upper left on DOS ANSI.SYS).
             /// </summary>
             p2 = 2,
 
             /// <summary>
-            /// 
+            ///  If n is 3, clear entire screen and delete all lines saved in the scrollback buffer (this feature was added for xterm and is supported by other terminal applications).
             /// </summary>
             p3 = 3
 
         }
 
         public static string ED(EDparameter n) => $"{CSI}{(int)n}J";
+
+        #region color support
 
         // notice: removed from start of output: {CSI}0m
         public static string Set3BitsColors(int foregroundNum,int backgroundNum) =>
@@ -63,5 +79,7 @@ namespace DotNetConsoleAppToolkit.Console
             else
                 return (int)Color3BitMap.gray;
         }
+
+        #endregion
     }
 }

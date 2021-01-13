@@ -16,6 +16,8 @@ namespace DotNetConsoleAppToolkit.Console
         public static int InitialBufferCapacity = 16384;
         public object Lock => _textWriter;
 
+        public int TextWriterInitialCapacity = 163840;
+
         protected TextWriter _textWriter;
         protected TextWriter _redirectedTextWriter;
         protected MemoryStream _buffer = new MemoryStream(InitialBufferCapacity);
@@ -50,7 +52,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         public TextWriterWrapper()
         {
-            _textWriter = new StreamWriter(new MemoryStream());
+            _textWriter = new StreamWriter(new MemoryStream(TextWriterInitialCapacity));
         }
 
         public TextWriterWrapper(TextWriter textWriter)
