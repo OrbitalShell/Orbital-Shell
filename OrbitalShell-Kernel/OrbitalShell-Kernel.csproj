@@ -3,7 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>OrbitalShell</RootNamespace>
-	<IsPackable>true</IsPackable>
+    <AssemblyName>OrbitalShell-Kernel</AssemblyName>
+    <NeutralLanguage>en-US</NeutralLanguage>
+	  <IsPackable>true</IsPackable>
+    <Authors>Orbital Shell team</Authors>
+    <Company>franck.gaspoz@gmail.com, gaspard moyrand</Company>
+    <Product>Orbital Shell - Kernel</Product>
+    <Description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core and.Net Standard 2.1</Description>
+    <Copyright>(c) 2020 Licence MIT</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

@@ -97,7 +97,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             var attrname = path[0];
             if (_attributes.TryGetValue(attrname, out var attr))
             {
-                if (path.Count == 1) return true;
+                if (path.Count == 1) { data=attr; return true; }
                 if (attr.Get(path.Slice(1), out var sdata))
                 {
                     data = sdata;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using static DotNetConsoleAppToolkit.Lib.Str;
+using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
 {
@@ -166,5 +167,27 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
         {
             return $"{Name}{(IsReadOnly ? " (r) " : "")} [{ValueType.Name}] {(HasValue ? ("= " + DumpAsText(Value,false)) : "")}";
         }*/
+
+        public void SetValue(object value) {
+            if (IsReadOnly) throw new Exception($"{_valueId} is readonly");
+            if (value!=null) {
+                if (ValueType!=null)
+                {
+                    if (value.GetType()!=ValueType) throw new Exception($"{_valueId} type mismatch: excepted type: {ValueType.FullName}, provided type: {value.GetType().FullName}");
+                }
+            }
+            this.Value = value;
+        }
+
+        /// <summary>
+        ///  set a typed variable from a string value
+        /// </summary>
+        /// <param name="value">a string value that must be converted to var type an assigned to the var</param>
+        public void SetValue(string value) {
+            var v = ValueTextParser.ToTypedValue(value,ValueType);
+            SetValue((object)v);
+        }
+
+        string _valueId => $"DataValue '{Name}'";
     }
 }

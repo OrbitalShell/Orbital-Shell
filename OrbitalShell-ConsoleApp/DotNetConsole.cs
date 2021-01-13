@@ -15,9 +15,6 @@ using System.Threading;
 using RuntimeEnvironment = DotNetConsoleAppToolkit.Lib.RuntimeEnvironment;
 using sc = System.Console;
 
-[assembly: AssemblyDescription("Dot Net Console App Toolkit")]
-[assembly: AssemblyCopyright("© MIT Licence June 2020")]
-[assembly: AssemblyTrademark("franck.gaspoz@gmail.com")]
 namespace DotNetConsoleAppToolkit
 {
     /// <summary>

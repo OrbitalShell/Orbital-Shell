@@ -31,7 +31,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         protected readonly DataRegistry _dataRegistry = new DataRegistry();
 
         /// <summary>
-        /// creates a standard variable rush with known namespacesnot 
+        /// creates a standard variable rush with known namespaces
         /// </summary>
         public Variables() {
             // standard namespaces
@@ -56,10 +56,30 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
         #endregion
 
+        #region value setters
+
+        public DataValue SetValue(string path,string value) 
+        {        
+            var o = GetValue(path);
+            return o;
+        }
+
+        public DataValue SetValue(string rootPath,string path,string value) { 
+            var o = GetValue(Nsp(rootPath,path));
+            return o;
+        }
+
+        public DataValue SetValue(VariableNamespace rootPath,string path) {
+            var o = GetValue(Nsp(rootPath,path));
+            return o;
+        }
+
+        #endregion
+
         #region getters
 
         /// <summary>
-        /// serch in variables the path according to these precedence rules:
+        /// search in variables the path according to these precedence rules:
         /// - absolute path
         /// - path related to Local
         /// - path related to Env

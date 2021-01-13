@@ -11,9 +11,8 @@ namespace OrbitalShell
     {
         static void Main(string[] args)
         {
-            //Out.ClearScreen();
-            var commandLineProcessor = 
-                new proc.CommandLineProcessor(args,new CommandLineProcessorSettings());
+            Out.ClearScreen();
+            var commandLineProcessor = new proc.CommandLineProcessor(args,new CommandLineProcessorSettings());
             var commandLineReader = new CommandLineReader(commandLineProcessor);
             commandLineProcessor.Initialize();
             var returnCode = commandLineReader.ReadCommandLine();

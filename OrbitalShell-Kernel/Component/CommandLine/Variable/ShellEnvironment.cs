@@ -53,7 +53,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor );
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense );
 
-            AddValue(ShellEnvironmentVar.HOME, GetValue(ShellEnvironmentVar.UserPath).Value, true);
+            AddValue(ShellEnvironmentVar.HOME, GetDataValue(ShellEnvironmentVar.UserPath).Value, true);
             AddValue(ShellEnvironmentVar.PS1, "");      
             AddValue(ShellEnvironmentVar.PS2, "");
             AddValue(ShellEnvironmentVar.PS3, "");
@@ -61,9 +61,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
             // shell settings
 
-            AddValue(ShellEnvironmentVar.Settings_ConsoleInitialBufferWidth,-1);
-            AddValue(ShellEnvironmentVar.Settings_ConsoleInitialBufferHeight,-1);
-            AddValue(ShellEnvironmentVar.Settings_EnableFixLowANSITerminals,false);
+            AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth,-1);
+            AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight,-1);
+            AddValue(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode,false);
         }
 
         DataObject AddObject(ShellEnvironmentNamespace ns)
@@ -92,13 +92,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             return Vars.Get(path, out value, throwException);
         }
 
-        public DataValue GetValue(ShellEnvironmentVar var, bool throwException = true)
+        public DataValue GetDataValue(ShellEnvironmentVar var, bool throwException = true)
         {
             var path = Nsp(var);
             return Vars.GetValue(path,throwException);
         }
 
-        public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true) => (T)GetValue(var, throwException).Value;
+        public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true) => (T)GetDataValue(var, throwException).Value;
 
         #endregion
 

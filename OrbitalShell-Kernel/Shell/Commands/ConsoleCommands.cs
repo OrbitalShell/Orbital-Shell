@@ -176,7 +176,7 @@ current print directives are:
             {
                 if (!context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
                 {
-                    var c = Convert.ToChar(i);
+                    var c = Convert.ToChar(i);  
                     if (!flatList)
                         context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {c,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
                     else

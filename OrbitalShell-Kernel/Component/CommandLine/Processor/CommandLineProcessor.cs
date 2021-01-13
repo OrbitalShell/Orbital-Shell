@@ -90,9 +90,43 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public bool HasArgs => _args != null && _args.Length > 0;
 
-        void SetArgs(string[] args)
+        void SetArgs(
+            string[] args,
+            CommandEvaluationContext context,
+            List<string> appliedSettings)
         {
             _args = (string[])args?.Clone();
+
+            // parse and apply any -env:{VarName}={VarValue} argument
+            foreach ( var arg in args ) {
+                if (arg.StartsWith("-env:")) {
+                    try {
+                        var t = arg.Split(':');
+                        var t2 = t[1].Split('=');
+                        if (t.Length==2 && t[0]=="-env" && t2.Length==2) {                            
+                            SetVariable(context,t2[0],t2[1]);
+                            appliedSettings.Add(arg);
+                        } else
+                            LogError($"shell arg set error: syntax error: {arg}");
+                    } catch (Exception ex) {
+                        LogError($"shell arg set error: {arg} (error is: {ex.Message})");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///  set a typed variable from a string value
+        /// </summary>
+        /// <param name="name">name including namespace</param>
+        /// <param name="value">value that must be converted to var type an assigned to the var</param>
+        void SetVariable(CommandEvaluationContext context,string name,string value) {
+            var tn = VariableSyntax.SplitPath(name);
+            var t = new ArraySegment<string>(tn);           
+            if (context.ShellEnv.Get(t,out var o) && o is DataValue val) {
+                var v = ValueTextParser.ToTypedValue(value,val.ValueType);
+                val.SetValue(v);
+            }
         }
 
         #endregion
@@ -112,14 +146,19 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             CommandBatchProcessor = new CommandBatchProcessor();            
         }
 
+        /// <summary>
+        /// shell init actions sequence
+        /// </summary>
+        /// <param name="args">orbsh args</param>
+        /// <param name="settings">(launch) settings object</param>
+        /// <param name="commandEvaluationContext">shell default command evaluation context.Provides null to build a new one</param>
         void ShellInit(
             string[] args,
             CommandLineProcessorSettings settings, 
             CommandEvaluationContext commandEvaluationContext = null)
         {
             Settings = settings;
-            SetArgs(args);
-
+            
             cons.ForegroundColor = DefaultForeground;
             cons.BackgroundColor = DefaultBackground;
 
@@ -132,11 +171,115 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 );
             CommandEvaluationContext = commandEvaluationContext;
 
+            // apply orbsh command args -env:{varName}={varValue}
+            var appliedSettings = new List<string>();
+            SetArgs(args,CommandEvaluationContext,appliedSettings);
+
+            ConsoleInit(CommandEvaluationContext);
+
             if (settings.PrintInfo) PrintInfo(CommandEvaluationContext);
 
-            // assume the application folder ($Env.APPDATA/OrbitalShell) exists and is initialized
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands: '{Assembly.GetExecutingAssembly()}' ... ",false);
 
+            // load kernel commands
+            (int typesCount,int commandsCount) = RegisterCommandsAssembly(CommandEvaluationContext,Assembly.GetExecutingAssembly());
+
+            Done($"types:{typesCount} commands:{commandsCount}");
+            
             var lbr = false;
+
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"init user profile from: '{Settings.AppDataFolderPath}' ... ",false);
+
+            lbr = InitUserProfileFolder(lbr);
+
+            Done();
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{Settings.HistoryFilePath}' ... ",false);
+
+            lbr |= CreateRestoreUserHistoryFile(lbr);
+
+            Done();
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading user aliases: '{Settings.LogFilePath}' ... ",false);
+
+            lbr |= CreateRestoreUserAliasesFile(lbr);
+
+            Done();
+            if (appliedSettings.Count>0) Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"shell args: {string.Join(" ",appliedSettings)}");
+
+            // end inits
+            if (lbr) Out.Echoln();
+        }
+
+        /// <summary>
+        /// init the console. basic init that generally occurs before any display
+        /// </summary>
+        public void ConsoleInit(CommandEvaluationContext context) {
+            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth);
+            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight);
+
+            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode) ) {
+                oWinWidth.SetValue(2000);
+                oWinHeight.SetValue(2000);
+            }
+
+            var WinWidth = (int)oWinWidth.Value;
+            var winHeight = (int)oWinHeight.Value;
+            try {
+                if (WinWidth>-1) System.Console.WindowWidth = WinWidth;
+                if (winHeight>-1) System.Console.WindowHeight = winHeight;
+                System.Console.Clear();
+            } catch {}
+        }
+
+        public bool CreateRestoreUserAliasesFile(bool lbr) {
+            // create/restore user aliases
+            CommandsAlias = new CommandsAlias();
+            var createNewCommandsAliasFile = !File.Exists(Settings.CommandsAliasFilePath);
+            if (createNewCommandsAliasFile)
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ", false);
+            try
+            {
+                if (createNewCommandsAliasFile)
+                {
+                    var defaultAliasFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.CommandsAliasFileName);
+                    File.Copy(defaultAliasFilePath, Settings.CommandsAliasFilePath);
+                    lbr |= true;
+                    Success();
+                }           
+            }
+            catch (Exception createUserProfileFileException)
+            {
+                Fail(createUserProfileFileException);
+            }
+            return lbr;
+        }
+
+        public bool CreateRestoreUserHistoryFile(bool lbr) {
+            // create/restore commands history
+            CmdsHistory = new CommandsHistory();
+            var createNewHistoryFile = !File.Exists(Settings.HistoryFilePath);
+            if (createNewHistoryFile)                
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", false);
+            try
+            {
+                if (createNewHistoryFile)
+#pragma warning disable CS0642 // Possibilité d'instruction vide erronée
+                    using (var fs = File.Create(Settings.HistoryFilePath)) ;
+#pragma warning restore CS0642 // Possibilité d'instruction vide erronée
+                CmdsHistory.Init(Settings.AppDataFolderPath, Settings.HistoryFileName);
+                if (createNewHistoryFile) Success();
+            }
+            catch (Exception createUserProfileFileException)
+            {
+                Fail(createUserProfileFileException);
+            }
+            lbr |= createNewHistoryFile;
+            return lbr;
+        }        
+
+        public bool InitUserProfileFolder(
+            bool lbr)
+        {
+            // assume the application folder ($Env.APPDATA/OrbitalShell) exists and is initialized
 
             // creates user app data folders
             if (!Directory.Exists(Settings.AppDataFolderPath))
@@ -190,53 +333,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 }
                 lbr = true;
             }
-
-            // create/restore commands history
-            CmdsHistory = new CommandsHistory();
-            var createNewHistoryFile = !File.Exists(Settings.HistoryFilePath);
-            if (createNewHistoryFile)                
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", false);
-            try
-            {
-                if (createNewHistoryFile)
-#pragma warning disable CS0642 // Possibilité d'instruction vide erronée
-                    using (var fs = File.Create(Settings.HistoryFilePath)) ;
-#pragma warning restore CS0642 // Possibilité d'instruction vide erronée
-                CmdsHistory.Init(Settings.AppDataFolderPath, Settings.HistoryFileName);
-                if (createNewHistoryFile) Success();
-            }
-            catch (Exception createUserProfileFileException)
-            {
-                Fail(createUserProfileFileException);
-            }
-            lbr |= createNewHistoryFile;
-
-            // create/restore user aliases
-            CommandsAlias = new CommandsAlias();
-            var createNewCommandsAliasFile = !File.Exists(Settings.CommandsAliasFilePath);
-            if (createNewCommandsAliasFile)
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ", false);
-            try
-            {
-                if (createNewCommandsAliasFile)
-                {
-                    var defaultAliasFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.CommandsAliasFileName);
-                    File.Copy(defaultAliasFilePath, Settings.CommandsAliasFilePath);
-                }
-                if (createNewCommandsAliasFile) Success();                    
-            }
-            catch (Exception createUserProfileFileException)
-            {
-                Fail(createUserProfileFileException);
-            }
-            lbr |= createNewHistoryFile;
-
-            // end inits
-            if (lbr) Out.Echoln();
-
-            // load kernel commands
-            RegisterCommandsAssembly(CommandEvaluationContext,Assembly.GetExecutingAssembly());
-
+            
+            return lbr;
         }
 
         /// <summary>
@@ -247,12 +345,14 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             if (_isInitialized) return;
 
             ShellInit( _args, _settings, _commandEvaluationContext);
+
             // run user profile
             try {
                 CommandBatchProcessor.RunBatch(CommandEvaluationContext, Settings.UserProfileFilePath);
             } catch (Exception ex) {
                 Warning($"Run 'user profile file' skipped. Reason is : {ex.Message}");
             }
+
             // run user aliases
             try {
                 CommandsAlias.Init(CommandEvaluationContext, Settings.AppDataFolderPath, Settings.CommandsAliasFileName);            
@@ -269,6 +369,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             Log(logMessage);
         }
 
+        void Done(string message = null)
+        {
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + "Done" + (message==null?"":$" : {message}");
+            Out.Echoln(logMessage);
+            Log(logMessage);
+        }
+
         void Info(string message,bool lineBreak=true) {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Log + message;
             Out.Echo(logMessage,lineBreak);
@@ -280,6 +387,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + "Fail" + (message == null ? "" : $" : {message}");
             Out.Echo(logMessage, lineBreak);
             Log(logMessage);
+        }
+
+        void Error(string message=null, bool lineBreak = true)
+        {
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + "Error" + (message == null ? "" : $" : {message}");
+            Out.Echo(logMessage, lineBreak);
+            LogError(logMessage);
         }
 
         void Warning(string message=null, bool lineBreak = true)
