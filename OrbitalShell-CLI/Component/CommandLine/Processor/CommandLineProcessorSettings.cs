@@ -1,6 +1,6 @@
 ﻿using proc = DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 
-namespace OrbitalShell.CLI.Component.CommandLine.Processor
+namespace OrbitalShell.Component.CommandLine.Processor
 {
     public class CommandLineProcessorSettings
          : proc.CommandLineProcessorSettings
