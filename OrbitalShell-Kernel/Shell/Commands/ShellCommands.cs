@@ -528,5 +528,31 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         }
 
         #endregion
+
+        #region fixes
+
+        [Command("enable console compatibility mode (try to fix common bugs on known consoles)")]        
+        public CommandVoidResult EnableConsoleCompatibilityMode( CommandEvaluationContext context )
+        {
+            var oFix=context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode);
+            oFix.SetValue(true);
+
+            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth);
+            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight);
+
+            oWinWidth.SetValue(2000);
+            oWinHeight.SetValue(2000);
+
+            var WinWidth = (int)oWinWidth.Value;
+            var winHeight = (int)oWinHeight.Value;
+            
+            if (WinWidth>-1) System.Console.WindowWidth = WinWidth;
+            if (winHeight>-1) System.Console.WindowHeight = winHeight;
+            System.Console.Clear();
+            
+            return CommandVoidResult.Instance;
+        }
+
+        #endregion
     }
 }

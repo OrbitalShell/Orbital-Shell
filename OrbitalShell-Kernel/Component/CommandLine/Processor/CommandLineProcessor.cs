@@ -198,7 +198,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             lbr |= CreateRestoreUserHistoryFile(lbr);
 
             Done();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading user aliases: '{Settings.LogFilePath}' ... ",false);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading user aliases: '{Settings.CommandsAliasFilePath}' ... ",false);
 
             lbr |= CreateRestoreUserAliasesFile(lbr);
 
