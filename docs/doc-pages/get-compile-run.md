@@ -11,9 +11,8 @@ Using a shell, for example **PowerShell**:
 cd ~
 git clone https://github.com/franck-gaspoz/orbital-shell.git
 cd ./orbital-shell
-cd ./OrbitalShell-CLI
-dotnet build
-cd ./bin/Debug/netcoreapp3.1
+dotnet build OrbitalShell.sln
+cd ./OrbitalShell-CLI/bin/Debug/netcoreapp3.1
 </pre>
 
 You can then launch **Orbital Shell** from this location:

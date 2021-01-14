@@ -20,7 +20,6 @@ d-----       05/01/2021     22:13                docs
 d-----       09/01/2021     14:06                OrbitalShell-CLI
 d-----       09/01/2021     14:06                OrbitalShell-ConsoleApp
 d-----       09/01/2021     14:06                OrbitalShell-Kernel
-d-----       09/01/2021     13:16                util
 -a----       20/05/2020     13:05           2581 .gitattributes
 -a----       20/05/2020     13:05           6084 .gitignore
 -a----       13/06/2020     04:12           2542 LICENSE.md
@@ -108,7 +107,7 @@ Browse in repository: [https://github.com/franck-gaspoz/orbital-shell/tree/maste
 This console project provides the Orbital Shell executable, but is also a build of code,files and script thats build the distribution of Orbital Shell.
 
 > *provided namespaces*:<br><br>
-> * **OrbitalShell.CLI**
+> * **OrbitalShell**
 >   * Component
 >     * CommandLine
 >       * Defaults

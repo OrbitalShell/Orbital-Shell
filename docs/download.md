@@ -122,9 +122,8 @@ sections:
     cd ~
     git clone https://github.com/franck-gaspoz/orbital-shell.git
     cd ./orbital-shell
-    cd ./OrbitalShell-CLI
-    dotnet build
-    cd ./bin/Debug/netcoreapp3.1
+    dotnet build OrbitalShell.sln
+    cd .OrbitalShell-CLI/bin/Debug/netcoreapp3.1
     ./orbsh.exe
     </pre>   
 
