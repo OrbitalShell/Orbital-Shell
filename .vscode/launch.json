@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/OrbitalShell-CLI/bin/Debug/netcoreapp3.1/orbsh.dll",
-            "args": ["-env:Settings.EnableConsoleCompatibilityMode=true"],
+            "args": ["-env:Settings.EnableConsoleCompatibilityMode=true","-env:Settings.EnableConsoleBackgroundTransparentMode=true"],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "integratedTerminal",

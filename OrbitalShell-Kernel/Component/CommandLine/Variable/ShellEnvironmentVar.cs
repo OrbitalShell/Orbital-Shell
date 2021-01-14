@@ -5,17 +5,33 @@
     /// </summary>
     public enum ShellEnvironmentVar
     {
+        /// <summary>
+        /// if enabled, activate codes that try to fix bad known console behaviors (eg. VSCode)
+        /// </summary>
         Settings_EnableConsoleCompatibilityMode,
 
+        /// <summary>
+        /// initial console width
+        /// </summary>
         Settings_ConsoleInitialWindowWidth,
 
+        /// <summary>
+        /// initial console height
+        /// </summary>
         Settings_ConsoleInitialWindowHeight,
+
+        /// <summary>
+        /// if enabled, avoid to set the background colors in the command line reader component and the app-console layer, to preserve console background transparency
+        /// </summary>
+        Settings_EnableConsoleBackgroundTransparentMode,
 
         Debug_Pipeline,
         Display_TableFormattingOptions,
         Display_FileSystemPathFormattingOptions,
         Display_Colors_ColorSettings,
         UserPath,
+
+        // traditional bash variables
 
         HOME,
         // reference to the name 'orbsh' is impossible here

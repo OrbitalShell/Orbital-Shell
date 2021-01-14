@@ -64,6 +64,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth,-1);
             AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight,-1);
             AddValue(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode,false);
+            //AddValue(ShellEnvironmentVar.Settings_EnableConsoleBackgroundTransparentMode,false);
         }
 
         DataObject AddObject(ShellEnvironmentNamespace ns)

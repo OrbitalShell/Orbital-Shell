@@ -127,6 +127,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 var v = ValueTextParser.ToTypedValue(value,val.ValueType);
                 val.SetValue(v);
             }
+            else
+                Error($"variable not found: {Variables.Nsp(VariableNamespace.Env,context.ShellEnv.Name,name)}");
         }
 
         #endregion

@@ -1,10 +1,10 @@
 {
-    "workbench.settings.editor": "json",
+    //"workbench.settings.editor": "json",
     "shellLauncher.shells.windows": [
         {
             //"shell": "C:\\Users\\franc\\Documents\\Visual Studio 2019\\Projects\\Applications\\dotnet-console-app-toolkit\\OrbitalShell\\OrbitalShell-CLI\\bin\\Debug\\netcoreapp3.1\\orbsh.exe",
             "shell": "orbsh.exe",
-            "args": ["-env:Settings.EnableConsoleCompatibilityMode=true"],
+            "args": ["-env:Settings.EnableConsoleCompatibilityMode=true","-env:Settings.EnableConsoleBackgroundTransparentMode=true"],
             "label": "Orbital Shell"
         },
         {
@@ -44,6 +44,6 @@
     "terminal.integrated.environmentChangesIndicator": "on",
     "terminal.integrated.localEchoLatencyThreshold": 0,
     "terminal.integrated.shellArgs.windows": "",
-    "terminal.integrated.rendererType": "canvas",
+    //"terminal.integrated.rendererType": "canvas",
     "debug.onTaskErrors": "showErrors"
 }
