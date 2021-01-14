@@ -107,9 +107,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                             SetVariable(context,t2[0],t2[1]);
                             appliedSettings.Add(arg);
                         } else
-                            LogError($"shell arg set error: syntax error: {arg}");
+                            Error($"shell arg set error: syntax error: {arg}",true);
                     } catch (Exception ex) {
-                        LogError($"shell arg set error: {arg} (error is: {ex.Message})");
+                        Error($"shell arg set error: {arg} (error is: {ex.Message})",true);
                     }
                 }
             }
@@ -128,7 +128,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 val.SetValue(v);
             }
             else
-                Error($"variable not found: {Variables.Nsp(VariableNamespace.Env,context.ShellEnv.Name,name)}");
+                Error($"variable not found: {Variables.Nsp(VariableNamespace.Env,context.ShellEnv.Name,name)}",true);
         }
 
         #endregion
@@ -181,7 +181,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             if (settings.PrintInfo) PrintInfo(CommandEvaluationContext);
 
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands: '{Assembly.GetExecutingAssembly()}' ... ",false);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands: '{Assembly.GetExecutingAssembly()}' ... ",true,false);
 
             // load kernel commands
             (int typesCount,int commandsCount) = RegisterCommandsAssembly(CommandEvaluationContext,Assembly.GetExecutingAssembly());
@@ -190,17 +190,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             
             var lbr = false;
 
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"init user profile from: '{Settings.AppDataFolderPath}' ... ",false);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"init user profile from: '{Settings.AppDataFolderPath}' ... ",true,false);
 
             lbr = InitUserProfileFolder(lbr);
 
             Done();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{Settings.HistoryFilePath}' ... ",false);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{Settings.HistoryFilePath}' ... ",true,false);
 
             lbr |= CreateRestoreUserHistoryFile(lbr);
 
             Done();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading user aliases: '{Settings.CommandsAliasFilePath}' ... ",false);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading user aliases: '{Settings.CommandsAliasFilePath}' ... ",true,false);
 
             lbr |= CreateRestoreUserAliasesFile(lbr);
 
@@ -278,8 +278,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             return lbr;
         }        
 
-        public bool InitUserProfileFolder(
-            bool lbr)
+        public bool InitUserProfileFolder(bool lbr)
         {
             // assume the application folder ($Env.APPDATA/OrbitalShell) exists and is initialized
 
@@ -287,7 +286,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             if (!Directory.Exists(Settings.AppDataFolderPath))
             {
                 Settings.LogAppendAllLinesErrorIsEnabled = false;
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user shell folder: '{Settings.AppDataFolderPath}' ... ",false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user shell folder: '{Settings.AppDataFolderPath}' ... ",true,false);
                 try
                 {
                     Directory.CreateDirectory(Settings.AppDataFolderPath);
@@ -302,7 +301,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // initialize log file
             if (!File.Exists(Settings.LogFilePath))
             {
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating log file: '{Settings.LogFilePath}' ... ",false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating log file: '{Settings.LogFilePath}' ... ",true,false);
                 try
                 {
                     var logError = Log($"file created on {System.DateTime.Now}");
@@ -322,7 +321,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // initialize user profile
             if (!File.Exists(Settings.UserProfileFilePath))
             {
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ",false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ",true,false);
                 try
                 {
                     var defaultProfileFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.UserProfileFileName);
@@ -364,53 +363,60 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             _isInitialized = true;
         }
 
-        void Success(string message = null)
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + "Success" + (message==null?"":$" : {message}");
+        #region log screeen + file methods
+
+        private string _LogMessage(string message,string prefix,string postfix=" : ")
+            => (string.IsNullOrWhiteSpace(prefix))? message : (prefix + (message==null?"":$"{postfix}{message}"));
+
+        void Success(string message = null,bool log=true,bool lineBreak = true,string prefix="Success")
+        {            
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message,prefix);
             Out.Echoln(logMessage);
-            Log(logMessage);
+            if (log) Log(logMessage);
         }
 
-        void Done(string message = null)
+        void Done(string message = null,bool log=true,bool lineBreak = true,string prefix="Done")
         {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + "Done" + (message==null?"":$" : {message}");
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message,prefix);
             Out.Echoln(logMessage);
-            Log(logMessage);
+            if (log) Log(logMessage);
         }
 
-        void Info(string message,bool lineBreak=true) {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Log + message;
+        void Info(string message,bool log=true,bool lineBreak = true,string prefix="")
+        {   var logMessage = CommandEvaluationContext.ShellEnv.Colors.Log + _LogMessage(message,prefix);
             Out.Echo(logMessage,lineBreak);
-            Log(logMessage);
+            if (log) Log(logMessage);
         }
 
-        void Fail(string message=null, bool lineBreak = true)
+        void Fail(string message=null,bool log=true,bool lineBreak = true,string prefix="Fail")
         {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + "Fail" + (message == null ? "" : $" : {message}");
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + _LogMessage(message,prefix,"");
             Out.Echo(logMessage, lineBreak);
-            Log(logMessage);
-        }
+            if (log) Log(logMessage);
+        } 
 
-        void Error(string message=null, bool lineBreak = true)
+        void Warning(string message=null,bool log=true,bool lineBreak = true,string prefix="Warning")
         {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + "Error" + (message == null ? "" : $" : {message}");
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Warning + _LogMessage(message,prefix);
             Out.Echo(logMessage, lineBreak);
-            LogError(logMessage);
+            if (log) LogWarning(logMessage);
         }
 
-        void Warning(string message=null, bool lineBreak = true)
+        void Fail(Exception exception,bool log=true,bool lineBreak=true,string prefix="Fail : ")
         {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Warning + "Warning" + (message == null ? "" : $" : {message}");
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + exception?.Message ;
+            Out.Echo(logMessage,lineBreak);
+            if (log) LogError(logMessage);
+        }
+
+        void Error(string message=null,bool log=false,bool lineBreak = true,string prefix="Error")
+        {
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + (message == null ? "" : $"{message}");
             Out.Echo(logMessage, lineBreak);
-            LogWarning(logMessage);
-        }
+            if (log) LogError(logMessage);
+        }  
 
-        void Fail(Exception exception)
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + "Fail : " + exception?.Message ;
-            Out.Echoln(logMessage);
-            LogError(logMessage);
-        }
+        #endregion
 
         public void AssertCommandLineProcessorHasACommandLineReader()
         {

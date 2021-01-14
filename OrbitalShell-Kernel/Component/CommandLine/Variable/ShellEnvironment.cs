@@ -64,7 +64,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth,-1);
             AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight,-1);
             AddValue(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode,false);
-            //AddValue(ShellEnvironmentVar.Settings_EnableConsoleBackgroundTransparentMode,false);
+            AddValue(ShellEnvironmentVar.Settings_EnableConsoleBackgroundTransparentMode,false);
+
+            // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
         }
 
         DataObject AddObject(ShellEnvironmentNamespace ns)
