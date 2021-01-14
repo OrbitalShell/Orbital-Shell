@@ -1,5 +1,6 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib;
 using System;
@@ -201,6 +202,8 @@ current print directives are:
         public CommandVoidResult Cls(CommandEvaluationContext context)
         {
             context.Out.ClearScreen();
+            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode) )
+                context.CommandLineProcessor.Eval(context,"enableconsolecompatibilitymode",0);
             return CommandVoidResult.Instance;
         }
 

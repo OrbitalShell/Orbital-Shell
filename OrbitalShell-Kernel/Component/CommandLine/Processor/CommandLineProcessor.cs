@@ -338,7 +338,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         }
 
         /// <summary>
-        /// run init scriptss
+        /// run init scripts
         /// </summary>
         public void Initialize()
         {
