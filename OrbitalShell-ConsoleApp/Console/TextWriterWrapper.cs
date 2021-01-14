@@ -205,6 +205,7 @@ namespace DotNetConsoleAppToolkit.Console
         #endregion
 
         #region buffering operations
+        
         public virtual void Flush() {
             lock (Lock)
             {

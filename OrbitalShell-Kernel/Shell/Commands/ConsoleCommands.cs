@@ -201,8 +201,8 @@ current print directives are:
         [Command("clear console screen")]
         public CommandVoidResult Cls(CommandEvaluationContext context)
         {
-            context.Out.ClearScreen();
-            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode) )
+            context.Out.ClearScreen();            
+            if (context.ShellEnv.OptionSetted(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode) )
                 context.CommandLineProcessor.Eval(context,"enableconsolecompatibilitymode",0);
             return CommandVoidResult.Instance;
         }

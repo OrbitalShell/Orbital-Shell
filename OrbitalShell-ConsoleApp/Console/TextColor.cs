@@ -25,11 +25,16 @@ namespace DotNetConsoleAppToolkit.Console
             Background = background;
         }
 
-        public override string ToString()
-        {
-            return (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
-                + (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower()));
-        }
+        public override string ToString() =>
+             (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
+             + (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower()));
+
+        public string ToStringForegroundOnly() => (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()));
+
+        public string ToString(bool foregroundOnly) => 
+             (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
+             + ((foregroundOnly)? "": (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower())));
+
 
         #region build and convert colors operations
 
@@ -47,7 +52,7 @@ namespace DotNetConsoleAppToolkit.Console
             if (Enum.TryParse((string)c, true, out ConsoleColor r))
                 return r;
             if (TraceCommandErrors) Error($"invalid color name: {c}");
-            return DefaultForeground;
+            return ConsoleColor.Black;
         }
 
         /// <summary>

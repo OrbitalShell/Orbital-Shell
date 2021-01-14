@@ -523,7 +523,7 @@ namespace DotNetConsoleAppToolkit.Console
                 }
                 @out.Echoln();
             }
-            @out.Echoln(line + context.ShellEnv.Colors.Default.ToString());
+            @out.Echo(line + context.ShellEnv.Colors.Default.ToString());
             @out.ShowCur();
             @out.EnableFillLineFromCursor = true;
         }

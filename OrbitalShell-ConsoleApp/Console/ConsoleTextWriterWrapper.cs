@@ -36,7 +36,7 @@ namespace DotNetConsoleAppToolkit.Console
         protected ConsoleColor _foregroundBackup = ConsoleColor.White;
         protected Dictionary<string, CommandDelegate> _drtvs;
 
-        public static readonly string Esc = (char)27+"";
+        public static readonly string ESC = (char)27+"";
         
         public string LNBRK {
             get
@@ -44,8 +44,8 @@ namespace DotNetConsoleAppToolkit.Console
                 _cachedBackgroundColor = DefaultBackground;
                 _cachedForegroundColor = DefaultForeground;
                 // reset default colors to fix end of line filled with last colors
-                return $"{DefaultColors}{CRLF}";        // {ESC}[0m
-                //return $"{CRLF}";        // {ESC}[0m
+                //return $"{DefaultColors}{CRLF}";        // {ESC}[0m
+                return $"{CRLF}";        // {ESC}[0m
             }
         }
 
@@ -53,8 +53,8 @@ namespace DotNetConsoleAppToolkit.Console
 
         protected Point _cachedCursorPosition = Point.Empty;
         protected Size _cachedBufferSize = Size.Empty;
-        ConsoleColor _cachedForegroundColor;
-        ConsoleColor _cachedBackgroundColor;
+        ConsoleColor? _cachedForegroundColor;
+        ConsoleColor? _cachedBackgroundColor;
 
         #endregion
 
@@ -66,6 +66,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         void Init()
         {
+            #if NO
             DefaultForeground = sc.ForegroundColor;
             DefaultBackground = sc.BackgroundColor;
             // fix for linux
@@ -74,6 +75,10 @@ namespace DotNetConsoleAppToolkit.Console
             
             _cachedForegroundColor = DefaultForeground;
             _cachedBackgroundColor = DefaultBackground;
+             #endif
+
+             DefaultForeground = sc.ForegroundColor;
+             _cachedForegroundColor = DefaultForeground;
 
             _drtvs = new Dictionary<string, CommandDelegate>() {
                 { EchoDirectives.bkf+""   , (x) => RelayCall(BackupForeground) },
@@ -203,7 +208,7 @@ namespace DotNetConsoleAppToolkit.Console
         
         public void EnableBold() => Locked(() => { Write($"{(char)27}[1m"); });            // not available on many consoles
         
-        public void DisableTextDecoration() => Locked(() => { Write($"{(char)27}[0m"); RestoreDefaultColors(); });
+        public void DisableTextDecoration() => Locked(() => { Write($"{(char)27}[0m"); /*RestoreDefaultColors();*/ });
 
         public void MoveCursorDown(int n = 1) => Locked(() => { Write($"{(char)27}[{n}B"); });
 
@@ -242,22 +247,24 @@ namespace DotNetConsoleAppToolkit.Console
         /// set foreground color from a 3 bit palette color (ConsoleColor to ansi)
         /// </summary>
         /// <param name="c"></param>
-        public void SetForeground(ConsoleColor c)
+        public void SetForeground(ConsoleColor? c)
         {
+            if (c==null) return;
             lock (Lock)
             {
                 _cachedForegroundColor = c;
-                var s = Set3BitsColors(To3BitColorNum(c),To3BitColorNum(_cachedBackgroundColor));
+                var s = Set3BitsColorsForeground(To3BitColorNum(c.Value));
                 Write(s);
             }
         }
 
-        public void SetBackground(ConsoleColor c)
+        public void SetBackground(ConsoleColor? c)
         {
+            if (c==null) return;
             lock (Lock)
             {
                 _cachedBackgroundColor = c;
-                var s = Set3BitsColors(To3BitColorNum(_cachedForegroundColor), To3BitColorNum(_cachedBackgroundColor));
+                var s = Set3BitsColorsBackground(To3BitColorNum(c.Value));
                 Write(s);
             }
         }
@@ -308,12 +315,12 @@ namespace DotNetConsoleAppToolkit.Console
 
         public void SetDefaultForeground(ConsoleColor c) => Locked(() => DefaultForeground = c);
         
-        public void SetDefaultBackground(ConsoleColor c) => Locked(() => DefaultBackground = c);
+        public void SetDefaultBackground(ConsoleColor c) => Locked(() => { DefaultBackground = c; sc.BackgroundColor = c; });
 
         public void SetDefaultColors(ConsoleColor foregroundColor, ConsoleColor backgroundColor) => 
             Locked(() => {
                 SetDefaultForeground( foregroundColor );
-                SetDefaultForeground( backgroundColor );
+                SetDefaultBackground( backgroundColor );
             });
 
         public void RestoreDefaultColors() => Locked(() => { 
@@ -337,12 +344,23 @@ namespace DotNetConsoleAppToolkit.Console
                 
                 //RestoreDefaultColors();       // removed for the moment - can be restored in the future
                 try {                    
-                    sc.Clear();         // before coz fail on low ansi terminals
-                    //Write(Esc + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
+                    
+                    WriteLine(ANSI.RSTXTA);         // reset text attr
+                    System.Threading.Thread.Sleep(10);
+
+                    //WriteLine(ANSI.RSTXTA+"     ");         // reset text attr
+                    //Write(ANSI.ED(EDparameter.p0));
+                    //Write(ANSI.RSTXTA+" ");
+
+                    sc.Clear();                 // before coz fail on low ansi terminals                                  
+
+                    //Write(ESC + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
+                    
                     //Write(Esc + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
                     //base._textWriter.Flush();
                     //Write(Esc + "[2J");         // bug set arbitrary cursor pos on low-ansi terminals
                 } catch (System.IO.IOException) {
+
                 }
                 //Write(Esc+"[2J" + Esc + "[0;0H"); // bugged on windows
                 //UpdateUI(true, false);
@@ -397,7 +415,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             lock (Lock)
             {
-                Write(Esc + "[2J" + Esc + $"[{_cursorTopBackup+1};{_cursorLeftBackup+1}H");
+                Write(ESC + "[2J" + ESC + $"[{_cursorTopBackup+1};{_cursorLeftBackup+1}H");
                 //_textWriter.CursorLeft = _cursorLeftBackup;
                 //_textWriter.CursorTop = _cursorTopBackup;
             };
@@ -421,7 +439,7 @@ namespace DotNetConsoleAppToolkit.Console
                 lock (Lock)
                 {
                     _cachedCursorPosition.X = value;
-                    Write(Esc + "["+(value+1)+"G");
+                    Write(ESC + "["+(value+1)+"G");
                 } 
             }
         }
@@ -443,7 +461,7 @@ namespace DotNetConsoleAppToolkit.Console
                 lock (Lock)
                 {
                     _cachedCursorPosition.Y = value;
-                    Write(Esc + "[2J" + Esc + $"[{value+1};{CursorLeft+1}H");
+                    Write(ESC + "[2J" + ESC + $"[{value+1};{CursorLeft+1}H");
                 }
             }
         }
@@ -473,7 +491,7 @@ namespace DotNetConsoleAppToolkit.Console
                 }
                 //_textWriter.CursorLeft = x;
                 //_textWriter.CursorTop = y;
-                Write(Esc + $"[{y+1};{x+1}H");
+                Write(ESC + $"[{y+1};{x+1}H");
             }
         }
         
@@ -487,7 +505,7 @@ namespace DotNetConsoleAppToolkit.Console
                     _cachedCursorPosition.X = x;
                     _cachedCursorPosition.Y = y;
                 }
-                Write(Esc + $"[{(y+1)};{(x+1)}H");
+                Write(ESC + $"[{(y+1)};{(x+1)}H");
             }
         }
         
@@ -777,7 +795,7 @@ namespace DotNetConsoleAppToolkit.Console
                 }
                 else
                 {
-                    if (!doNotEvalutatePrintDirectives) result = cmd.Value.Value(null);
+                    if (!doNotEvalutatePrintDirectives) result = cmd.Value.Value(null);     // evaluate print directive command
                     
                     if (FileEchoDebugEnabled && FileEchoDebugCommands)
                         EchoDebug(CommandBlockBeginChar + cmd.Value.Key + CommandBlockEndChar);
@@ -785,7 +803,7 @@ namespace DotNetConsoleAppToolkit.Console
                     printSequences?.Add(new EchoSequence(cmd.Value.Key, i, j, value, null, startIndex));
                 }
                 if (result != null)
-                    Echo(result, false);
+                    Echo(result, false);    // recurse
 
                 if (firstCommandSeparatorCharIndex > -1)
                 {
@@ -1206,7 +1224,7 @@ namespace DotNetConsoleAppToolkit.Console
                                 left, top, right, bottom - top,
                                 left, top + 1,
                                 ' ',
-                                DefaultForeground, DefaultBackground);
+                                DefaultForeground ?? ConsoleColor.White, DefaultBackground ?? ConsoleColor.Black );
                     }
 
                     if (enableOutput && cy > bottom /*- 1*/)
@@ -1220,7 +1238,7 @@ namespace DotNetConsoleAppToolkit.Console
                                 left, top - dy, right, nh,
                                 left, top,
                                 ' ',
-                                DefaultForeground, DefaultBackground);
+                                DefaultForeground ?? ConsoleColor.White, DefaultBackground ?? ConsoleColor.Black );
                         }
                     }
                 }

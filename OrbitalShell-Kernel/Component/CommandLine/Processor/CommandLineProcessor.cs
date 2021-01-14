@@ -160,22 +160,25 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             CommandEvaluationContext commandEvaluationContext = null)
         {
             Settings = settings;
-            
-            cons.ForegroundColor = DefaultForeground;
-            cons.BackgroundColor = DefaultBackground;
-
+                        
             commandEvaluationContext ??= new CommandEvaluationContext(
-                    this,
-                    Out,
-                    cons.In,
-                    Err,
-                    null
-                );
+                this,
+                Out,
+                cons.In,
+                Err,
+                null
+            );
             CommandEvaluationContext = commandEvaluationContext;
+
+            if (DefaultForeground!=null) cons.ForegroundColor = DefaultForeground.Value; 
 
             // apply orbsh command args -env:{varName}={varValue}
             var appliedSettings = new List<string>();
             SetArgs(args,CommandEvaluationContext,appliedSettings);
+
+            /*if (!commandEvaluationContext.ShellEnv.OptionSetted(ShellEnvironmentVar.Settings_EnableConsoleBackgroundTransparentMode)
+                && DefaultBackground!=null)      
+                cons.BackgroundColor = DefaultBackground.Value;*/
 
             ConsoleInit(CommandEvaluationContext);
 
@@ -186,7 +189,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // load kernel commands
             (int typesCount,int commandsCount) = RegisterCommandsAssembly(CommandEvaluationContext,Assembly.GetExecutingAssembly());
 
-            Done($"types:{typesCount} commands:{commandsCount}");
+            Done($"commands:{commandsCount} in {typesCount} types");
             
             var lbr = false;
 
@@ -218,7 +221,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth);
             var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight);
 
-            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode) ) {
+            if (context.ShellEnv.OptionSetted(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode) ) {
                 oWinWidth.SetValue(2000);
                 oWinHeight.SetValue(2000);
             }

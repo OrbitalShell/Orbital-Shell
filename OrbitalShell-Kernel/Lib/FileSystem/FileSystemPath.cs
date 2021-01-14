@@ -136,6 +136,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
             @out.Echo(r + context.ShellEnv.Colors.Default);
             if (HasError)
                 @out.Echo($" {ErrorColorization}{GetError()}");
+            @out.Echo(ANSI.RSTXTA);
         }
 
 #if NO

@@ -63,8 +63,8 @@ namespace DotNetConsoleAppToolkit
         
         public static bool TraceCommandErrors = true;
         public static bool DumpExceptions = true;
-        public static ConsoleColor DefaultForeground;
-        public static ConsoleColor DefaultBackground;
+        public static ConsoleColor? DefaultForeground;
+        public static ConsoleColor? DefaultBackground;
 
         public static char CommandBlockBeginChar = '(';
         public static char CommandBlockEndChar = ')';

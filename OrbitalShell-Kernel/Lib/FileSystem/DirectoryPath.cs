@@ -19,8 +19,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
         {
             if (!DirectoryInfo.Exists)
             {
-                if (dumpError)
-                    Errorln($"directory doesn't exists: {this}");
+                if (dumpError) Errorln($"directory doesn't exists: {this}");
                 return false;
             }
             return true;

@@ -4,7 +4,7 @@ using static DotNetConsoleAppToolkit.DotNetConsole;
 namespace DotNetConsoleAppToolkit.Console
 {
     public class ColorSettings 
-    {
+    {        
         public TextColor Default => new TextColor(DefaultForeground, DefaultBackground);
         public TextColor Inverted => new TextColor(DefaultBackground, DefaultForeground);
 

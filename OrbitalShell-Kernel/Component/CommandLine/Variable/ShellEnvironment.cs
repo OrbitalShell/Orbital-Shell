@@ -64,7 +64,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth,-1);
             AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight,-1);
             AddValue(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode,false);
-            AddValue(ShellEnvironmentVar.Settings_EnableConsoleBackgroundTransparentMode,false);
 
             // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
         }
@@ -102,6 +101,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         }
 
         public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true) => (T)GetDataValue(var, throwException).Value;
+
+        public bool OptionSetted(ShellEnvironmentVar @var) => GetValue<bool>(@var,false);    
 
         #endregion
 
