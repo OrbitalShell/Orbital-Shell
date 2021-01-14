@@ -77,6 +77,7 @@ namespace DotNetConsoleAppToolkit.Console
             _cachedBackgroundColor = DefaultBackground;
              #endif
 
+            // TIP: dot not affect background color through System.Console.Background to preserve terminal console background transparency
              DefaultForeground = sc.ForegroundColor;
              _cachedForegroundColor = DefaultForeground;
 
@@ -182,13 +183,21 @@ namespace DotNetConsoleAppToolkit.Console
         
         object RelayCall(Action method) { method(); return null; }
 
-        public void CursorHome() => Locked(() => { Write($"{(char)27}[H"); });
+        public void CursorHome() { 
+            lock (Lock) { Write($"{(char)27}[H"); }
+        }
         
-        public void ClearLineFromCursorRight() => Locked(() => { Write($"{(char)27}[K"); });
+        public void ClearLineFromCursorRight() { 
+            lock (Lock) {  Write($"{(char)27}[K"); };
+        }
         
-        public void ClearLineFromCursorLeft() => Locked(() => { Write($"{(char)27}[1K"); });
+        public void ClearLineFromCursorLeft() { 
+            lock (Lock) {  Write($"{(char)27}[1K"); }
+        }
         
-        public void ClearLine() => Locked(() => { Write($"{(char)27}[2K"); });
+        public void ClearLine() { 
+            lock (Lock) {  Write($"{(char)27}[2K"); }
+        }
 
         public void FillFromCursorRight()
         {
@@ -198,25 +207,45 @@ namespace DotNetConsoleAppToolkit.Console
             }
         }
 
-        public void EnableInvert() => Locked(() => { Write($"{(char)27}[7m"); });
+        public void EnableInvert() { 
+            lock (Lock) {  Write($"{(char)27}[7m"); }
+        }
         
-        public void EnableBlink() => Locked(() => { Write($"{(char)27}[5m"); });           // not available on many consoles
+        public void EnableBlink() { 
+            lock (Lock) {  Write($"{(char)27}[5m"); }           // not available on many consoles
+        }
         
-        public void EnableLowIntensity() => Locked(() => { Write($"{(char)27}[2m"); });    // not available on many consoles
+        public void EnableLowIntensity() { 
+            lock (Lock) {  Write($"{(char)27}[2m"); }    // not available on many consoles
+        }
         
-        public void EnableUnderline() => Locked(() => { Write($"{(char)27}[4m"); });
+        public void EnableUnderline() { 
+            lock (Lock) {  Write($"{(char)27}[4m"); }
+        }
         
-        public void EnableBold() => Locked(() => { Write($"{(char)27}[1m"); });            // not available on many consoles
+        public void EnableBold() { 
+            lock (Lock) {  Write($"{(char)27}[1m"); }            // not available on many consoles
+        }
         
-        public void DisableTextDecoration() => Locked(() => { Write($"{(char)27}[0m"); /*RestoreDefaultColors();*/ });
+        public void DisableTextDecoration() { 
+            lock (Lock) {  Write($"{(char)27}[0m"); /*RestoreDefaultColors();*/ }
+        }
 
-        public void MoveCursorDown(int n = 1) => Locked(() => { Write($"{(char)27}[{n}B"); });
+        public void MoveCursorDown(int n = 1){ 
+            lock (Lock) {  Write($"{(char)27}[{n}B"); }
+        }
 
-        public void MoveCursorTop(int n = 1) => Locked(() => { Write($"{(char)27}[{n}A"); });
+        public void MoveCursorTop(int n = 1) { 
+            lock (Lock) {  Write($"{(char)27}[{n}A"); }
+        }
 
-        public void MoveCursorLeft(int n = 1) => Locked(() => { Write($"{(char)27}[{n}D"); });
+        public void MoveCursorLeft(int n = 1) { 
+            lock (Lock) {  Write($"{(char)27}[{n}D"); }
+        }
 
-        public void MoveCursorRight(int n = 1) => Locked(() => { Write($"{(char)27}[{n}C"); });
+        public void MoveCursorRight(int n = 1) { 
+            lock (Lock) {  Write($"{(char)27}[{n}C"); }
+        }
 
         public void ScrollWindowDown(int n = 1) { Write(((char)27) + $"[{n}T"); }
 
@@ -225,23 +254,30 @@ namespace DotNetConsoleAppToolkit.Console
         /// <summary>
         /// backup the current 3bit foreground color
         /// </summary>
-        public void BackupForeground() => Locked(() =>
-        {
-            if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
-            _foregroundBackup = sc.ForegroundColor;
-        });
+        public void BackupForeground() { 
+            lock (Lock) { 
+                if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
+                _foregroundBackup = sc.ForegroundColor;
+            }
+        }
 
         /// <summary>
         /// backup the current 3bit background color
         /// </summary>
-        public void BackupBackground() => Locked(() => {
-            if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
-            _backgroundBackup = sc.BackgroundColor;
-        });
+        public void BackupBackground() { 
+            lock (Lock) { 
+                if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
+                _backgroundBackup = sc.BackgroundColor;
+            };
+        }
 
-        public void RestoreForeground() => Locked(() => SetForeground( _foregroundBackup ));
+        public void RestoreForeground() { 
+            lock (Lock) {  SetForeground( _foregroundBackup ); }
+        }
 
-        public void RestoreBackground() => Locked(() => SetBackground( _backgroundBackup ));
+        public void RestoreBackground() { 
+            lock (Lock) { SetBackground( _backgroundBackup ); }
+        }
 
         /// <summary>
         /// set foreground color from a 3 bit palette color (ConsoleColor to ansi)
@@ -273,19 +309,21 @@ namespace DotNetConsoleAppToolkit.Console
         /// set foreground color from a 8 bit palette color (vt/ansi)
         /// </summary>
         /// <param name="c"></param>
-        public void SetForeground(int c) => Locked(() =>
-        {
-            Write($"{(char)27}[38;5;{c}m");
-        });
+        public void SetForeground(int c) { 
+            lock (Lock) {
+                Write($"{(char)27}[38;5;{c}m");
+            }
+        }
 
         /// <summary>
         /// set background color from a 8 bit palette color (vt/ansi)
         /// </summary>
         /// <param name="c"></param>
-        public void SetBackground(int c) => Locked(() =>
-        {
-            Write($"{(char)27}[48;5;{c}m");
-        });
+        public void SetBackground(int c) { 
+            lock (Lock) { 
+                Write($"{(char)27}[48;5;{c}m");
+            }
+        }
 
         /// <summary>
         /// set foreground color from a 24 bit palette color (vt/ansi)
@@ -293,10 +331,11 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="r">red from 0 to 255</param>
         /// <param name="g">green from 0 to 255</param>
         /// <param name="b">blue from 0 to 255</param>
-        public void SetForeground(int r, int g, int b) => Locked(() =>
-        {
-            Write($"{(char)27}[38;2;{r};{g};{b}m");
-        });
+        public void SetForeground(int r, int g, int b) { 
+            lock (Lock) { 
+                Write($"{(char)27}[38;2;{r};{g};{b}m");
+            }
+        }
 
         /// <summary>
         /// set background color from a 24 bit palette color (vt/ansi)
@@ -304,29 +343,43 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="r">red from 0 to 255</param>
         /// <param name="g">green from 0 to 255</param>
         /// <param name="b">blue from 0 to 255</param>
-        public void SetBackground(int r, int g, int b) => Locked(() =>
-        {
-            Write($"{(char)27}[48;2;{r};{g};{b}m");
-        });
+        public void SetBackground(int r, int g, int b) { 
+            lock (Lock) { 
+                Write($"{(char)27}[48;2;{r};{g};{b}m");
+            }
+        }
 
         public void SetForeground((int r, int g, int b) color) => SetForeground(color.r, color.g, color.b);
         
         public void SetBackground((int r, int g, int b) color) => SetBackground(color.r, color.g, color.b);
 
-        public void SetDefaultForeground(ConsoleColor c) => Locked(() => DefaultForeground = c);
+        public void SetDefaultForeground(ConsoleColor c) { 
+            lock (Lock) { 
+                DefaultForeground = c;
+            }
+        }
         
-        public void SetDefaultBackground(ConsoleColor c) => Locked(() => { DefaultBackground = c; sc.BackgroundColor = c; });
+        public void SetDefaultBackground(ConsoleColor c) { 
+            lock (Lock) { 
+                DefaultBackground = c; sc.BackgroundColor = c; 
+            };
+        }
 
-        public void SetDefaultColors(ConsoleColor foregroundColor, ConsoleColor backgroundColor) => 
-            Locked(() => {
+        public void SetDefaultColors(ConsoleColor foregroundColor, ConsoleColor backgroundColor) 
+        { 
+            lock (Lock) { 
                 SetDefaultForeground( foregroundColor );
                 SetDefaultBackground( backgroundColor );
-            });
+            };
+        }
 
-        public void RestoreDefaultColors() => Locked(() => { 
-            SetForeground( DefaultForeground); 
-            SetBackground( DefaultBackground); 
-        });
+        public void RestoreDefaultColors() 
+        { 
+            lock (Lock) { 
+                SetForeground( DefaultForeground); 
+                SetBackground( DefaultBackground); 
+            }
+        }
 
         public string DefaultColors
         {
@@ -338,7 +391,7 @@ namespace DotNetConsoleAppToolkit.Console
         
         public void ClearScreen()
         {
-            Locked(() =>
+            lock (Lock)
             {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
                 
@@ -359,21 +412,22 @@ namespace DotNetConsoleAppToolkit.Console
                     //Write(Esc + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
                     //base._textWriter.Flush();
                     //Write(Esc + "[2J");         // bug set arbitrary cursor pos on low-ansi terminals
+
                 } catch (System.IO.IOException) {
 
                 }
                 //Write(Esc+"[2J" + Esc + "[0;0H"); // bugged on windows
                 //UpdateUI(true, false);
-            });
+            };
         }
         
         public void LineBreak()
         {
-            Locked(() =>
+            lock (Lock)
             {
                 //ConsolePrint(string.Empty, true);
                 Write(LNBRK);
-            });
+            };
         }
 
         public void ConsoleCursorPosBackup() {
@@ -511,9 +565,13 @@ namespace DotNetConsoleAppToolkit.Console
         
         public bool CursorVisible => sc.CursorVisible;
         
-        public void HideCur() => Locked(() => sc.CursorVisible = false);
+        public void HideCur() { 
+            lock (Lock) { sc.CursorVisible = false;}
+        }
         
-        public void ShowCur() => Locked(() => sc.CursorVisible = true);              
+        public void ShowCur() { 
+            lock (Lock) {  sc.CursorVisible = true; }
+        }              
 
         public string GetPrint(
             string s,

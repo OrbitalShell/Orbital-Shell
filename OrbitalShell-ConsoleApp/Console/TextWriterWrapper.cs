@@ -205,7 +205,7 @@ namespace DotNetConsoleAppToolkit.Console
         #endregion
 
         #region buffering operations
-        
+
         public virtual void Flush() {
             lock (Lock)
             {
@@ -313,13 +313,13 @@ namespace DotNetConsoleAppToolkit.Console
 
         #region lock operations
 
-        public void Locked(Action action)
+        /*public void Locked(Action action)
         {
             lock (Lock)
             {
                 action?.Invoke();
             }
-        }
+        }*/
 
         #endregion
     }
