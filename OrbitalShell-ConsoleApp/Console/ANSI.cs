@@ -406,7 +406,7 @@ namespace DotNetConsoleAppToolkit.Console
                     return n;
                 }
                 var t = s.Split(",");
-                if (t.Length!=3) throw new Exception("wrong numbers of parameters.. attempted exactly two ,");
+                if (t.Length!=3) throw new Exception("wrong numbers of parameters.. attempted exactly two comma");
                 var r = convert(t[0]);
                 var g = convert(t[1]);
                 var b = convert(t[2]); 
