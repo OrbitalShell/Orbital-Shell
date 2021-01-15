@@ -82,6 +82,15 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             else return new CommandResult<List<string>>( r, ReturnCode.Error);
         }
 
+        [Command("echo an ANSI / VT-100 sequence")]
+        public CommandVoidResult ANSISeq(
+            CommandEvaluationContext context,
+            [Parameter(0,"esc sequence (text behind ESC)")] string seq
+        ) {
+            Out.Echoln(ANSI.ESC+seq);
+            return CommandVoidResult.Instance;
+        }
+
         [Command("show current colors support and current colors map using ANSI escape codes")]
         public CommandVoidResult ANSIColorTest(
             CommandEvaluationContext context

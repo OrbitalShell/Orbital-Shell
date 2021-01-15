@@ -41,9 +41,9 @@ namespace DotNetConsoleAppToolkit.Console
         public string LNBRK {
             get
             {
-                _cachedBackgroundColor = DefaultBackground;
-                _cachedForegroundColor = DefaultForeground;
-                // reset default colors to fix end of line filled with last colors
+                _cachedBackgroundColor = DefaultBackground;     // @TODO: has no sens
+                _cachedForegroundColor = DefaultForeground;     // @TODO: has no sens
+                // reset default colors to fix end of line filled with last colors ( @TODO: do as a fix by setting )
                 //return $"{DefaultColors}{CRLF}";        // {ESC}[0m
                 return $"{CRLF}";        // {ESC}[0m
             }
@@ -272,11 +272,11 @@ namespace DotNetConsoleAppToolkit.Console
         }
 
         public void RestoreForeground() { 
-            lock (Lock) {  SetForeground( _foregroundBackup ); }
+            lock (Lock) {  SetForeground( DefaultForeground ); }
         }
 
         public void RestoreBackground() { 
-            lock (Lock) { SetBackground( _backgroundBackup ); }
+            lock (Lock) { SetBackground( DefaultBackground ); }
         }
 
         /// <summary>
@@ -355,7 +355,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         public void SetDefaultForeground(ConsoleColor c) { 
             lock (Lock) { 
-                DefaultForeground = c;
+                DefaultForeground = c; sc.ForegroundColor = c;
             }
         }
         

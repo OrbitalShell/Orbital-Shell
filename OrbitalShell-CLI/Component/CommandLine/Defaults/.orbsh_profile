@@ -1,7 +1,7 @@
 ﻿#!orbsh
 # this is the default orbsh user profile init script
 
-# you can set here the default foreground and background default colors
+# here you can set the default foreground and background default colors
 # echo (df=white,db=black)
 
 # set the prompt

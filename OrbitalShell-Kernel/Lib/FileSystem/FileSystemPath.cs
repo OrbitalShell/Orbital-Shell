@@ -132,11 +132,12 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
             var pdr = options.PaddingRight - name.Length;
             if (!string.IsNullOrWhiteSpace(quote)) pdr -= 2;
             var rightspace = (options.PaddingRight > -1) ? endcolor + "".PadRight(pdr > 0 ? pdr : 1, ' ') : "";
-            r += $"{options.LinePrefix}{attr}{color}{options.Prefix}{quote}{name}{quote}{hidden}{rightspace}{options.Postfix}";
+
+            r += $"(rsf){options.LinePrefix}{attr}{color}{options.Prefix}{quote}{name}{quote}{hidden}{rightspace}{options.Postfix}";
             @out.Echo(r + context.ShellEnv.Colors.Default);
             if (HasError)
                 @out.Echo($" {ErrorColorization}{GetError()}");
-            @out.Echo(ANSI.RSTXTA);
+            @out.Echo(ANSI.RSTXTA); // @TODO: convention - si modif des couleurs uniquement ?? ou est-ce un hack pour la fin de ligne ?? a pour contrat de resetter f et b + unset text decoration
         }
 
 #if NO
