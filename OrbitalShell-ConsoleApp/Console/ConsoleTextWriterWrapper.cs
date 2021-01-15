@@ -139,6 +139,10 @@ namespace DotNetConsoleAppToolkit.Console
                 { EchoDirectives.cndown+"="     , (null, _MoveCursorDown) },
                 { EchoDirectives.cnleft+"="     , (null, _MoveCursorLeft) },
                 { EchoDirectives.cnright+"="    , (null, _MoveCursorRight) },
+
+                // ...
+
+                { EchoDirectives.RSTXTA+"" , (RSTXTA,null) }
             };
         }
 
@@ -214,7 +218,9 @@ namespace DotNetConsoleAppToolkit.Console
         protected delegate object CommandDelegate(object x);
         protected delegate void SimpleCommandDelegate();
 
-        object RelayCall(Action method) { method(); return null; }
+        public void RSTXTA() {
+            lock (Lock) { Write(ANSI.RSTXTA); }
+        }
 
         public void CursorHome() { 
             lock (Lock) { Write($"{(char)27}[H"); }
