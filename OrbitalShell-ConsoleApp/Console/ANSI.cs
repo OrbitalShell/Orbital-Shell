@@ -28,9 +28,6 @@ namespace DotNetConsoleAppToolkit.Console
         public static readonly string RSTXTA = ESC+"[4m" + ESC+"[0m";
         public static readonly string RSTXTA2 = ESC+"[4m" + " " + ESC+"[0m";
 
-        /// <summary>
-        /// from https://en.wikipedia.org/wiki/ANSI_escape_code#DL
-        /// </summary>
         public enum EDparameter {
 
             /// <summary>
@@ -56,11 +53,36 @@ namespace DotNetConsoleAppToolkit.Console
         }
 
         /// <summary>
-        /// clear from cursor
+        /// Erases part of the screen
         /// </summary>
         /// <param name="n">EDparameter</param>
         /// <returns>ansi seq</returns>
         public static string ED(EDparameter n) => $"{CSI}{(int)n}J";
+
+        public enum ELParameter {
+
+            /// <summary>
+            /// if is 0 (or missing), clear from cursor to the end of the line
+            /// </summary>
+            p0 = 0,
+
+            /// <summary>
+            /// If n is 1, clear from cursor to beginning of the line.
+            /// </summary>
+            p1 = 1,
+
+            /// <summary>
+            /// If n is 2, clear entire line. Cursor position does not change.
+            /// </summary>
+            p2 = 2,
+        }
+
+        /// <summary>
+        /// Erases part of the line
+        /// </summary>
+        /// <param name="n">ELparameter</param>
+        /// <returns>ansi seq</returns> 
+        public static string EL(ELParameter n) => $"{CSI}{(int)n}K";
 
         #region color support
 

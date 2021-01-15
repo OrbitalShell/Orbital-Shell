@@ -28,6 +28,8 @@ namespace DotNetConsoleAppToolkit.Console
         public int CropX = -1;
         public bool EnableFillLineFromCursor = true;
 
+        public bool EnableAvoidEndOfLineFilledWithBackgroundColor = true;
+
         #endregion
 
         protected int _cursorLeftBackup;
@@ -41,11 +43,14 @@ namespace DotNetConsoleAppToolkit.Console
         public string LNBRK {
             get
             {
-                _cachedBackgroundColor = DefaultBackground;     // @TODO: has no sens
-                _cachedForegroundColor = DefaultForeground;     // @TODO: has no sens
-                // reset default colors to fix end of line filled with last colors ( @TODO: do as a fix by setting )
-                //return $"{DefaultColors}{CRLF}";        // {ESC}[0m
-                return $"{CRLF}";        // {ESC}[0m
+                //_cachedBackgroundColor = DefaultBackground;     // @TODO: has no sens - to be deleted
+                //_cachedForegroundColor = DefaultForeground;     // @TODO: has no sens - to be deleted
+                
+                // fix end of line remained filled with last colors
+                return 
+                
+                    EnableAvoidEndOfLineFilledWithBackgroundColor? $"{ANSI.RSTXTA}{ANSI.EL(ANSI.ELParameter.p0)}{CRLF}"        
+                    : $"{CRLF}";
             }
         }
 
@@ -405,7 +410,7 @@ namespace DotNetConsoleAppToolkit.Console
                     //Write(ANSI.ED(EDparameter.p0));
                     //Write(ANSI.RSTXTA+" ");
 
-                    sc.Clear();                 // before coz fail on low ansi terminals                                  
+                    sc.Clear();                   
 
                     //Write(ESC + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
                     

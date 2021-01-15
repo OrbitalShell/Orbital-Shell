@@ -175,10 +175,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // apply orbsh command args -env:{varName}={varValue}
             var appliedSettings = new List<string>();
             SetArgs(args,CommandEvaluationContext,appliedSettings);
-
-            /*if (!commandEvaluationContext.ShellEnv.OptionSetted(ShellEnvironmentVar.Settings_EnableConsoleBackgroundTransparentMode)
-                && DefaultBackground!=null)      
-                cons.BackgroundColor = DefaultBackground.Value;*/
+            
+            // init from settings
+            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = commandEvaluationContext.ShellEnv.GetValue<bool>(ShellEnvironmentVar.Settings_EnableAvoidEndOfLineFilledWithBackgroundColor);
 
             ConsoleInit(CommandEvaluationContext);
 

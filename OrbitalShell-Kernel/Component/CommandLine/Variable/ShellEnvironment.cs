@@ -64,8 +64,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth,-1);
             AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight,-1);
             AddValue(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode,false);
+            AddValue(ShellEnvironmentVar.Settings_EnableAvoidEndOfLineFilledWithBackgroundColor,true);
 
             // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
+            // @TODO: variables and their namespaces should be lower case
+            // @TODO: commands and their namespaces should be lower case (use - in command name to replace upper cases)
         }
 
         DataObject AddObject(ShellEnvironmentNamespace ns)

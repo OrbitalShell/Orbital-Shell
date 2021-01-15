@@ -20,12 +20,10 @@
         /// </summary>
         Settings_ConsoleInitialWindowHeight,
 
-#if no
         /// <summary>
-        /// if enabled, avoid to set the background colors in the command line reader component and the app-console layer, to preserve console background transparency
+        /// if enabled, activate a fix that cleanup properly end of lines (ConsoleTextWrapper.LNBRK)
         /// </summary>
-        Settings_EnableConsoleBackgroundTransparentMode,
-#endif
+        Settings_EnableAvoidEndOfLineFilledWithBackgroundColor,
 
         Debug_Pipeline,
         Display_TableFormattingOptions,
