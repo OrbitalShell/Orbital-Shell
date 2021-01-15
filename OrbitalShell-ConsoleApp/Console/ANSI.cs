@@ -16,7 +16,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static readonly string CSI = $"{ESC}[";
 
-        public static string SGR(int n) => $"{ESC}{n}m";
+        public static string SGR(int n,string seq=null) => $"{ESC}{n}{seq}m";
 
         #endregion
 
@@ -243,6 +243,128 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         /// <returns>ansi seq</returns>
         public static string SGR_ReverseVideo => $"{SGR(7)}";
+
+        /// <summary>
+        /// Italic off
+        /// </summary>
+        /// <returns>ansi seq</returns>
+        public static string SGR_ItalicOff => $"{SGR(23)}";
+
+        /// <summary>
+        /// Underline off - Not singly or doubly underlined
+        /// </summary>
+        /// <returns>ansi seq</returns>
+        public static string SGR_UnderlineOff => $"{SGR(24)}";
+
+        /// <summary>
+        /// Blink off
+        /// </summary>
+        /// <returns>ansi seq</returns>
+        public static string SGR_BlinkOff => $"{SGR(25)}";
+
+        /// <summary>
+        /// Reverse/invert off
+        /// </summary>
+        /// <returns>ansi seq</returns>
+        public static string SGR_ReverseOff => $"{SGR(27)}";
+
+        /// <summary>
+        /// Not crossed out
+        /// </summary>
+        /// <returns>ansi seq</returns>
+        public static string SGR_NotCrossedOut => $"{SGR(29)}";
+
+        /// <summary>
+        /// Crossed-out - aka Strike, characters legible but marked as if for deletion. (do nothing on vscode debuger, works on windows terminal)
+        /// </summary>
+        /// <returns>ansi seq</returns>
+        public static string SGR_CrossedOut => $"{SGR(9)}";
+
+        /// <summary>
+        /// Doubly underline or Bold off - Double-underline per ECMA-48.
+        /// </summary>
+        /// <returns>ansi seq</returns>
+        public static string SGR_DoubleUnderline => $"{SGR(21)}";
+
+        /// <summary>
+        /// Normal color or intensity - Neither bold nor faint
+        /// </summary>
+        /// <returns>ansi seq</returns>
+        public static string SGR_NormalIntensity => $"{SGR(22)}";
+
+        /// <summary>
+        /// SGR_4BitsColors parameter values for SGR_SetForegroundColor4bits and SGR_SetBackgroundColor4bits
+        /// </summary>
+        public enum SGR_4BitsColors {
+            Black = 0,
+            Red = 1,
+            Green = 2,
+            Yellow = 3,
+            Blue = 4,
+            Magenta = 5,
+            Cyan = 6,
+            White = 7
+        }
+
+        /// <summary>
+        /// Set foreground color - 3/4 bits palette mode (8 normal colors + 8 bright colors)
+        /// <para>bright black is gray or darkgray, white is gray or light gray, bright white is white. That depends on console palette</para>
+        /// </summary>
+        /// <param name="color">SGR_4BitsColors</param>
+        /// <param name="bright">enable bright 8 additional color set (bright colors)</param>
+        /// <returns>ansi seq</returns>
+        public static string SGR_SetForegroundColor4bits(SGR_4BitsColors color,bool bright) => $"{SGR(38,""+((bright?90:30)+(int)color))}";
+
+        /// <summary>
+        /// set foreground color - 8 bits palette (256 colors)
+        /// <para>0-  7:  standard colors (as in ESC [ 30–37 m, see SGR_4BitsColors)<br/>
+        /// 8- 15:  high intensity colors (as in ESC [ 90–97 m, see SGR_4BitsColors bright)<br/>
+        /// 16-231:  6 × 6 × 6 cube (216 colors): 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)<br/>
+        /// 232-255:  grayscale from black to white in 24 steps</para>
+        /// </summary>
+        /// <param name="n">palette color index</param>
+        /// <returns>ansi seq</returns>
+        public static string SGR_SetForegroundColor8bits(int n) => $"{SGR(38,$";5;{n}")}";
+
+        /// <summary>
+        /// set foreground color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
+        /// <para>parameters are red,green,blue luminosity from 0 to 255</para>
+        /// </summary>
+        /// <param name="r">red: 0 to 255</param>
+        /// <param name="g">green: 0 to 255</param>
+        /// <param name="b">blue: 0 to 255</param>
+        /// <returns>ansi seq</returns>
+        public static string SGR_SetForegroundColor24bits(int r,int g,int b) => $"{SGR(38,$";2;{r};{g};{b}")})";
+
+        /// <summary>
+        /// Set background color - 3/4 bits palette mode (8 normal colors + 8 bright colors)
+        /// <para>bright black is gray or darkgray, white is gray or light gray, bright white is white. That depends on console palette</para>
+        /// </summary>
+        /// <param name="color">SGR_4BitsColors</param>
+        /// <param name="bright">enable bright 8 additional color set (sames colors in bright)</param>
+        /// <returns>ansi seq</returns>
+        public static string SGR_SetBackgroundColor4bits(SGR_4BitsColors color,bool bright) => $"{SGR(48,""+((bright?90:30)+(int)color))}";
+
+        /// <summary>
+        /// set background color - 8 bits palette (256 colors)
+        /// <para>0-  7:  standard colors (as in ESC [ 30–37 m, see SGR_4BitsColors)<br/>
+        /// 8- 15:  high intensity colors (as in ESC [ 90–97 m, see SGR_4BitsColors bright)<br/>
+        /// 16-231:  6 × 6 × 6 cube (216 colors): 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)<br/>
+        /// 232-255:  grayscale from black to white in 24 steps</para>
+        /// </summary>
+        /// <param name="n">palette color index</param>
+        /// <returns>ansi seq</returns>
+        public static string SGR_SetBackgroundColor8bits(int n) => $"{SGR(48,$";5;{n}")}";
+
+        /// <summary>
+        /// set background color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
+        /// <para>parameters are red,green,blue luminosity from 0 to 255</para>
+        /// </summary>
+        /// <param name="r">red: 0 to 255</param>
+        /// <param name="g">green: 0 to 255</param>
+        /// <param name="b">blue: 0 to 255</param>
+        /// <returns>ansi seq</returns>
+        public static string SGR_SetBackgroundColor24bits(int r,int g,int b) => $"{SGR(48,$";2;{r};{g};{b}")})";
 
         /*
         /// <summary>
