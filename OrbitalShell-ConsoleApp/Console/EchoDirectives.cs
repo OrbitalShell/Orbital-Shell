@@ -44,12 +44,15 @@
     */
     public enum EchoDirectives
     {
-        bkf,
+        // @todo : nommages à revoir
+
+        RSTXTA,
+
+        bkf,        
         bkb,
         rsf,
         rsb,
         rdc,
-        cls,
         f,
         f8,
         f24,
@@ -69,7 +72,7 @@
         exit,
         exec,
 
-        // VT/ANSI
+        cls,
         uon,
         bon,
         blon,

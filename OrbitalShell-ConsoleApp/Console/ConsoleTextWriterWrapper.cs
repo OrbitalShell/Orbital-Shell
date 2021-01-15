@@ -36,7 +36,7 @@ namespace DotNetConsoleAppToolkit.Console
         protected int _cursorTopBackup;
         protected ConsoleColor _backgroundBackup = ConsoleColor.Black;
         protected ConsoleColor _foregroundBackup = ConsoleColor.White;
-        protected Dictionary<string, CommandDelegate> _drtvs;
+        protected Dictionary<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command)>  _drtvs;
 
         public static readonly string ESC = (char)27+"";
         
@@ -86,59 +86,86 @@ namespace DotNetConsoleAppToolkit.Console
              DefaultForeground = sc.ForegroundColor;
              _cachedForegroundColor = DefaultForeground;
 
-            _drtvs = new Dictionary<string, CommandDelegate>() {
-                { EchoDirectives.bkf+""   , (x) => RelayCall(BackupForeground) },
-                { EchoDirectives.bkb+""   , (x) => RelayCall(BackupBackground) },
-                { EchoDirectives.rsf+""   , (x) => RelayCall(RestoreForeground) },
-                { EchoDirectives.rsb+""   , (x) => RelayCall(RestoreBackground) },
+            // echo_directive => SimmpleCommandDelegate, CommandDelegate
+            _drtvs = new Dictionary<string, (SimpleCommandDelegate simpleCommand, CommandDelegate command)>() {
+                { EchoDirectives.bkf+""   , (BackupForeground, null) },
+                { EchoDirectives.bkb+""   , (BackupBackground, null) },
+                { EchoDirectives.rsf+""   , (RestoreForeground, null) },
+                { EchoDirectives.rsb+""   , (RestoreBackground, null) },
 
-                { EchoDirectives.f+"="    , (x) => RelayCall(() => SetForeground( TextColor.ParseColor(x))) },
-                { EchoDirectives.f8+"="   , (x) => RelayCall(() => SetForeground( TextColor.Parse8BitColor(x))) },
-                { EchoDirectives.f24+"="  , (x) => RelayCall(() => SetForeground( TextColor.Parse24BitColor(x))) },
-                { EchoDirectives.b+"="    , (x) => RelayCall(() => SetBackground( TextColor.ParseColor(x))) },
-                { EchoDirectives.b8+"="   , (x) => RelayCall(() => SetBackground( TextColor.Parse8BitColor(x))) },
-                { EchoDirectives.b24+"="  , (x) => RelayCall(() => SetBackground( TextColor.Parse24BitColor(x))) },
+                { EchoDirectives.f+"="    , (null, _SetForegroundColor) },
+                { EchoDirectives.f8+"="   , (null, _SetForegroundParse8BitColor) },
+                { EchoDirectives.f24+"="  , (null, _SetForegroundParse24BitColor) },
+                { EchoDirectives.b+"="    , (null, _SetBackgroundColor) },
+                { EchoDirectives.b8+"="   , (null, _SetBackgroundParse8BitColor) },
+                { EchoDirectives.b24+"="  , (null, _SetBackgroundParse24BitColor) },
 
-                { EchoDirectives.df+"="   , (x) => RelayCall(() => SetDefaultForeground( TextColor.ParseColor(x))) },
-                { EchoDirectives.db+"="   , (x) => RelayCall(() => SetDefaultBackground( TextColor.ParseColor(x))) },
-                { EchoDirectives.rdc+""   , (x) => RelayCall(RestoreDefaultColors)},
+                { EchoDirectives.df+"="   , (null, _SetDefaultForeground) },
+                { EchoDirectives.db+"="   , (null, _SetDefaultBackground) },
+                { EchoDirectives.rdc+""   , (RestoreDefaultColors, null) },
 
-                { EchoDirectives.cls+""   , (x) => RelayCall(() => ClearScreen()) },
-                { EchoDirectives.br+""    , (x) => RelayCall(LineBreak) },
-                { EchoDirectives.inf+""   , (x) => RelayCall(Infos) },
-                { EchoDirectives.bkcr+""  , (x) => RelayCall(BackupCursorPos) },
-                { EchoDirectives.rscr+""  , (x) => RelayCall(RestoreCursorPos) },
-                { EchoDirectives.crh+""   , (x) => RelayCall(HideCur) },
-                { EchoDirectives.crs+""   , (x) => RelayCall(ShowCur) },
-                { EchoDirectives.crx+"="  , (x) => RelayCall(() => CursorLeft = GetCursorX(x)) },
-                { EchoDirectives.cry+"="  , (x) => RelayCall(() => CursorTop = GetCursorY(x)) },
-                { EchoDirectives.exit+""  , (x) => RelayCall(() => Exit()) },
-                { EchoDirectives.exec+"=" , (x) => ExecCSharp((string)x) },
+                { EchoDirectives.cls+""   , (ClearScreen, null) },
+                
+                { EchoDirectives.br+""    , (LineBreak, null) },
+                { EchoDirectives.inf+""   , (Infos, null) },
+                { EchoDirectives.bkcr+""  , (BackupCursorPos, null) },
+                { EchoDirectives.rscr+""  , (RestoreCursorPos, null) },
+                { EchoDirectives.crh+""   , (HideCur, null) },
+                { EchoDirectives.crs+""   , (ShowCur, null) },
+                { EchoDirectives.crx+"="  , (null, _SetCursorX) },
+                { EchoDirectives.cry+"="  , (null, _SetCursorY) },
+                { EchoDirectives.exit+""  , (null, _Exit) },
+                { EchoDirectives.exec+"=" , (null, _ExecCSharp) },
 
-                { EchoDirectives.invon+"" , (x) => RelayCall(EnableInvert) },
-                { EchoDirectives.lion+"" , (x) => RelayCall(EnableLowIntensity) },
-                { EchoDirectives.uon+"" , (x) => RelayCall(EnableUnderline) },
-                { EchoDirectives.bon+"" , (x) => RelayCall(EnableBold) },
-                { EchoDirectives.blon+"" , (x) => RelayCall(EnableBlink) },
-                { EchoDirectives.tdoff+"" , (x) => RelayCall(DisableTextDecoration) },
+                { EchoDirectives.invon+""   , (EnableInvert, null) },
+                { EchoDirectives.lion+""    , (EnableLowIntensity, null) },
+                { EchoDirectives.uon+""     , (EnableUnderline, null) },
+                { EchoDirectives.bon+""     , (EnableBold, null) },
+                { EchoDirectives.blon+""    , (EnableBlink, null) },
+                { EchoDirectives.tdoff+""   , (DisableTextDecoration, null) },
 
-                { EchoDirectives.cl+"" , (x) => RelayCall(ClearLine) },
-                { EchoDirectives.clright+"" , (x) => RelayCall(ClearLineFromCursorRight) },
-                { EchoDirectives.fillright+"" , (x) => RelayCall(() => FillFromCursorRight()) },
-                { EchoDirectives.clleft+"" , (x) => RelayCall(ClearLineFromCursorLeft) },
+                { EchoDirectives.cl+""          , (ClearLine, null) },
+                { EchoDirectives.clright+""     , (ClearLineFromCursorRight, null) },
+                { EchoDirectives.fillright+""   , (FillFromCursorRight, null) },
+                { EchoDirectives.clleft+""      , (ClearLineFromCursorLeft, null) },
 
-                { EchoDirectives.cup+"" , (x) => RelayCall(() => MoveCursorTop(1)) },
-                { EchoDirectives.cdown+"" , (x) => RelayCall(() => MoveCursorDown(1)) },
-                { EchoDirectives.cleft+"" , (x) => RelayCall(() => MoveCursorLeft(1)) },
-                { EchoDirectives.cright+"" , (x) => RelayCall(() => MoveCursorRight(1)) },
-                { EchoDirectives.chome+"" , (x) => RelayCall(CursorHome) },
+                { EchoDirectives.cup+""     , (_MoveCursorTop, null) },
+                { EchoDirectives.cdown+""   , (_MoveCursorDown, null) },
+                { EchoDirectives.cleft+""   , (_MoveCursorLeft, null) },
+                { EchoDirectives.cright+""  , (_MoveCursorRight, null) },
+                { EchoDirectives.chome+""   , (CursorHome, null) },
 
-                { EchoDirectives.cnup+"=" , (x) => RelayCall(() => MoveCursorTop(Convert.ToInt32(x))) },
-                { EchoDirectives.cndown+"=" , (x) => RelayCall(() => MoveCursorDown(Convert.ToInt32(x))) },
-                { EchoDirectives.cnleft+"=" , (x) => RelayCall(() => MoveCursorLeft(Convert.ToInt32(x))) },
-                { EchoDirectives.cnright+"=" , (x) => RelayCall(() => MoveCursorRight(Convert.ToInt32(x))) },
+                { EchoDirectives.cnup+"="       , (null, _MoveCursorTop) },
+                { EchoDirectives.cndown+"="     , (null, _MoveCursorDown) },
+                { EchoDirectives.cnleft+"="     , (null, _MoveCursorLeft) },
+                { EchoDirectives.cnright+"="    , (null, _MoveCursorRight) },
             };
         }
+
+        #region commands delegates for echo directives map (avoiding lambdas in map)
+
+        object _Exit(object x) { Exit(); return null; }
+        object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(x)); return null; }
+        object _SetForegroundParse8BitColor(object x) { SetForeground(TextColor.Parse8BitColor(x)); return null; }
+        object _SetForegroundParse24BitColor(object x) { SetForeground(TextColor.Parse24BitColor(x)); return null; }
+        object _SetBackgroundColor(object x) { SetBackground(TextColor.ParseColor(x)); return null; }
+        object _SetBackgroundParse8BitColor(object x) { SetBackground(TextColor.Parse8BitColor(x)); return null; }
+        object _SetBackgroundParse24BitColor(object x) { SetBackground(TextColor.Parse24BitColor(x)); return null; }
+        object _SetDefaultForeground(object x) { SetDefaultForeground(TextColor.ParseColor(x)); return null; }
+        object _SetDefaultBackground(object x) { SetDefaultBackground(TextColor.ParseColor(x)); return null; }
+        object _SetCursorX(object x) { CursorLeft = GetCursorX(x); return null; }
+        object _SetCursorY(object x) { CursorLeft = GetCursorX(x); return null; }
+        object _ExecCSharp(object x) { return ExecCSharp((string)x); }
+        void _MoveCursorTop() { MoveCursorTop(1); }
+        void _MoveCursorDown() { MoveCursorDown(1); }
+        void _MoveCursorLeft() { MoveCursorLeft(1); }
+        void _MoveCursorRight() { MoveCursorRight(1); }
+        object _MoveCursorTop(object x) { MoveCursorTop(Convert.ToInt32(x)); return null; }
+        object _MoveCursorDown(object x) { MoveCursorDown(Convert.ToInt32(x)); return null; }
+        object _MoveCursorLeft(object x) { MoveCursorLeft(Convert.ToInt32(x)); return null; }
+        object _MoveCursorRight(object x) { MoveCursorRight(Convert.ToInt32(x)); return null; }
+
+        #endregion
 
         #endregion
 
@@ -185,7 +212,8 @@ namespace DotNetConsoleAppToolkit.Console
         #region console output operations
 
         protected delegate object CommandDelegate(object x);
-        
+        protected delegate void SimpleCommandDelegate();
+
         object RelayCall(Action method) { method(); return null; }
 
         public void CursorHome() { 
@@ -741,7 +769,7 @@ namespace DotNetConsoleAppToolkit.Console
             lock (Lock)
             {
                 int i = 0;
-                KeyValuePair<string, CommandDelegate>? cmd = null;
+                KeyValuePair<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command)>? cmd = null;
                 int n = s.Length;
                 bool isAssignation = false;
                 int cmdindex = -1;
@@ -849,7 +877,13 @@ namespace DotNetConsoleAppToolkit.Console
                         var t = cmdtxt.Split(CommandValueAssignationChar);
                         value = t[1];
                     }
-                    if (!doNotEvalutatePrintDirectives) result = cmd.Value.Value(value);
+                    if (!doNotEvalutatePrintDirectives) {
+                        // --> exec echo directive command
+                        if (cmd.Value.Value.command!=null) result = cmd.Value.Value.command(value);
+                        else
+                            if (cmd.Value.Value.simpleCommand!=null) { cmd.Value.Value.simpleCommand(); result=null; }
+                        // <--
+                    }
                     
                     if (FileEchoDebugEnabled && FileEchoDebugCommands)
                         EchoDebug(CommandBlockBeginChar + cmd.Value.Key + value + CommandBlockEndChar);
@@ -858,7 +892,13 @@ namespace DotNetConsoleAppToolkit.Console
                 }
                 else
                 {
-                    if (!doNotEvalutatePrintDirectives) result = cmd.Value.Value(null);     // evaluate print directive command
+                    if (!doNotEvalutatePrintDirectives) {
+                        // --> exec echo directive command
+                        if (cmd.Value.Value.command!=null) result = cmd.Value.Value.command(null);
+                        else
+                            if (cmd.Value.Value.simpleCommand!=null) { cmd.Value.Value.simpleCommand(); result=null; }
+                        // <--
+                    }
                     
                     if (FileEchoDebugEnabled && FileEchoDebugCommands)
                         EchoDebug(CommandBlockBeginChar + cmd.Value.Key + CommandBlockEndChar);

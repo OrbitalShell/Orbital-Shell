@@ -3,14 +3,20 @@
 namespace DotNetConsoleAppToolkit.Console
 {
     /// <summary>
-    /// all ansi valid codes, even for 'low ansi terminals'.
+    /// all ANSI codes that we take into account for the targetted consoles referential
     /// from https://en.wikipedia.org/wiki/ANSI_escape_code
     /// </summary>
     public static class ANSI
     {
+        #region char codes
+
         public static readonly string ESC = ((char)27) + "";
+
+        public static readonly string CRLF = Environment.NewLine; //(char)13 + ((char)10 + "");
+
         public static readonly string CSI = $"{ESC}[";
-        public static readonly string CRLF = (char)13 + ((char)10 + "");
+
+        #endregion
 
         /// <summary>
         /// backup cursor position
@@ -22,11 +28,15 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         public static readonly string DECRC = ESC+"8";
 
+        #region CSI
+
         /// <summary>
         /// RESET TEXT ATTRIBUTES : console background (if transparency preserved), text attributes (uon,tdoff)
+        /// this tip allow to force the background color restoration without filling it
+        /// this tip properly and completely clean-up the text attributes
+        /// you should wait after lanuch this seq about about 25ms before it is efficient (vscode debug console)
         /// </summary>        
-        public static readonly string RSTXTA = ESC+"[4m" + ESC+"[0m";
-        public static readonly string RSTXTA2 = ESC+"[4m" + " " + ESC+"[0m";
+        public static readonly string RSTXTA = CSI + "4m" + CSI + "0m";
 
         public enum EDparameter {
 
@@ -42,13 +52,15 @@ namespace DotNetConsoleAppToolkit.Console
 
             /// <summary>
             ///  If n is 2, clear entire screen (and moves cursor to upper left on DOS ANSI.SYS).
+            /// (partial support)
             /// </summary>
             p2 = 2,
 
             /// <summary>
             ///  If n is 3, clear entire screen and delete all lines saved in the scrollback buffer (this feature was added for xterm and is supported by other terminal applications).
+            /// (low support)
             /// </summary>
-            p3 = 3
+            p3 = 3      
 
         }
 
@@ -84,18 +96,20 @@ namespace DotNetConsoleAppToolkit.Console
         /// <returns>ansi seq</returns> 
         public static string EL(ELParameter n) => $"{CSI}{(int)n}K";
 
+        #endregion
+
         #region color support
 
         // notice: removed from start of output: {CSI}0m
         /// <summary>
-        /// set colors from 4 bit index ( To3BitColorIndex(ConsoleColor) )
+        /// set colors from 4 bit index ( To3BitColorIndex(ConsoleColor) ). (@TODO: check {CSI}0m removed from bg begin)
         /// </summary>
         /// <param name="foregroundNum"></param>
         /// <param name="backgroundNum"></param>
         /// <returns></returns>
         public static string Set4BitsColors(int foregroundNum,int backgroundNum) {
             var r = "";
-            if (backgroundNum>-1) r += $"{CSI}0m{CSI}{(((backgroundNum & 0b1000) != 0) ? "4" : "10")}{backgroundNum & 0b111}m";
+            if (backgroundNum>-1) r += $"{CSI}{(((backgroundNum & 0b1000) != 0) ? "4" : "10")}{backgroundNum & 0b111}m";
             if (foregroundNum>-1) r += $"{CSI}{(((foregroundNum & 0b1000) != 0)?"3":"9")}{foregroundNum & 0b111}m";
             return r;
         }
