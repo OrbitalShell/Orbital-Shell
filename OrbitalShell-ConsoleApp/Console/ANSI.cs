@@ -49,9 +49,14 @@ namespace DotNetConsoleAppToolkit.Console
         /// RESET TEXT ATTRIBUTES : console background (if transparency preserved), text attributes (uon,tdoff)
         /// this tip allow to force the background color restoration without filling it
         /// this tip properly and completely clean-up the text attributes
-        /// you should wait after lanuch this seq about about 25ms before it is efficient (vscode debug console)
+        /// you should wait after launch this seq about about 25ms before it is efficient (vscode debug console)
         /// </summary>        
         public static readonly string RSTXTA = CSI + "4m" + CSI + "0m";
+
+        /// <summary>
+        /// reset terminal colors (foreground and background) to their default (not supported on some terminals)
+        /// </summary>
+        public static readonly string RSCOLDEF = CSI + "[39;49m";
 
         #endregion
 
