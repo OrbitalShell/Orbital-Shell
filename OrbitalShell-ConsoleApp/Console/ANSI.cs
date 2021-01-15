@@ -65,41 +65,47 @@ namespace DotNetConsoleAppToolkit.Console
         #region color support
 
         // notice: removed from start of output: {CSI}0m
-        public static string Set3BitsColors(int foregroundNum,int backgroundNum) {
+        /// <summary>
+        /// set colors from 4 bit index ( To3BitColorIndex(ConsoleColor) )
+        /// </summary>
+        /// <param name="foregroundNum"></param>
+        /// <param name="backgroundNum"></param>
+        /// <returns></returns>
+        public static string Set4BitsColors(int foregroundNum,int backgroundNum) {
             var r = "";
             if (backgroundNum>-1) r += $"{CSI}0m{CSI}{(((backgroundNum & 0b1000) != 0) ? "4" : "10")}{backgroundNum & 0b111}m";
             if (foregroundNum>-1) r += $"{CSI}{(((foregroundNum & 0b1000) != 0)?"3":"9")}{foregroundNum & 0b111}m";
             return r;
         }
 
-        public static string Set3BitsColorsForeground(int foregroundNum)
+        public static string Set4BitsColorsForeground(int foregroundNum)
             => foregroundNum>-1? $"{CSI}{(((foregroundNum & 0b1000) != 0)?"3":"9")}{foregroundNum & 0b111}m" : "";
 
-        public static string Set3BitsColorsBackground(int backgroundNum)
+        public static string Set4BitsColorsBackground(int backgroundNum)
             => backgroundNum>-1? $"{CSI}{(((backgroundNum & 0b1000) != 0) ? "4" : "10")}{backgroundNum & 0b111}m" : "";
 
-        public static (int colorNum, bool isDark) To3BitColorIndex(ConsoleColor c)
+        public static (int colorNum, bool isDark) To4BitColorIndex(ConsoleColor c)
         {
-            if (Enum.TryParse<Color3BitMap>((c + "").ToLower(), out var colbit))
+            if (Enum.TryParse<Color4BitMap>((c + "").ToLower(), out var colbit))
             {
                 var num = (int)colbit & 0b111;
                 var isDark = ((int)colbit & 0b1000) != 0;
                 return (num, isDark);
             }
             else
-                return ((int)Color3BitMap.gray, false);
+                return ((int)Color4BitMap.gray, false);
         }
 
-        public static int To3BitColorNum(ConsoleColor? c)
+        public static int To4BitColorNum(ConsoleColor? c)
         {
             if (c==null) return -1;
-            if (Enum.TryParse<Color3BitMap>((c + "").ToLower(), out var colbit))
+            if (Enum.TryParse<Color4BitMap>((c + "").ToLower(), out var colbit))
             {
                 var num = (int)colbit;
                 return num;
             }
             else
-                return (int)Color3BitMap.gray;
+                return (int)Color4BitMap.gray;
         }
 
         #endregion

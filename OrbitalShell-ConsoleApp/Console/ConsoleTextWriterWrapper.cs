@@ -289,7 +289,7 @@ namespace DotNetConsoleAppToolkit.Console
             lock (Lock)
             {
                 _cachedForegroundColor = c;
-                var s = Set3BitsColorsForeground(To3BitColorNum(c.Value));
+                var s = Set4BitsColorsForeground(To4BitColorNum(c.Value));
                 Write(s);
             }
         }
@@ -300,7 +300,7 @@ namespace DotNetConsoleAppToolkit.Console
             lock (Lock)
             {
                 _cachedBackgroundColor = c;
-                var s = Set3BitsColorsBackground(To3BitColorNum(c.Value));
+                var s = Set4BitsColorsBackground(To4BitColorNum(c.Value));
                 Write(s);
             }
         }
@@ -385,7 +385,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             get
             {
-                return Set3BitsColors(To3BitColorNum(DefaultForeground), To3BitColorNum(DefaultBackground));
+                return Set4BitsColors(To4BitColorNum(DefaultForeground), To4BitColorNum(DefaultBackground));
             }
         }
         

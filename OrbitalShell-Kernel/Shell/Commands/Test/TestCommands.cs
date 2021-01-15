@@ -105,8 +105,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
                 var str2 = $" ESC[10{j}m  | {esc}[10{j}m";
                 for (int i = 0; i <= 7; i++)
                 {
-                    str1 += Set3BitsColors(i, j | 0b1000) + $" [9{i}m   ";
-                    str2 += Set3BitsColors(i | 0b1000, j) + $" [3{i}m   ";
+                    str1 += Set4BitsColors(i, j | 0b1000) + $" [9{i}m   ";
+                    str2 += Set4BitsColors(i | 0b1000, j) + $" [3{i}m   ";
                 }
 
                 context.Out.Echoln(str1 + context.ShellEnv.Colors.Default);
