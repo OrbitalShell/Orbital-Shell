@@ -68,27 +68,27 @@
     /// &#128313; colors:<br/>
     /// &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;<br/>
     /// 
-    ///       set foreground:     f=consoleColor<br/>
-    ///       set background:     b=consoleColor<br/>
-    ///       set default foreground: df=consoleColor<br/>
-    ///       set default background: db=consoleColor<br/>
-    ///       backup foreground:  bkf<br/>
-    ///       backup background:  bkb<br/>
-    ///       restore foreground: rsf<br/>
-    ///       restore background: rsb<br/>
-    ///       set colors to defaults: rdc<br/>
-    ///       consoleColor (ignoreCase) := black | darkblue | darkgreen | darkcyan | darkred  | darkmagenta | darkyellow | gray | darkgray  | blue | green | cyan  | red  | magenta  | yellow  | white     (case insensitive)<br/>
+    ///       f=consoleColor:   set foreground<br/>
+    ///       b=consoleColor:   set background<br/>
+    ///       df=consoleColor:  set default foreground<br/>
+    ///       db=consoleColor:  set default background<br/>
+    ///       bkf:              backup foreground<br/>
+    ///       bkb:              backup background<br/>
+    ///       rsf:              restore foreground<br/>
+    ///       rsb:              restore background<br/>
+    ///       rdc:              set colors to defaults<br/>
+    ///       consoleColor (case insensitive) := black | darkblue | darkgreen | darkcyan | darkred  | darkmagenta | darkyellow | gray | darkgray  | blue | green | cyan  | red  | magenta  | yellow  | white<br/>
     ///
     /// &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;<br/>
     /// &#128313; print flow control:<br/>
     /// &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;<br/>
     ///
-    ///       clear console: cl<br/>
-    ///       line break: br<br/>
-    ///       backup cursor pos: bkcr<br/>
-    ///       restore cursor pos: rscr<br/>
-    ///       set cursor left: crx=<br/>
-    ///       set cursor top: cry=<br/>
+    ///       cl:       clear console<br/>
+    ///       br:       line break<br/>
+    ///       bkcr:     backup cursor pos<br/>
+    ///       rscr:     restore cursor pos<br/>
+    ///       crx=:     set cursor left<br/>
+    ///       cry=:     set cursor top<br/>
     /// 
     /// &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;<br/>
     /// &#128313; app control:<br/>
@@ -105,12 +105,12 @@
     /// &#128313; text decoration (vt100):<br/>
     /// &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;<br/>
     /// 
-    ///       underline on: uon<br/>
-    ///       inverted text on: invon<br/>
-    ///       text decoration off: tdoff<br/>
-    ///       low intensity: lion<br/>
-    ///       blon: blinkon<br/>
-    ///       bon: boldon<br/>
+    ///       uon:      underline on<br/>
+    ///       invon:    inverted text on<br/>
+    ///       tdoff:    text decoration off<br/>
+    ///       lion:     low intensity<br/>
+    ///       blon:     blink on<br/>
+    ///       bon:      bold on<br/>
     /// 
     /// </para>
     /// <para>
