@@ -10,10 +10,12 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
     /// </summary>
     public class EchoDirectiveProcessor
     {
+        public delegate object Command1pIntDelegate(int n = 1);
+        public delegate object Command2pIntDelegate(int x = 1,int y = 1);
+        public delegate object Command2pDelegate(object parameter,object argument);
         public delegate object CommandDelegate(object x);
         public delegate void SimpleCommandDelegate();
         public readonly ConsoleTextWriterWrapper Writer;
-
         public readonly CommandMap CommandMap;
  
 
@@ -36,7 +38,7 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
             lock (Writer.Lock)
             {
                 int i = 0;
-                KeyValuePair<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command,string parameter)>? cmd = null;
+                KeyValuePair<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command,object parameter)>? cmd = null;
                 int n = s.Length;
                 bool isAssignation = false;
                 int cmdindex = -1;
@@ -143,14 +145,28 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
                     {
                         var t = cmdtxt.Split(CommandValueAssignationChar);
                         value = t[1];
-                    }
+                    } 
+
+                    // ❎ --> exec echo directive command : with ASSIGNATION
                     if (!doNotEvalutatePrintDirectives) {
-                        // --> exec echo directive command
-                        if (cmd.Value.Value.command!=null) result = cmd.Value.Value.command(value);
+                        if (cmd.Value.Value.command!=null) {
+                            if (cmd.Value.Value.parameter==null)
+                            {
+                                result = cmd.Value.Value.command(value);    // CommandDelegate
+                            } else {
+                                //result = cmd.Value.Value.command(value);
+                                result=cmd.Value.Value.command((cmd.Value.Value.parameter,value));
+                            }
+                        }
                         else
-                            if (cmd.Value.Value.simpleCommand!=null) { cmd.Value.Value.simpleCommand(); result=null; }
-                        // <--
+                            if (cmd.Value.Value.simpleCommand!=null) 
+                            { 
+                                cmd.Value.Value.simpleCommand(); 
+                                result=null; 
+                            }
+                            // else: no command: do nothing
                     }
+                    // <--
                     
                     if (Writer.FileEchoDebugEnabled && Writer.FileEchoDebugCommands)
                         Writer.EchoDebug(CommandBlockBeginChar + cmd.Value.Key + value + CommandBlockEndChar);
@@ -159,13 +175,21 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
                 }
                 else
                 {
+                    // ❎ --> exec echo directive command : NO ASSIGNATION
                     if (!doNotEvalutatePrintDirectives) {
-                        // --> exec echo directive command
-                        if (cmd.Value.Value.command!=null) result = cmd.Value.Value.command(null);
+                        if (cmd.Value.Value.command!=null) {
+                            result = cmd.Value.Value.command(cmd.Value.Value.parameter);
+                        }
                         else
-                            if (cmd.Value.Value.simpleCommand!=null) { cmd.Value.Value.simpleCommand(); result=null; }
-                        // <--
+                        {
+                            if (cmd.Value.Value.simpleCommand!=null) { 
+                                cmd.Value.Value.simpleCommand(); 
+                                result=null; 
+                            }
+                            // else: no command: do nothing
+                        }
                     }
+                    // <--
                     
                     if (Writer.FileEchoDebugEnabled && Writer.FileEchoDebugCommands)
                         Writer.EchoDebug(CommandBlockBeginChar + cmd.Value.Key + CommandBlockEndChar);

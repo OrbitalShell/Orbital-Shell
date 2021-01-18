@@ -4,9 +4,9 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
 {
     public class CommandMap 
     {
-        public Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand,EchoDirectiveProcessor.CommandDelegate command,string parameter)> Map = null;
+        public Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand,EchoDirectiveProcessor.CommandDelegate command,object parameter)> Map = null;
 
-        public CommandMap( Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand,EchoDirectiveProcessor.CommandDelegate command,string parameter)> map)
+        public CommandMap( Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand,EchoDirectiveProcessor.CommandDelegate command,object parameter)> map)
         {
             Map = map;
         }

@@ -94,7 +94,7 @@ namespace DotNetConsoleAppToolkit.Console
              _cachedForegroundColor = DefaultForeground;
 
             // echo_directive => SimpleCommandDelegate, CommandDelegate, parameter
-            var _drtvs = new Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand, EchoDirectiveProcessor.CommandDelegate command,string parameter)>() {
+            var _drtvs = new Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand, EchoDirectiveProcessor.CommandDelegate command,object parameter)>() {
                 { EchoDirectives.bkf+""   , (BackupForeground, null,null) },
                 { EchoDirectives.bkb+""   , (BackupBackground, null,null) },
                 { EchoDirectives.rsf+""   , (RestoreForeground, null,null) },
@@ -150,8 +150,63 @@ namespace DotNetConsoleAppToolkit.Console
                 // ANSI
 
                 { EchoDirectives.ESC+"" , (null,_ANSI,ANSI.ESC) },
-                { EchoDirectives.RSTXTA+"" , (RSTXTA,null,null) },
+                { EchoDirectives.CRLF+"" , (null,_ANSI,ANSI.CRLF) },
+                { EchoDirectives.CSI+"" , (null,_ANSI,ANSI.CSI) },
+                { EchoDirectives.DECSC+"" , (null,_ANSI,ANSI.DECSC) },
+                { EchoDirectives.DECRC+"" , (null,_ANSI,ANSI.DECRC) },
+                { EchoDirectives.RIS+"" , (null,_ANSI,ANSI.RIS) },
+                { EchoDirectives.RSTXTA+"" , (null,_ANSI,ANSI.RSTXTA) },
+                { EchoDirectives.RSCOLDEF+"" , (null,_ANSI,ANSI.RSCOLDEF) },
 
+                { EchoDirectives.CUU+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CUU) },
+                { EchoDirectives.CUU+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CUU) },
+                { EchoDirectives.CUD+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CUD) },
+                { EchoDirectives.CUD+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CUD) },
+                { EchoDirectives.CUF+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CUF) },
+                { EchoDirectives.CUF+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CUF) },
+                { EchoDirectives.CUB+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CUB) },
+                { EchoDirectives.CUB+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CUB) },
+                { EchoDirectives.CNL+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CNL) },
+                { EchoDirectives.CNL+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CNL) },
+                { EchoDirectives.CPL+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CPL) },
+                { EchoDirectives.CPL+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CPL) },
+                { EchoDirectives.CHA+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CHA) },
+                { EchoDirectives.CHA+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.CHA) },
+                { EchoDirectives.CUP+"" , (null,_ANSI_2Int,(EchoDirectiveProcessor.Command2pIntDelegate)ANSI.CUP) },
+                { EchoDirectives.CUP+"=" , (null,_ANSI_2Int,(EchoDirectiveProcessor.Command2pIntDelegate)ANSI.CUP) },
+                { EchoDirectives.SU+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.SU) },
+                { EchoDirectives.SU+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.SU) },
+                { EchoDirectives.SD+"" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.SD) },
+                { EchoDirectives.SD+"=" , (null,_ANSI_Int,(EchoDirectiveProcessor.Command1pIntDelegate)ANSI.SD) },
+
+                { EchoDirectives.DSR+"" , (null,_ANSI,ANSI.DSR) },
+
+                { EchoDirectives.ED+"=" , (null,_ANSI_EDParameter,(Command1pEDParameterDelegate)ANSI.ED) },
+                { EchoDirectives.EL+"=" , (null,_ANSI_ELParameter,(Command1pELParameterDelegate)ANSI.EL) },
+
+                { EchoDirectives.SGR_Reset+"" , (null,_ANSI,ANSI.SGR_Reset) },
+                { EchoDirectives.SGR_IncreasedIntensity+"" , (null,_ANSI,ANSI.SGR_IncreasedIntensity) },
+                { EchoDirectives.SGR_DecreaseIntensity+"" , (null,_ANSI,ANSI.SGR_DecreaseIntensity) },
+                { EchoDirectives.SGR_Italic+"" , (null,_ANSI,ANSI.SGR_Italic) },
+                { EchoDirectives.SGR_Underline+"" , (null,_ANSI,ANSI.SGR_Underline) },
+                { EchoDirectives.SGR_SlowBlink+"" , (null,_ANSI,ANSI.SGR_SlowBlink) },
+                { EchoDirectives.SGR_RapidBlink+"" , (null,_ANSI,ANSI.SGR_RapidBlink) },
+                { EchoDirectives.SGR_ReverseVideo+"" , (null,_ANSI,ANSI.SGR_ReverseVideo) },
+                { EchoDirectives.SGR_ItalicOff+"" , (null,_ANSI,ANSI.SGR_ItalicOff) },
+                { EchoDirectives.SGR_UnderlineOff+"" , (null,_ANSI,ANSI.SGR_UnderlineOff) },
+                { EchoDirectives.SGR_BlinkOff+"" , (null,_ANSI,ANSI.SGR_BlinkOff) },
+                { EchoDirectives.SGR_ReverseOff+"" , (null,_ANSI,ANSI.SGR_ReverseOff) },
+                { EchoDirectives.SGR_NotCrossedOut+"" , (null,_ANSI,ANSI.SGR_NotCrossedOut) },
+                { EchoDirectives.SGR_CrossedOut+"" , (null,_ANSI,ANSI.SGR_CrossedOut) },
+                { EchoDirectives.SGR_DoubleUnderline+"" , (null,_ANSI,ANSI.SGR_DoubleUnderline) },
+                { EchoDirectives.SGR_NormalIntensity+"" , (null,_ANSI,ANSI.SGR_NormalIntensity) },
+
+                { EchoDirectives.SGRF+"=" , (null,ANSI.SGRF,null) },
+                { EchoDirectives.SGRF8+"=" , (null,ANSI.SGRF8,null) },
+                { EchoDirectives.SGRF24+"=" , (null,ANSI.SGRF24,null) },
+                { EchoDirectives.SGRB+"=" , (null,ANSI.SGRB,null) },
+                { EchoDirectives.SGRB8+"=" , (null,ANSI.SGRB8,null) },
+                { EchoDirectives.SGRB24+"=" , (null,ANSI.SGRB24,null) },
             };
 
             EchoDirectiveProcessor = new EchoDirectiveProcessor(
@@ -161,9 +216,75 @@ namespace DotNetConsoleAppToolkit.Console
 
         }
 
-        #region commands delegates for echo directives map (avoiding lambdas in map)
+        #region commands impl. for echo directives map (avoiding lambdas in map)
 
-        object _ANSI(object p) { return p as string; }
+        public delegate object Command1pEDParameterDelegate(EDParameter n);
+        public delegate object Command1pELParameterDelegate(ELParameter n);
+
+        object _ANSI(object p) { 
+            return p as string; 
+        }
+
+        object _ANSI_2Int(object parameters) 
+        {          
+            if (parameters is EchoDirectiveProcessor.Command2pIntDelegate com)
+                return com.Invoke();              
+            if (parameters is ValueTuple<object,string>) {
+                var p = (ValueTuple<object,string>)parameters;
+                try {
+                    var command = (EchoDirectiveProcessor.Command2pIntDelegate)p.Item1;
+                    var t = p.Item2.Split(":");
+                    var x = Convert.ToInt32(t[0]);
+                    var y = Convert.ToInt32(t[1]);
+                    return command.Invoke(x,y);
+                } catch (Exception ex) {
+                    Error($"bad format and/or int value: {p.Item2} - attempted is {{Int}}:{{Int}}");
+                }
+            }
+            return null;      
+        }
+
+        object _ANSI_Int(object parameters) 
+        {          
+            if (parameters is EchoDirectiveProcessor.Command1pIntDelegate com)
+                return com.Invoke();              
+            if (parameters is ValueTuple<object,string>) {
+                var p = (ValueTuple<object,string>)parameters;
+                try {
+                    var command = (EchoDirectiveProcessor.Command1pIntDelegate)p.Item1;
+                    return command.Invoke(Convert.ToInt32(p.Item2));
+                } catch (Exception ex) {
+                    Error($"bad Int value: {p.Item2}");
+                }
+            }
+            return null;      
+        }
+
+        object _ANSI_EDParameter(object parameters) {
+            if (parameters is ValueTuple<object,string>) {
+                var p = (ValueTuple<object,string>)parameters;
+                try {
+                    var command = (Command1pEDParameterDelegate)p.Item1;
+                    return command.Invoke(Enum.Parse<EDParameter>(p.Item2));
+                } catch (Exception ex) {
+                    Error($"bad EDParameter value: {p.Item2}");
+                }
+            }
+            return null;
+        }
+
+        object _ANSI_ELParameter(object parameters) {
+            if (parameters is ValueTuple<object,string>) {
+                var p = (ValueTuple<object,string>)parameters;
+                try {
+                    var command = (Command1pELParameterDelegate)p.Item1;
+                    return command.Invoke(Enum.Parse<ELParameter>(p.Item2));
+                } catch (Exception ex) {
+                    Error($"bad ELParameter value: {p.Item2}");
+                }
+            }
+            return null;
+        }
 
         object _Exit(object x) { Exit(); return null; }
         object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(x)); return null; }

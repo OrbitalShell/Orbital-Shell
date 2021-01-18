@@ -16,7 +16,8 @@ namespace DotNetConsoleAppToolkit.Console
 
         public static readonly string CSI = $"{ESC}[";
 
-        public static string SGR(int n,string seq=null) => $"{ESC}{n}{seq}m";
+        public static string SGR(int n,string seq=null) => $"{ESC}[{n}{(string.IsNullOrWhiteSpace(seq)?"":$";{seq}")}m";
+        public static string SGR(string seq=null) => $"{ESC}[{seq}m";
 
         #endregion
 
@@ -139,7 +140,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <returns>ansi seq</returns>
         public static string DSR = $"{CSI}6n";
 
-        public enum EDparameter {
+        public enum EDParameter {
 
             /// <summary>
             /// If n is 0 (or missing), clear from cursor to end of screen
@@ -170,7 +171,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         /// <param name="n">EDparameter</param>
         /// <returns>ansi seq</returns>
-        public static string ED(EDparameter n) => $"{CSI}{(int)n}J";
+        public static string ED(EDParameter n) => $"{CSI}{(int)n}J";
 
         public enum ELParameter {
 
@@ -318,7 +319,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="color">SGR_4BitsColors</param>
         /// <param name="bright">enable bright 8 additional color set (bright colors)</param>
         /// <returns>ansi seq</returns>
-        public static string SGR_SetForegroundColor4bits(SGR_4BitsColors color,bool bright) => $"{SGR(38,""+((bright?90:30)+(int)color))}";
+        public static string SGR_SetForegroundColor4bits(SGR_4BitsColors color,bool bright) => $"{SGR(""+((bright?90:30)+(int)color))}";
 
         /// <summary>
         /// Set foreground color - 3/4 bits palette mode (8 normal colors + 8 bright colors)
@@ -326,9 +327,11 @@ namespace DotNetConsoleAppToolkit.Console
         /// <para>format is {n}[,bright] with n from any name in SGR_4BitsColors (both args not in sensitive case). if ,bright is added, the color refers to the 8 colors additional palette - for example Black,bright or red</para>
         /// <param name="s">{n}[,bright]</param>
         /// </summary>
-        public static string SGRF(string s) {
+        public static string SGRF(object o) {
+            if (!(o is string s)) return null;
             var p = ParseSGR_4BitsColor(s);
-            return SGR_SetForegroundColor4bits(p.color,p.bright);
+            var r = SGR_SetForegroundColor4bits(p.color,p.bright);
+            return r;
         }
 
         /// <summary>
@@ -338,15 +341,15 @@ namespace DotNetConsoleAppToolkit.Console
         /// <returns></returns>
         public static (SGR_4BitsColors color,bool bright) ParseSGR_4BitsColor(string s) {
             try {
-                var t = s.Split(",");
-                var label = t.Length==1?t[0]:t[1];
-                var bright = t.Length==2 && t[1].ToLower()==",bright";
+                var t = s.Split(":");
+                var label = t[0];
+                var bright = t.Length==2 && t[1].ToLower()=="bright";
                 if (Enum.TryParse<SGR_4BitsColors>(label,true,out var sgr4bc)) {
                     return (sgr4bc,bright);
                 } else
                     throw new Exception("label not in SGR_4BitsColors");
             } catch (Exception ex) {
-                throw new Exception("invalid SGR_4BitsColor definition syntax. attempted is: {n}[,bright] with n from any name in SGR_4BitsColors in lower case",ex);
+                throw new Exception("invalid SGR_4BitsColor definition syntax. attempted is: {n}[:bright] with n from any name in SGR_4BitsColors in lower case",ex);
             }
         }
 
@@ -359,7 +362,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         /// <param name="n">palette color index</param>
         /// <returns>ansi seq</returns>
-        public static string SGR_SetForegroundColor8bits(int n) => $"{SGR(38,$";5;{n}")}";
+        public static string SGR_SetForegroundColor8bits(int n) => $"{SGR(38,$"5;{n}")}";
 
         /// <summary>
         /// set foreground color - 8 bits palette (256 colors)
@@ -371,7 +374,8 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         /// <param name="s">{n},0<=n<=255</param>
         /// <returns>ansi seq</returns>
-        public static string SGRF8(string s) {
+        public static string SGRF8(object o) {
+            if (!(o is string s)) return null;
             try {
                 var n = Convert.ToInt16(s);
                 if (n<0 || n>255) throw new Exception("value out of bounds (8its max)");
@@ -389,7 +393,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="g">green: 0 to 255</param>
         /// <param name="b">blue: 0 to 255</param>
         /// <returns>ansi seq</returns>
-        public static string SGR_SetForegroundColor24bits(int r,int g,int b) => $"{SGR(38,$";2;{r};{g};{b}")})";
+        public static string SGR_SetForegroundColor24bits(int r,int g,int b) => $"{SGR(38,$"2;{r};{g};{b}")})";
 
         /// <summary>
         /// set foreground color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
@@ -398,21 +402,22 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         /// <param name="s">{r},{g},{b} 0<=r<=255 0<=g<=255 0<=b<=255</param>
         /// <returns>ansi seq</returns>
-        public static string SGRF24(string s) {
+        public static string SGRF24(object o) {
+            if (!(o is string s)) return null;
             try {
                 int convert(string s) {
                     var n = Convert.ToInt16(s);
                     if (n<0 || n>255) throw new Exception("value out of bounds (8bits max)");
                     return n;
                 }
-                var t = s.Split(",");
+                var t = s.Split(":");
                 if (t.Length!=3) throw new Exception("wrong numbers of parameters.. attempted exactly two comma");
                 var r = convert(t[0]);
                 var g = convert(t[1]);
                 var b = convert(t[2]); 
                 return SGR_SetForegroundColor24bits(r,g,b);
             } catch (Exception ex) {
-                throw new Exception("invalid SGR ;2;r;g;b definition syntax. attempted is: {r},{g},{b} 0<=r<=255 0<=g<=255 0<=b<=255",ex);
+                throw new Exception("invalid SGR ;2;r;g;b definition syntax. attempted is: {r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255",ex);
             }
         }
 
@@ -423,14 +428,15 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="color">SGR_4BitsColors</param>
         /// <param name="bright">enable bright 8 additional color set (sames colors in bright)</param>
         /// <returns>ansi seq</returns>
-        public static string SGR_SetBackgroundColor4bits(SGR_4BitsColors color,bool bright) => $"{SGR(48,""+((bright?90:30)+(int)color))}";
+        public static string SGR_SetBackgroundColor4bits(SGR_4BitsColors color,bool bright) => $"{SGR(""+((bright?100:40)+(int)color))}";
 
         /// <summary>
         /// Set background color - 3/4 bits palette mode (8 normal colors + 8 bright colors)
         /// <para>bright black is gray or darkgray, white is gray or light gray, bright white is white. That depends on console palette</para>
         /// <para>format is {n}[,bright] with n from any name in SGR_4BitsColors (both args not in sensitive case). if ,bright is added, the color refers to the 8 colors additional palette - for example Black,bright or red</para>
         /// </summary>
-        public static string SGRB(string s) {
+        public static string SGRB(object o) {
+            if (!(o is string s)) return null;
             var p = ParseSGR_4BitsColor(s);
             return SGR_SetBackgroundColor4bits(p.color,p.bright);
         }
@@ -444,7 +450,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         /// <param name="n">palette color index</param>
         /// <returns>ansi seq</returns>
-        public static string SGR_SetBackgroundColor8bits(int n) => $"{SGR(48,$";5;{n}")}";
+        public static string SGR_SetBackgroundColor8bits(int n) => $"{SGR(48,$"5;{n}")}";
 
         /// <summary>
         /// set background color - 8 bits palette (256 colors)
@@ -456,7 +462,8 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         /// <param name="s">{n},0<=n<=255</param>
         /// <returns>ansi seq</returns>
-        public static string SGRB8(string s) {
+        public static string SGRB8(object o) {
+            if (!(o is string s)) return null;
             try {
                 var n = Convert.ToInt16(s);
                 if (n<0 || n>255) throw new Exception("value out of bounds for 8bits color palette");
@@ -474,7 +481,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="g">green: 0 to 255</param>
         /// <param name="b">blue: 0 to 255</param>
         /// <returns>ansi seq</returns>
-        public static string SGR_SetBackgroundColor24bits(int r,int g,int b) => $"{SGR(48,$";2;{r};{g};{b}")})";
+        public static string SGR_SetBackgroundColor24bits(int r,int g,int b) => $"{SGR(48,$"2;{r};{g};{b}")})";
 
         /// <summary>
         /// set background color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
@@ -483,21 +490,22 @@ namespace DotNetConsoleAppToolkit.Console
         /// </summary>
         /// <param name="s">{r},{g},{b} 0<=r<=255 0<=g<=255 0<=b<=255</param>
         /// <returns>ansi seq</returns>
-        public static string SGRB24(string s) {
+        public static string SGRB24(object o) {
+            if (!(o is string s)) return null;
             try {
                 int convert(string s) {
                     var n = Convert.ToInt16(s);
                     if (n<0 || n>255) throw new Exception("value out of bounds (8bits max)");
                     return n;
                 }
-                var t = s.Split(",");
+                var t = s.Split(":");
                 if (t.Length!=3) throw new Exception("wrong numbers of parameters.. attempted exactly two ,");
                 var r = convert(t[0]);
                 var g = convert(t[1]);
                 var b = convert(t[2]); 
-                return SGR_SetForegroundColor24bits(r,g,b);
+                return SGR_SetBackgroundColor24bits(r,g,b);
             } catch (Exception ex) {
-                throw new Exception("invalid SGR ;2;r;g;b definition syntax. attempted is: {r},{g},{b} 0<=r<=255 0<=g<=255 0<=b<=255",ex);
+                throw new Exception("invalid SGR ;2;r;g;b definition syntax. attempted is: {r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255",ex);
             }
         }
 
