@@ -1,7 +1,6 @@
 issues fast backlog (developers notes)
 --------------------------------------
 
-18/1/21 FGZ     (rdc) do not reset background color (vscode). have to use (RSTXTA) instead
 18/1/21 FGZ     error: appears in syntax analysis result (missing a parameter to the call of Error) in display syntax error position
 18/1/21 FGZ     review not compatible mode good usage of (rdc) or needs of (RSTXTA) in implemented commands
 18/1/21 FGZ     avoid usage of REVERT/INVERSE mode in implemented commands (too bugy in most terminals - @see default foreground and backgronud colors behavior)

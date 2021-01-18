@@ -413,7 +413,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             if (log) LogError(logMessage);
         }
 
-        void Error(string message=null,bool log=false,bool lineBreak = true,string prefix="Error")
+        void Error(string message=null,bool log=false,bool lineBreak = true,string prefix="")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + (message == null ? "" : $"{message}");
             Out.Echo(logMessage, lineBreak);
@@ -839,7 +839,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                         t[GetIndex(context, errPos, expr)] = Settings.ErrorPositionMarker+"";
                     }
                     serr = string.Join("", t);
-                    Error(" ".PadLeft(outputX + 1) + serr);
+                    Error(" ".PadLeft(outputX + 1) + serr,false,false);
 
                     Error(errorText);
                     r = new ExpressionEvaluationResult(errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotDefined, null);
