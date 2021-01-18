@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 using DotNetConsoleAppToolkit.Console;
+using System;
 
 namespace DotNetConsoleAppToolkit.Component.EchoDirective
 {
@@ -152,16 +153,27 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
                         if (cmd.Value.Value.command!=null) {
                             if (cmd.Value.Value.parameter==null)
                             {
-                                result = cmd.Value.Value.command(value);    // CommandDelegate
+                                try {
+                                    result = cmd.Value.Value.command(value);    // CommandDelegate
+                                } catch (Exception ex) {
+                                    if (TraceCommandErrors) Error(ex.Message);
+                                }
                             } else {
-                                //result = cmd.Value.Value.command(value);
-                                result=cmd.Value.Value.command((cmd.Value.Value.parameter,value));
+                                try {
+                                    result=cmd.Value.Value.command((cmd.Value.Value.parameter,value));
+                                } catch (Exception ex) {
+                                    if (TraceCommandErrors) Error(ex.Message);
+                                }
                             }
                         }
                         else
                             if (cmd.Value.Value.simpleCommand!=null) 
                             { 
-                                cmd.Value.Value.simpleCommand(); 
+                                try {
+                                    cmd.Value.Value.simpleCommand();
+                                } catch (Exception ex) {
+                                    if (TraceCommandErrors) Error(ex.Message);
+                                } 
                                 result=null; 
                             }
                             // else: no command: do nothing
@@ -178,12 +190,20 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
                     // ❎ --> exec echo directive command : NO ASSIGNATION
                     if (!doNotEvalutatePrintDirectives) {
                         if (cmd.Value.Value.command!=null) {
-                            result = cmd.Value.Value.command(cmd.Value.Value.parameter);
+                            try {
+                                result = cmd.Value.Value.command(cmd.Value.Value.parameter);
+                            } catch (Exception ex) {
+                                if (TraceCommandErrors) Error(ex.Message);
+                            }
                         }
                         else
                         {
                             if (cmd.Value.Value.simpleCommand!=null) { 
-                                cmd.Value.Value.simpleCommand(); 
+                                try {
+                                    cmd.Value.Value.simpleCommand(); 
+                                } catch (Exception ex) {
+                                    if (TraceCommandErrors) Error(ex.Message);
+                                }
                                 result=null; 
                             }
                             // else: no command: do nothing

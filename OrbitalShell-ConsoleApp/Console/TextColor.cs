@@ -49,9 +49,12 @@ namespace DotNetConsoleAppToolkit.Console
         /// parse a 4 bit color
         /// </summary>
         /// <param name="c">text of color name</param>
-        public static ConsoleColor ParseColor(object c)
+        public static ConsoleColor? ParseColor(object c)
         {
-            if (Enum.TryParse((string)c, true, out ConsoleColor r))
+            if (c==null) return null;
+            var s = (string)c;
+            if (string.IsNullOrWhiteSpace(s)) return null;
+            if (Enum.TryParse(s, true, out ConsoleColor r))
                 return r;
             if (TraceCommandErrors) Error($"invalid color name: {c}");
             return ConsoleColor.Black;

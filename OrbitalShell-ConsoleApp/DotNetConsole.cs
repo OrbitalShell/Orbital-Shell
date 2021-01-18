@@ -64,6 +64,7 @@ namespace DotNetConsoleAppToolkit
         public static bool SaveColors = /*true*/ false; /*bug fix*/ // TODO: remove
         
         public static bool TraceCommandErrors = true;
+        
         public static bool DumpExceptions = true;
         public static ConsoleColor? DefaultForeground;
         public static ConsoleColor? DefaultBackground;

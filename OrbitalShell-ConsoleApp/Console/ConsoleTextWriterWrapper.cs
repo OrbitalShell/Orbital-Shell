@@ -290,11 +290,25 @@ namespace DotNetConsoleAppToolkit.Console
         object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(x)); return null; }
         object _SetForegroundParse8BitColor(object x) { SetForeground(TextColor.Parse8BitColor(x)); return null; }
         object _SetForegroundParse24BitColor(object x) { SetForeground(TextColor.Parse24BitColor(x)); return null; }
-        object _SetBackgroundColor(object x) { SetBackground(TextColor.ParseColor(x)); return null; }
+
+        object _SetBackgroundColor(object x) { 
+            var c = TextColor.ParseColor(x); 
+            if (c.HasValue) SetBackground(c.Value); 
+            return null; 
+        }
+
         object _SetBackgroundParse8BitColor(object x) { SetBackground(TextColor.Parse8BitColor(x)); return null; }
         object _SetBackgroundParse24BitColor(object x) { SetBackground(TextColor.Parse24BitColor(x)); return null; }
-        object _SetDefaultForeground(object x) { SetDefaultForeground(TextColor.ParseColor(x)); return null; }
-        object _SetDefaultBackground(object x) { SetDefaultBackground(TextColor.ParseColor(x)); return null; }
+        object _SetDefaultForeground(object x) { 
+            var c = TextColor.ParseColor(x); 
+            if (c.HasValue) SetDefaultForeground(c.Value);            
+            return null; 
+            }
+        object _SetDefaultBackground(object x) { 
+            var c = TextColor.ParseColor(x); 
+            if (c.HasValue) SetDefaultBackground(c.Value);
+            return null; 
+            }
         object _SetCursorX(object x) { CursorLeft = GetCursorX(x); return null; }
         object _SetCursorY(object x) { CursorLeft = GetCursorX(x); return null; }
         object _ExecCSharp(object x) { return ExecCSharp((string)x); }
