@@ -393,7 +393,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="g">green: 0 to 255</param>
         /// <param name="b">blue: 0 to 255</param>
         /// <returns>ansi seq</returns>
-        public static string SGR_SetForegroundColor24bits(int r,int g,int b) => $"{SGR(38,$"2;{r};{g};{b}")})";
+        public static string SGR_SetForegroundColor24bits(int r,int g,int b) => $"{SGR(38,$"2;{r};{g};{b}")}";
 
         /// <summary>
         /// set foreground color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
@@ -481,7 +481,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="g">green: 0 to 255</param>
         /// <param name="b">blue: 0 to 255</param>
         /// <returns>ansi seq</returns>
-        public static string SGR_SetBackgroundColor24bits(int r,int g,int b) => $"{SGR(48,$"2;{r};{g};{b}")})";
+        public static string SGR_SetBackgroundColor24bits(int r,int g,int b) => $"{SGR(48,$"2;{r};{g};{b}")}";
 
         /// <summary>
         /// set background color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
