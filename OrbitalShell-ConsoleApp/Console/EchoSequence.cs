@@ -1,5 +1,6 @@
 ﻿using System;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Console
 {

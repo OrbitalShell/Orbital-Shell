@@ -1,7 +1,6 @@
-﻿namespace DotNetConsoleAppToolkit.Console
+﻿namespace DotNetConsoleAppToolkit.Component.EchoDirective
 {
-
- /// <summary>
+    /// <summary>
     /// <para>
     /// naming conventions:<br/>
     /// &#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;<br/>
@@ -354,6 +353,8 @@
 
         #endregion
 
+        #region colors management        
+
         /// <summary>
         /// backup foreground in the shell backup memory
         /// </summary>
@@ -421,15 +422,62 @@
         /// </summary>
         db,
 
+        #endregion
+        
+        #region flow control
+                        
         /// <summary>
         /// line break - @Uses ConsoleTextWrapper.LineBreak
         /// </summary>
         br,
 
         /// <summary>
+        /// clear screen - @Uses ConsoleTextWriterWrapper
+        /// </summary>
+        cls,
+
+        /// <summary>
+        /// fill current line to the right - shell impl. (@TODO: remove)
+        /// </summary>
+        fillright,
+
+        /// <summary>
+        /// clear line from cursor right - @[K
+        /// </summary>
+        clright,
+
+        /// <summary>
+        /// clear line from cursor left - @[1K
+        /// </summary>
+        clleft,
+
+        /// <summary>
+        /// clear entire line - @[2K
+        /// </summary>
+        cl,
+
+        #endregion
+
+        #region process control & information
+ 
+        /// <summary>
         /// infos about console
         /// </summary>
         inf,
+        
+        /// <summary>
+        /// exit the current process
+        /// </summary>
+        exit,
+
+        /// <summary>
+        /// exec csharp code from text
+        /// </summary>
+        exec,
+
+        #endregion
+        
+        #region cursor management
 
         /// <summary>
         /// backup cursor pos in shell memory - @Uses system console cursor position
@@ -461,72 +509,7 @@
         /// </summary>
         cry,
 
-        /// <summary>
-        /// exit the current process
-        /// </summary>
-        exit,
-
-        /// <summary>
-        /// exec csharp code from text
-        /// </summary>
-        exec,
-
-        /// <summary>
-        /// clear screen - @Uses ConsoleTextWriterWrapper
-        /// </summary>
-        cls,
-
-        /// <summary>
-        /// underline on - sgr
-        /// </summary>
-        uon,
-
-        /// <summary>
-        /// bold on - sgr
-        /// </summary>
-        bon,
-
-        /// <summary>
-        /// blink on - sgr
-        /// </summary>
-        blon,
-
-        /// <summary>
-        /// invert/reverse on - sgr
-        /// </summary>
-        invon,
-
-        /// <summary>
-        /// light colors - sgr
-        /// </summary>
-        lion,
-
-        /// <summary>
-        /// text decoration off - sgr
-        /// </summary>
-        tdoff,
-
-        /// <summary>
-        /// fill current line to the right - shell impl. (@TODO: remove)
-        /// </summary>
-        fillright,
-
-        /// <summary>
-        /// clear line from cursor right - @[K
-        /// </summary>
-        clright,
-
-        /// <summary>
-        /// clear line from cursor left - @[1K
-        /// </summary>
-        clleft,
-
-        /// <summary>
-        /// clear entire line - @[2K
-        /// </summary>
-        cl,
-
-        /// <summary>
+/// <summary>
         /// cursor up - @[1A
         /// </summary>
         cup,
@@ -569,6 +552,42 @@
         /// <summary>
         /// cursor home (top left 0,0) - @[H
         /// </summary>
-        chome
+        chome,
+
+        #endregion
+        
+        #region text decoration
+
+        /// <summary>
+        /// underline on - sgr
+        /// </summary>
+        uon,
+
+        /// <summary>
+        /// bold on - sgr
+        /// </summary>
+        bon,
+
+        /// <summary>
+        /// blink on - sgr
+        /// </summary>
+        blon,
+
+        /// <summary>
+        /// invert/reverse on - sgr
+        /// </summary>
+        invon,
+
+        /// <summary>
+        /// light colors - sgr
+        /// </summary>
+        lion,
+
+        /// <summary>
+        /// text decoration off - sgr
+        /// </summary>
+        tdoff,
+
+        #endregion        
     }
 }

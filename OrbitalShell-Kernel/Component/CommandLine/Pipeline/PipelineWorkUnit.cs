@@ -3,6 +3,8 @@ using DotNetConsoleAppToolkit.Console;
 using System.Collections.Generic;
 using System.Linq;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
 {

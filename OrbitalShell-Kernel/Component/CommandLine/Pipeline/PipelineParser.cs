@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using static DotNetConsoleAppToolkit.Component.CommandLine.Parsing.CommandLineSyntax;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
 {

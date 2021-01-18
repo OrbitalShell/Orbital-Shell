@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Console
 {

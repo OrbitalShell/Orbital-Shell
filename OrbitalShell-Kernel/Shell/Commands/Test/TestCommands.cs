@@ -9,6 +9,8 @@ using static DotNetConsoleAppToolkit.Console.ANSI;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.TextFileReader;
 using sc = System.Console;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands.Test
 {

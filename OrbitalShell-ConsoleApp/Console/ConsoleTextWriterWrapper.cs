@@ -1,15 +1,19 @@
 ﻿using DotNetConsoleAppToolkit.Component.UI;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
+using DotNetConsoleAppToolkit.Lib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
+using itpsrv = System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using static DotNetConsoleAppToolkit.DotNetConsole;
-using cons= DotNetConsoleAppToolkit.DotNetConsole;
+using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.Str;
 using sc = System.Console;
 using static DotNetConsoleAppToolkit.Console.ANSI;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
 
 namespace DotNetConsoleAppToolkit.Console
 {
@@ -36,7 +40,10 @@ namespace DotNetConsoleAppToolkit.Console
         protected int _cursorTopBackup;
         protected ConsoleColor _backgroundBackup = ConsoleColor.Black;
         protected ConsoleColor _foregroundBackup = ConsoleColor.White;
-        protected Dictionary<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command)>  _drtvs;
+        
+        //protected Dictionary<string, (Engine.SimpleCommandDelegate simpleCommand,Engine.CommandDelegate command)>  _drtvs;
+
+        EchoDirectiveProcessor EchoDirectiveProcessor;
 
         public static readonly string ESC = (char)27+"";
         
@@ -87,7 +94,7 @@ namespace DotNetConsoleAppToolkit.Console
              _cachedForegroundColor = DefaultForeground;
 
             // echo_directive => SimmpleCommandDelegate, CommandDelegate
-            _drtvs = new Dictionary<string, (SimpleCommandDelegate simpleCommand, CommandDelegate command)>() {
+            var _drtvs = new Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand, EchoDirectiveProcessor.CommandDelegate command)>() {
                 { EchoDirectives.bkf+""   , (BackupForeground, null) },
                 { EchoDirectives.bkb+""   , (BackupBackground, null) },
                 { EchoDirectives.rsf+""   , (RestoreForeground, null) },
@@ -140,10 +147,16 @@ namespace DotNetConsoleAppToolkit.Console
                 { EchoDirectives.cnleft+"="     , (null, _MoveCursorLeft) },
                 { EchoDirectives.cnright+"="    , (null, _MoveCursorRight) },
 
-                // ...
+                // ANSI
 
                 { EchoDirectives.RSTXTA+"" , (RSTXTA,null) }
             };
+
+            EchoDirectiveProcessor = new EchoDirectiveProcessor(
+                this,
+                new CommandMap ( _drtvs )
+                );
+
         }
 
         #region commands delegates for echo directives map (avoiding lambdas in map)
@@ -215,8 +228,21 @@ namespace DotNetConsoleAppToolkit.Console
 
         #region console output operations
 
-        protected delegate object CommandDelegate(object x);
-        protected delegate void SimpleCommandDelegate();
+        public static void Infos()
+        {
+            lock (Out.Lock)
+            {
+                Out.Echoln($"OS={Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "64" : "32")}bits plateform={RuntimeEnvironment.OSType}");
+                Out.Echoln($"{White}{Bkf}{Colors.HighlightIdentifier}window:{Rsf} left={Colors.Numeric}{sc.WindowLeft}{Rsf},top={Colors.Numeric}{sc.WindowTop}{Rsf},width={Colors.Numeric}{sc.WindowWidth}{Rsf},height={Colors.Numeric}{sc.WindowHeight}{Rsf},largest width={Colors.Numeric}{sc.LargestWindowWidth}{Rsf},largest height={Colors.Numeric}{sc.LargestWindowHeight}{Rsf}");
+                Out.Echoln($"{Colors.HighlightIdentifier}buffer:{Rsf} width={Colors.Numeric}{sc.BufferWidth}{Rsf},height={Colors.Numeric}{sc.BufferHeight}{Rsf} | input encoding={Colors.Numeric}{sc.InputEncoding.EncodingName}{Rsf} | output encoding={Colors.Numeric}{sc.OutputEncoding.EncodingName}{Rsf}");
+                Out.Echoln($"{White}default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
+                if (RuntimeEnvironment.OSType == itpsrv.OSPlatform.Windows)
+                {
+                    Out.Echoln($"number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");            // TODO: not supported on linux ubuntu 18.04 wsl
+                    Out.Echoln($"cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");     // TODO: not supported on linux ubuntu 18.04 wsl
+                }
+            };
+        }
 
         public void RSTXTA() {
             lock (Lock) { Write(ANSI.RSTXTA); }
@@ -755,7 +781,8 @@ namespace DotNetConsoleAppToolkit.Console
                 else
                 {
                     if (parseCommands)
-                        ParseTextAndApplyCommands(s.ToString(), false, "", doNotEvalutatePrintDirectives, printSequences);
+                        // call the EchoDirective component
+                        EchoDirectiveProcessor.ParseTextAndApplyCommands(s.ToString(), false, "", doNotEvalutatePrintDirectives, printSequences);
                     else
                         ConsolePrint(s.ToString(), false);
                 }
@@ -764,175 +791,7 @@ namespace DotNetConsoleAppToolkit.Console
             }
         }
 
-        void ParseTextAndApplyCommands(
-            string s,
-            bool lineBreak = false,
-            string tmps = "",
-            bool doNotEvalutatePrintDirectives = false,
-            EchoSequences printSequences = null,
-            int startIndex = 0)
-        {
-            lock (Lock)
-            {
-                int i = 0;
-                KeyValuePair<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command)>? cmd = null;
-                int n = s.Length;
-                bool isAssignation = false;
-                int cmdindex = -1;
-                while (cmd == null && i < n)
-                {
-                    foreach (var ccmd in _drtvs)
-                    {
-                        if (s.IndexOf(CommandBlockBeginChar + ccmd.Key, i) == i)
-                        {
-                            cmd = ccmd;
-                            cmdindex = i;
-                            isAssignation = ccmd.Key.EndsWith("=");
-                        }
-                    }
-                    if (cmd == null)
-                        tmps += s.Substring(i, 1);
-                    i++;
-                }
-                if (cmd == null)
-                {
-                    ConsolePrint(tmps, false);
-
-                    printSequences?.Add(new EchoSequence((string)null, 0, i - 1, null, tmps, startIndex));
-                    return;
-                }
-                else i = cmdindex;
-
-                if (!string.IsNullOrEmpty(tmps))
-                {
-                    ConsolePrint(tmps);
-
-                    printSequences?.Add(new EchoSequence((string)null, 0, i - 1, null, tmps, startIndex));
-                }
-
-                int firstCommandEndIndex = 0;
-                int k = -1;
-                string value = null;
-                if (isAssignation)
-                {
-                    firstCommandEndIndex = s.IndexOf(CommandValueAssignationChar, i + 1);
-                    if (firstCommandEndIndex > -1)
-                    {
-                        firstCommandEndIndex++;
-                        var subs = s.Substring(firstCommandEndIndex);
-                        if (subs.StartsWith(CodeBlockBegin))
-                        {
-                            firstCommandEndIndex += CodeBlockBegin.Length;
-                            k = s.IndexOf(CodeBlockEnd, firstCommandEndIndex);
-                            if (k > -1)
-                            {
-#pragma warning disable IDE0057
-                                value = s.Substring(firstCommandEndIndex, k - firstCommandEndIndex);
-#pragma warning restore IDE0057
-                                k += CodeBlockEnd.Length;
-                            }
-                            else
-                            {
-                                ConsolePrint(s);
-
-                                printSequences?.Add(new EchoSequence((string)null, i, s.Length - 1, null, s, startIndex));
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                int j = i + cmd.Value.Key.Length;
-                bool inCmt = false;
-                int firstCommandSeparatorCharIndex = -1;
-                while (j < s.Length)
-                {
-                    if (inCmt && s.IndexOf(CodeBlockEnd, j) == j)
-                    {
-                        inCmt = false;
-                        j += CodeBlockEnd.Length - 1;
-                    }
-                    if (!inCmt && s.IndexOf(CodeBlockBegin, j) == j)
-                    {
-                        inCmt = true;
-                        j += CodeBlockBegin.Length - 1;
-                    }
-                    if (!inCmt && s.IndexOf(CommandSeparatorChar, j) == j && firstCommandSeparatorCharIndex == -1)
-                        firstCommandSeparatorCharIndex = j;
-                    if (!inCmt && s.IndexOf(CommandBlockEndChar, j) == j)
-                        break;
-                    j++;
-                }
-                if (j == s.Length)
-                {
-                    ConsolePrint(s);
-
-                    printSequences?.Add(new EchoSequence((string)null, i, j, null, s, startIndex));
-                    return;
-                }
-
-                var cmdtxt = s[i..j];
-                if (firstCommandSeparatorCharIndex > -1)
-                    cmdtxt = cmdtxt.Substring(0, firstCommandSeparatorCharIndex - i/*-1*/);
-
-                object result = null;
-                if (isAssignation)
-                {
-                    if (value == null)
-                    {
-                        var t = cmdtxt.Split(CommandValueAssignationChar);
-                        value = t[1];
-                    }
-                    if (!doNotEvalutatePrintDirectives) {
-                        // --> exec echo directive command
-                        if (cmd.Value.Value.command!=null) result = cmd.Value.Value.command(value);
-                        else
-                            if (cmd.Value.Value.simpleCommand!=null) { cmd.Value.Value.simpleCommand(); result=null; }
-                        // <--
-                    }
-                    
-                    if (FileEchoDebugEnabled && FileEchoDebugCommands)
-                        EchoDebug(CommandBlockBeginChar + cmd.Value.Key + value + CommandBlockEndChar);
-
-                    printSequences?.Add(new EchoSequence(cmd.Value.Key.Substring(0, cmd.Value.Key.Length - 1), i, j, value, null, startIndex));
-                }
-                else
-                {
-                    if (!doNotEvalutatePrintDirectives) {
-                        // --> exec echo directive command
-                        if (cmd.Value.Value.command!=null) result = cmd.Value.Value.command(null);
-                        else
-                            if (cmd.Value.Value.simpleCommand!=null) { cmd.Value.Value.simpleCommand(); result=null; }
-                        // <--
-                    }
-                    
-                    if (FileEchoDebugEnabled && FileEchoDebugCommands)
-                        EchoDebug(CommandBlockBeginChar + cmd.Value.Key + CommandBlockEndChar);
-                    
-                    printSequences?.Add(new EchoSequence(cmd.Value.Key, i, j, value, null, startIndex));
-                }
-                if (result != null)
-                    Echo(result, false);    // recurse
-
-                if (firstCommandSeparatorCharIndex > -1)
-                {
-                    s = CommandBlockBeginChar + s.Substring(firstCommandSeparatorCharIndex + 1 /*+ i*/ );
-                    startIndex += firstCommandSeparatorCharIndex + 1;
-                }
-                else
-                {
-                    if (j + 1 < s.Length)
-                    {
-                        s = s.Substring(j + 1);
-                        startIndex += j + 1;
-                    }
-                    else
-                        s = string.Empty;
-                }
-
-                if (!string.IsNullOrEmpty(s)) ParseTextAndApplyCommands(s, lineBreak, "", doNotEvalutatePrintDirectives, printSequences, startIndex);
-            }
-        }
+        
 
         void ConsoleSubPrint(string s, bool lineBreak = false)
         {

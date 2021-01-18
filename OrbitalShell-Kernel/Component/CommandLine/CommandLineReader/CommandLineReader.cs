@@ -12,6 +12,8 @@ using static DotNetConsoleAppToolkit.Component.CommandLine.Processor.CommandLine
 using static DotNetConsoleAppToolkit.DotNetConsole;
 using sc = System.Console;
 using DotNetConsoleAppToolkit.Console;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+
 namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
 {
     public class CommandLineReader

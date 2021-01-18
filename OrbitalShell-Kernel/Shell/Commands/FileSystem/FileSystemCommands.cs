@@ -18,6 +18,8 @@ using static DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.FileSystem.FileSystem;
 using static DotNetConsoleAppToolkit.Lib.Str;
 using sc = System.Console;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
 {

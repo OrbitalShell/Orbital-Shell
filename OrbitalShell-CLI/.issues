@@ -1,0 +1,10 @@
+issues fast backlog (developers notes)
+--------------------------------------
+
+18/1/21 FGZ     (rdc) do not reset background color (vscode). have to use (RSTXTA) instead
+18/1/21 FGZ     error: appears in syntax analysis result (missing a parameter to the call of Error)
+
+improvements to do
+------------------
+
+18/1/21 FGZ     help: normal mode should be 'tech details less', should be got with -v

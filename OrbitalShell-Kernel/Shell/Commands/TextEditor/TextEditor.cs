@@ -18,6 +18,8 @@ using static DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.Str;
 using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using sc = System.Console;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
 {

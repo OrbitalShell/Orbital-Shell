@@ -8,6 +8,8 @@ using System;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using System.ComponentModel.Design;
 using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Lib.FileSystem
 {

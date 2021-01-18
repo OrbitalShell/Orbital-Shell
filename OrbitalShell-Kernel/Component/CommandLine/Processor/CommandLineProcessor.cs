@@ -24,6 +24,8 @@ using static DotNetConsoleAppToolkit.Component.CommandLine.Parsing.CommandLinePa
 using static DotNetConsoleAppToolkit.DotNetConsole;
 using cmdlr = DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader;
 using cons = System.Console;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 {

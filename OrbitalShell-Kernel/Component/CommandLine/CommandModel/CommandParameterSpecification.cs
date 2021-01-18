@@ -7,6 +7,8 @@ using static DotNetConsoleAppToolkit.DotNetConsole;
 #if printDefaultValueInSyntax
 using static DotNetConsoleAppToolkit.Lib.Str;
 #endif
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
 {

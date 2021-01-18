@@ -18,6 +18,8 @@ using System.Reflection.Metadata;
 using static DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.Str;
 using cons = DotNetConsoleAppToolkit.DotNetConsole;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands
 {

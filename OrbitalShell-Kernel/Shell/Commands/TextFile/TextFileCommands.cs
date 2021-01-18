@@ -19,6 +19,8 @@ using System.Runtime.InteropServices;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using DotNetConsoleAppToolkit.Lib.FileSystem;
 using DotNetConsoleAppToolkit.Lib.Data;
+using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using DotNetConsoleAppToolkit.Component.EchoDirective;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
 {
