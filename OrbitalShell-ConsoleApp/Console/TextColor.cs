@@ -21,21 +21,30 @@ namespace DotNetConsoleAppToolkit.Console
             set { _background = value; }
         }
 
+        public readonly string ToStrPost = null;
+
         public TextColor(ConsoleColor? foreground, ConsoleColor? background=null)
         {
             Foreground = foreground;
             Background = background;
         }
 
+        public TextColor(ConsoleColor? foreground, ConsoleColor? background=null,string toStrPost="")
+        {
+            Foreground = foreground;
+            Background = background;
+            ToStrPost = toStrPost;
+        }
+
         public override string ToString() =>
              (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
-             + (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower()));
+             + (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower())) + ToStrPost;
 
         public string ToStringForegroundOnly() => (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()));
 
         public string ToString(bool foregroundOnly) => 
              (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
-             + ((foregroundOnly)? "": (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower())));
+             + ((foregroundOnly)? "": (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower()))) + ToStrPost;
 
 
         #region build and convert colors operations

@@ -5,7 +5,7 @@ namespace DotNetConsoleAppToolkit.Console
 {
     public class ColorSettings 
     {        
-        public TextColor Default => new TextColor(DefaultForeground, DefaultBackground);
+        public TextColor Default => new TextColor(DefaultForeground, DefaultBackground,ANSI.RSTXTA);
         public TextColor Inverted => new TextColor(DefaultBackground, DefaultForeground);
 
         public TextColor Log = new TextColor(ConsoleColor.Green, null);
@@ -18,6 +18,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         public TextColor TitleBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
         public TextColor TitleDarkText = new TextColor(ConsoleColor.Gray,ConsoleColor.DarkBlue);
+        public TextColor InteractionBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkGreen);
 
         // DotNetConsoleAppToolkit-Shell
 

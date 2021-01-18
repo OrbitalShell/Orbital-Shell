@@ -7,7 +7,7 @@ using static DotNetConsoleAppToolkit.Console.EchoPrimitives;
 namespace DotNetConsoleAppToolkit.Console
 {
     /// <summary>
-    /// dynamic outputable & convertible object that integrates with the shell
+    /// dynamically outputable &amp; convertible object that integrates with the shell
     /// </summary>
     public class ShellObject : IShellObject
     {
