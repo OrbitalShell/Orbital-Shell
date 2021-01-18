@@ -577,10 +577,13 @@ namespace DotNetConsoleAppToolkit.Console
             };
         }
 
+        /// <summary>
+        /// use RSTXTA to force colors set to defaults (avoid to reset to transparency colors)
+        /// </summary>
         public void RestoreDefaultColors() 
         { 
             lock (Lock) { 
-                //Write(ANSI.RSTXTA);     // force colors set to defaults (avoid to reset to transparency colors)
+                Write(ANSI.RSTXTA);
                 SetForeground( DefaultForeground); 
                 SetBackground( DefaultBackground); 
             }
