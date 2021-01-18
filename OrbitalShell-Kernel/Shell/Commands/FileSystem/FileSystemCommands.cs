@@ -112,7 +112,15 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                         if (cancellationTokenSource.IsCancellationRequested)
                             return i;
 
-                        item.Echo(new EchoEvaluationContext(context.Out,context,new FileSystemPathFormattingOptions(!noattributes, !recurse, "", (!wide || recurse || nocol == nbcols - 1) ? Br : "", (wide && !recurse) ? maxitlength : -1,"")));
+                        item.Echo(
+                            new EchoEvaluationContext(
+                                context.Out,context,
+                                new FileSystemPathFormattingOptions(
+                                    !noattributes, 
+                                    !recurse,
+                                    "", 
+                                    ((!wide || recurse || nocol == nbcols - 1) ? Br : ""), 
+                                    (wide && !recurse) ? maxitlength : -1,"")));
                         i++;
                         nocol++;
                         if (nocol == nbcols)

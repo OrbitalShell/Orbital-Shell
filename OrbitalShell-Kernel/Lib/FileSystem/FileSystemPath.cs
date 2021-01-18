@@ -106,7 +106,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
             if (IsSystem && !IsDirectory) color += SystemColorization + bg;
             if (IsSystem && IsDirectory && !IsReadOnly) color += SystemWritableDirectoryColorization;
             if (IsFile && IsReadOnly) color += ReadOnlyFileColorization;
-            var endcolor = bg + fg;
+            var endcolor = bg + fg + ANSI.RSTXTA;
             var r = "";
             var attr = "";
             string hidden = "";
