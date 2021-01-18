@@ -36,7 +36,7 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
             lock (Writer.Lock)
             {
                 int i = 0;
-                KeyValuePair<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command)>? cmd = null;
+                KeyValuePair<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command,string parameter)>? cmd = null;
                 int n = s.Length;
                 bool isAssignation = false;
                 int cmdindex = -1;

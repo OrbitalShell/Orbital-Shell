@@ -93,63 +93,65 @@ namespace DotNetConsoleAppToolkit.Console
              DefaultForeground = sc.ForegroundColor;
              _cachedForegroundColor = DefaultForeground;
 
-            // echo_directive => SimmpleCommandDelegate, CommandDelegate
-            var _drtvs = new Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand, EchoDirectiveProcessor.CommandDelegate command)>() {
-                { EchoDirectives.bkf+""   , (BackupForeground, null) },
-                { EchoDirectives.bkb+""   , (BackupBackground, null) },
-                { EchoDirectives.rsf+""   , (RestoreForeground, null) },
-                { EchoDirectives.rsb+""   , (RestoreBackground, null) },
+            // echo_directive => SimpleCommandDelegate, CommandDelegate, parameter
+            var _drtvs = new Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand, EchoDirectiveProcessor.CommandDelegate command,string parameter)>() {
+                { EchoDirectives.bkf+""   , (BackupForeground, null,null) },
+                { EchoDirectives.bkb+""   , (BackupBackground, null,null) },
+                { EchoDirectives.rsf+""   , (RestoreForeground, null,null) },
+                { EchoDirectives.rsb+""   , (RestoreBackground, null,null) },
 
-                { EchoDirectives.f+"="    , (null, _SetForegroundColor) },
-                { EchoDirectives.f8+"="   , (null, _SetForegroundParse8BitColor) },
-                { EchoDirectives.f24+"="  , (null, _SetForegroundParse24BitColor) },
-                { EchoDirectives.b+"="    , (null, _SetBackgroundColor) },
-                { EchoDirectives.b8+"="   , (null, _SetBackgroundParse8BitColor) },
-                { EchoDirectives.b24+"="  , (null, _SetBackgroundParse24BitColor) },
+                { EchoDirectives.f+"="    , (null, _SetForegroundColor,null) },
+                { EchoDirectives.f8+"="   , (null, _SetForegroundParse8BitColor,null) },
+                { EchoDirectives.f24+"="  , (null, _SetForegroundParse24BitColor,null) },
+                { EchoDirectives.b+"="    , (null, _SetBackgroundColor,null) },
+                { EchoDirectives.b8+"="   , (null, _SetBackgroundParse8BitColor,null) },
+                { EchoDirectives.b24+"="  , (null, _SetBackgroundParse24BitColor,null) },
 
-                { EchoDirectives.df+"="   , (null, _SetDefaultForeground) },
-                { EchoDirectives.db+"="   , (null, _SetDefaultBackground) },
-                { EchoDirectives.rdc+""   , (RestoreDefaultColors, null) },
+                { EchoDirectives.df+"="   , (null, _SetDefaultForeground,null) },
+                { EchoDirectives.db+"="   , (null, _SetDefaultBackground,null) },
+                { EchoDirectives.rdc+""   , (RestoreDefaultColors, null,null) },
 
-                { EchoDirectives.cls+""   , (ClearScreen, null) },
+                { EchoDirectives.cls+""   , (ClearScreen, null,null) },
                 
-                { EchoDirectives.br+""    , (LineBreak, null) },
-                { EchoDirectives.inf+""   , (Infos, null) },
-                { EchoDirectives.bkcr+""  , (BackupCursorPos, null) },
-                { EchoDirectives.rscr+""  , (RestoreCursorPos, null) },
-                { EchoDirectives.crh+""   , (HideCur, null) },
-                { EchoDirectives.crs+""   , (ShowCur, null) },
-                { EchoDirectives.crx+"="  , (null, _SetCursorX) },
-                { EchoDirectives.cry+"="  , (null, _SetCursorY) },
-                { EchoDirectives.exit+""  , (null, _Exit) },
-                { EchoDirectives.exec+"=" , (null, _ExecCSharp) },
+                { EchoDirectives.br+""    , (LineBreak, null,null) },
+                { EchoDirectives.inf+""   , (Infos, null,null) },
+                { EchoDirectives.bkcr+""  , (BackupCursorPos, null,null) },
+                { EchoDirectives.rscr+""  , (RestoreCursorPos, null,null) },
+                { EchoDirectives.crh+""   , (HideCur, null,null) },
+                { EchoDirectives.crs+""   , (ShowCur, null,null) },
+                { EchoDirectives.crx+"="  , (null, _SetCursorX,null) },
+                { EchoDirectives.cry+"="  , (null, _SetCursorY,null) },
+                { EchoDirectives.exit+""  , (null, _Exit,null) },
+                { EchoDirectives.exec+"=" , (null, _ExecCSharp,null) },
 
-                { EchoDirectives.invon+""   , (EnableInvert, null) },
-                { EchoDirectives.lion+""    , (EnableLowIntensity, null) },
-                { EchoDirectives.uon+""     , (EnableUnderline, null) },
-                { EchoDirectives.bon+""     , (EnableBold, null) },
-                { EchoDirectives.blon+""    , (EnableBlink, null) },
-                { EchoDirectives.tdoff+""   , (DisableTextDecoration, null) },
+                { EchoDirectives.invon+""   , (EnableInvert, null,null) },
+                { EchoDirectives.lion+""    , (EnableLowIntensity, null,null) },
+                { EchoDirectives.uon+""     , (EnableUnderline, null,null) },
+                { EchoDirectives.bon+""     , (EnableBold, null,null) },
+                { EchoDirectives.blon+""    , (EnableBlink, null,null) },
+                { EchoDirectives.tdoff+""   , (DisableTextDecoration, null,null) },
 
-                { EchoDirectives.cl+""          , (ClearLine, null) },
-                { EchoDirectives.clright+""     , (ClearLineFromCursorRight, null) },
-                { EchoDirectives.fillright+""   , (FillFromCursorRight, null) },
-                { EchoDirectives.clleft+""      , (ClearLineFromCursorLeft, null) },
+                { EchoDirectives.cl+""          , (ClearLine, null,null) },
+                { EchoDirectives.clright+""     , (ClearLineFromCursorRight, null,null) },
+                { EchoDirectives.fillright+""   , (FillFromCursorRight, null,null) },
+                { EchoDirectives.clleft+""      , (ClearLineFromCursorLeft, null,null) },
 
-                { EchoDirectives.cup+""     , (_MoveCursorTop, null) },
-                { EchoDirectives.cdown+""   , (_MoveCursorDown, null) },
-                { EchoDirectives.cleft+""   , (_MoveCursorLeft, null) },
-                { EchoDirectives.cright+""  , (_MoveCursorRight, null) },
-                { EchoDirectives.chome+""   , (CursorHome, null) },
+                { EchoDirectives.cup+""     , (_MoveCursorTop, null,null) },
+                { EchoDirectives.cdown+""   , (_MoveCursorDown, null,null) },
+                { EchoDirectives.cleft+""   , (_MoveCursorLeft, null,null) },
+                { EchoDirectives.cright+""  , (_MoveCursorRight, null,null) },
+                { EchoDirectives.chome+""   , (CursorHome, null,null) },
 
-                { EchoDirectives.cnup+"="       , (null, _MoveCursorTop) },
-                { EchoDirectives.cndown+"="     , (null, _MoveCursorDown) },
-                { EchoDirectives.cnleft+"="     , (null, _MoveCursorLeft) },
-                { EchoDirectives.cnright+"="    , (null, _MoveCursorRight) },
+                { EchoDirectives.cnup+"="       , (null, _MoveCursorTop,null) },
+                { EchoDirectives.cndown+"="     , (null, _MoveCursorDown,null) },
+                { EchoDirectives.cnleft+"="     , (null, _MoveCursorLeft,null) },
+                { EchoDirectives.cnright+"="    , (null, _MoveCursorRight,null) },
 
                 // ANSI
 
-                { EchoDirectives.RSTXTA+"" , (RSTXTA,null) }
+                { EchoDirectives.ESC+"" , (null,_ANSI,ANSI.ESC) },
+                { EchoDirectives.RSTXTA+"" , (RSTXTA,null,null) },
+
             };
 
             EchoDirectiveProcessor = new EchoDirectiveProcessor(
@@ -160,6 +162,8 @@ namespace DotNetConsoleAppToolkit.Console
         }
 
         #region commands delegates for echo directives map (avoiding lambdas in map)
+
+        object _ANSI(object p) { return p as string; }
 
         object _Exit(object x) { Exit(); return null; }
         object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(x)); return null; }
