@@ -103,6 +103,18 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             return CommandVoidResult.Instance;
         }
 
+        [Command("echo unicode characters from Console.Unicode (Codepage - 850)")]
+        public CommandVoidResult UnicodeTest(
+            CommandEvaluationContext context
+        ) {
+            var t = typeof(Console.Unicode);
+            foreach (var fi in  t.GetFields()) {
+                Out.Echo(fi.GetValue(null)+" ");
+            }
+            Out.Echoln();
+            return CommandVoidResult.Instance;
+        }
+
         [Command("show current colors support and current colors map using ANSI escape codes")]
         public CommandVoidResult ANSIColorTest(
             CommandEvaluationContext context
