@@ -8,20 +8,20 @@
         /// <summary>
         /// shell settings
         /// </summary>
-        Settings,
+        settings,
 
         /// <summary>
         /// CommandSettings
         /// </summary>        
-        CommandsSettings,
+        commandsSettings,
         
-        Debug,
+        debug,
 
-        Display,
+        display,
 
         /// <summary>
         /// ???
         /// </summary>
-        Display_Colors,
+        display_Colors,
     }
 }

@@ -39,7 +39,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
                 _dataRegistry.Set(ns + "", new DataObject(ns+"",false));
 
             // Env vars
-            var pfx = Nsp(VariableNamespace.Env);
+            var pfx = Nsp(VariableNamespace.env);
             foreach (DictionaryEntry envvar in Environment.GetEnvironmentVariables())
                 _dataRegistry.Set(Nsp(pfx,envvar.Key+""), envvar.Value);
         }
@@ -90,9 +90,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public bool Get( string path, out object value, bool throwException=true )
         {
             var r = _dataRegistry.Get(path, out value)
-            || _dataRegistry.Get(Nsp(VariableNamespace.Local, path), out value)
-            || _dataRegistry.Get(Nsp(VariableNamespace.Global, path), out value)
-            || _dataRegistry.Get(Nsp(VariableNamespace.Env, path), out value);
+            || _dataRegistry.Get(Nsp(VariableNamespace.local, path), out value)
+            || _dataRegistry.Get(Nsp(VariableNamespace.global, path), out value)
+            || _dataRegistry.Get(Nsp(VariableNamespace.env, path), out value);
             if (!r && throwException)
                 throw new VariablePathNotFoundException(path);            
             return r;

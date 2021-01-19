@@ -27,13 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Component\CommandLine\Defaults\.orbsh_profile" />
+    <None Remove="Component\CommandLine\Defaults\.profile" />
     <None Remove="LICENSE.md" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Component\CommandLine\Defaults\.orbsh_profile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Component\CommandLine\Defaults\.profile">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

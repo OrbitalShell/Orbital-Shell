@@ -361,7 +361,7 @@ namespace DotNetConsoleAppToolkit.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             var options = opts as TableFormattingOptions;
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
             var dt = GetVarsDataTable(context, obj,new List<IDataObject>(), options);
             dt.Echo( new EchoEvaluationContext(@out,context,options));
@@ -380,7 +380,7 @@ namespace DotNetConsoleAppToolkit.Console
             if (context.EchoMap.MappedCall(dataObject, ctx)) return;
 
             var options = opts as TableFormattingOptions;
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
             var attrs = dataObject.GetAttributes();
             attrs.Sort((x, y) => x.Name.CompareTo(y.Name));
@@ -404,7 +404,7 @@ namespace DotNetConsoleAppToolkit.Console
             if (context.EchoMap.MappedCall(variables, ctx)) return;
 
             var options = opts as TableFormattingOptions;
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
             var values = variables.GetDataValues();
             values.Sort((x, y) => x.Name.CompareTo(y.Name));
             var dt = GetVarsDataTable(context,null,values,options);
@@ -439,7 +439,7 @@ namespace DotNetConsoleAppToolkit.Console
             CommandEvaluationContext context,
             TableFormattingOptions options = null)
         {
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
+            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
             @out.EnableFillLineFromCursor = false;
             @out.HideCur();
             var colLengths = new int[table.Columns.Count];

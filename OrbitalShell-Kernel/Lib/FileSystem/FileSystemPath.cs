@@ -98,7 +98,7 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
             if (context.EchoMap.MappedCall(this, ctx)) return;
 
             var options = opts as FileSystemPathFormattingOptions;
-            options ??= context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions);
+            options ??= context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.display_fileSystemPathFormattingOptions);
             var bg = GetCmd(EchoDirectives.b + "", DefaultBackground.ToString().ToLower());
             var fg = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
             var color = (IsDirectory) ? NormalDirectoryColorization : FileColorization;

@@ -8,28 +8,28 @@
         /// <summary>
         /// if enabled, activate codes that try to fix bad known console behaviors (eg. VSCode)
         /// </summary>
-        Settings_EnableConsoleCompatibilityMode,
+        settings_enableConsoleCompatibilityMode,
 
         /// <summary>
         /// initial console width
         /// </summary>
-        Settings_ConsoleInitialWindowWidth,
+        settings_consoleInitialWindowWidth,
 
         /// <summary>
         /// initial console height
         /// </summary>
-        Settings_ConsoleInitialWindowHeight,
+        settings_consoleInitialWindowHeight,
 
         /// <summary>
         /// if enabled, activate a fix that cleanup properly end of lines (ConsoleTextWrapper.LNBRK)
         /// </summary>
-        Settings_EnableAvoidEndOfLineFilledWithBackgroundColor,
+        settings_enableAvoidEndOfLineFilledWithBackgroundColor,
 
-        Debug_Pipeline,
-        Display_TableFormattingOptions,
-        Display_FileSystemPathFormattingOptions,
-        Display_Colors_ColorSettings,
-        UserProfile,
+        debug_pipeline,
+        display_tableFormattingOptions,
+        display_fileSystemPathFormattingOptions,
+        display_colors_colorSettings,
+        userProfile,
 
         // traditional bash variables
 

@@ -23,8 +23,8 @@
     <None Remove="Shell\Commands\CommandLineProcessor\banner-2.txt" />
     <None Remove="Shell\Commands\CommandLineProcessor\banner-3.txt" />
     <None Remove="Shell\Commands\CommandLineProcessor\banner.txt" />
-    <None Remove="Shell\Commands\Test\commandsSamples.txt" />
-    <None Remove="Shell\Commands\Test\testPrintDirectives.txt" />
+    <None Remove="Shell\Commands\Test\commandsSamples.sh" />
+    <None Remove="Shell\Commands\Test\testPrintDirectives.sh" />
     <None Remove="Shell\Commands\TextEditor\edit-help.txt" />
   </ItemGroup>
 
@@ -44,10 +44,10 @@
     <Content Include="Shell\Commands\CommandLineProcessor\banner.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Shell\Commands\Test\commandsSamples.txt">
+    <Content Include="Shell\Commands\Test\commandsSamples.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Shell\Commands\Test\testPrintDirectives.txt">
+    <Content Include="Shell\Commands\Test\testPrintDirectives.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Shell\Commands\TextEditor\edit-help.txt">

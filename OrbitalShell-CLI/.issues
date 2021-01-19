@@ -12,4 +12,4 @@ improvements to do
 
 18/1/21 FGZ     help: normal mode should be 'tech details less', should be got with -v + add infos to technical details
 19/1/21 FGZ     add load settings from json + revert to json (add variables binding)
-19/1/21 FGZ     changes variables namespace and variables naming : to lower case
+19/1/21 FGZ     changes variables namespace and variables naming : to lower case + change root namespace (avoid 'orb')

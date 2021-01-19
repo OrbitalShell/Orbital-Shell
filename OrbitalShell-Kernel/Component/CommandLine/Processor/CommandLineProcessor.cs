@@ -131,7 +131,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 val.SetValue(v);
             }
             else
-                Error($"variable not found: {Variables.Nsp(VariableNamespace.Env,context.ShellEnv.Name,name)}",true);
+                Error($"variable not found: {Variables.Nsp(VariableNamespace.env,context.ShellEnv.Name,name)}",true);
         }
 
         #endregion
@@ -180,7 +180,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             SetArgs(args,CommandEvaluationContext,appliedSettings);
             
             // init from settings
-            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = commandEvaluationContext.ShellEnv.GetValue<bool>(ShellEnvironmentVar.Settings_EnableAvoidEndOfLineFilledWithBackgroundColor);
+            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = commandEvaluationContext.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor);
 
             ConsoleInit(CommandEvaluationContext);
 
@@ -220,10 +220,10 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         /// init the console. basic init that generally occurs before any display
         /// </summary>
         void ConsoleInit(CommandEvaluationContext context) {
-            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth);
-            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight);
+            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowWidth);
+            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight);
 
-            if (context.ShellEnv.OptionSetted(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode) ) {
+            if (context.ShellEnv.OptionSetted(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode) ) {
                 oWinWidth.SetValue(2000);
                 oWinHeight.SetValue(2000);
             }

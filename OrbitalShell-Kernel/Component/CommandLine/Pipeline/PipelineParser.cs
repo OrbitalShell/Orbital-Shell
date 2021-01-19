@@ -104,7 +104,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
                 i++;
             }
 
-            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.Debug_Pipeline,false))
+            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.debug_pipeline,false))
                 context.Out.Echoln(Darkcyan+model);
 
             return model;

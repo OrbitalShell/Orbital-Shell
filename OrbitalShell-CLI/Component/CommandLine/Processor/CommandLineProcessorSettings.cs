@@ -13,12 +13,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
             AppVersion = "1.0-beta";
 
             AppDataFolderName = "OrbitalShell";
-            UserProfileFileName = ".orbsh_profile";
-            LogFileName = "orbsh.log";
+            UserProfileFileName = ".profile";
+            LogFileName = ".log";
             HistoryFileName = ".history";
             CommandsAliasFileName = ".aliases";
 
-            ShellEnvironmentVariableName = "Orbsh";
+            ShellEnvironmentVariableName = "shell";
         }
     }
 }

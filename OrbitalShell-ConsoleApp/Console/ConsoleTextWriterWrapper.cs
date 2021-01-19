@@ -380,8 +380,8 @@ namespace DotNetConsoleAppToolkit.Console
                 Out.Echoln($"{White}default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
                 if (RuntimeEnvironment.OSType == itpsrv.OSPlatform.Windows)
                 {
-                    Out.Echoln($"number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");            // TODO: not supported on linux ubuntu 18.04 wsl
-                    Out.Echoln($"cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");     // TODO: not supported on linux ubuntu 18.04 wsl
+                    Out.Echoln($"{White}{Bkf}number lock={Colors.Numeric}{sc.NumberLock}{White}{Bkf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");            // TODO: not supported on linux ubuntu 18.04 wsl
+                    Out.Echo($"{White}{Bkf}cursor visible={Colors.Numeric}{sc.CursorVisible}{White}{Bkf} | cursor size={Colors.Numeric}{sc.CursorSize}");     // TODO: not supported on linux ubuntu 18.04 wsl
                 }
             };
         }

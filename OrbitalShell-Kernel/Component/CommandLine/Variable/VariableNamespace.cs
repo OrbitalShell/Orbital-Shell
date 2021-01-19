@@ -5,16 +5,16 @@
         /// <summary>
         /// environment
         /// </summary>
-        Env,
+        env,
 
         /// <summary>
         /// local to the command context
         /// </summary>
-        Local,
+        local,
 
         /// <summary>
         /// global
         /// </summary>
-        Global
+        global
     }
 }

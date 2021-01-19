@@ -299,9 +299,9 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         {
             object obj;
             if (varPath == null)
-                context.Variables.GetObject(VariableNamespace.Env + "", out obj);
+                context.Variables.GetObject(VariableNamespace.env + "", out obj);
             else
-                context.Variables.GetObject(VariableNamespace.Env, varPath, out obj);
+                context.Variables.GetObject(VariableNamespace.env, varPath, out obj);
 
             var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
             {
@@ -536,11 +536,11 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         [Command("enable console compatibility mode (try to fix common bugs on known consoles)")]        
         public CommandVoidResult EnableConsoleCompatibilityMode( CommandEvaluationContext context )
         {
-            var oFix=context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode);
+            var oFix=context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode);
             oFix.SetValue(true);
 
-            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth);
-            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight);
+            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowWidth);
+            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight);
 
             oWinWidth.SetValue(2000);
             oWinHeight.SetValue(2000);

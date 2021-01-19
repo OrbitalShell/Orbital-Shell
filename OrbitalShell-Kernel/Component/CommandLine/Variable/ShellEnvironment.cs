@@ -18,8 +18,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public Variables Vars { get; protected set; }
         public ColorSettings Colors { get; protected set; }
 
-        public TableFormattingOptions TableFormattingOptions => GetValue<TableFormattingOptions>(ShellEnvironmentVar.Display_TableFormattingOptions);
-        public FileSystemPathFormattingOptions FileSystemPathFormattingOptions => GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions);
+        public TableFormattingOptions TableFormattingOptions => GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
+        public FileSystemPathFormattingOptions FileSystemPathFormattingOptions => GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.display_fileSystemPathFormattingOptions);
 
         public ShellEnvironment(string name) : base(name, false) { }
 
@@ -30,19 +30,19 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public void Initialize(CommandEvaluationContext context)
         {
             Vars = context.Variables;
-            Vars.Set( Variables.Nsp(VariableNamespace.Env, Name ), this );
+            Vars.Set( Variables.Nsp(VariableNamespace.env, Name ), this );
 
             // data objects
             foreach ( var shellNs in Enum.GetValues(typeof(ShellEnvironmentNamespace)) )
                 AddObject((ShellEnvironmentNamespace)shellNs);
             
             // data values
-            AddValue(ShellEnvironmentVar.Debug_Pipeline,false);
-            AddValue(ShellEnvironmentVar.UserProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataFolderPath),true );
+            AddValue(ShellEnvironmentVar.debug_pipeline,false);
+            AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataFolderPath),true );
             
-            AddValue(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
-            AddValue(ShellEnvironmentVar.Display_TableFormattingOptions, new TableFormattingOptions());
-            var colorSettingsDV = AddValue(ShellEnvironmentVar.Display_Colors_ColorSettings, new ColorSettings());
+            AddValue(ShellEnvironmentVar.display_fileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
+            AddValue(ShellEnvironmentVar.display_tableFormattingOptions, new TableFormattingOptions());
+            var colorSettingsDV = AddValue(ShellEnvironmentVar.display_colors_colorSettings, new ColorSettings());
             Colors = (ColorSettings)colorSettingsDV.Value;
 
             // bash vars for compat
@@ -61,10 +61,10 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
             // shell settings
 
-            AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth,-1);
-            AddValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight,-1);
-            AddValue(ShellEnvironmentVar.Settings_EnableConsoleCompatibilityMode,false);
-            AddValue(ShellEnvironmentVar.Settings_EnableAvoidEndOfLineFilledWithBackgroundColor,true);
+            AddValue(ShellEnvironmentVar.settings_consoleInitialWindowWidth,-1);
+            AddValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight,-1);
+            AddValue(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode,false);
+            AddValue(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor,true);
 
             // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
             // @TODO: variables and their namespaces should be lower case
@@ -126,6 +126,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             s = s.Replace("_", CommandLineSyntax.VariableNamePathSeparator + "");
             return s.Replace("¤", "_");
         }
-        string ToAbsNsp(string @namespace) => Variables.Nsp(VariableNamespace.Env, Name , @namespace);
+        string ToAbsNsp(string @namespace) => Variables.Nsp(VariableNamespace.env, Name , @namespace);
     }
 }
