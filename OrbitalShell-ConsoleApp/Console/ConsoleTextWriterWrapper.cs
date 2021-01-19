@@ -587,8 +587,9 @@ namespace DotNetConsoleAppToolkit.Console
         { 
             lock (Lock) { 
                 Write(ANSI.RSTXTA);
-                SetForeground( DefaultForeground); 
-                SetBackground( DefaultBackground); 
+                SetForeground( DefaultForeground ); 
+                SetBackground( DefaultBackground ); 
+                if (DefaultForeground.HasValue) sc.ForegroundColor = DefaultForeground.Value;
             }
         }
 
