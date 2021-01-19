@@ -29,7 +29,7 @@
         Display_TableFormattingOptions,
         Display_FileSystemPathFormattingOptions,
         Display_Colors_ColorSettings,
-        UserPath,
+        UserProfile,
 
         // traditional bash variables
 

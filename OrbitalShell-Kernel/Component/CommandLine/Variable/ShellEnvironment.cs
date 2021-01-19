@@ -38,7 +38,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             
             // data values
             AddValue(ShellEnvironmentVar.Debug_Pipeline,false);
-            AddValue(ShellEnvironmentVar.UserPath, new DirectoryPath(Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )) );
+            AddValue(ShellEnvironmentVar.UserProfile, context.CommandLineProcessor.Settings.UserProfileFolder,true );
             
             AddValue(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
             AddValue(ShellEnvironmentVar.Display_TableFormattingOptions, new TableFormattingOptions());
@@ -47,13 +47,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
             // bash vars for compat
             AddValue(ShellEnvironmentVar.SHELL, new DirectoryPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), true);
-            AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion );
-            AddValue(ShellEnvironmentVar.SHELL__NAME, context.CommandLineProcessor.Settings.AppName );
-            AddValue(ShellEnvironmentVar.SHELL__LONG__NAME, context.CommandLineProcessor.Settings.AppLongName );
-            AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor );
-            AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense );
+            AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion , true );
+            AddValue(ShellEnvironmentVar.SHELL__NAME, context.CommandLineProcessor.Settings.AppName , true);
+            AddValue(ShellEnvironmentVar.SHELL__LONG__NAME, context.CommandLineProcessor.Settings.AppLongName, true );
+            AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor, true );
+            AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true );
 
-            AddValue(ShellEnvironmentVar.HOME, GetDataValue(ShellEnvironmentVar.UserPath).Value, true);
+            AddValue(ShellEnvironmentVar.HOME, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) , true);
             AddValue(ShellEnvironmentVar.PS1, "");      
             AddValue(ShellEnvironmentVar.PS2, "");
             AddValue(ShellEnvironmentVar.PS3, "");

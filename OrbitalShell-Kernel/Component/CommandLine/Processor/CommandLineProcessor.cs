@@ -9,6 +9,7 @@ using DotNetConsoleAppToolkit.Component.CommandLine.Pipeline;
 using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib;
+using lib=DotNetConsoleAppToolkit.Lib;
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
@@ -218,7 +219,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         /// <summary>
         /// init the console. basic init that generally occurs before any display
         /// </summary>
-        public void ConsoleInit(CommandEvaluationContext context) {
+        void ConsoleInit(CommandEvaluationContext context) {
             var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowWidth);
             var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.Settings_ConsoleInitialWindowHeight);
 
@@ -431,7 +432,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         {
             context.Out.Echoln($"{CommandEvaluationContext.ShellEnv.Colors.Label}{Uon} {Settings.AppLongName} ({Settings.AppName}) version {Assembly.GetExecutingAssembly().GetName().Version}" + ("".PadRight(18,' ')) + Tdoff);
             context.Out.Echoln($" {Settings.AppEditor}");
-            context.Out.Echoln($" {RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture} - {RuntimeInformation.FrameworkDescription}");
+            context.Out.Echoln($" {RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture} - {RuntimeInformation.FrameworkDescription} - {lib.RuntimeEnvironment.OSType}");
 
 #if BannerEnabled
             var banner =

@@ -50,12 +50,8 @@ namespace DotNetConsoleAppToolkit.Console
         public string LNBRK {
             get
             {
-                //_cachedBackgroundColor = DefaultBackground;     // @TODO: has no sens - to be deleted
-                //_cachedForegroundColor = DefaultForeground;     // @TODO: has no sens - to be deleted
-                
                 // fix end of line remained filled with last colors
-                return 
-                
+                return                 
                     EnableAvoidEndOfLineFilledWithBackgroundColor? $"{ANSI.RSTXTA}{ANSI.EL(ANSI.ELParameter.p0)}{CRLF}"        
                     : $"{CRLF}";
             }
@@ -76,6 +72,9 @@ namespace DotNetConsoleAppToolkit.Console
 
         public ConsoleTextWriterWrapper(TextWriter textWriter) : base(textWriter) { Init(); }
 
+        /// <summary>
+        /// shell init
+        /// </summary>
         void Init()
         {
             #if NO
@@ -93,6 +92,10 @@ namespace DotNetConsoleAppToolkit.Console
              DefaultForeground = sc.ForegroundColor;
              _cachedForegroundColor = DefaultForeground;
 
+            InitEchoDirectives();
+        }
+
+        void InitEchoDirectives() {
             // echo_directive => SimpleCommandDelegate, CommandDelegate, parameter
             var _drtvs = new Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand, EchoDirectiveProcessor.CommandDelegate command,object parameter)>() {
                 { EchoDirectives.bkf+""   , (BackupForeground, null,null) },
@@ -213,8 +216,9 @@ namespace DotNetConsoleAppToolkit.Console
                 this,
                 new CommandMap ( _drtvs )
                 );
-
         }
+
+        #endregion
 
         #region commands impl. for echo directives map (avoiding lambdas in map)
 
@@ -322,8 +326,7 @@ namespace DotNetConsoleAppToolkit.Console
         object _MoveCursorRight(object x) { MoveCursorRight(Convert.ToInt32(x)); return null; }
 
         #endregion
-
-        #endregion
+        
 
         #region buffering operations
 
