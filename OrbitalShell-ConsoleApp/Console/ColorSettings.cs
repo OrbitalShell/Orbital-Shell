@@ -28,10 +28,10 @@ namespace DotNetConsoleAppToolkit.Console
         public TextColor InteractionBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
         public TextColor InteractionPanel = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
         public TextColor InteractionPanelCmdKeys = new TextColor(ConsoleColor.Black, ConsoleColor.White);
-        public TextColor InteractionPanelDisabledCmdKeys = new TextColor(ConsoleColor.DarkBlue, ConsoleColor.Black);
+        public TextColor InteractionPanelDisabledCmdKeys = new TextColor(ConsoleColor.DarkGray, ConsoleColor.Black);
 
         public TextColor InteractionPanelCmdLabel = new TextColor(ConsoleColor.Yellow, ConsoleColor.DarkBlue);
-        public TextColor InteractionPanelDisabledCmdLabel = new TextColor(ConsoleColor.Black, ConsoleColor.DarkBlue);
+        public TextColor InteractionPanelDisabledCmdLabel = new TextColor(ConsoleColor.DarkGray, ConsoleColor.DarkBlue);
 
         // DotNetConsoleAppToolkit-Shell
 

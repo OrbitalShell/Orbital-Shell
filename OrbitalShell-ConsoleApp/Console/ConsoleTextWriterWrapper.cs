@@ -375,13 +375,13 @@ namespace DotNetConsoleAppToolkit.Console
             lock (Out.Lock)
             {
                 Out.Echoln($"OS={Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "64" : "32")}bits plateform={RuntimeEnvironment.OSType}");
-                Out.Echoln($"{White}{Bkf}{Colors.HighlightIdentifier}window:{Rsf} left={Colors.Numeric}{sc.WindowLeft}{Rsf},top={Colors.Numeric}{sc.WindowTop}{Rsf},width={Colors.Numeric}{sc.WindowWidth}{Rsf},height={Colors.Numeric}{sc.WindowHeight}{Rsf},largest width={Colors.Numeric}{sc.LargestWindowWidth}{Rsf},largest height={Colors.Numeric}{sc.LargestWindowHeight}{Rsf}");
+                Out.Echoln($"{Bkf}{Colors.HighlightIdentifier}window:{Rsf} left={Colors.Numeric}{sc.WindowLeft}{Rsf},top={Colors.Numeric}{sc.WindowTop}{Rsf},width={Colors.Numeric}{sc.WindowWidth}{Rsf},height={Colors.Numeric}{sc.WindowHeight}{Rsf},largest width={Colors.Numeric}{sc.LargestWindowWidth}{Rsf},largest height={Colors.Numeric}{sc.LargestWindowHeight}{Rsf}");
                 Out.Echoln($"{Colors.HighlightIdentifier}buffer:{Rsf} width={Colors.Numeric}{sc.BufferWidth}{Rsf},height={Colors.Numeric}{sc.BufferHeight}{Rsf} | input encoding={Colors.Numeric}{sc.InputEncoding.EncodingName}{Rsf} | output encoding={Colors.Numeric}{sc.OutputEncoding.EncodingName}{Rsf}");
-                Out.Echoln($"{White}default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
+                Out.Echoln($"default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
                 if (RuntimeEnvironment.OSType == itpsrv.OSPlatform.Windows)
                 {
-                    Out.Echoln($"{White}{Bkf}number lock={Colors.Numeric}{sc.NumberLock}{White}{Bkf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");            // TODO: not supported on linux ubuntu 18.04 wsl
-                    Out.Echo($"{White}{Bkf}cursor visible={Colors.Numeric}{sc.CursorVisible}{White}{Bkf} | cursor size={Colors.Numeric}{sc.CursorSize}");     // TODO: not supported on linux ubuntu 18.04 wsl
+                    Out.Echoln($"{Bkf}number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");            // TODO: not supported on linux ubuntu 18.04 wsl
+                    Out.Echo($"{Bkf}cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");     // TODO: not supported on linux ubuntu 18.04 wsl
                 }
             };
         }

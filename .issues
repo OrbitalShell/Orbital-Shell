@@ -1,0 +1,15 @@
+issues fast backlog (developers notes)
+--------------------------------------
+
+1/18/21 FGZ     [OK] review not compatible mode good usage of (rdc) or needs of (RSTXTA) in implemented commands
+1/18/21 FGZ     avoid usage of REVERT/INVERSE mode in implemented commands (too bugy in most terminals - @see default foreground and background colors behavior)
+1/18/21 FGZ     [OK] env Orbsh.Display.Colors : background color remains (due to no compatibility of {context.ShellEnv.Colors.Default} with background transparency)
+1/19/21 FGZ     env prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
+1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
+
+improvements to do
+------------------
+
+18/1/21 FGZ     help: normal mode should be 'tech details less', should be got with -v + add infos to technical details
+19/1/21 FGZ     add load settings from json + revert to json (add variables binding)
+19/1/21 FGZ     [OK] changes variables namespace and variables naming : to lower case + change root namespace (avoid 'orb')
