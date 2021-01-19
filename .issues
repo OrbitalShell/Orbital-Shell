@@ -8,6 +8,7 @@ issues fast backlog (developers notes)
 1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
 1/19/21 FGZ     prompt: crash (baskspace,..) in compatiblity mode
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
+1/19/21 FGZ     replace -env: by --env: in shell init (posix)
 
 improvements to do
 ------------------

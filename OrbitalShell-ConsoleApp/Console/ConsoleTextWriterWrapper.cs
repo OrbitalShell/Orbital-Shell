@@ -210,6 +210,75 @@ namespace DotNetConsoleAppToolkit.Console
                 { EchoDirectives.SGRB+"=" , (null,ANSI.SGRB,null) },
                 { EchoDirectives.SGRB8+"=" , (null,ANSI.SGRB8,null) },
                 { EchoDirectives.SGRB24+"=" , (null,ANSI.SGRB24,null) },
+
+                // Unicode characters
+
+                { EchoDirectives.Lire+"" , (null,_Unicode,Unicode.Lire) },
+                { EchoDirectives.Yen+"" , (null,_Unicode,Unicode.Yen) },
+                { EchoDirectives.None+"" , (null,_Unicode,Unicode.None) },
+                { EchoDirectives.ARet+"" , (null,_Unicode,Unicode.ARet) },
+                { EchoDirectives.Demi+"" , (null,_Unicode,Unicode.Demi) },
+                { EchoDirectives.Quar+"" , (null,_Unicode,Unicode.Quar) },
+                { EchoDirectives.ThreeQuar+"" , (null,_Unicode,Unicode.ThreeQuar) },
+                { EchoDirectives.DoubleExclam+"" , (null,_Unicode,Unicode.DoubleExclam) },
+                { EchoDirectives.Exp1+"" , (null,_Unicode,Unicode.Exp1) },
+                { EchoDirectives.Exp2+"" , (null,_Unicode,Unicode.Exp2) },
+                { EchoDirectives.Exp3+"" , (null,_Unicode,Unicode.Exp3) },
+                { EchoDirectives.ExpRelease+"" , (null,_Unicode,Unicode.ExpRelease) },
+                { EchoDirectives.Copyright+"" , (null,_Unicode,Unicode.Copyright) },
+                { EchoDirectives.AE+"" , (null,_Unicode,Unicode.AE) },
+                { EchoDirectives.AESmall+"" , (null,_Unicode,Unicode.AESmall) },
+                { EchoDirectives.Bull+"" , (null,_Unicode,Unicode.Bull) },
+                { EchoDirectives.ArrowThickUp+"" , (null,_Unicode,Unicode.ArrowThickUp) },
+                { EchoDirectives.ArrowThickDown+"" , (null,_Unicode,Unicode.ArrowThickDown) },
+                { EchoDirectives.ArrowThickLeft+"" , (null,_Unicode,Unicode.ArrowThickLeft) },
+                { EchoDirectives.ArrowThickRight+"" , (null,_Unicode,Unicode.ArrowThickRight) },
+                { EchoDirectives.ArrowUp+"" , (null,_Unicode,Unicode.ArrowUp) },
+                { EchoDirectives.ArrowRight+"" , (null,_Unicode,Unicode.ArrowRight) },
+                { EchoDirectives.ArrowDown+"" , (null,_Unicode,Unicode.ArrowDown) },
+                { EchoDirectives.ArrowLeftRight+"" , (null,_Unicode,Unicode.ArrowLeftRight) },
+                { EchoDirectives.ArrowUpDown+"" , (null,_Unicode,Unicode.ArrowUpDown) },
+                { EchoDirectives.ArrowUpDownUnderline+"" , (null,_Unicode,Unicode.ArrowUpDownUnderline) },
+                { EchoDirectives.MoreOrLess+"" , (null,_Unicode,Unicode.MoreOrLess) },
+                { EchoDirectives.CornerBottomLeft+"" , (null,_Unicode,Unicode.CornerBottomLeft) },
+                { EchoDirectives.BarSmallDottedVertical+"" , (null,_Unicode,Unicode.BarSmallDottedVertical) },
+                { EchoDirectives.LeftChevron+"" , (null,_Unicode,Unicode.LeftChevron) },
+                { EchoDirectives.RightChevron+"" , (null,_Unicode,Unicode.RightChevron) },
+                { EchoDirectives.EdgeFlatTopRight+"" , (null,_Unicode,Unicode.EdgeFlatTopRight) },
+                { EchoDirectives.BarHorizontal+"" , (null,_Unicode,Unicode.BarHorizontal) },
+                { EchoDirectives.BarVertical+"" , (null,_Unicode,Unicode.BarVertical) },
+                { EchoDirectives.EdgeTopLeft+"" , (null,_Unicode,Unicode.EdgeTopLeft) },
+                { EchoDirectives.EdgeTopRight+"" , (null,_Unicode,Unicode.EdgeTopRight) },
+                { EchoDirectives.EdgeBottomLeft+"" , (null,_Unicode,Unicode.EdgeBottomLeft) },
+                { EchoDirectives.EdgeBottomRight+"" , (null,_Unicode,Unicode.EdgeBottomRight) },
+                { EchoDirectives.EdgeRowLeft+"" , (null,_Unicode,Unicode.EdgeRowLeft) },
+                { EchoDirectives.EdgeRowRight+"" , (null,_Unicode,Unicode.EdgeRowRight) },
+                { EchoDirectives.EdgeColTop+"" , (null,_Unicode,Unicode.EdgeColTop) },
+                { EchoDirectives.EdgeColBottom+"" , (null,_Unicode,Unicode.EdgeColBottom) },
+                { EchoDirectives.EdgeRowColCross+"" , (null,_Unicode,Unicode.EdgeRowColCross) },
+                { EchoDirectives.BarDoubleThickHorizontal+"" , (null,_Unicode,Unicode.BarDoubleThickHorizontal) },
+                { EchoDirectives.BarDoubleHorizontal+"" , (null,_Unicode,Unicode.BarDoubleHorizontal) },
+                { EchoDirectives.BarDoubleVertical+"" , (null,_Unicode,Unicode.BarDoubleVertical) },
+                { EchoDirectives.EdgeDoubleTopLeft+"" , (null,_Unicode,Unicode.EdgeDoubleTopLeft) },
+                { EchoDirectives.EdgeDoubleTopRight+"" , (null,_Unicode,Unicode.EdgeDoubleTopRight) },
+                { EchoDirectives.EdgeDoubleBottomLeft+"" , (null,_Unicode,Unicode.EdgeDoubleBottomLeft) },
+                { EchoDirectives.EdgeDoubleBottomRight+"" , (null,_Unicode,Unicode.EdgeDoubleBottomRight) },
+                { EchoDirectives.EdgeDoubleRowLeft+"" , (null,_Unicode,Unicode.EdgeDoubleRowLeft) },
+                { EchoDirectives.EdgeDoubleRowRight+"" , (null,_Unicode,Unicode.EdgeDoubleRowRight) },
+                { EchoDirectives.EdgeDoubleColTop+"" , (null,_Unicode,Unicode.EdgeDoubleColTop) },
+                { EchoDirectives.EdgeDoubleColBottom+"" , (null,_Unicode,Unicode.EdgeDoubleColBottom) },
+                { EchoDirectives.EdgeDoubleRowColCross+"" , (null,_Unicode,Unicode.EdgeDoubleRowColCross) },
+                { EchoDirectives.BoxHalfBottom+"" , (null,_Unicode,Unicode.BoxHalfBottom) },
+                { EchoDirectives.BoxHalfTop+"" , (null,_Unicode,Unicode.BoxHalfTop) },
+                { EchoDirectives.Box+"" , (null,_Unicode,Unicode.Box) },
+                { EchoDirectives.BoxQuarLight+"" , (null,_Unicode,Unicode.BoxQuarLight) },
+                { EchoDirectives.BoxTierLight+"" , (null,_Unicode,Unicode.BoxTierLight) },
+                { EchoDirectives.BoxHalfLight+"" , (null,_Unicode,Unicode.BoxHalfLight) },
+                { EchoDirectives.CardPic+"" , (null,_Unicode,Unicode.CardPic) },
+                { EchoDirectives.CardTrefl+"" , (null,_Unicode,Unicode.CardTrefl) },
+                { EchoDirectives.CardArt+"" , (null,_Unicode,Unicode.CardArt) },
+                { EchoDirectives.CardCarro+"" , (null,_Unicode,Unicode.CardCarro) },
+
             };
 
             EchoDirectiveProcessor = new EchoDirectiveProcessor(
@@ -225,9 +294,9 @@ namespace DotNetConsoleAppToolkit.Console
         public delegate object Command1pEDParameterDelegate(EDParameter n);
         public delegate object Command1pELParameterDelegate(ELParameter n);
 
-        object _ANSI(object p) { 
-            return p as string; 
-        }
+        object _ANSI(object p) => p as string;
+
+        object _Unicode(object p) => ((char)p)+"";
 
         object _ANSI_2Int(object parameters) 
         {          

@@ -6,6 +6,7 @@
     /// &#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;<br/>
     /// &#9889; echo directives names are in lower case<br/>
     /// &#9889; excepted ANSI sequences directives names that are in upper case<br/>
+    /// &#9889; excepted Unicode characters names that are in camel case<br/>
     /// </para>
     /// <para>
     /// &#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;<br/>
@@ -111,6 +112,76 @@
     ///       blon:     blink on<br/>
     ///       bon:      bold on<br/>
     /// 
+    /// </para>
+    /// <para>
+    /// &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;<br/>
+    /// &#128313; Unicode characters:<br/>
+    /// &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;<br/>    
+    /// Lire<br/>
+    /// Yen<br/>
+    /// None<br/>
+    /// ARet<br/>
+    /// Demi<br/>
+    /// Quar<br/>
+    /// ThreeQuar<br/>
+    /// DoubleExclam<br/>
+    /// Exp1<br/>
+    /// Exp2<br/>
+    /// Exp3<br/>
+    /// ExpRelease<br/>
+    /// Copyright<br/>
+    /// AE<br/>
+    /// AESmall<br/>
+    /// Bull<br/>
+    /// ArrowThickUp<br/>
+    /// ArrowThickDown<br/>
+    /// ArrowThickLeft<br/>
+    /// ArrowThickRight<br/>
+    /// ArrowUp<br/>
+    /// ArrowRight<br/>
+    /// ArrowDown<br/>
+    /// ArrowLeftRight<br/>
+    /// ArrowUpDown<br/>
+    /// ArrowUpDownUnderline<br/>
+    /// MoreOrLess<br/>
+    /// CornerBottomLeft<br/>
+    /// BarSmallDottedVertical<br/>
+    /// LeftChevron<br/>
+    /// RightChevron<br/>
+    /// EdgeFlatTopRight<br/>
+    /// BarHorizontal<br/>
+    /// BarVertical<br/>
+    /// EdgeTopLeft<br/>
+    /// EdgeTopRight<br/>
+    /// EdgeBottomLeft<br/>
+    /// EdgeBottomRight<br/>
+    /// EdgeRowLeft<br/>
+    /// EdgeRowRight<br/>
+    /// EdgeColTop<br/>
+    /// EdgeColBottom<br/>
+    /// EdgeRowColCross<br/>
+    /// BarDoubleThickHorizontal<br/>
+    /// BarDoubleHorizontal<br/>
+    /// BarDoubleVertical<br/>
+    /// EdgeDoubleTopLeft<br/>
+    /// EdgeDoubleTopRight<br/>
+    /// EdgeDoubleBottomLeft<br/>
+    /// EdgeDoubleBottomRight<br/>
+    /// EdgeDoubleRowLeft<br/>
+    /// EdgeDoubleRowRight<br/>
+    /// EdgeDoubleColTop<br/>
+    /// EdgeDoubleColBottom<br/>
+    /// EdgeDoubleRowColCross<br/>
+    /// BoxHalfBottom<br/>
+    /// BoxHalfTop<br/>
+    /// Box<br/>
+    /// BoxQuarLight<br/>
+    /// BoxTierLight<br/>
+    /// BoxHalfLight<br/>
+    /// CardPic<br/>
+    /// CardTrefl<br/>
+    /// CardArt<br/>
+    /// CardCarro<br/>
     /// </para>
     /// <para>
     /// &#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;&#175;<br/>
@@ -589,5 +660,75 @@
         tdoff,
 
         #endregion        
+    
+        #region unicode characters
+
+        Lire,
+        Yen,
+        None,
+        ARet,
+        Demi,
+        Quar,
+        ThreeQuar,        
+        DoubleExclam,     
+        Exp1,
+        Exp2,
+        Exp3,
+        ExpRelease,       
+        Copyright,        
+        AE,
+        AESmall,
+        Bull,
+        ArrowThickUp,
+        ArrowThickDown,
+        ArrowThickLeft,
+        ArrowThickRight,
+        ArrowUp,
+        ArrowRight,
+        ArrowDown,
+        ArrowLeftRight,
+        ArrowUpDown,
+        ArrowUpDownUnderline,    
+        MoreOrLess,
+        CornerBottomLeft,        
+        BarSmallDottedVertical,  
+        LeftChevron,
+        RightChevron,
+        EdgeFlatTopRight,        
+        BarHorizontal,
+        BarVertical,
+        EdgeTopLeft,
+        EdgeTopRight,
+        EdgeBottomLeft,
+        EdgeBottomRight,
+        EdgeRowLeft,
+        EdgeRowRight,
+        EdgeColTop,
+        EdgeColBottom,
+        EdgeRowColCross,
+        BarDoubleThickHorizontal,
+        BarDoubleHorizontal,     
+        BarDoubleVertical,       
+        EdgeDoubleTopLeft,       
+        EdgeDoubleTopRight,      
+        EdgeDoubleBottomLeft,    
+        EdgeDoubleBottomRight,   
+        EdgeDoubleRowLeft,       
+        EdgeDoubleRowRight,      
+        EdgeDoubleColTop,        
+        EdgeDoubleColBottom,     
+        EdgeDoubleRowColCross,   
+        BoxHalfBottom,
+        BoxHalfTop,
+        Box,
+        BoxQuarLight,
+        BoxTierLight,
+        BoxHalfLight,
+        CardPic,
+        CardTrefl,
+        CardArt,
+        CardCarro,        
+
+        #endregion
     }
 }
