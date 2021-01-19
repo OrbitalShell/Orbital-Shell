@@ -771,6 +771,11 @@ namespace DotNetConsoleAppToolkit.Console
             }
         }
         
+        /// <summary>
+        /// set cursor pos - @[y+1;x+1H
+        /// </summary>
+        /// <param name="x">x (origine 0)</param>
+        /// <param name="y">y (origine 0)</param>
         public void SetCursorPos(int x, int y)
         {
             lock (Lock)

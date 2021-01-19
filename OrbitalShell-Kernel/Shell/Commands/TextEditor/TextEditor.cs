@@ -536,7 +536,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
             var bVis = ShowEmptyBar();
             PrintBarMessage(prompt + ": ");
             var text = sc.ReadLine();
-            Context.Out.DisableTextDecoration();
+            //Context.Out.DisableTextDecoration();
             if (!bVis)
                 ToggleBarVisibility();
             else
@@ -553,10 +553,10 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
                 var c = sc.ReadKey();
                 if (Char.IsLetterOrDigit(c.KeyChar))
                 {
-                    Context.Out.EnableInvert();
+                    //Context.Out.EnableInvert();
                     Context.Out.Echo(c + "");
                 }
-                Context.Out.DisableTextDecoration();
+                //Context.Out.DisableTextDecoration();
                 var s = c.KeyChar.ToString().ToLower();
                 if (!bVis) ToggleBarVisibility();
                 return s=="y";
@@ -566,9 +566,10 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
         void PrintBarMessage(string text)
         {
             Context.Out.SetCursorPos(1, _barY);
-            Context.Out.EnableInvert();
+            //Context.Out.EnableInvert();
+            Context.Out.Echo(Out.ColorSettings.InteractionPanel);
             Context.Out.Echo(text);
-            Context.Out.DisableTextDecoration();
+            //Context.Out.DisableTextDecoration();
         }
 
         bool ShowEmptyBar()
@@ -825,7 +826,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
             {
                 _filePath = filePath;
                 _fileSize = filePath.FileInfo.Length;
-                _readOnly = filePath.FileInfo.Attributes.HasFlag(FileAttributes.ReadOnly);
+                _readOnly = filePath.FileInfo.Attributes.HasFlag(FileAttributes.ReadOnly) || filePath.FileInfo.Attributes.HasFlag(FileAttributes.System);
                 _fileEncoding = filePath.GetEncoding(Encoding.Default);
                 var (lines, platform, eolSeparator) = TextFileReader.ReadAllLines(filePath.FullName);
                 _text = lines.ToList();
@@ -923,9 +924,11 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
         {
             if (!_barVisible) return;
             Context.Out.SetCursorPos(0, _barY);
-            Context.Out.FillFromCursorRight();
+            //Context.Out.FillFromCursorRight();
+            Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
             Context.Out.SetCursorPos(0, _barY + 1);
-            Context.Out.FillFromCursorRight();
+            //Context.Out.FillFromCursorRight();
+            Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
         }
 
         void EmptyInfoBar()
@@ -937,12 +940,17 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
                 // /!\ cursor visible leads to erase some characters (blank) in inverted mode and force ignore Tdoff !!
                 // conclusion: invert mode switched is system bugged on windows -- avoid it
                 Context.Out.SetCursorPos(0, _barY);
-                Context.Out.EnableInvert();
-                Context.Out.FillFromCursorRight();
+                //Context.Out.EnableInvert();
+                //Context.Out.FillFromCursorRight();
+
+                Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
 
                 Context.Out.SetCursorPos(0, _barY + 1);
-                Context.Out.FillFromCursorRight();
-                //Print($"{Invon} {Fillright}{Tdoff}"); // TODO: fix this sentence do not print the last character line whereas this one does: Print($"{Invon}{Fillright}{Tdoff}");
+                //Context.Out.FillFromCursorRight();
+
+                Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
 
                 Context.Out.SetCursorPos(0, _barY + 1);
                 Context.Out.DisableTextDecoration();
@@ -961,10 +969,12 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
                 if (!onlyCursorInfo)
                 {
                     Context.Out.SetCursorPos(0, _barY);
-                    Context.Out.EnableInvert();
+                    //Context.Out.EnableInvert();
+
+                    Context.Out.Echo(Out.ColorSettings.InteractionPanel);
 
                     if (_statusText == null)
-                    {                   // added { } has remove a bug of the print (disapear cmd line above when window less large than text on linux wsl ?!)
+                    {
                         Context.Out.SetCursorPos(1, _barY);
                         Context.Out.Echo(GetFileInfo());
                     }
@@ -972,23 +982,30 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
                     {
                         EmptyInfoBar();
                         Context.Out.SetCursorPos(1, _barY);
-                        Context.Out.EnableInvert();
+                        //Context.Out.EnableInvert();
+                        Context.Out.Echo(Out.ColorSettings.InteractionPanel);
                         Context.Out.Echo(_statusText);
                     }
 
                     if (_cmdInput)
                     {
                         Context.Out.SetCursorPos(0, _barY + 1);
-                        Context.Out.Echo(GetCmdsInfo());
+                        Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                        var cmdinf = GetCmdsInfo();
+                        Context.Out.Echo(cmdinf);
                     }
                 }
+
+                Context.Out.Echo(Out.ColorSettings.InteractionPanel);
 
                 if (!_cmdInput) PrintCursorInfo();
 
                 Context.Out.CropX = -1;
 
                 Context.Out.SetCursorPos(0, _barY);
-                Context.Out.DisableTextDecoration();
+                //Context.Out.DisableTextDecoration();
+
+                Context.Out.Echo(ANSI.RSTXTA);
                 
                 if (showCursor) Context.Out.ShowCur();
             }
@@ -997,7 +1014,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
         void PrintCursorInfo()
         {
             Context.Out.SetCursorPos(1, _barY+ 1 );
-            Context.Out.EnableInvert();
+            //Context.Out.EnableInvert();
             Context.Out.Echo($"{GetPositionInfo()} | {_splitedLineIndex} | {GetCursorInfo()} | {GetLastKeyInfo()}               ");            
         }
 
@@ -1016,8 +1033,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
 
         string GetCmdsInfo()
         {
-            string ShcutOpt(string shortCut,bool ifNotReadOnly=false,bool addCmdKeyStr=true) => $"{((ifNotReadOnly && _readOnly) ? Bwhite:Bwhite)}{( (ifNotReadOnly&&_readOnly) ?Gray:Black)}{(addCmdKeyStr?_cmdKeyStr:"")}{shortCut}{Context.ShellEnv.Colors.Default}";
-            string Opt(string shortCut,string label, bool ifNotReadOnly = false, bool addCmdKeyStr = true) => $"{ShcutOpt(shortCut, ifNotReadOnly, addCmdKeyStr)} {((ifNotReadOnly&&_readOnly)?$"{Bgray}":"")}{label}{Context.ShellEnv.Colors.Default}";
+            string ShcutOpt(string shortCut,bool ifNotReadOnly=false,bool addCmdKeyStr=true) => $"{((ifNotReadOnly && _readOnly) ? Context.ShellEnv.Colors.InteractionPanelDisabledCmdKeys: Context.ShellEnv.Colors.InteractionPanelCmdKeys )}{(addCmdKeyStr?_cmdKeyStr:"")}{shortCut}{Context.ShellEnv.Colors.InteractionPanel}";
+            string Opt(string shortCut,string label, bool ifNotReadOnly = false, bool addCmdKeyStr = true) => $"{ShcutOpt(shortCut, ifNotReadOnly, addCmdKeyStr)} {((ifNotReadOnly&&_readOnly)?Context.ShellEnv.Colors.InteractionPanelDisabledCmdLabel:Context.ShellEnv.Colors.InteractionPanelCmdLabel)}{label}{Context.ShellEnv.Colors.InteractionPanel}";
             return _cmdBarIndex switch
             {
                 2 => $" {Opt("t", "Top")} | {Opt("b", "Bottom")} | {Opt("z", "Next page")} | {Opt("a", "Previous page")}",

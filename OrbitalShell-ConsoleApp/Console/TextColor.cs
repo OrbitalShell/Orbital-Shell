@@ -22,6 +22,7 @@ namespace DotNetConsoleAppToolkit.Console
         }
 
         public readonly string ToStrPost = null;
+        public readonly string ToStrPre = null;
 
         public TextColor(ConsoleColor? foreground, ConsoleColor? background=null)
         {
@@ -29,21 +30,24 @@ namespace DotNetConsoleAppToolkit.Console
             Background = background;
         }
 
-        public TextColor(ConsoleColor? foreground, ConsoleColor? background=null,string toStrPost="")
+        public TextColor(ConsoleColor? foreground, ConsoleColor? background=null,string toStrPost="",string toStrPre="")
         {
             Foreground = foreground;
             Background = background;
             ToStrPost = toStrPost;
+            ToStrPre = toStrPre;
         }
 
+        public TextColor Invert() => new TextColor(_background,_foreground);
+
         public override string ToString() =>
-             (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
+             ToStrPre + (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
              + (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower())) + ToStrPost;
 
         public string ToStringForegroundOnly() => (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()));
 
         public string ToString(bool foregroundOnly) => 
-             (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
+             ToStrPre + (!_foreground.HasValue ? "" : GetCmd(EchoDirectives.f + "", _foreground.Value.ToString().ToLower()))
              + ((foregroundOnly)? "": (!_background.HasValue ? "" : GetCmd(EchoDirectives.b + "", _background.Value.ToString().ToLower()))) + ToStrPost;
 
 

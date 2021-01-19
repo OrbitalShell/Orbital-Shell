@@ -5,8 +5,15 @@ namespace DotNetConsoleAppToolkit.Console
 {
     public class ColorSettings 
     {        
+        /// <summary>
+        /// defaults shell foreground and background - if is setted. designed to preserve console default background transparency
+        /// </summary>
+        /// <returns></returns>
         public TextColor Default => new TextColor(DefaultForeground, DefaultBackground,ANSI.RSTXTA);
+
         public TextColor Inverted => new TextColor(DefaultBackground, DefaultForeground);
+
+        // states colors
 
         public TextColor Log = new TextColor(ConsoleColor.Green, null);
         public TextColor Error = new TextColor(ConsoleColor.Red, null);
@@ -19,10 +26,17 @@ namespace DotNetConsoleAppToolkit.Console
         public TextColor TitleBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
         public TextColor TitleDarkText = new TextColor(ConsoleColor.Gray,ConsoleColor.DarkBlue);
         public TextColor InteractionBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
+        public TextColor InteractionPanel = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
+        public TextColor InteractionPanelCmdKeys = new TextColor(ConsoleColor.Black, ConsoleColor.White);
+        public TextColor InteractionPanelDisabledCmdKeys = new TextColor(ConsoleColor.DarkBlue, ConsoleColor.Black);
+
+        public TextColor InteractionPanelCmdLabel = new TextColor(ConsoleColor.Yellow, ConsoleColor.DarkBlue);
+        public TextColor InteractionPanelDisabledCmdLabel = new TextColor(ConsoleColor.Black, ConsoleColor.DarkBlue);
 
         // DotNetConsoleAppToolkit-Shell
 
         //      values types
+        
         public TextColor Numeric = new TextColor(ConsoleColor.Cyan, null);
         public TextColor Boolean = new TextColor(ConsoleColor.Gray, null);
         public TextColor Integer = new TextColor(ConsoleColor.Cyan, null);
@@ -40,14 +54,20 @@ namespace DotNetConsoleAppToolkit.Console
         public TextColor DarkLabel = new TextColor(ConsoleColor.DarkBlue, null);
         public TextColor MediumDarkLabel = new TextColor(ConsoleColor.Blue, null);
         public TextColor HighlightIdentifier = new TextColor(ConsoleColor.Green, null);
+
         //      colors by effect
+
         public TextColor Highlight = new TextColor(ConsoleColor.Yellow, null);
         public TextColor HalfDark = new TextColor(ConsoleColor.Gray, null);
         public TextColor Dark = new TextColor(ConsoleColor.DarkGray, null);
+
         //      global ? 
+
         public TextColor TableBorder = new TextColor(ConsoleColor.Cyan,null);
         public TextColor TableColumnName = new TextColor(ConsoleColor.Yellow,null);
+
         //      syntax
+
         public TextColor ParameterName = new TextColor(ConsoleColor.Yellow, null);
         public TextColor KeyWord = new TextColor(ConsoleColor.Yellow, null);
         public TextColor ParameterValueType = new TextColor(ConsoleColor.DarkYellow, null);
