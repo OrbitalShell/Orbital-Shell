@@ -38,7 +38,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             
             // data values
             AddValue(ShellEnvironmentVar.Debug_Pipeline,false);
-            AddValue(ShellEnvironmentVar.UserProfile, context.CommandLineProcessor.Settings.UserProfileFolder,true );
+            AddValue(ShellEnvironmentVar.UserProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataFolderPath),true );
             
             AddValue(ShellEnvironmentVar.Display_FileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
             AddValue(ShellEnvironmentVar.Display_TableFormattingOptions, new TableFormattingOptions());
@@ -53,7 +53,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor, true );
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true );
 
-            AddValue(ShellEnvironmentVar.HOME, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) , true);
+            AddValue(ShellEnvironmentVar.HOME, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)) , true);
             AddValue(ShellEnvironmentVar.PS1, "");      
             AddValue(ShellEnvironmentVar.PS2, "");
             AddValue(ShellEnvironmentVar.PS3, "");

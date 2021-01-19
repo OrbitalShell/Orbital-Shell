@@ -18,7 +18,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         public TextColor TitleBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
         public TextColor TitleDarkText = new TextColor(ConsoleColor.Gray,ConsoleColor.DarkBlue);
-        public TextColor InteractionBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkGreen);
+        public TextColor InteractionBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
 
         // DotNetConsoleAppToolkit-Shell
 
