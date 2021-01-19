@@ -94,6 +94,15 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             return CommandVoidResult.Instance;
         }
 
+        [Command("echo an unicode character")]
+        public CommandVoidResult Unicode(
+            CommandEvaluationContext context,
+            [Parameter(0,"decimal unicode character index")] int n
+        ) {
+            Out.Echoln(""+(char)n);
+            return CommandVoidResult.Instance;
+        }
+
         [Command("show current colors support and current colors map using ANSI escape codes")]
         public CommandVoidResult ANSIColorTest(
             CommandEvaluationContext context
