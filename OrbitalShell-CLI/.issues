@@ -5,6 +5,7 @@ issues fast backlog (developers notes)
 1/18/21 FGZ     avoid usage of REVERT/INVERSE mode in implemented commands (too bugy in most terminals - @see default foreground and background colors behavior)
 1/18/21 FGZ     [OK] env Orbsh.Display.Colors : background color remains (due to no compatibility of {context.ShellEnv.Colors.Default} with background transparency)
 1/19/21 FGZ     env prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
+1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
 
 improvements to do
 ------------------

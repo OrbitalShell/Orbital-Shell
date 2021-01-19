@@ -52,7 +52,7 @@ namespace DotNetConsoleAppToolkit.Console
             {
                 // fix end of line remained filled with last colors
                 return                 
-                    EnableAvoidEndOfLineFilledWithBackgroundColor? $"{ANSI.RSTXTA}{ANSI.EL(ANSI.ELParameter.p0)}{CRLF}"        
+                    EnableAvoidEndOfLineFilledWithBackgroundColor? $"{ANSI.RSTXTA}{ANSI.EL(ANSI.ELParameter.p0)}{CRLF}{GetRestoreDefaultColors}"        
                     : $"{CRLF}";
             }
         }
@@ -590,6 +590,16 @@ namespace DotNetConsoleAppToolkit.Console
                 SetForeground( DefaultForeground ); 
                 SetBackground( DefaultBackground ); 
                 if (DefaultForeground.HasValue) sc.ForegroundColor = DefaultForeground.Value;
+            }
+        }
+
+        string GetRestoreDefaultColors {
+            get {
+                var r = ANSI.RSTXTA;
+                if (DefaultForeground.HasValue) r+= Set4BitsColorsForeground(To4BitColorNum(DefaultForeground.Value));
+                if (DefaultBackground.HasValue) r+= Set4BitsColorsBackground(To4BitColorNum(DefaultBackground.Value));
+                if (DefaultForeground.HasValue) sc.ForegroundColor = DefaultForeground.Value;
+                return r;
             }
         }
 

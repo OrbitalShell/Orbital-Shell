@@ -16,7 +16,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
     public class ConsoleCommands : ICommandsDeclaringType
     {
         const string _printDocText =
-@"text can contains (uon)echo directives(tdoff) that changes the echo behavior. 
+@"(rdc)text can contains (uon)echo directives(uoff) that changes the echo behavior. 
 the echo directive syntax is formed according to these pattern:
 
 (f=darkyellow)(printDirective) or (printDirective=printDirectiveValue)(rdc)
