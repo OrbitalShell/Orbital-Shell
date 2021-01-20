@@ -400,7 +400,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                 context.Out.Echoln(prompt,true);
             }
             else
-                context.CommandLineProcessor.CommandLineReader.SetPrompt(prompt);
+                context.CommandLineProcessor.CommandLineReader.SetPrompt(context,prompt);
             return new CommandResult<string>( prompt );
         }
 

@@ -176,6 +176,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             );
             CommandEvaluationContext = commandEvaluationContext;
 
+            // pre console init
             if (DefaultForeground!=null) cons.ForegroundColor = DefaultForeground.Value; 
 
             // apply orbsh command args -env:{varName}={varValue}
@@ -183,7 +184,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             SetArgs(args,CommandEvaluationContext,appliedSettings);
             
             // init from settings
-            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = commandEvaluationContext.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor);
+            ShellInitFromSettings();
 
             ConsoleInit(CommandEvaluationContext);
 
@@ -217,6 +218,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             // end inits
             if (lbr) Out.Echoln();
+        }
+
+        void ShellInitFromSettings() {
+            var ctx=CommandEvaluationContext;
+            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor);
+            var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_prompt);
+            CommandLineReader.SetDefaultPrompt(prompt);
         }
 
         /// <summary>

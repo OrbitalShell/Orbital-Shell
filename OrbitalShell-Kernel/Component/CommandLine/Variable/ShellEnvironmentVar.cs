@@ -20,6 +20,11 @@
         /// </summary>
         settings_consoleInitialWindowHeight,
 
+        ///
+        /// current prompt text
+        ///        
+        settings_prompt,
+
         /// <summary>
         /// if enabled, activate a fix that cleanup properly end of lines (ConsoleTextWrapper.LNBRK)
         /// </summary>
@@ -40,9 +45,5 @@
         SHELL__LONG__NAME,
         SHELL__EDITOR,
         SHELL__LICENSE,
-        PS1,
-        PS2,
-        PS3,
-        PS4
     }
 }

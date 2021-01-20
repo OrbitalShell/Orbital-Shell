@@ -56,10 +56,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true );
 
             AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)) , true);
-            AddValue(ShellEnvironmentVar.PS1, "");      
-            AddValue(ShellEnvironmentVar.PS2, "");
-            AddValue(ShellEnvironmentVar.PS3, "");
-            AddValue(ShellEnvironmentVar.PS4, "");
+            
+            AddValue(ShellEnvironmentVar.settings_prompt, ANSI.RSTXTA+"> ");        // prompt   
 
             // shell settings
 
@@ -80,15 +78,26 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             return obj;
         }
 
-        bool HasObject(ShellEnvironmentNamespace ns) => Vars.GetObject(Nsp(ns),out _,false);
+        public bool HasObject(ShellEnvironmentNamespace ns) => Vars.GetObject(Nsp(ns),out _,false);
+        public bool HasValue(ShellEnvironmentVar ns) => Vars.GetObject(Nsp(ns),out var o,false) && o is DataValue;
 
-        DataValue AddValue(ShellEnvironmentVar var,object value,bool readOnly=false)
+        public DataValue AddValue(ShellEnvironmentVar var,object value,bool readOnly=false)
         {
             var path = Nsp(var);
             var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
             var val = new DataValue(name, value, readOnly );
             Vars.Set(path, val);
             return val;
+        }
+
+        public DataValue SetValue(ShellEnvironmentVar var,object value) {
+            var path = Nsp(var);
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            if (!HasValue(var))
+                return AddValue(var,value);
+           var o = GetDataValue(var);
+           o.SetValue(value);
+           return o;
         }
 
         #region getters
@@ -108,10 +117,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true) => (T)GetDataValue(var, throwException).Value;
 
         public bool OptionSetted(ShellEnvironmentVar @var) => GetValue<bool>(@var,false);    
-
-        #endregion
-
-        #region setters
 
         #endregion
 

@@ -13,7 +13,7 @@ using static DotNetConsoleAppToolkit.DotNetConsole;
 using sc = System.Console;
 using DotNetConsoleAppToolkit.Console;
 using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-
+using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
 {
     public class CommandLineReader
@@ -49,8 +49,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
         {
             CommandLineProcessor = commandLineProcessor;
             if (CommandLineProcessor!=null && CommandLineProcessor!=null) CommandLineProcessor.CommandLineReader = this;
-            _defaultPrompt = prompt ?? $"{Green}> {White}";
+            _defaultPrompt = prompt ?? $"> ";
             Initialize(evalCommandDelegate);
+        }
+
+        public void SetDefaultPrompt(string prompt) {
+            _defaultPrompt = prompt;
         }
 
         public void SetPrompt(string prompt=null)
@@ -59,12 +63,19 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
             _defaultPrompt = _nextPrompt;
         }
 
+        public void SetPrompt(CommandEvaluationContext context,string prompt) {
+            SetPrompt(prompt);
+            context.ShellEnv.SetValue(ShellEnvironmentVar.settings_prompt,prompt);
+        }
+
         public string GetPrompt() => _prompt;
 
         void Initialize(ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
         {
             if (evalCommandDelegate==null && CommandLineProcessor!=null) _evalCommandDelegate = CommandLineProcessor.Eval;
             
+            #region disabled
+
 #if manage_embeded_view
             ViewSizeChanged += (o, e) =>
             {
@@ -116,6 +127,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                 }
             };
 #endif
+            #endregion
         }
 
         #endregion
