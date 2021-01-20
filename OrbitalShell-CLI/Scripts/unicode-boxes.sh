@@ -10,4 +10,4 @@ echo "(EdgeDoubleTopLeft,EdgeDoubleTopRight)1 (2 lines box)(br)(EdgeDoubleBottom
 echo "(EdgeDoubleTopLeft,BarDoubleHorizontal,BarDoubleHorizontal,BarDoubleHorizontal,EdgeDoubleTopRight)1 (3 lines box)(br)(BarDoubleVertical) ? (BarDoubleVertical)2(br)(EdgeDoubleBottomLeft,BarDoubleHorizontal,BarDoubleHorizontal,BarDoubleHorizontal,EdgeDoubleBottomRight)3"
 
 echo "(EdgeDoubleTopLeft,EdgeDoubleTopRight)(br)(EdgeDoubleBottomLeft,EdgeDoubleBottomRight)"
-echo "(EdgeDoubleTopLeft,BarHorizontal,BarDoubleHorizontal,BarDoubleHorizontal,EdgeDoubleTopRight)(br)(BarDoubleVertical) ? (BarDoubleVertical)(br)(EdgeDoubleBottomLeft,BarDoubleHorizontal,BarDoubleHorizontal,BarDoubleHorizontal,EdgeDoubleBottomRight)"
+echo "(EdgeDoubleTopLeft,BarDoubleHorizontal,BarDoubleHorizontal,BarDoubleHorizontal,EdgeDoubleTopRight)(br)(BarDoubleVertical) ? (BarDoubleVertical)(br)(EdgeDoubleBottomLeft,BarDoubleHorizontal,BarDoubleHorizontal,BarDoubleHorizontal,EdgeDoubleBottomRight)"

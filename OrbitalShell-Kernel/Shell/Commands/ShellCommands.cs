@@ -26,6 +26,23 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
     [Commands("commands of the command line processor")]
     public class ShellCommands : ICommandsDeclaringType
     {
+        #region shell exec
+
+        [Command("runs a batch file [Experimental]")]
+        public CommandVoidResult Batch(
+            CommandEvaluationContext context,
+            [Parameter(0,"path of the batch file (attempt a text file, starting or not by #orbsh!)")] FilePath path
+            )
+        {
+            if (path.CheckExists())
+            {
+                context.CommandLineProcessor.CommandBatchProcessor.RunBatch(context,path.FileSystemInfo.FullName);
+            }
+            return CommandVoidResult.Instance;
+        }
+
+        #endregion
+
         #region help
 
         [Command("print help about commands,commands types and modules")]
@@ -292,7 +309,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         [Command("outputs a table of environment variables and values")]
         public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context,
-            [Parameter(0,"variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this",true)] string varPath,
+            [Parameter(0,"variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root",true)] string varPath,
             [Option("n","unfold namespaces")] bool unfoldNamespaces = false,
             [Option("o","unfold values of type object")] bool unfoldObjects = false
             )
@@ -357,7 +374,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             return new CommandResult<IDataObject>();
         }
 
-        [Command("unset the value of shell variables (including shell options)")]
+        [Command("unset the value of shell variables")]
         public CommandResult<IDataObject> Unset(
             CommandEvaluationContext context
             )
