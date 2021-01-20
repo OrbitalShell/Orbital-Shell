@@ -879,7 +879,7 @@ namespace DotNetConsoleAppToolkit.Console
             bool lineBreak = false,
             bool doNotEvaluatePrintDirectives = false,      // TODO: remove this parameter
             bool ignorePrintDirectives = false,
-            EchoSequences printSequences = null)
+            EchoSequenceList printSequences = null)
         {
             lock (Lock)
             {
@@ -1005,7 +1005,7 @@ namespace DotNetConsoleAppToolkit.Console
             bool preserveColors = false,        // TODO: remove this parameter + SaveColors property
             bool parseCommands = true,
             bool doNotEvalutatePrintDirectives = false,
-            EchoSequences printSequences = null)
+            EchoSequenceList printSequences = null)
         {
             lock (Lock)
             {
@@ -1196,7 +1196,7 @@ namespace DotNetConsoleAppToolkit.Console
             return r.CursorIndex;
         }
 
-        public LineSplits GetIndexLineSplitsInWorkAreaConstraintedString(
+        public LineSplitList GetIndexLineSplitsInWorkAreaConstraintedString(
             string s,
             Point origin,
             int cursorX,
@@ -1231,7 +1231,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="cursorX"></param>
         /// <param name="cursorY"></param>
         /// <returns></returns>
-        public LineSplits GetWorkAreaStringSplits(
+        public LineSplitList GetWorkAreaStringSplits(
             string s,
             Point origin,
             bool forceEnableConstraintInWorkArea = false,
@@ -1243,7 +1243,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             var originalString = s;
             var r = new List<StringSegment>();
-            EchoSequences printSequences = null;
+            EchoSequenceList printSequences = null;
             if (cursorX == -1) cursorX = origin.X;
             if (cursorY == -1) cursorY = origin.Y;
             int cursorLineIndex = -1;
@@ -1262,7 +1262,7 @@ namespace DotNetConsoleAppToolkit.Console
                 if (doNotEvaluatePrintDirectives)
                 {
                     pds = s;
-                    printSequences = new EchoSequences();
+                    printSequences = new EchoSequenceList();
                     s = GetPrint(s, false, doNotEvaluatePrintDirectives, ignorePrintDirectives, printSequences);
                 }
                 var xr = x0 + s.Length - 1;
@@ -1373,11 +1373,11 @@ namespace DotNetConsoleAppToolkit.Console
 
             if (!doNotEvaluatePrintDirectives)
             {
-                printSequences = new EchoSequences();
+                printSequences = new EchoSequenceList();
                 printSequences.Add(new EchoSequence((string)null, 0, originalString.Length - 1, null, originalString));
             }
 
-            return new LineSplits(r, printSequences, cursorIndex, cursorLineIndex);
+            return new LineSplitList(r, printSequences, cursorIndex, cursorLineIndex);
         }
 
         public void SetCursorPosConstraintedInWorkArea(Point pos, bool enableOutput = true, bool forceEnableConstraintInWorkArea = false, bool fitToVisibleArea = true)

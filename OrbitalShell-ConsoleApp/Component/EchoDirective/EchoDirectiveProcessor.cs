@@ -33,7 +33,7 @@ namespace DotNetConsoleAppToolkit.Component.EchoDirective
             bool lineBreak = false,
             string tmps = "",
             bool doNotEvalutatePrintDirectives = false,
-            EchoSequences printSequences = null,
+            EchoSequenceList printSequences = null,
             int startIndex = 0)
         {
             lock (Writer.Lock)

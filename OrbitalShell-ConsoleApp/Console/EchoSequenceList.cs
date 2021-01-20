@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DotNetConsoleAppToolkit.Console
 {
-    public class EchoSequences : IEnumerable<EchoSequence>
+    public class EchoSequenceList : IEnumerable<EchoSequence>
     {
         public readonly List<EchoSequence> List
             = new List<EchoSequence>();

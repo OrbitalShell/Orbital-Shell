@@ -2,19 +2,19 @@
 
 namespace DotNetConsoleAppToolkit.Console
 {
-    public class LineSplits
+    public class LineSplitList
     {
         public readonly List<StringSegment> Splits;
 
-        public readonly EchoSequences PrintSequences;
+        public readonly EchoSequenceList PrintSequences;
 
         public readonly int CursorIndex;
 
         public readonly int CursorLineIndex;
 
-        public LineSplits(
+        public LineSplitList(
             List<StringSegment> splits,
-            EchoSequences printSequences,
+            EchoSequenceList printSequences,
             int cursorIndex=-1,
             int cursorLineIndex=-1)
         {
