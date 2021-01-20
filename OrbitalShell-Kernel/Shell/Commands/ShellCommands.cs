@@ -342,6 +342,42 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             }
         }
 
+        [Command("outputs a table of variables and values")]
+        public CommandResult<List<IDataObject>> Vars(
+            CommandEvaluationContext context,
+            [Parameter(0,"variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root",true)] string varPath,
+            [Option("u","unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o","unfold values of type object")] bool unfoldObjects = false,
+            [Option("p","echo string values in parsed mode (ansi and directives)")] bool parsed = false
+            )
+        {
+            object obj;
+            if (varPath == null)
+                obj = context.Variables.RootObject;
+            else
+                context.Variables.GetObject( varPath, out obj);
+
+            var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
+            {
+                UnfoldCategories = unfoldNamespaces,
+                UnfoldItems = unfoldObjects,
+                IsRawModeEnabled = !parsed
+            };
+
+            if (obj is IDataObject envVars)
+            {
+                var values = envVars.GetAttributes();
+                envVars.Echo(new EchoEvaluationContext(context.Out, context,options));
+                return new CommandResult<List<IDataObject>>(values);
+            }
+            else
+            {
+                // directly dump object members
+                EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(context.Out, context, options));
+                return new CommandResult<List<IDataObject>>(null);
+            }
+        }        
+
         [Command("set a command alias if a name and a value is provided. If only the name is provided, clear the alias definition. it no parameters is specified, list all alias")]
         public CommandResult<List<string>> Alias(
             CommandEvaluationContext context,

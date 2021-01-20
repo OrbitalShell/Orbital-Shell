@@ -40,7 +40,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public CancellationTokenSource CancellationTokenSource;
 
+        /// <summary>
+        /// shell args
+        /// </summary>
+        public string[] Args => (string[])_args?.Clone();
+
         string[] _args;
+        
         bool _isInitialized = false;
 
         readonly Dictionary<string, List<CommandSpecification>> _commands = new Dictionary<string, List<CommandSpecification>>();
@@ -165,6 +171,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             CommandLineProcessorSettings settings, 
             CommandEvaluationContext commandEvaluationContext = null)
         {
+            _args = (string[])args?.Clone();
             Settings = settings;
                         
             commandEvaluationContext ??= new CommandEvaluationContext(

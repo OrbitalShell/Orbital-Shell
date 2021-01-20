@@ -9,7 +9,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
         readonly Dictionary<string, object> _objects
             = new Dictionary<string, object>();
 
-        DataObject RootObject = new DataObject("root");
+        public readonly DataObject RootObject = new DataObject("root");
 
         public List<IDataObject> GetDataValues() => RootObject.GetAttributes();
 

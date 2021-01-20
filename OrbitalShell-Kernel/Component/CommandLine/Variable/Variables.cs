@@ -30,6 +30,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
         protected readonly DataRegistry _dataRegistry = new DataRegistry();
 
+        public DataObject RootObject => _dataRegistry.RootObject;
+
         /// <summary>
         /// creates a standard variable rush with known namespaces
         /// </summary>

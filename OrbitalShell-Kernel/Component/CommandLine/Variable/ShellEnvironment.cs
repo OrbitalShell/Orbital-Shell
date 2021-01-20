@@ -47,26 +47,41 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             var colorSettingsDV = AddValue(ShellEnvironmentVar.display_colors_colorSettings, new ColorSettings());
             Colors = (ColorSettings)colorSettingsDV.Value;
 
-            // bash vars for compat
+            // about bash vars (extended) for compat
+
             AddValue(ShellEnvironmentVar.shell, new DirectoryPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), true);
             AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion , true );
             AddValue(ShellEnvironmentVar.SHELL__NAME, context.CommandLineProcessor.Settings.AppName , true);
             AddValue(ShellEnvironmentVar.SHELL__LONG__NAME, context.CommandLineProcessor.Settings.AppLongName, true );
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor, true );
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true );
-
             AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)) , true);
             
+            // shell settings (defaults)
+
             AddValue(ShellEnvironmentVar.settings_prompt, ANSI.RSTXTA+"> ");        // prompt   
-
-            // shell settings
-
             AddValue(ShellEnvironmentVar.settings_consoleInitialWindowWidth,-1);
             AddValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight,-1);
             AddValue(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode,false);
             AddValue(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor,true);
 
+            InitializeSpecialVars(context);
+
             // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
+        }
+
+        /// <summary>
+        /// init shell env special vars
+        /// </summary>
+        void InitializeSpecialVars(CommandEvaluationContext context) {
+            var o = AddValue(ShellEnvironmentVar.sp__lastCommandReturnCode, ReturnCode.OK , true);
+            AddValue(ShellEnvironmentVar.lastComReturnCode,o.Value, true);
+            o = AddValue(ShellEnvironmentVar.sp__activeShellPID, System.Diagnostics.Process.GetCurrentProcess().Id , true);
+            AddValue(ShellEnvironmentVar.activeShellPID,o.Value, true);
+            o = AddValue(ShellEnvironmentVar.sp__lastTaskID, -1 , true);
+            AddValue(ShellEnvironmentVar.lastTaskID,o.Value, true);
+            o = AddValue(ShellEnvironmentVar.sp__shellOpts, string.Join(" ",context.CommandLineProcessor.Args) , true);        
+            AddValue(ShellEnvironmentVar.shellOpts,o.Value, true);
         }
 
         DataObject AddObject(ShellEnvironmentNamespace ns)
@@ -82,6 +97,15 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public bool HasValue(ShellEnvironmentVar ns) => Vars.GetObject(Nsp(ns),out var o,false) && o is DataValue;
 
         public DataValue AddValue(ShellEnvironmentVar var,object value,bool readOnly=false)
+        {
+            var path = Nsp(var);
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            var val = new DataValue(name, value, readOnly );
+            Vars.Set(path, val);
+            return val;
+        }
+
+        public DataValue AddValue(string var,object value,bool readOnly=false)
         {
             var path = Nsp(var);
             var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
@@ -123,16 +147,36 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         string Nsp(string @namespace, string key) => ToAbsNsp(@namespace + CommandLineSyntax.VariableNamePathSeparator + key);
         string Nsp(params string[] key) => ToAbsNsp(string.Join(CommandLineSyntax.VariableNamePathSeparator, key));
         string Nsp(ShellEnvironmentNamespace @namespace, params string[] key) => ToAbsNsp(ToNsp(@namespace) + (key.Length==0?"": (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join(CommandLineSyntax.VariableNamePathSeparator, key)));
-        string Nsp(ShellEnvironmentVar @var, params string[] key) => ToAbsNsp(ToNsp(@var) + (key.Length==0?"": (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join(CommandLineSyntax.VariableNamePathSeparator, key)));
+        string Nsp(ShellEnvironmentVar @var, params string[] key) => 
+        
+            ToAbsNsp(ToNsp(@var) + (key.Length==0?"": (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join(CommandLineSyntax.VariableNamePathSeparator, key)));
 
-        static string ToNsp(ShellEnvironmentVar @var) => ToNsp(@var + "");
+        static string ToNsp(ShellEnvironmentVar @var) => ToNsp(ToStr(@var));
+   
+        /// <summary>
+        /// 💥 constraint: postfix (here __) same in ShellEnvironmentVar
+        /// </summary>
+        public const string SPECIAL_VAR_DECL_PREFIX = "sp__";
+        public const string SPECIAL_VAR_IMPL_PREFIX = "sp_";
+
+        static string ToStr(ShellEnvironmentVar var) => ((IsSpecialVar(var+""))?$"{SPECIAL_VAR_DECL_PREFIX}{(char)var}":(var+""));
+
+        static bool IsSpecialVar(string s) => s.StartsWith(SPECIAL_VAR_IMPL_PREFIX) || s.StartsWith(SPECIAL_VAR_DECL_PREFIX);
+
         static string ToNsp(ShellEnvironmentNamespace @namespace) => ToNsp(@namespace + "");
         static string ToNsp(string shellVar)
         {
             var s = (shellVar + "").Replace("__", "¤");
-            s = s.Replace("_", CommandLineSyntax.VariableNamePathSeparator + "");
+            if (s.Length!=1 || s!="_")
+                s = s.Replace("_", CommandLineSyntax.VariableNamePathSeparator + "");
             return s.Replace("¤", "_");
         }
-        string ToAbsNsp(string @namespace) => Variables.Nsp(VariableNamespace.env, /*Name ,*/ @namespace);
+        string ToAbsNsp(string @namespace) {
+            var isSpecialVar = IsSpecialVar(@namespace);
+            return Variables.Nsp(
+                ( ""+(isSpecialVar?VariableNamespace.local:VariableNamespace.env) ), 
+                isSpecialVar?@namespace.Substring(SPECIAL_VAR_IMPL_PREFIX.Length):@namespace
+                );
+        }
     }
 }

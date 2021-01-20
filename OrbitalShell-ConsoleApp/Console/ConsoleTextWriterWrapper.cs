@@ -310,7 +310,7 @@ namespace DotNetConsoleAppToolkit.Console
                     var x = Convert.ToInt32(t[0]);
                     var y = Convert.ToInt32(t[1]);
                     return command.Invoke(x,y);
-                } catch (Exception ex) {
+                } catch (Exception) {
                     Error($"bad format and/or int value: {p.Item2} - attempted is {{Int}}:{{Int}}");
                 }
             }
@@ -326,7 +326,7 @@ namespace DotNetConsoleAppToolkit.Console
                 try {
                     var command = (EchoDirectiveProcessor.Command1pIntDelegate)p.Item1;
                     return command.Invoke(Convert.ToInt32(p.Item2));
-                } catch (Exception ex) {
+                } catch (Exception) {
                     Error($"bad Int value: {p.Item2}");
                 }
             }
@@ -339,7 +339,7 @@ namespace DotNetConsoleAppToolkit.Console
                 try {
                     var command = (Command1pEDParameterDelegate)p.Item1;
                     return command.Invoke(Enum.Parse<EDParameter>(p.Item2));
-                } catch (Exception ex) {
+                } catch (Exception) {
                     Error($"bad EDParameter value: {p.Item2}");
                 }
             }
@@ -352,7 +352,7 @@ namespace DotNetConsoleAppToolkit.Console
                 try {
                     var command = (Command1pELParameterDelegate)p.Item1;
                     return command.Invoke(Enum.Parse<ELParameter>(p.Item2));
-                } catch (Exception ex) {
+                } catch (Exception) {
                     Error($"bad ELParameter value: {p.Item2}");
                 }
             }

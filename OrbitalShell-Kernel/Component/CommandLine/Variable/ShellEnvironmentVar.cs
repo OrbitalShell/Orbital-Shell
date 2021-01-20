@@ -45,5 +45,38 @@
         SHELL__LONG__NAME,
         SHELL__EDITOR,
         SHELL__LICENSE,
+
+        // traditional bash special variables
+
+        sp__lastCommandReturnCode = '?',
+        lastComReturnCode,
+        
+        /// <summary>
+        /// 💥 emoji active shell pid: should be '$' , but can't due to parser failure. so currently is '#'
+        /// </summary>
+        sp__activeShellPID = '#',
+        activeShellPID,
+
+        sp__lastTaskID = '!',
+        lastTaskID,
+
+        /// <summary>
+        /// 💥 shell options: should be '-' , but can't due to parser failure. so currently is '°'
+        /// </summary>
+        sp__shellOpts = '°',
+        shellOpts,
+
+        // batch args : @TODO: move in Local env
+
+        sp__arg0 = '0',
+        sp__arg1 = '1',
+        sp__arg2 = '2',
+        sp__arg3 = '3',
+        sp__arg4 = '4',
+        sp__arg5 = '5',
+        sp__arg6 = '6',
+        sp__arg7 = '7',
+        sp__arg8 = '8',
+        sp__arg9 = '9'
     }
 }
