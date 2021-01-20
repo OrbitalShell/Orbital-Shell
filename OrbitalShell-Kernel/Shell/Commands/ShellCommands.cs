@@ -310,8 +310,9 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context,
             [Parameter(0,"variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root",true)] string varPath,
-            [Option("n","unfold namespaces")] bool unfoldNamespaces = false,
-            [Option("o","unfold values of type object")] bool unfoldObjects = false
+            [Option("u","unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o","unfold values of type object")] bool unfoldObjects = false,
+            [Option("p","echo string values in parsed mode (ansi and directives)")] bool parsed = false
             )
         {
             object obj;
@@ -323,7 +324,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
             {
                 UnfoldCategories = unfoldNamespaces,
-                UnfoldItems = unfoldObjects
+                UnfoldItems = unfoldObjects,
+                IsRawModeEnabled = !parsed
             };
 
             if (obj is IDataObject envVars)

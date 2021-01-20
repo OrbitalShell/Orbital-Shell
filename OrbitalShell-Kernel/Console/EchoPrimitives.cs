@@ -168,6 +168,16 @@ namespace DotNetConsoleAppToolkit.Console
         #region natives types
 
         public static void Echo(
+            string obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+
+            @out.Echo(obj,false,(ctx.Options==null)?false:ctx.Options.IsRawModeEnabled);
+        }
+
+        public static void Echo(
             bool obj,
             EchoEvaluationContext ctx)
         {
@@ -508,11 +518,12 @@ namespace DotNetConsoleAppToolkit.Console
                     var o = arr[i];
 
                     MethodInfo mi = null;
-                    if (o != null && (mi=o.GetEchoMethod())!=null)
+                    if (( (!(o is string)) || table.Columns[i].DataType==typeof(object)) 
+                            && o != null && (mi=o.GetEchoMethod())!=null)
                     {
                         // value dump via Echo primitive
                         @out.Echo(context.ShellEnv.Colors.Default);
-                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, null));
+                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, options));
                         @out.Echo(colsep);
                     }
                     else
@@ -520,7 +531,9 @@ namespace DotNetConsoleAppToolkit.Console
                         // value dump by ToString
                         var l = @out.GetPrint(fvalue).Length;
                         var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
-                        @out.Echo(context.ShellEnv.Colors.Default + fvalue + spc + colsep);
+                        @out.Echo(context.ShellEnv.Colors.Default );
+                        @out.Echo( fvalue );
+                        @out.Echo( spc + colsep );
                     }
                 }
                 @out.Echoln();

@@ -1,5 +1,9 @@
-issues fast backlog (developers notes) 🆗🚩
---------------------------------------
+---------------------------------------------------------
+💭 Orbital Shell project fast backlog (developers notes) 
+---------------------------------------------------------
+
+issues 🆗🚩
+------
 
 1/18/21 FGZ     🆗 review not compatible mode good usage of (rdc) or needs of (RSTXTA) in implemented commands
 1/18/21 FGZ     🆗 avoid usage of REVERT/INVERSE mode in implemented commands (too bugy in most terminals - @see default foreground and background colors behavior)
@@ -24,4 +28,6 @@ improvements to do 👷
 20/1/21 FGZ     🆗 init variables PS1,PS2,PS3,PS4 (bash compatibility) and add orbital shell equivalents : keep only PS1, replace it by settings.prompt
 20/1/21 FGZ     command 'eval' : a=5, $b = a , echo $b = a , eval echo \$$b == 5
 20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
-20/1/21 FGZ     👷 reflects setting change (case settings.prompt : call command prompt)
+20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
+20/1/21 FGZ     🆗 env: display raw text for string (option,default)
+20/1/21 FGZ     ANSI: GetCharactersLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)

@@ -16,11 +16,23 @@ namespace DotNetConsoleAppToolkit.Console
 
         public bool LineBreak = true;
 
+        public bool IsRawModeEnabled = false;
+
         public FormattingOptions() { }
 
-        public FormattingOptions(bool lineBreak)
+        public FormattingOptions(FormattingOptions o) => InitFrom(o);        
+
+        public void InitFrom(FormattingOptions o) {
+            this.IsRawModeEnabled = o.IsRawModeEnabled;
+            this.LineBreak = o.LineBreak;
+        }
+
+        public FormattingOptions(
+            bool lineBreak,
+            bool isRawModeEnabled)
         {
             LineBreak = lineBreak;
+            IsRawModeEnabled = isRawModeEnabled;
         }
     }
 }

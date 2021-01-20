@@ -19,6 +19,7 @@
 
         public TableFormattingOptions(TableFormattingOptions o)
         {
+            base.InitFrom(o);
             NoBorders = o.NoBorders;
             PadLastColumn = o.PadLastColumn;
             Layout = o.Layout;

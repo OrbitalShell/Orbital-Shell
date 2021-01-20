@@ -138,6 +138,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             value = null;
             return false;
         }
+
         public bool GetObject(string rootPath, string path, out object value, bool throwException = true)
             => GetObject(Nsp(rootPath, path), out value, throwException);
         public bool GetObject(VariableNamespace rootPath, string path, out object value, bool throwException = true)
