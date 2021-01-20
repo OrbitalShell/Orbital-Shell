@@ -1,4 +1,4 @@
-issues fast backlog (developers notes)
+issues fast backlog (developers notes) 🆗🚩
 --------------------------------------
 
 1/18/21 FGZ     🆗 review not compatible mode good usage of (rdc) or needs of (RSTXTA) in implemented commands
@@ -6,11 +6,11 @@ issues fast backlog (developers notes)
 1/18/21 FGZ     🆗 env Orbsh.Display.Colors : background color remains (due to no compatibility of {context.ShellEnv.Colors.Default} with background transparency)
 1/19/21 FGZ     env prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
 1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
-1/19/21 FGZ     🚩 prompt: crash (baskspace,..) in compatiblity mode
+1/19/21 FGZ     🚩 prompt: crash (backspace,..) in compatibility mode
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
 1/19/21 FGZ     replace -env: by --env: in shell init (posix)
 
-improvements to do
+improvements to do 👷
 ------------------
 
 18/1/21 FGZ     help: normal mode should be 'tech details less', should be got with -v + add infos to technical details
@@ -20,4 +20,4 @@ improvements to do
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
 20/1/21 FGZ     DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
 20/1/21 FGZ     🚩 add search command name in PATH and SUB SHELL EXEC
-20/1/21 FGZ     👷 change env variables : remove root 'shell' + reorganize
+20/1/21 FGZ     🆗 change env variables : remove root 'shell' + reorganize

@@ -30,11 +30,13 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public void Initialize(CommandEvaluationContext context)
         {
             Vars = context.Variables;
-            Vars.Set( Variables.Nsp(VariableNamespace.env, Name ), this );
 
             // data objects
             foreach ( var shellNs in Enum.GetValues(typeof(ShellEnvironmentNamespace)) )
-                AddObject((ShellEnvironmentNamespace)shellNs);
+            {
+                var ns = (ShellEnvironmentNamespace)shellNs;
+                if (!HasObject(ns)) AddObject(ns);
+            }
             
             // data values
             AddValue(ShellEnvironmentVar.debug_pipeline,false);
@@ -46,14 +48,14 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             Colors = (ColorSettings)colorSettingsDV.Value;
 
             // bash vars for compat
-            AddValue(ShellEnvironmentVar.SHELL, new DirectoryPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), true);
+            AddValue(ShellEnvironmentVar.shell, new DirectoryPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), true);
             AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion , true );
             AddValue(ShellEnvironmentVar.SHELL__NAME, context.CommandLineProcessor.Settings.AppName , true);
             AddValue(ShellEnvironmentVar.SHELL__LONG__NAME, context.CommandLineProcessor.Settings.AppLongName, true );
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor, true );
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true );
 
-            AddValue(ShellEnvironmentVar.HOME, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)) , true);
+            AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)) , true);
             AddValue(ShellEnvironmentVar.PS1, "");      
             AddValue(ShellEnvironmentVar.PS2, "");
             AddValue(ShellEnvironmentVar.PS3, "");
@@ -67,8 +69,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor,true);
 
             // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
-            // @TODO: variables and their namespaces should be lower case
-            // @TODO: commands and their namespaces should be lower case (use - in command name to replace upper cases)
         }
 
         DataObject AddObject(ShellEnvironmentNamespace ns)
@@ -79,6 +79,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             Vars.Set(path, obj);
             return obj;
         }
+
+        bool HasObject(ShellEnvironmentNamespace ns) => Vars.GetObject(Nsp(ns),out _,false);
 
         DataValue AddValue(ShellEnvironmentVar var,object value,bool readOnly=false)
         {
@@ -126,6 +128,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             s = s.Replace("_", CommandLineSyntax.VariableNamePathSeparator + "");
             return s.Replace("¤", "_");
         }
-        string ToAbsNsp(string @namespace) => Variables.Nsp(VariableNamespace.env, Name , @namespace);
+        string ToAbsNsp(string @namespace) => Variables.Nsp(VariableNamespace.env, /*Name ,*/ @namespace);
     }
 }

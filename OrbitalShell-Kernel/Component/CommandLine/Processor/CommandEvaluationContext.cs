@@ -30,21 +30,20 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             In = @in;
             Err = err;
             InputData = inputData;
-            Variables = new Variables();
+
+            SetupShellEnvVar();
+            Variables = new Variables( (VariableNamespace.env, ShellEnv) );
+            ShellEnv.Initialize(this);
+
             EchoMap = new EchoPrimitiveMap();
             ParentContext = parentContext;
-            SetupShellEnvVar();
+            
             @out.ColorSettings = ShellEnv.Colors;
         }
 
         void SetupShellEnvVar()
         {
-            var envn = 
-                CommandLineProcessor
-                .Settings
-                .ShellEnvironmentVariableName;
-            ShellEnv = new ShellEnvironment(envn);
-            ShellEnv.Initialize(this);
+            ShellEnv = new ShellEnvironment(VariableNamespace.env+"");         
         }
 
         public void Errorln(string s) => Error(s, true);

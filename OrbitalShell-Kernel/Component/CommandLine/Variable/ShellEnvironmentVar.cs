@@ -33,9 +33,8 @@
 
         // traditional bash variables
 
-        HOME,
-        // reference to the name 'orbsh' is impossible here
-        SHELL,
+        home,
+        shell,
         SHELL__VERSION,
         SHELL__NAME,
         SHELL__LONG__NAME,

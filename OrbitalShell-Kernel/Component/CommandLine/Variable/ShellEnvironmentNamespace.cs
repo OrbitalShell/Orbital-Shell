@@ -6,6 +6,11 @@
     public enum ShellEnvironmentNamespace
     {
         /// <summary>
+        /// os environment (underlying shell/os)
+        /// </summary>
+        os,
+
+        /// <summary>
         /// shell settings
         /// </summary>
         settings,
@@ -15,8 +20,14 @@
         /// </summary>        
         commandsSettings,
         
+        /// <summary>
+        /// debug settings
+        /// </summary>
         debug,
 
+        /// <summary>
+        /// display settings
+        /// </summary>
         display,
 
         /// <summary>

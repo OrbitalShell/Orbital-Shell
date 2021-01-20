@@ -33,13 +33,18 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         /// <summary>
         /// creates a standard variable rush with known namespaces
         /// </summary>
-        public Variables() {
+        public Variables( (VariableNamespace ns,DataObject o)? providedNS = null ) {
             // standard namespaces
             foreach (var ns in Enum.GetValues(typeof(VariableNamespace)))
-                _dataRegistry.Set(ns + "", new DataObject(ns+"",false));
+            {
+                if (providedNS.HasValue && providedNS.Value.ns==(VariableNamespace)ns)
+                    _dataRegistry.Set(ns + "", providedNS.Value.o );
+                else
+                    _dataRegistry.Set(ns + "", new DataObject(ns+"",false));
+            }
 
-            // Env vars
-            var pfx = Nsp(VariableNamespace.env);
+            // os Env vars
+            var pfx = Nsp(VariableNamespace.env,ShellEnvironmentNamespace.os+"");
             foreach (DictionaryEntry envvar in Environment.GetEnvironmentVariables())
                 _dataRegistry.Set(Nsp(pfx,envvar.Key+""), envvar.Value);
         }
