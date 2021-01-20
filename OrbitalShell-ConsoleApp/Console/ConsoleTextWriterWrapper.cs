@@ -689,14 +689,19 @@ namespace DotNetConsoleAppToolkit.Console
                 //RestoreDefaultColors();       // removed for the moment - can be restored in the future
                 try {                    
                     
+                    
+
                     WriteLine(ANSI.RSTXTA);         // reset text attr
+                    
                     System.Threading.Thread.Sleep(10);
 
                     //WriteLine(ANSI.RSTXTA+"     ");         // reset text attr
                     //Write(ANSI.ED(EDparameter.p0));
                     //Write(ANSI.RSTXTA+" ");
 
+                    sc.Write(ANSI.RIS);
                     sc.Clear();                   
+                    //sc.Write(ANSI.RIS);
 
                     //Write(ESC + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
                     

@@ -567,7 +567,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             
             if (WinWidth>-1) System.Console.WindowWidth = WinWidth;
             if (winHeight>-1) System.Console.WindowHeight = winHeight;
-            System.Console.Clear();
+            //System.Console.Clear();
+            context.Out.Echo(ANSI.RIS);
             
             return CommandVoidResult.Instance;
         }
