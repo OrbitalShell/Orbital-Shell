@@ -721,7 +721,6 @@ namespace DotNetConsoleAppToolkit.Console
         {
             lock (Lock)
             {
-                //ConsolePrint(string.Empty, true);
                 Write(LNBRK);
             };
         }
