@@ -17,3 +17,5 @@ improvements to do
 19/1/21 FGZ     add load settings from json + revert to json (add variables binding)
 19/1/21 FGZ     [OK] changes variables namespace and variables naming : to lower case + change root namespace (avoid 'orb')
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
+20/1/21 FGZ     DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
+
