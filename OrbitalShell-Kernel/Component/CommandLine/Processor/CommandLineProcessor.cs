@@ -93,6 +93,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public bool HasArgs => _args != null && _args.Length > 0;
 
+        public const string OPT_ENV = "--env";
+        public const string OPT_NAME_VALUE_SEPARATOR = ":";
+
         void SetArgs(
             string[] args,
             CommandEvaluationContext context,
@@ -102,11 +105,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             // parse and apply any -env:{VarName}={VarValue} argument
             foreach ( var arg in args ) {
-                if (arg.StartsWith("-env:")) {
+                if (arg.StartsWith(OPT_ENV+OPT_NAME_VALUE_SEPARATOR)) {
                     try {
                         var t = arg.Split(':');
                         var t2 = t[1].Split('=');
-                        if (t.Length==2 && t[0]=="-env" && t2.Length==2) {                            
+                        if (t.Length==2 && t[0]==OPT_ENV && t2.Length==2) {                            
                             SetVariable(context,t2[0],t2[1]);
                             appliedSettings.Add(arg);
                         } else

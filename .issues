@@ -8,7 +8,7 @@ issues fast backlog (developers notes) 🆗🚩
 1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
 1/19/21 FGZ     🚩 prompt: crash (backspace,..) in compatibility mode
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
-1/19/21 FGZ     replace -env: by --env: in shell init (posix)
+1/19/21 FGZ     🆗 replace -env: by --env: in shell init (posix)
 
 improvements to do 👷
 ------------------
@@ -21,3 +21,4 @@ improvements to do 👷
 20/1/21 FGZ     DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
 20/1/21 FGZ     🚩 add search command name in PATH and SUB SHELL EXEC
 20/1/21 FGZ     🆗 change env variables : remove root 'shell' + reorganize
+20/1/21 FGZ     init variables PS1,PS2,PS3,PS4 (bash compatiblity) and add orbital shell equivalents
