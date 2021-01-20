@@ -38,9 +38,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="obj\" />
-    <Folder Include="Settings\" />
-    <Folder Include="Properties\" />
+    <!--<Folder Include="obj\" />-->
+    <!--<Folder Include="Settings\" />-->
+    <!--<Folder Include="Properties\" />-->
+    <Folder Include="Scripts\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Folder>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scripts\unicode-boxes.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
