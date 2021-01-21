@@ -21,6 +21,8 @@ namespace DotNetConsoleAppToolkit.Console
         public TextColor Warning = new TextColor(ConsoleColor.DarkYellow, null);
         public TextColor Debug = new TextColor(ConsoleColor.Green, null);
 
+        public TextColor Information = new TextColor(ConsoleColor.DarkCyan,null);
+
         // DotNetConsoleAppToolkit-UI
 
         public TextColor TitleBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);

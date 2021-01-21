@@ -30,8 +30,9 @@ improvements to do 👷
 20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
 20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
 20/1/21 FGZ     variable defined as a reference to another but having its own path/name
-20/1/21 FGZ     👷 variable value provided by a programmatic way
+20/1/21 FGZ     variable value provided by a programmatic way
 20/1/21 FGZ     🆗 env: display raw text for string (option,default)
 20/1/21 FGZ     ANSI: GetCharactersLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
-20/1/21 FGZ     👷 implements bash special variables : $? , $$ , $! , $- , ...
+20/1/21 FGZ     🆗 implements bash special variables : $? , $$ , $! , $- , ...
 20/1/21 FGZ     please add sort in env table
+21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)

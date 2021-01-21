@@ -766,11 +766,25 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             foreach ( var pipelineParseResult in pipelineParseResults )
             {
                 allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
-                var evalRes = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
-                evalParses.Add(evalRes);
+                var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
+                evalParses.Add(evalParse);
             }
-            if (!allValid) return evalParses.FirstOrDefault();
-            return PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
+            if (!allValid) {
+                var err =  evalParses.FirstOrDefault();
+                context.ShellEnv.UpdateVarLastCommandReturn(GetReturnCode(err),err.SyntaxError);
+                return err;
+            }
+            var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
+            context.ShellEnv.UpdateVarLastCommandReturn(GetReturnCode(evalRes),evalRes.SyntaxError);
+            return evalRes;
+        }
+
+        ReturnCode GetReturnCode(ExpressionEvaluationResult expr) {       
+            var r = ReturnCode.Unknown;     
+            try {
+                r = (ReturnCode)expr.EvalResultCode;
+            } catch (Exception){}
+            return r;
         }
 
         /// <summary>

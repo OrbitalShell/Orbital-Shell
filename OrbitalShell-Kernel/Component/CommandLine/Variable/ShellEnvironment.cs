@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using static DotNetConsoleAppToolkit.Lib.Str;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 {
@@ -38,16 +39,20 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
                 if (!HasObject(ns)) AddObject(ns);
             }
             
-            // data values
+            // debug
+
             AddValue(ShellEnvironmentVar.debug_pipeline,false);
-            AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataFolderPath),true );
-            
+
+            // env
+
+            // global settings
+
             AddValue(ShellEnvironmentVar.display_fileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
             AddValue(ShellEnvironmentVar.display_tableFormattingOptions, new TableFormattingOptions());
-            var colorSettingsDV = AddValue(ShellEnvironmentVar.display_colors_colorSettings, new ColorSettings());
-            Colors = (ColorSettings)colorSettingsDV.Value;
+            var o = AddValue(ShellEnvironmentVar.display_colors_colorSettings, new ColorSettings());
+            Colors = (ColorSettings)o.Value;
 
-            // about bash vars (extended) for compat
+            // bash vars (extended)
 
             AddValue(ShellEnvironmentVar.shell, new DirectoryPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), true);
             AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion , true );
@@ -56,6 +61,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor, true );
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true );
             AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)) , true);
+            AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataFolderPath),true );
             
             // shell settings (defaults)
 
@@ -67,6 +73,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
             InitializeSpecialVars(context);
 
+            InitializeArgsVars(context.CommandLineProcessor.Args);
+
             // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
         }
 
@@ -74,14 +82,116 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         /// init shell env special vars
         /// </summary>
         void InitializeSpecialVars(CommandEvaluationContext context) {
-            var o = AddValue(ShellEnvironmentVar.sp__lastCommandReturnCode, ReturnCode.OK , true);
-            AddValue(ShellEnvironmentVar.lastComReturnCode,o.Value, true);
-            o = AddValue(ShellEnvironmentVar.sp__activeShellPID, System.Diagnostics.Process.GetCurrentProcess().Id , true);
+            var o = AddValue(ShellEnvironmentVar.sp__lastCommandReturnCode, ReturnCode.NotDefined );
+            AddValue(ShellEnvironmentVar.lastComReturnCode,o.Value );
+
+            o = AddValue(ShellEnvironmentVar.sp__lastCommandErrorText, "" );
+            AddValue(ShellEnvironmentVar.lastComErrorText,o.Value );
+            
+            o = AddValue(ShellEnvironmentVar.sp__activeShellPID, System.Diagnostics.Process.GetCurrentProcess().Id , true);            
             AddValue(ShellEnvironmentVar.activeShellPID,o.Value, true);
-            o = AddValue(ShellEnvironmentVar.sp__lastTaskID, -1 , true);
-            AddValue(ShellEnvironmentVar.lastTaskID,o.Value, true);
+
+            o = AddValue(ShellEnvironmentVar.sp__activeShellThreadID, System.Threading.Thread.CurrentThread.ManagedThreadId , true);
+            AddValue(ShellEnvironmentVar.activeShellThreadID,o.Value, true);
+
+            o = AddValue(ShellEnvironmentVar.sp__lastTaskThreadID, -1 );            
+            AddValue(ShellEnvironmentVar.lastTaskThreadID,o.Value );
+
             o = AddValue(ShellEnvironmentVar.sp__shellOpts, string.Join(" ",context.CommandLineProcessor.Args) , true);        
             AddValue(ShellEnvironmentVar.shellOpts,o.Value, true);
+
+            o = AddValue(ShellEnvironmentVar.sp__activeShellContextID, context.ID );        
+            AddValue(ShellEnvironmentVar.activeShellContextID,o.Value );
+        }
+
+        /// <summary>
+        /// set shell vars for last command return info
+        /// </summary>
+        /// <param name="returnCode">code returned</param>
+        /// <param name="errorText">eventually (default blank) text of error returned</param>
+        public void UpdateVarLastCommandReturn(ReturnCode returnCode,string errorText="") {
+            SetValue(ShellEnvironmentVar.sp__lastCommandReturnCode,returnCode);
+            SetValue(ShellEnvironmentVar.lastComReturnCode,returnCode);
+            SetValue(ShellEnvironmentVar.sp__lastCommandErrorText,errorText);
+            SetValue(ShellEnvironmentVar.lastComErrorText,errorText);
+        }
+
+        public void UpdateVarContext(int contextID) {
+            SetValue(ShellEnvironmentVar.sp__activeShellContextID,contextID);
+            SetValue(ShellEnvironmentVar.activeShellContextID,contextID);
+        }
+
+        /// <summary>
+        /// initialize args env vars
+        /// </summary>
+        /// <param name="args">args</param>
+        void InitializeArgsVars(string[] args) {
+            var t_a = string.Join(" ",args);
+            var t_sa = string.Join(",",args.Select(x => AssureIsQuoted(x)));
+            var o = AddValue(ShellEnvironmentVar.sp__ArgList, t_a );
+            AddValue(ShellEnvironmentVar.argList,o.Value);
+            o = AddValue(ShellEnvironmentVar.sp__ArgSepList, t_sa );
+            AddValue(ShellEnvironmentVar.argSepList,o.Value);
+            o = AddValue(ShellEnvironmentVar.sp__ArgsCount, args.Length );
+            AddValue(ShellEnvironmentVar.argsCount,o.Value);
+            int i = 0;
+            foreach ( var a in args ) {
+                switch (i) {
+                    case 0:
+                        o = AddValue(ShellEnvironmentVar.sp__arg0, args[i] );
+                        AddValue(ShellEnvironmentVar.arg0, o.Value);
+                        break;
+                    case 1:
+                        o = AddValue(ShellEnvironmentVar.sp__arg1, args[i]);
+                        AddValue(ShellEnvironmentVar.arg1, o.Value);
+                        break;
+                    case 2:
+                        o = AddValue(ShellEnvironmentVar.sp__arg2, args[i] );
+                        AddValue(ShellEnvironmentVar.arg2, o.Value);                    
+                        break;
+                    case 3:
+                        o = AddValue(ShellEnvironmentVar.sp__arg3, args[i] );
+                        AddValue(ShellEnvironmentVar.arg3, o.Value);        
+                        break;                
+                    case 4:
+                        o = AddValue(ShellEnvironmentVar.sp__arg4, args[i] );
+                        AddValue(ShellEnvironmentVar.arg4, o.Value);
+                        break;
+                    case 5:
+                        o = AddValue(ShellEnvironmentVar.sp__arg5, args[i] );
+                        AddValue(ShellEnvironmentVar.arg5, o.Value);
+                        break;
+                    case 6:
+                        o = AddValue(ShellEnvironmentVar.sp__arg6, args[i] );
+                        AddValue(ShellEnvironmentVar.arg6, o.Value);
+                        break;
+                    case 7:
+                        o = AddValue(ShellEnvironmentVar.sp__arg7, args[i] );
+                        AddValue(ShellEnvironmentVar.arg7, o.Value);
+                        break;      
+                    case 8:
+                        o = AddValue(ShellEnvironmentVar.sp__arg8, args[i] );
+                        AddValue(ShellEnvironmentVar.arg8, o.Value);
+                        break;  
+                    case 9:
+                        o = AddValue(ShellEnvironmentVar.sp__arg9, args[i] );
+                        AddValue(ShellEnvironmentVar.arg9, o.Value);
+                        break;                                                                                                                                                                                            
+                }
+                i++;
+            }
+            // empty args
+            int j = 0;
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg0, "" ); j++;       
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg1, "" ); j++;              
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg2, "" ); j++;             
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg3, "" ); j++;            
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg4, "" ); j++;       
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg5, "" ); j++;           
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg6, "" ); j++;          
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg7, "" ); j++;            
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg8, "" ); j++;            
+            if (j>=i) AddValue(ShellEnvironmentVar.sp__arg9, "" ); j++;           
         }
 
         DataObject AddObject(ShellEnvironmentNamespace ns)
@@ -159,7 +269,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         public const string SPECIAL_VAR_DECL_PREFIX = "sp__";
         public const string SPECIAL_VAR_IMPL_PREFIX = "sp_";
 
-        static string ToStr(ShellEnvironmentVar var) => ((IsSpecialVar(var+""))?$"{SPECIAL_VAR_DECL_PREFIX}{(char)var}":(var+""));
+        static string ToStr(ShellEnvironmentVar var) {
+            var v = var+"";
+            var isSpec = IsSpecialVar(v);
+            return (isSpec?$"{SPECIAL_VAR_DECL_PREFIX}{(char)var}":v);
+        }
 
         static bool IsSpecialVar(string s) => s.StartsWith(SPECIAL_VAR_IMPL_PREFIX) || s.StartsWith(SPECIAL_VAR_DECL_PREFIX);
 

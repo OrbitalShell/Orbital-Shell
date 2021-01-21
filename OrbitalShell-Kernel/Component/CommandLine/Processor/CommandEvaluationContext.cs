@@ -1,11 +1,20 @@
 ﻿using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Console;
 using System.IO;
+using System;
 
 namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 {
     public class CommandEvaluationContext
     {
+        static int _instanceCounter = 1000;
+        static object _instanceLock = new object();
+
+        /// <summary>
+        /// context id
+        /// </summary>
+        public int ID = -1;
+
         public readonly CommandLineProcessor CommandLineProcessor;
         public readonly ConsoleTextWriterWrapper Out;
         public readonly TextWriterWrapper Err;
@@ -25,6 +34,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             object inputData,
             CommandEvaluationContext parentContext = null)
         {
+            lock (_instanceLock)
+            {
+                ID = _instanceCounter;
+                _instanceCounter++;
+            }
+
             CommandLineProcessor = commandLineProcessor;
             Out = @out;
             In = @in;

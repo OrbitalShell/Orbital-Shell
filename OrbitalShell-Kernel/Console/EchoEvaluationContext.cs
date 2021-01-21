@@ -5,7 +5,7 @@ namespace DotNetConsoleAppToolkit.Console
     public class EchoEvaluationContext
     {
         public ConsoleTextWriterWrapper Out;
-        public CommandEvaluationContext CmdContext;
+        public CommandEvaluationContext CommandEvaluationContext;
         public FormattingOptions Options;
 
         public EchoEvaluationContext(
@@ -14,7 +14,7 @@ namespace DotNetConsoleAppToolkit.Console
             FormattingOptions options=null)
         {
             Out = @out;
-            CmdContext = cmdContext;
+            CommandEvaluationContext = cmdContext;
             Options = options;
         }
 
@@ -24,7 +24,7 @@ namespace DotNetConsoleAppToolkit.Console
             out FormattingOptions options)
         {
             @out = Out;
-            context = CmdContext;
+            context = CommandEvaluationContext;
             options = Options;
         }
 
@@ -32,7 +32,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             if (o==null)
             {
-                Out.Echo(EchoPrimitives.DumpAsText(CmdContext,null));
+                Out.Echo(EchoPrimitives.DumpAsText(CommandEvaluationContext,null));
             } else
             {
                 o.Echo(this);

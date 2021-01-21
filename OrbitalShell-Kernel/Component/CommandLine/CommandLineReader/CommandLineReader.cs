@@ -157,7 +157,10 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                     sc.CancelKeyPress += CancelKeyPress;
                     CommandLineProcessor.CancellationTokenSource = new CancellationTokenSource();
                     var task = Task.Run<ExpressionEvaluationResult>(
-                        () => evalCommandDelegate(CommandLineProcessor.CommandEvaluationContext, commandLine, _prompt == null ? 0 : Out.GetPrint(_prompt).Length),
+                        () => evalCommandDelegate(
+                            CommandLineProcessor.CommandEvaluationContext, 
+                            commandLine, 
+                            _prompt == null ? 0 : Out.GetPrint(_prompt).Length),
                         CommandLineProcessor.CancellationTokenSource.Token
                         );
 

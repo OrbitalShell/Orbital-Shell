@@ -14,7 +14,7 @@ namespace DotNetConsoleAppToolkit.Console
 {
     public static partial class EchoPrimitives
     {
-        #region echo tanble builders
+        #region echo table builders 
 
         static Table GetVarsDataTable(
             CommandEvaluationContext context,
@@ -251,14 +251,20 @@ namespace DotNetConsoleAppToolkit.Console
 
         #endregion
 
-        public static string NUllText = "{null}";
+        #region public util
+
+        public static string NullText = "{null}";
 
         public static string DumpAsText(CommandEvaluationContext context,object o, bool quoteStrings = true)
         {
-            if (o == null) return context.ShellEnv.Colors.Debug+NUllText+Rdc ?? null;
+            if (o == null) return context.ShellEnv.Colors.Debug+NullText+Rdc ?? null;
             if (o is string s && quoteStrings) return $"\"{s}\"";
             return o.ToString();
         }
+
+        #endregion
+
+        #region structured types
 
         public static void Echo(
             this KeyValuePair<string, object> obj,
@@ -271,6 +277,40 @@ namespace DotNetConsoleAppToolkit.Console
             Echo(obj.Value, ctx);
             @out.Echo(Rdc);
         }
+
+        #endregion
+
+        #region library types
+
+        public static void Echo(
+            this ReturnCode obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, _) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+            var r = "";
+            switch (obj) {
+                case ReturnCode.Error:
+                    r += new TextColor(ConsoleColor.Black,ctx.CommandEvaluationContext.ShellEnv.Colors.Error.Foreground);
+                    break;
+                case ReturnCode.OK:
+                    r += new TextColor(ConsoleColor.Yellow,ctx.CommandEvaluationContext.ShellEnv.Colors.Success.Foreground);
+                    break;
+                case ReturnCode.Unknown:
+                    r += new TextColor(ConsoleColor.Black,ctx.CommandEvaluationContext.ShellEnv.Colors.Warning.Foreground);
+                    break;
+                case ReturnCode.NotDefined:
+                    r += new TextColor(ConsoleColor.White,ctx.CommandEvaluationContext.ShellEnv.Colors.Information.Foreground);
+                    break;
+            }
+            @out.Echo(r+obj+ANSI.RSTXTA);
+        }
+
+        #endregion
+
+        // 🚩 -------------------------------------------------------------------------------------------------
+
+        #region object type (bridges)
 
         public static void InvokeEcho(
             object obj,
@@ -290,9 +330,7 @@ namespace DotNetConsoleAppToolkit.Console
                 @out.Echo(str, (options != null) ? options.LineBreak : false);
             }
         }
-
-        // -------------------------------------------------------------------------------------------------
-
+        
         /// <summary>
         /// echo fallback method
         /// </summary>
@@ -315,7 +353,11 @@ namespace DotNetConsoleAppToolkit.Console
                 @out.Echo(obj.ToString(), (options != null) ? options.LineBreak : false);
         }
 
-        // -------------------------------------------------------------------------------------------------
+        #endregion
+
+        // 🚩 -------------------------------------------------------------------------------------------------
+
+        #region colors types
 
         public static void Echo(
             this TextColor obj,
@@ -360,6 +402,8 @@ namespace DotNetConsoleAppToolkit.Console
 
             ShellObject.Instance.EchoObj(obj, ctx);
         }
+
+        #endregion
 
         #region variables & objects
 
