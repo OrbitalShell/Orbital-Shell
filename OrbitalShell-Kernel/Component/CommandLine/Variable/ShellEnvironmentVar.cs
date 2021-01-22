@@ -33,9 +33,9 @@
         sp__lastCommandErrorText = '%',
         
         /// <summary>
-        /// 💥 active shell pid: should be '$' , but can't due to parser failure. so currently is '§'
+        /// active shell pid
         /// </summary>
-        sp__activeShellPID = '§',
+        sp__activeShellPID = '$',
 
         /// <summary>
         /// active shell context id (extension to bash special vars)
@@ -53,9 +53,9 @@
         sp__lastTaskThreadID = '!',
 
         /// <summary>
-        /// 💥 shell options: should be '-' , but can't due to parser failure. so currently is '°' (empty string if not defined)
+        /// shell options
         /// </summary>
-        sp__shellOpts = '°',
+        sp__shellOpts = '-',
 
         /// <summary>
         /// active shell args list (separator ' ') (empty string if not defined)
