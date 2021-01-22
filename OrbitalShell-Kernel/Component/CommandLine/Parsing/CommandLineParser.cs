@@ -237,8 +237,15 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 if (c== CommandLineSyntax.VariablePrefix && (i==0 || t[i-1]!='\\' ))
                 {
                     var j = VariableSyntax.FindEndOfVariableName(t, i+1);
-                    var variable = expr.Substring(i+1, j - i);
-                    vars.Add(new StringSegment(variable, i, j, j - i + 1));
+                    var varName = expr.Substring(i+1, j - i);
+                    
+                    // accept terminator symbol (if any) as var name if var name is empty
+                    if (varName=="" && (j+1)<t.Length) {
+                        j++;
+                        varName = t[j]+"";
+                    }
+
+                    vars.Add(new StringSegment(varName, i, j, j - i + 1));
                     i = j;
                 }
                 i++;

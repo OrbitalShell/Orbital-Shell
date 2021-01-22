@@ -13,7 +13,7 @@ using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
 using DotNetConsoleAppToolkit.Component.EchoDirective;
 using System;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands.Test
+namespace DotNetConsoleAppToolkit.Shell.Commands.Dev
 {
     [Commands("for shell development")]
     public class DevCommands : ICommandsDeclaringType
@@ -40,7 +40,15 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             return CommandVoidResult.Instance;
         }
 
-        [Command("command crash test (19/1/21)")]
+        [Command("set a and b anc c variables to play with (22/1/21)")]
+        public CommandVoidResult Setabc(CommandEvaluationContext context) {
+            context.Variables.Set("a","i am a");
+            context.Variables.Set("b","i am b");
+            context.Variables.Set("c","a");
+            return CommandVoidResult.Instance;
+        }
+
+        [Command("command crash test (21/1/21)")]
         public CommandVoidResult CrashTest(CommandEvaluationContext context) => throw new Exception("command crash test (throws exception)");
     }
 }

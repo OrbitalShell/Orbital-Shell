@@ -37,12 +37,14 @@ improvements to do 👷
 20/1/21 FGZ     please add sort in env table
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
 21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
-21/1/21 FGZ     set should be arg set command. we should implement {varname}={value} ? (affectation is an unique world [bash])
+21/1/21 FGZ     set should be arg-set command. we should implement {varname}={value} ? (affectation is an unique world [bash])
 21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
 21/1/21 FGZ     implements var-info
 21/1/21 FGZ     implements var-set
-22/1/21 FGZ     add shell special vars: last com exception + last com (com text) + last com result (as object)
-22/1/21 FGZ     👷 fix shell authorized names that sp__ shell env var are supported (/ and ^) - or catch name terminator as name when name is empty (will allow $$, but $$x ?)
+22/1/21 FGZ     🆗 add shell special vars: last com exception + last com (com text) + last com result (as object)
+22/1/21 FGZ     🆗 fix shell authorized names that sp__ shell env var are supported (/ and ^) --> catch name terminator as name when name is empty: allow $$, avoid $$x that should be ${$x} )
+22/1/21 FGZ     decorator for System.Exception
+
 
 
 
