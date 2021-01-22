@@ -8,6 +8,21 @@
         // traditional bash special variables
 
         /// <summary>
+        /// last command text (extension to bash special vars)
+        /// </summary>
+        sp__lastCommand = '^',
+
+        /// <summary>
+        /// last command result (object) (extension to bash special vars)
+        /// </summary>
+        sp__lastCommandResult = '/',
+
+        /// <summary>
+        /// last command exception (System.Exception), if any else null (extension to bash special vars)
+        /// </summary>
+        sp__lastCommandException = '£',
+
+        /// <summary>
         /// last command return code
         /// </summary>
         sp__lastCommandReturnCode = '?',
@@ -108,6 +123,21 @@
         /// arg at 9 (empty string if not defined)
         /// </summary>     
         sp__arg9 = '9',
+
+        /// <summary>
+        /// last command text (extension to bash special vars)
+        /// </summary>
+        lastCom = 10004,
+
+        /// <summary>
+        /// last command result (object) (extension to bash special vars)
+        /// </summary>
+        lastComResult = 10002,
+
+        /// <summary>
+        /// last command exception (System.Exception), if any else null (extension to bash special vars)
+        /// </summary>
+        lastComException = 10003,
 
         /// <summary>
         /// last command return code

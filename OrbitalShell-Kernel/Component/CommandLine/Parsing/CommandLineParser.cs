@@ -330,6 +330,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                                         
                     parseResults.Add(
                         new PipelineParseResult(
+                            expr,
                             workUnit,
                             ParseCmdSplits(
                                 context,
@@ -345,6 +346,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
                 // get pipeline parse error
                 parseResults.Add(
                     new PipelineParseResult(
+                        expr,
                         new ParseResult(
                             ParseResultType.SyntaxError,
                             new List<CommandSyntaxParsingResult>

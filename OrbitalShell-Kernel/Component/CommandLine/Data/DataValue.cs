@@ -173,7 +173,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
             if (value!=null) {
                 if (ValueType!=null)
                 {
-                    if (value.GetType()!=ValueType) throw new Exception($"{_valueId} type mismatch: excepted type: {ValueType.FullName}, provided type: {value.GetType().FullName}");
+                    var objType = value.GetType();
+                    if (objType!=ValueType && (!objType.InheritsFrom(ValueType))) throw new Exception($"{_valueId} type mismatch: excepted type: {ValueType.FullName}, provided type: {value.GetType().FullName}");
                 }
             }
             this.Value = value;

@@ -86,6 +86,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             var o = AddValue(ShellEnvironmentVar.sp__lastCommandReturnCode, ReturnCode.NotIdentified );
             AddValue(ShellEnvironmentVar.lastComReturnCode,o.Value );
 
+            o = AddValue(ShellEnvironmentVar.sp__lastCommandResult, new object() );
+            AddValue(ShellEnvironmentVar.lastComResult,o.Value );
+            o.SetValue(null);
+
+            o = AddValue(ShellEnvironmentVar.sp__lastCommand, "" );
+            AddValue(ShellEnvironmentVar.lastCom,o.Value );
+
+            o = AddValue(ShellEnvironmentVar.sp__lastCommandException, new Exception() );
+            AddValue(ShellEnvironmentVar.lastComException, o.Value );
+            o.SetValue(null);
+
             o = AddValue(ShellEnvironmentVar.sp__lastCommandErrorText, new StringWrapper() );
             AddValue(ShellEnvironmentVar.lastComErrorText,o.Value );
             
@@ -108,16 +119,35 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         /// <summary>
         /// set shell vars for last command return info
         /// </summary>
+        /// <param name="com">com text</param>
+        /// <param name="result">command result</param>
         /// <param name="returnCode">code returned</param>
         /// <param name="errorText">eventually (default blank) text of error returned</param>
-        public void UpdateVarLastCommandReturn(ReturnCode returnCode,string errorText="",Exception ex=null) {
+        /// <param name="exception">eventually (default null) com exception</param>
+        public void UpdateVarLastCommandReturn(
+            string com,
+            object result,
+            ReturnCode returnCode,
+            string errorText="",
+            Exception exception=null) 
+        {
             SetValue(ShellEnvironmentVar.sp__lastCommandReturnCode,returnCode);
             SetValue(ShellEnvironmentVar.lastComReturnCode,returnCode);
-            var err = (ex!=null)?ex.Message:errorText;
+            var err = (exception!=null)?exception.Message:errorText;
             SetValue(ShellEnvironmentVar.sp__lastCommandErrorText,new StringWrapper(err,Colors.Error+""));
             SetValue(ShellEnvironmentVar.lastComErrorText,new StringWrapper(err,Colors.Error+""));
+            SetValue(ShellEnvironmentVar.sp__lastCommandException,exception);
+            SetValue(ShellEnvironmentVar.lastComException,exception);
+            SetValue(ShellEnvironmentVar.sp__lastCommandResult,result);
+            SetValue(ShellEnvironmentVar.lastComResult,result);
+            SetValue(ShellEnvironmentVar.sp__lastCommand,com);
+            SetValue(ShellEnvironmentVar.lastCom,com);
         }
 
+        /// <summary>
+        /// update context info
+        /// </summary>
+        /// <param name="contextID">context id</param>
         public void UpdateVarContext(int contextID) {
             SetValue(ShellEnvironmentVar.sp__activeShellContextID,contextID);
             SetValue(ShellEnvironmentVar.activeShellContextID,contextID);

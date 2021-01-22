@@ -771,11 +771,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             }
             if (!allValid) {
                 var err =  evalParses.FirstOrDefault();
-                context.ShellEnv.UpdateVarLastCommandReturn(GetReturnCode(err),err.SyntaxError);
+                context.ShellEnv.UpdateVarLastCommandReturn(expr,null,GetReturnCode(err),err.SyntaxError);
                 return err;
             }
             var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
-            context.ShellEnv.UpdateVarLastCommandReturn(GetReturnCode(evalRes),evalRes.EvalErrorText,evalRes.EvalError);
+            context.ShellEnv.UpdateVarLastCommandReturn(expr,evalRes.Result,GetReturnCode(evalRes),evalRes.EvalErrorText,evalRes.EvalError);
             return evalRes;
         }
 
@@ -828,7 +828,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 */
 
                 case ParseResultType.Empty:
-                    r = new ExpressionEvaluationResult(null, parseResult.ParseResultType, null, (int)ReturnCode.OK, null);
+                    r = new ExpressionEvaluationResult(expr,null, parseResult.ParseResultType, null, (int)ReturnCode.OK, null);
                     break;
 
                 case ParseResultType.NotValid:  /* command syntax not valid */
@@ -875,7 +875,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                     Error(" ".PadLeft(outputX + 1) + serr,false,false);
 
                     Error(errorText);
-                    r = new ExpressionEvaluationResult(errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
+                    r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
 
                 case ParseResultType.Ambiguous:
@@ -883,7 +883,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                     foreach (var prs in parseResult.SyntaxParsingResults)
                         errorText += $"{Red}{prs.CommandSyntax}{Br}";
                     Error(errorText);
-                    r = new ExpressionEvaluationResult(errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
+                    r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
 
                 case ParseResultType.NotIdentified:
@@ -896,7 +896,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                     serr = string.Join("", t);
                     Errorln(" ".PadLeft(outputX) + serr);
                     Errorln(errorText);
-                    r = new ExpressionEvaluationResult(errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
+                    r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
 
                 case ParseResultType.SyntaxError:
@@ -909,7 +909,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                     serr = string.Join("", t);
                     Errorln(" ".PadLeft(outputX) + serr);
                     Errorln(errorText);
-                    r = new ExpressionEvaluationResult(errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
+                    r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
             }
 

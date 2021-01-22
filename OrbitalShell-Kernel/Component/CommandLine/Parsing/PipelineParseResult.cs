@@ -7,22 +7,26 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
         public readonly ParseResult ParseResult;
         public readonly PipelineWorkUnit WorkUnit;
         public PipelineParseResult Next;
+        public string Expr;
 
-        public PipelineParseResult(PipelineWorkUnit workUnit, ParseResult parseResult)
+        public PipelineParseResult(string expr,PipelineWorkUnit workUnit, ParseResult parseResult)
         {
             ParseResult = parseResult;
             WorkUnit = workUnit;
+            Expr = expr;
         }
 
-        public PipelineParseResult(ParseResult parseResult)
+        public PipelineParseResult(string expr,ParseResult parseResult)
         {
             ParseResult = parseResult;
+            Expr = expr;
         }
 
-        public PipelineParseResult(PipelineWorkUnit workUnit)
+        public PipelineParseResult(string expr,PipelineWorkUnit workUnit)
         {
             ParseResult = new ParseResult(ParseResultType.Empty, null);
             WorkUnit = workUnit;
+            Expr = expr;
         }
 
         public PipelineParseResult()

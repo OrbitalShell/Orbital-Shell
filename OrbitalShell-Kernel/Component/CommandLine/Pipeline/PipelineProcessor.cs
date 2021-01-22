@@ -47,15 +47,15 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
 
                 return 
                     (res==null)?
-                        new ExpressionEvaluationResult(null, ParseResultType.Valid, r, (int)ReturnCode.Error, null , "the command has returned a null result" ) :
-                        new ExpressionEvaluationResult(null, ParseResultType.Valid, r, res.ReturnCode , null , err ) ;
+                        new ExpressionEvaluationResult(pipelineParseResult.Expr, null, ParseResultType.Valid, null, (int)ReturnCode.Error, null , "the command has returned a null result" ) :
+                        new ExpressionEvaluationResult(pipelineParseResult.Expr, null, ParseResultType.Valid, res.GetOuputData(), res.ReturnCode , null , err ) ;
             }
             catch (Exception commandInvokeError)
             {
                 // error is catched at shell level
                 var commandError = commandInvokeError.InnerException ?? commandInvokeError;
                 context.Errorln(commandError.Message);
-                return new ExpressionEvaluationResult(null, pipelineParseResult.ParseResult.ParseResultType, null, (int)ReturnCode.Error, commandError);
+                return new ExpressionEvaluationResult(pipelineParseResult.Expr, null, pipelineParseResult.ParseResult.ParseResultType, null, (int)ReturnCode.Error, commandError);
             }
             finally {
                 context.Err.StopRecording();
