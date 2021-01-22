@@ -109,11 +109,12 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         /// </summary>
         /// <param name="returnCode">code returned</param>
         /// <param name="errorText">eventually (default blank) text of error returned</param>
-        public void UpdateVarLastCommandReturn(ReturnCode returnCode,string errorText="") {
+        public void UpdateVarLastCommandReturn(ReturnCode returnCode,string errorText="",Exception ex=null) {
             SetValue(ShellEnvironmentVar.sp__lastCommandReturnCode,returnCode);
             SetValue(ShellEnvironmentVar.lastComReturnCode,returnCode);
-            SetValue(ShellEnvironmentVar.sp__lastCommandErrorText,errorText);
-            SetValue(ShellEnvironmentVar.lastComErrorText,errorText);
+            var err = (ex!=null)?ex.Message:errorText;
+            SetValue(ShellEnvironmentVar.sp__lastCommandErrorText,err);
+            SetValue(ShellEnvironmentVar.lastComErrorText,err);
         }
 
         public void UpdateVarContext(int contextID) {

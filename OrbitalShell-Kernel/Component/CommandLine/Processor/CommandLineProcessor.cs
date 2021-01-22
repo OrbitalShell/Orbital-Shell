@@ -775,7 +775,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 return err;
             }
             var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
-            context.ShellEnv.UpdateVarLastCommandReturn(GetReturnCode(evalRes),evalRes.EvalErrorText);
+            context.ShellEnv.UpdateVarLastCommandReturn(GetReturnCode(evalRes),evalRes.EvalErrorText,evalRes.EvalError);
             return evalRes;
         }
 

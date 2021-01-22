@@ -54,7 +54,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
             {
                 // error is catched at shell level
                 var commandError = commandInvokeError.InnerException ?? commandInvokeError;
-                context.Err.WriteLine(commandError.Message);
+                context.Errorln(commandError.Message);
                 return new ExpressionEvaluationResult(null, pipelineParseResult.ParseResult.ParseResultType, null, (int)ReturnCode.Error, commandError);
             }
             finally {
