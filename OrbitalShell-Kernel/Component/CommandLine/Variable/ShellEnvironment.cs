@@ -3,6 +3,7 @@ using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using DotNetConsoleAppToolkit.Console;
 using DotNetConsoleAppToolkit.Lib.FileSystem;
+using DotNetConsoleAppToolkit.Lib.Sys;
 using System;
 using System.IO;
 using System.Linq;
@@ -85,7 +86,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             var o = AddValue(ShellEnvironmentVar.sp__lastCommandReturnCode, ReturnCode.NotIdentified );
             AddValue(ShellEnvironmentVar.lastComReturnCode,o.Value );
 
-            o = AddValue(ShellEnvironmentVar.sp__lastCommandErrorText, "" );
+            o = AddValue(ShellEnvironmentVar.sp__lastCommandErrorText, new StringWrapper() );
             AddValue(ShellEnvironmentVar.lastComErrorText,o.Value );
             
             o = AddValue(ShellEnvironmentVar.sp__activeShellPID, System.Diagnostics.Process.GetCurrentProcess().Id , true);            
@@ -113,8 +114,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             SetValue(ShellEnvironmentVar.sp__lastCommandReturnCode,returnCode);
             SetValue(ShellEnvironmentVar.lastComReturnCode,returnCode);
             var err = (ex!=null)?ex.Message:errorText;
-            SetValue(ShellEnvironmentVar.sp__lastCommandErrorText,err);
-            SetValue(ShellEnvironmentVar.lastComErrorText,err);
+            SetValue(ShellEnvironmentVar.sp__lastCommandErrorText,new StringWrapper(err,Colors.Error+""));
+            SetValue(ShellEnvironmentVar.lastComErrorText,new StringWrapper(err,Colors.Error+""));
         }
 
         public void UpdateVarContext(int contextID) {

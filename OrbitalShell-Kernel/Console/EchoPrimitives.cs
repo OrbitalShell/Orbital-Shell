@@ -2,6 +2,7 @@
 using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
 using DotNetConsoleAppToolkit.Lib;
+using DotNetConsoleAppToolkit.Lib.Sys;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -281,6 +282,15 @@ namespace DotNetConsoleAppToolkit.Console
         #endregion
 
         #region library types
+
+        public static void Echo(
+            this StringWrapper obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, _) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+            @out.Echo(obj.ToString()+ANSI.RSTXTA);
+        }
 
         public static void Echo(
             this ReturnCode obj,
