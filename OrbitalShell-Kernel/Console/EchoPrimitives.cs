@@ -252,7 +252,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         #endregion
 
-        #region public util
+        #region -- public util --
 
         public static string NullText = "{null}";
 
@@ -265,7 +265,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         #endregion
 
-        #region structured types
+        #region compounded types
 
         public static void Echo(
             this KeyValuePair<string, object> obj,
@@ -281,6 +281,19 @@ namespace DotNetConsoleAppToolkit.Console
 
         #endregion
 
+        #region system library types
+
+        public static void Echo(
+            this Exception obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, _) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+            @out.Echo(ctx.CommandEvaluationContext.ShellEnv.Colors.ExceptionText + obj.ToString() + ANSI.RSTXTA);
+        }
+
+        #endregion
+
         #region library types
 
         public static void Echo(
@@ -289,7 +302,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             var (@out, context, _) = ctx;
             if (context.EchoMap.MappedCall(obj, ctx)) return;
-            @out.Echo(obj.ToString()+ANSI.RSTXTA);
+            @out.Echo(obj.ToString());
         }
 
         public static void Echo(
@@ -415,7 +428,7 @@ namespace DotNetConsoleAppToolkit.Console
 
         #endregion
 
-        #region variables & objects
+        #region variables & collections objects
 
         public static void DumpObject(
             object obj,

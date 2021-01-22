@@ -42,6 +42,10 @@ namespace DotNetConsoleAppToolkit.Console
         public TextColor InteractionPanelCmdLabel = new TextColor(ConsoleColor.Yellow, ConsoleColor.DarkBlue);
         public TextColor InteractionPanelDisabledCmdLabel = new TextColor(ConsoleColor.DarkGray, ConsoleColor.DarkBlue);
 
+        // system library types
+
+        public TextColor ExceptionText = new TextColor(ConsoleColor.Yellow,ConsoleColor.Red);
+
         // DotNetConsoleAppToolkit-Shell
 
         //      values types

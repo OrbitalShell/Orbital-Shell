@@ -21,6 +21,20 @@ namespace DotNetConsoleAppToolkit.Lib
             return false;
         }
 
+        public static List<Type> GetInheritanceChain(this Type type,bool includeRoot=true) {
+            var r = new List<Type>();
+            if (includeRoot) r.Add(type);
+            type = type.BaseType;
+            // walk inheritance chain
+            while (type!=null)
+            {
+                if (type!=typeof(object))
+                    r.Add(type);
+                type = type.BaseType;
+            }
+            return r;
+        }
+
         public static bool HasInterface(this Type type, Type interfaceType)
             => type.GetInterface(interfaceType.FullName) != null;
 

@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace DotNetConsoleAppToolkit.Lib
 {
+    /// <summary>
+    /// extensions methods for: output filtering
+    /// </summary>
     public static partial class TypesExt
     {
         public static void InvokeEcho(
@@ -70,17 +73,29 @@ namespace DotNetConsoleAppToolkit.Lib
             var t = o.GetType();
             try
             {
-                var mi = t.GetMethod(
-                    "Echo",
-                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static
-                    );
+                // TODO: search first inherited also !
+                var inheritanceChain = t.GetInheritanceChain();
+
+                MethodInfo mi = null;
+                foreach ( var it in inheritanceChain )
+                {
+                    mi = it.GetMethod(
+                        "Echo",
+                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static
+                        );
+                    if (mi!=null) break;
+                }
                 
                 // extension of a type not in this assembly is not found
                 // search in extension class to fix it
                 if (mi==null)
                 {
                     var mis = typeof(EchoPrimitives).GetMethods();
-                    mi = mis.Where(x => x.Name == "Echo" && x.GetParameters()[0].ParameterType == o.GetType()).FirstOrDefault();
+                    foreach ( var it in inheritanceChain )
+                    {
+                        mi = mis.Where(x => x.Name == "Echo" && x.GetParameters()[0].ParameterType == it).FirstOrDefault();
+                        if (mi!=null) break;
+                    }
                 }
 
                 return mi;

@@ -10,7 +10,7 @@ issues 🆗🚩
 1/18/21 FGZ     🆗 env Orbsh.Display.Colors : background color remains (due to no compatibility of {context.ShellEnv.Colors.Default} with background transparency)
 1/19/21 FGZ     ✅NEXT env & var prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
 1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
-1/19/21 FGZ     🚩 prompt: crash (backspace,..) in compatibility mode
+1/19/21 FGZ     💥🚩 prompt: crash (backspace,..) in compatibility mode
 1/19/21 FGZ     🆗 replace -env: by --env: in shell init (posix)
 
 improvements to do 👷
@@ -43,8 +43,10 @@ improvements to do 👷
 21/1/21 FGZ     implements var-set
 22/1/21 FGZ     🆗 add shell special vars: last com exception + last com (com text) + last com result (as object)
 22/1/21 FGZ     🆗 fix shell authorized names that sp__ shell env var are supported (/ and ^) --> catch name terminator as name when name is empty: allow $$, avoid $$x that should be ${$x} )
-22/1/21 FGZ     decorator for System.Exception
-
+22/1/21 FGZ     👷 decorator for System.Exception
+22/1/21 FGZ     add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
+22/1/21 FGZ     🆗 inheritance is not applied in static extension echo primitive selection (outside future map selection impl.)
+22/1/21 FGZ     dir sort : alls folders before files ?
 
 
 
