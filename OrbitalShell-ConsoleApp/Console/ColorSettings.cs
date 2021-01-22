@@ -21,6 +21,13 @@ namespace DotNetConsoleAppToolkit.Console
         public TextColor Warning = new TextColor(ConsoleColor.DarkYellow, null);
         public TextColor Debug = new TextColor(ConsoleColor.Green, null);
 
+        // states as text in a box
+
+        public TextColor BoxOk = new TextColor(ConsoleColor.White, ConsoleColor.DarkGreen);
+        public TextColor BoxError => new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
+        public TextColor BoxUnknown = new TextColor(ConsoleColor.Green, ConsoleColor.DarkCyan);
+        public TextColor BoxNotIdentified = new TextColor(ConsoleColor.Yellow, ConsoleColor.Red );
+
         public TextColor Information = new TextColor(ConsoleColor.DarkCyan,null);
 
         // DotNetConsoleAppToolkit-UI

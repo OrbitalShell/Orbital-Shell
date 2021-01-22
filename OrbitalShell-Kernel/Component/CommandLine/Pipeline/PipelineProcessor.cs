@@ -34,15 +34,31 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
             var syntaxParsingResult = pipelineParseResult.ParseResult.SyntaxParsingResults.First();
             try
             {
-                var outputData = InvokeCommand(context, syntaxParsingResult.CommandSyntax.CommandSpecification, syntaxParsingResult.MatchingParameters);
+                // capture the err output
+                context.Err.StartRecording();
+                
+                var r = InvokeCommand(context, syntaxParsingResult.CommandSyntax.CommandSpecification, syntaxParsingResult.MatchingParameters);
+                var res = r as ICommandResult;
+                var err_record = context.Err.StopRecording();
+                var err = res.ExecErrorText;
 
-                return new ExpressionEvaluationResult(null, ParseResultType.Valid, outputData, (int)ReturnCode.OK, null);
+                // auto assign from Err stream if no error text provided
+                if (string.IsNullOrEmpty(res.ExecErrorText) && !string.IsNullOrEmpty(err_record)) err = err_record;
+
+                return 
+                    (res==null)?
+                        new ExpressionEvaluationResult(null, ParseResultType.Valid, r, (int)ReturnCode.Error, null , "the command has returned a null result" ) :
+                        new ExpressionEvaluationResult(null, ParseResultType.Valid, r, res.ReturnCode , null , err ) ;
             }
             catch (Exception commandInvokeError)
             {
+                // error is catched at shell level
                 var commandError = commandInvokeError.InnerException ?? commandInvokeError;
-                Errorln(commandError.Message);
+                context.Err.WriteLine(commandError.Message);
                 return new ExpressionEvaluationResult(null, pipelineParseResult.ParseResult.ParseResultType, null, (int)ReturnCode.Error, commandError);
+            }
+            finally {
+                context.Err.StopRecording();
             }
         }
 

@@ -34,7 +34,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             [Parameter(0,"path of the batch file (attempt a text file, starting or not by #orbsh!)")] FilePath path
             )
         {
-            if (path.CheckExists())
+            if (path.CheckExists(context))
             {
                 context.CommandLineProcessor.CommandBatchProcessor.RunBatch(context,path.FileSystemInfo.FullName);
             }
@@ -265,7 +265,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                     }
                     if (loadModulePath != null)
                     {
-                        if (loadModulePath.CheckExists())
+                        if (loadModulePath.CheckExists(context))
                         {
                             var a = Assembly.LoadFrom(loadModulePath.FileSystemInfo.FullName);
                             var (typesCount, commandsCount) = context.CommandLineProcessor.RegisterCommandsAssembly(context, a);

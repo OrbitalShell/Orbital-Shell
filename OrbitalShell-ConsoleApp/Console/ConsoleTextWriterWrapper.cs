@@ -975,7 +975,7 @@ namespace DotNetConsoleAppToolkit.Console
         {
             if (RedirecToErr)
             {
-                if (IsEchoEnabled)
+                if (IsReplicationEnabled)
                     _replicateStreamWriter.Write(s);
                 Err.Write(s);
             }
@@ -1107,7 +1107,7 @@ namespace DotNetConsoleAppToolkit.Console
                             _textWriter.WriteLine(string.Empty);
                         }
 #else
-                         _textWriter.WriteLine(string.Empty);
+                         /*_textWriter*/ WriteLine(string.Empty);
 #endif
 
                         EchoDebug(string.Empty, true);

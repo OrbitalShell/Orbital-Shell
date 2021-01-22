@@ -4,5 +4,6 @@
     {
         object GetOuputData();
         int ReturnCode { get; }
+        string ExecErrorText { get; }
     }
 }

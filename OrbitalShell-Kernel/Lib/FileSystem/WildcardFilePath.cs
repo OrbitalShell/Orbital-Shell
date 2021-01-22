@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 
 namespace DotNetConsoleAppToolkit.Lib.FileSystem
 {
@@ -36,12 +37,11 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
             DirectoryInfo = (DirectoryInfo)FileSystemInfo;
         }
 
-        public override bool CheckExists(bool dumpError = true)
+        public override bool CheckExists(CommandEvaluationContext context,bool dumpError = true)
         {
             if (!DirectoryInfo.Exists)
             {
-                if (dumpError)
-                    Errorln($"file or directory doesn't exists: {this}");
+                if (dumpError) context.Errorln($"file or directory doesn't exists: {this}");
                 return false;
             }
             return true;

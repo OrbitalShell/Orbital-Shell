@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 
 namespace DotNetConsoleAppToolkit.Lib.FileSystem
 {
@@ -15,11 +16,11 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
 
         public bool IsEmpty => DirectoryInfo.EnumerateFileSystemInfos().Count() == 0;        
 
-        public override bool CheckExists(bool dumpError=true)
+        public override bool CheckExists(CommandEvaluationContext context,bool dumpError = true)
         {
             if (!DirectoryInfo.Exists)
             {
-                if (dumpError) Errorln($"directory doesn't exists: {this}");
+                if (dumpError) context.Errorln($"directory doesn't exists: {this}");
                 return false;
             }
             return true;

@@ -11,6 +11,8 @@ namespace DotNetConsoleAppToolkit.Console
     {
         #region attributes
 
+        public bool IsModified;
+
         public bool IsRedirected { get; protected set; }
         public bool IsBufferEnabled { get; protected set; }
         public static int InitialBufferCapacity = 16384;
@@ -18,10 +20,14 @@ namespace DotNetConsoleAppToolkit.Console
 
         public int TextWriterInitialCapacity = 163840;
 
-        protected TextWriter _textWriter;
+        private TextWriter _textWriter;
         protected TextWriter _redirectedTextWriter;
         protected MemoryStream _buffer = new MemoryStream(InitialBufferCapacity);
         protected TextWriter _bufferWriter;
+
+        protected StringBuilder _recording = new StringBuilder(InitialBufferCapacity);
+
+        public bool IsRecordingEnabled { get; protected set; }
 
         #region echo to filestream
 
@@ -38,9 +44,10 @@ namespace DotNetConsoleAppToolkit.Console
         #region echo to memory
 
         public bool ReplicateAutoFlush = true;
-        public bool IsEchoEnabled => _replicateStreamWriter != null;
+
+        public bool IsReplicationEnabled => _replicateStreamWriter != null;
         protected StreamWriter _replicateStreamWriter;
-        protected MemoryStream _replicattMemoryStream;
+        protected MemoryStream _replicateMemoryStream;
         protected MemoryStream _captureMemoryStream;
         protected FileStream _replicateFileStream;
 
@@ -58,6 +65,29 @@ namespace DotNetConsoleAppToolkit.Console
         public TextWriterWrapper(TextWriter textWriter)
         {
             _textWriter = textWriter;
+        }
+
+        #endregion
+
+        #region recording
+
+        /// <summary>
+        /// enable recording the stream in a string builder. clear the record on start
+        /// </summary>
+        public void StartRecording() {
+            _recording.Clear();
+            IsRecordingEnabled = true;
+        }
+
+        /// <summary>
+        /// stop recording the stream. returns &amp; clear the record
+        /// </summary>
+        /// <returns>what has been recorded</returns>
+        public string StopRecording() {
+            IsRecordingEnabled = false;
+            var r = _recording.ToString();
+            _recording.Clear();
+            return r;
         }
 
         #endregion
@@ -153,8 +183,8 @@ namespace DotNetConsoleAppToolkit.Console
             {
                 StopReplicate();
                 ReplicateAutoFlush = autoFlush;
-                _replicattMemoryStream = new MemoryStream();
-                _replicateStreamWriter = new StreamWriter(_replicattMemoryStream);
+                _replicateMemoryStream = new MemoryStream();
+                _replicateStreamWriter = new StreamWriter(_replicateMemoryStream);
             }
         }
 
@@ -189,13 +219,13 @@ namespace DotNetConsoleAppToolkit.Console
                 _replicateStreamWriter = null;
                 return null;
             }
-            if (_replicattMemoryStream!=null)
+            if (_replicateMemoryStream!=null)
             {
                 _replicateStreamWriter.Flush();
-                _replicattMemoryStream.Position = 0;
-                var str = Encoding.Default.GetString(_replicattMemoryStream.ToArray());
+                _replicateMemoryStream.Position = 0;
+                var str = Encoding.Default.GetString(_replicateMemoryStream.ToArray());
                 _replicateStreamWriter.Close();
-                _replicattMemoryStream = null;
+                _replicateMemoryStream = null;
                 _replicateStreamWriter = null;
                 return str;
             }
@@ -247,7 +277,9 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual void Write(string s)
         {
-            if (IsEchoEnabled)
+            IsModified = !string.IsNullOrWhiteSpace(s);
+            if (IsModified && IsRecordingEnabled) _recording.Append(s);
+            if (IsReplicationEnabled)
                 _replicateStreamWriter.Write(s);
             if (IsBufferEnabled)
             {
@@ -265,7 +297,9 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual Task WriteAsync(string s)
         {
-            if (IsEchoEnabled)
+            IsModified = !string.IsNullOrWhiteSpace(s);
+            if (IsModified && IsRecordingEnabled) _recording.Append(s);
+            if (IsReplicationEnabled)
                 _replicateStreamWriter.WriteAsync(s);
             if (IsBufferEnabled)
             {
@@ -283,7 +317,9 @@ namespace DotNetConsoleAppToolkit.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual void WriteLine(string s)
         {
-            if (IsEchoEnabled)
+            IsModified = true;
+            if (IsRecordingEnabled) _recording.AppendLine(s);
+            if (IsReplicationEnabled)
                 _replicateStreamWriter.WriteLine(s);
             if (IsBufferEnabled)
             {
@@ -308,18 +344,6 @@ namespace DotNetConsoleAppToolkit.Console
             if (lineBreak | FileEchoDebugAutoLineBreak) _debugEchoStreamWriter?.WriteLine(string.Empty);
             if (FileEchoDebugAutoFlush) _debugEchoStreamWriter?.Flush();
         }
-
-        #endregion
-
-        #region lock operations
-
-        /*public void Locked(Action action)
-        {
-            lock (Lock)
-            {
-                action?.Invoke();
-            }
-        }*/
 
         #endregion
     }

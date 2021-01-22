@@ -9,12 +9,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
 using RuntimeEnvironment = DotNetConsoleAppToolkit.Lib.RuntimeEnvironment;
 using sc = System.Console;
-using static DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
 
 namespace DotNetConsoleAppToolkit
@@ -27,7 +24,7 @@ namespace DotNetConsoleAppToolkit
     /// - the .net core make use of interop for each console method call in windows (ConsolePal.Windows.cs)
     /// implemented the workaround:
     /// - 'retains mode' : echo in a buffer in order to output as much text as possible in one time
-    /// - needs a refactorization: 
+    /// - needs a re-factorization: 
     /// -- dotnetconsole api placed on top of streams out,error as a wrapper (Console/ConsoleTextWriterWrapper.cs)
     /// -- explode DotNetConsole in small parts
     /// </para>
@@ -39,7 +36,7 @@ namespace DotNetConsoleAppToolkit
         #region streams : entry points to DotNetConsole output operations
 
         public static readonly ConsoleTextWriterWrapper Out = new ConsoleTextWriterWrapper(sc.Out);
-        public static readonly TextWriterWrapper Err = new ConsoleTextWriterWrapper(sc.Error);
+        public static readonly TextWriterWrapper Err = new /*Console*/TextWriterWrapper(sc.Error);
 
         #endregion
 
@@ -238,20 +235,15 @@ namespace DotNetConsoleAppToolkit
         public static void Exit(int r = 0) => Environment.Exit(r);
 
         #region work area operations
-
         
-
-
-
         /// <summary>
         /// this setting limit wide of lines (available width -1) to prevent sys console to automatically put a line break when reaching end of line (console bug ?)
         /// </summary>
         public static bool AvoidConsoleAutoLineBreakAtEndOfLine = false;
 
-    /// <summary>
-    /// true until the contrary is detected (exception in GetCoords : sc.WindowLeft)
-    /// </summary>
-    /// <value></value>
+        /// <summary>
+        /// true until the contrary is detected (exception in GetCoords : sc.WindowLeft)
+        /// </summary>
         static bool IsConsoleGeometryEnabled = true;
 
         public static bool CheckConsoleHasGeometry() {

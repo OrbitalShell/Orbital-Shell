@@ -11,6 +11,7 @@ using static DotNetConsoleAppToolkit.Lib.TextFileReader;
 using sc = System.Console;
 using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
 using DotNetConsoleAppToolkit.Component.EchoDirective;
+using System;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands.Test
 {
@@ -39,5 +40,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             return CommandVoidResult.Instance;
         }
 
+        [Command("command crash test (19/1/21)")]
+        public CommandVoidResult CrashTest(CommandEvaluationContext context) => throw new Exception("command crash test (throws exception)");
     }
 }

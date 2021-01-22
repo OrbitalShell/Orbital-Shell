@@ -82,7 +82,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
         /// init shell env special vars
         /// </summary>
         void InitializeSpecialVars(CommandEvaluationContext context) {
-            var o = AddValue(ShellEnvironmentVar.sp__lastCommandReturnCode, ReturnCode.NotDefined );
+            var o = AddValue(ShellEnvironmentVar.sp__lastCommandReturnCode, ReturnCode.NotIdentified );
             AddValue(ShellEnvironmentVar.lastComReturnCode,o.Value );
 
             o = AddValue(ShellEnvironmentVar.sp__lastCommandErrorText, "" );

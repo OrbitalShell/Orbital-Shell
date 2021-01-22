@@ -4,7 +4,7 @@
     {
         OK = 0,
         Error = 1,
-        NotDefined = 2,
+        NotIdentified = 2,
         Unknown = 3
     }
 }

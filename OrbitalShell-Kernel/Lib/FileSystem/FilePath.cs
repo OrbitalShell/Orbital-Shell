@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using static DotNetConsoleAppToolkit.DotNetConsole;
+using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
 
 namespace DotNetConsoleAppToolkit.Lib.FileSystem
 {
@@ -13,12 +14,11 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
             FileInfo = (FileInfo)FileSystemInfo;
         }
 
-        public override bool CheckExists(bool dumpError = true)
+        public override bool CheckExists(CommandEvaluationContext context,bool dumpError = true)
         {
             if (!FileInfo.Exists)
             {
-                if (dumpError)
-                    Errorln($"file doesn't exists: {this}");
+                if (dumpError) context.Errorln($"file doesn't exists: {this}");
                 return false;
             }
             return true;

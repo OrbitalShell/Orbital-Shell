@@ -41,7 +41,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
             [Option("t", "search in top directory only")] bool top
             )
         {
-            if (path.CheckExists())
+            if (path.CheckExists(context))
             {
                 var sp = string.IsNullOrWhiteSpace(pattern) ? "*" : pattern;
                 var counts = new FindCounts();
@@ -66,7 +66,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
         {
             var r = new List<FileSystemPath>();
             path ??= new WildcardFilePath(Environment.CurrentDirectory);
-            if (path.CheckExists())
+            if (path.CheckExists(context))
             {
                 var counts = new FindCounts();
                 var items = FindItems(context,path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false,false);
@@ -153,7 +153,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
             )
         {
             path ??= new DirectoryPath(Path.GetPathRoot(Environment.CurrentDirectory));
-            if (path.CheckExists())
+            if (path.CheckExists(context))
             {
                 var bkpath = Environment.CurrentDirectory;
                 try
@@ -179,7 +179,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
             )
         {
             var path = new DirectoryPath(Environment.CurrentDirectory);
-            if (path.CheckExists())
+            if (path.CheckExists(context))
             {
                 path.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br)));
                 return new CommandResult<DirectoryPath>( path );
@@ -257,7 +257,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
         {
             var r = new List<FileSystemPath>();
             var counts = new FindCounts();
-            if (path.CheckExists())
+            if (path.CheckExists(context))
             {
                 var items = FindItems(context,path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false, false);
                 var cancellationTokenSource = new CancellationTokenSource();
@@ -351,7 +351,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
             [Option("v","explain what is being done")] bool verbose
             )
         {
-            if (source.CheckExists())
+            if (source.CheckExists(context))
             {
                 var counts = new FindCounts();
                 var items = FindItems(context, source.FullName, source.WildCardFileName ?? "*", true, true, false, true, false, null, false, counts, false, false);
@@ -359,7 +359,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 List<(FileSystemPath src, FileSystemPath tgt)> r = new List<(FileSystemPath src, FileSystemPath tgt)>();
                 if (sourceCount > 1)
                 {
-                    if (dest.CheckExists())
+                    if (dest.CheckExists(context))
                     {
                         if (!dest.IsDirectory)
                         {
@@ -396,7 +396,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 }
                 else
                 {
-                    if (dest.CheckExists(false))
+                    if (dest.CheckExists(context))
                     {
                         if (dest.IsDirectory)
                         {

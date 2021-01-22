@@ -70,7 +70,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             [Parameter("file path")] FilePath file)
         {
             var r = new List<string>();
-            if (file.CheckExists())
+            if (file.CheckExists(context))
             {
                 var (_, eolCounts, _) = GetEOLCounts(File.ReadAllText(file.FullName));
                 foreach (var eol in eolCounts)

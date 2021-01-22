@@ -34,7 +34,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
             [Option("h", "hide line numbers")] bool hideLineNumbers
             )
         {
-            if (path.CheckExists())
+            if (path.CheckExists(context))
             {
                 var counts = new FindCounts();
                 var items = FindItems(context, path.FullName, path.WildCardFileName ?? "*", true, false, false, true, false, null, false, counts, false, false);
@@ -215,7 +215,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
             )
         {
             var r = new List<FilePath>();
-            if (fileOrDir.CheckExists())
+            if (fileOrDir.CheckExists(context))
             {
                 if (fileOrDir.IsFile)
                 {

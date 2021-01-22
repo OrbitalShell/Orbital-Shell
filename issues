@@ -8,7 +8,7 @@ issues 🆗🚩
 1/18/21 FGZ     🆗 review not compatible mode good usage of (rdc) or needs of (RSTXTA) in implemented commands
 1/18/21 FGZ     🆗 avoid usage of REVERT/INVERSE mode in implemented commands (too bugy in most terminals - @see default foreground and background colors behavior)
 1/18/21 FGZ     🆗 env Orbsh.Display.Colors : background color remains (due to no compatibility of {context.ShellEnv.Colors.Default} with background transparency)
-1/19/21 FGZ     env & var prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
+1/19/21 FGZ     👷 env & var prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
 1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
 1/19/21 FGZ     🚩 prompt: crash (backspace,..) in compatibility mode
 1/19/21 FGZ     🆗 replace -env: by --env: in shell init (posix)
@@ -36,3 +36,11 @@ improvements to do 👷
 20/1/21 FGZ     🆗 implements bash special variables : $? , $$ , $! , $- , ...
 20/1/21 FGZ     please add sort in env table
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
+21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
+21/1/21 FGZ     set should be arg set command. we should implement {varname}={value} ? (affectation is an unique world [bash])
+21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
+21/1/21 FGZ     implements var
+21/1/21 FGZ     implements set
+
+
+

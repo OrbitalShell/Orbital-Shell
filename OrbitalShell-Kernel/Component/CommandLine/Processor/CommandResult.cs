@@ -15,6 +15,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         public int ReturnCode { get; protected set; }
 
+        public string ExecErrorText { get; protected set; }
+
         public object GetOuputData()
         {
             return null;
@@ -42,45 +44,56 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
     {
         public T OutputData;
         public int ReturnCode { get; protected set; }
+        public string ExecErrorText { get; protected set; }
 
         public CommandResult(
-            T outputData
+            T outputData,
+            string execErrorText = null
             )
         {
             OutputData = outputData;
             ReturnCode = (int)Processor.ReturnCode.OK;
+            ExecErrorText = execErrorText;
         }
 
         public CommandResult(
             T outputData,
-            int returnCode
+            int returnCode,
+            string execErrorText = null
             )
         {
             OutputData = outputData;
             ReturnCode = returnCode;
+            ExecErrorText = execErrorText;
         }
 
         public CommandResult(
             T outputData,
-            ReturnCode returnCode
+            ReturnCode returnCode,
+            string execErrorText = null
             )
         {
             OutputData = outputData;
             ReturnCode = (int)returnCode;
+            ExecErrorText = execErrorText;
         }
 
         public CommandResult(
-            int returnCode
+            int returnCode,
+            string execErrorText = null
             )
         {
             ReturnCode = returnCode;
+            ExecErrorText = execErrorText;
         }
 
         public CommandResult(
-            ReturnCode returnCode
+            ReturnCode returnCode,
+            string execErrorText = null
             )
         {
             ReturnCode = (int)returnCode;
+            ExecErrorText = execErrorText;
         }
 
         public CommandResult(

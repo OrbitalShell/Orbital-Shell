@@ -291,16 +291,16 @@ namespace DotNetConsoleAppToolkit.Console
             var r = "";
             switch (obj) {
                 case ReturnCode.Error:
-                    r += new TextColor(ConsoleColor.Black,ctx.CommandEvaluationContext.ShellEnv.Colors.Error.Foreground);
+                    r += context.ShellEnv.Colors.BoxError; 
                     break;
                 case ReturnCode.OK:
-                    r += new TextColor(ConsoleColor.Yellow,ctx.CommandEvaluationContext.ShellEnv.Colors.Success.Foreground);
+                    r += context.ShellEnv.Colors.BoxOk;
                     break;
                 case ReturnCode.Unknown:
-                    r += new TextColor(ConsoleColor.Black,ctx.CommandEvaluationContext.ShellEnv.Colors.Warning.Foreground);
+                    r += context.ShellEnv.Colors.BoxUnknown;
                     break;
-                case ReturnCode.NotDefined:
-                    r += new TextColor(ConsoleColor.White,ctx.CommandEvaluationContext.ShellEnv.Colors.Information.Foreground);
+                case ReturnCode.NotIdentified:
+                    r += context.ShellEnv.Colors.BoxNotIdentified; 
                     break;
             }
             @out.Echo(r+obj+ANSI.RSTXTA);

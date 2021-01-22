@@ -62,12 +62,11 @@ namespace DotNetConsoleAppToolkit.Lib.FileSystem
             FileSystemInfo = fileSystemInfo;
         }
 
-        public virtual bool CheckExists(bool dumpError = true)
+        public virtual bool CheckExists(CommandEvaluationContext context,bool dumpError = true)
         {
             if (!FileSystemInfo.Exists)
             {
-                if (dumpError)
-                    Errorln($"path doesn't exists: {this}");
+                if (dumpError) context.Errorln($"path doesn't exists: {this}");
                 return false;
             }
             return true;
