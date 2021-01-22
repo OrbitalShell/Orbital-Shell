@@ -137,7 +137,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                     foreach (var cmd in cmds)
                     {
                         if (!list && n > 0) context.Out.Echoln();
-                        PrintCommandHelp(context, cmd, shortView, list, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
+                        PrintCommandHelp(context, cmd, shortView, verboseView, list, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
                         n++;
                     }
                 }
@@ -154,6 +154,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             CommandEvaluationContext context,
             CommandSpecification com, 
             bool shortView = false, 
+            bool verboseView = false, 
             bool list = false, 
             int maxcnamelength=-1, 
             int maxcmdtypelength=-1, 
@@ -214,7 +215,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                         context.Out.Echoln(GetPrintableDocText(com.Documentation, list, shortView, singleout ? 0 : maxcnamelength));
                     }
                 }
-                if (!shortView)
+                if (verboseView)
                 {
                     context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}type  : {context.ShellEnv.Colors.HalfDarkLabel}{com.DeclaringTypeShortName}");
                     context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}module: {context.ShellEnv.Colors.HalfDarkLabel}{com.ModuleName}{context.ShellEnv.Colors.Default}");
