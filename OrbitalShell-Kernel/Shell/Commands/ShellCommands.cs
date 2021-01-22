@@ -328,17 +328,29 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                 IsRawModeEnabled = !parsed
             };
 
-            if (obj is IDataObject envVars)
+            if (obj is DataValue value) 
             {
-                var values = envVars.GetAttributes();
-                envVars.Echo(new EchoEvaluationContext(context.Out, context,options));
-                return new CommandResult<List<IDataObject>>(values);
-            }
-            else
+                var lst = new List<IDataObject>() { value };
+                var resultValue = new CommandResult<List<IDataObject>>( lst );
+                var wrapper = new DataObject("");
+                wrapper.Set(new string[]{"x"},value);
+                wrapper.Echo(new EchoEvaluationContext(context.Out,context,options));
+                return resultValue;
+            } 
+            else 
             {
-                // directly dump object members
-                EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(context.Out, context, options));
-                return new CommandResult<List<IDataObject>>(null);
+                if (obj is IDataObject envVars)
+                {
+                    var values = envVars.GetAttributes();
+                    envVars.Echo(new EchoEvaluationContext(context.Out, context,options));
+                    return new CommandResult<List<IDataObject>>(values);
+                }
+                else
+                {
+                    // directly dump object members
+                    EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(context.Out, context, options));
+                    return new CommandResult<List<IDataObject>>(null);
+                }
             }
         }
 
@@ -364,17 +376,28 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                 IsRawModeEnabled = !parsed
             };
 
-            if (obj is IDataObject envVars)
+            if (obj is DataValue value) 
             {
-                var values = envVars.GetAttributes();
-                envVars.Echo(new EchoEvaluationContext(context.Out, context,options));
-                return new CommandResult<List<IDataObject>>(values);
-            }
-            else
-            {
-                // directly dump object members
-                EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(context.Out, context, options));
-                return new CommandResult<List<IDataObject>>(null);
+                var lst = new List<IDataObject>() { value };
+                var resultValue = new CommandResult<List<IDataObject>>( lst );
+                var wrapper = new DataObject("");
+                wrapper.Set(new string[]{"x"},value);
+                wrapper.Echo(new EchoEvaluationContext(context.Out,context,options));
+                return resultValue;
+            } 
+            else {
+                if (obj is IDataObject envVars)
+                {
+                    var values = envVars.GetAttributes();
+                    envVars.Echo(new EchoEvaluationContext(context.Out, context,options));
+                    return new CommandResult<List<IDataObject>>(values);
+                }
+                else
+                {
+                    // directly dump object members
+                    EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(context.Out, context, options));
+                    return new CommandResult<List<IDataObject>>(null);
+                }
             }
         }        
 
