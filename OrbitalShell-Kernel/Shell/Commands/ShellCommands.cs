@@ -15,7 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using static DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.Str;
 using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
@@ -68,7 +67,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                 {
                     if (type != "*" && !context.CommandLineProcessor.CommandDeclaringShortTypesNames.Contains(type))
                     {
-                        Errorln($"unknown command declaring type: '{type}'");
+                        context.Errorln($"unknown command declaring type: '{type}'");
                         return new CommandVoidResult( ReturnCode.Error);
                     }
 
@@ -104,7 +103,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                 {
                     if (module != "*" && !context.CommandLineProcessor.Modules.Values.Select(x => x.Name).Contains(module))
                     {
-                        Errorln($"unknown command module: '{module}'");
+                        context.Errorln($"unknown command module: '{module}'");
                         return new CommandVoidResult( ReturnCode.Error);
                     }
 
@@ -145,7 +144,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             }
             else
             {
-                Errorln($"Command not found: '{commandName}'");
+                context.Errorln($"Command not found: '{commandName}'");
                 return new CommandVoidResult( ReturnCode.Error);
             }
             return new CommandVoidResult();
@@ -166,7 +165,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             if (maxcnamelength == -1) maxcnamelength = com.Name.Length + 1;
             if (maxcmdtypelength == -1) maxcmdtypelength = com.DeclaringTypeShortName.Length + 1;       
             var col = singleout? "": "".PadRight(maxcnamelength, ' ');
-            var f = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
+            var f = GetCmd(EchoDirectives.f + "", cons.DefaultForeground.ToString().ToLower());
             if (list)
             {
                 if (!shortView)
@@ -196,7 +195,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                 {
                     if (!shortView)
                     {
-                        var mpl = com.ParametersSpecifications.Values.Select(x => x.Dump(false).Length).Max() + TabLength;
+                        var mpl = com.ParametersSpecifications.Values.Select(x => x.Dump(false).Length).Max() + cons.TabLength;
                         foreach (var p in com.ParametersSpecifications.Values)
                         {
                             var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.Name}{f}" : "";
@@ -271,7 +270,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                             var (typesCount, commandsCount) = context.CommandLineProcessor.RegisterCommandsAssembly(context, a);
                             if (commandsCount == 0)
                             {
-                                Errorln("no commands have been loaded");
+                                context.Errorln("no commands have been loaded");
                                 return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
                             }
                             else
@@ -287,7 +286,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                             var (typesCount, commandsCount) = context.CommandLineProcessor.UnregisterCommandsAssembly(context, unloadModuleName);
                             if (commandsCount == 0)
                             {
-                                Errorln("no commands have been unloaded");
+                                context.Errorln("no commands have been unloaded");
                                 return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
                             }
                             else
@@ -295,7 +294,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                         }
                         else
                         {
-                            Errorln($"commands module '{unloadModuleName}' not registered");
+                            context.Errorln($"commands module '{unloadModuleName}' not registered");
                             return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
                         }
                     }
@@ -413,7 +412,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             if (name==null)
             {
                 foreach ( var kvp in context.CommandLineProcessor.CommandsAlias.Aliases )
-                    Out.Echoln(CommandsAlias.BuildAliasCommand(kvp.Key, kvp.Value));
+                    context.Out.Echoln(CommandsAlias.BuildAliasCommand(kvp.Key, kvp.Value));
             } else
             {
                 if (string.IsNullOrWhiteSpace(text))
@@ -518,7 +517,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             {
                 if (num<1 || num>hist.Count)
                 {
-                    Errorln($"history entry number out of range (1..{hist.Count})");
+                    context.Errorln($"history entry number out of range (1..{hist.Count})");
                     return new CommandVoidResult(ReturnCode.Error);
                 }
                 var h = hist[num-1];
@@ -565,7 +564,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                     break; 
                 var hp = $"  {context.ShellEnv.Colors.Numeric}{i.ToString().PadRight(max + 2, ' ')}{f}";
                 context.Out.Echo(hp);
-                Out.ConsolePrint(h, true);
+                context.Out.ConsolePrint(h, true);
                 i++;
             }
             return new CommandVoidResult();
@@ -595,7 +594,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
             string lastCmd;
             if (index < 0 || index >= h.Count)
             {
-                Errorln($"line number out of bounds of commands history list (1..{h.Count})");
+                context.Errorln($"line number out of bounds of commands history list (1..{h.Count})");
                 return new CommandResult<string>(ReturnCode.Error);
             }
             else

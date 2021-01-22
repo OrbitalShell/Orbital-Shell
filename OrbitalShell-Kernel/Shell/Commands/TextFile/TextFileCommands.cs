@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using static DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader.Interaction;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.TextFileReader;
 using static DotNetConsoleAppToolkit.Lib.Str;
 using sc = System.Console;
@@ -46,7 +46,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
                 }
                 if (items.Count == 0)
                 {
-                    Errorln($"more: no such file: {path.OriginalPath}");
+                    context.Errorln($"more: no such file: {path.OriginalPath}");
                     return new CommandResult<List<TextFileInfo>>( new List<TextFileInfo> { new TextFileInfo( new FilePath(path.OriginalPath),null,OSPlatform.Create("?"),null) }, ReturnCode.Error);
                 }
                 context.Out.ShowCur();
@@ -94,7 +94,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
             var nblines = lines.Length;
 
             var infos = $"    ({Plur("line", nblines)},encoding={(fileEncoding != null ? fileEncoding.EncodingName : "?")},eol={filePlatform})";
-            var n = file.Name.Length + TabLength + infos.Length;
+            var n = file.Name.Length + cons.TabLength + infos.Length;
             var sep = "".PadRight(n + 1, '-');
             context.Out.Echoln($"{context.ShellEnv.Colors.TitleBar}{sep}");
             context.Out.Echoln($"{context.ShellEnv.Colors.TitleBar} {file.Name}{context.ShellEnv.Colors.TitleDarkText}{infos.PadRight(n - file.Name.Length, ' ')}");
@@ -122,7 +122,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
                 var percent = nblines == 0 ? 100 : Math.Ceiling((double)(Math.Min(curNbLines + pos + decpos, nblines)) / (double)nblines * 100d);
                 int i = 0;
                 if (!skipPrint)
-                    lock (ConsoleLock)
+                    lock (context.Out)
                     {
                         context.Out.HideCur();
                         while (i < curNbLines && pos + decpos + i < nblines)
@@ -186,7 +186,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
                 preambleHeight = 0;
                 skipPrint = oldpos == pos;
 
-                lock (ConsoleLock)
+                lock (context.Out)
                 {
                     sc.CursorLeft = x;
                     if (forcePrintInputBar || !skipPrint || end)

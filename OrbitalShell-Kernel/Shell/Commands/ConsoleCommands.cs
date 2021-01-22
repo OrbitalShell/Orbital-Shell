@@ -6,7 +6,7 @@ using DotNetConsoleAppToolkit.Lib;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
 using DotNetConsoleAppToolkit.Component.EchoDirective;
 
@@ -136,7 +136,7 @@ current print directives are:
                     ret = ne;
                 } catch (ArgumentException)
                 {
-                    Errorln($"encoding not found: '{encodingName}'");
+                    context.Errorln($"encoding not found: '{encodingName}'");
                     setEncoding = true;
                 }
             } else

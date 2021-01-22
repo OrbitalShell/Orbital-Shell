@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using static DotNetConsoleAppToolkit.Console.ANSI;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.TextFileReader;
 using sc = System.Console;
 using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
@@ -90,7 +90,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             [Parameter(0,"esc sequence (text behind ESC). replace character @ by ESC (\\x1b) to allow write new sequences in the string parameter")] string seq
         ) {
             seq = seq.Replace("@",ESC);
-            Out.Echoln(ANSI.ESC+seq);
+            context.Out.Echoln(ANSI.ESC+seq);
             return CommandVoidResult.Instance;
         }
 
@@ -99,7 +99,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
             CommandEvaluationContext context,
             [Parameter(0,"decimal unicode character index")] int n
         ) {
-            Out.Echoln(""+(char)n);
+            context.Out.Echoln(""+(char)n);
             return CommandVoidResult.Instance;
         }
 
@@ -109,9 +109,9 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
         ) {
             var t = typeof(Console.Unicode);
             foreach (var fi in  t.GetFields()) {
-                Out.Echo(fi.GetValue(null)+" ");
+                context.Out.Echo(fi.GetValue(null)+" ");
             }
-            Out.Echoln();
+            context.Out.Echoln();
             return CommandVoidResult.Instance;
         }
 
@@ -180,7 +180,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
                     r += Black;
                 r += $"{esc}[48;5;{x}m" + ((x + "").PadLeft(4, ' '));
                 x2++;
-                if (x2 >= 6) { r += Out.LNBRK; x2 = 0; }
+                if (x2 >= 6) { r += context.Out.LNBRK; x2 = 0; }
             }
             context.Out.Echo(r);
 

@@ -5,19 +5,22 @@
 issues 🆗🚩
 ------
 
+1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
+1/19/21 FGZ     💥🚩 prompt: crash (backspace,..) in compatibility mode
+
+olds:
+
 1/18/21 FGZ     🆗 review not compatible mode good usage of (rdc) or needs of (RSTXTA) in implemented commands
 1/18/21 FGZ     🆗 avoid usage of REVERT/INVERSE mode in implemented commands (too bugy in most terminals - @see default foreground and background colors behavior)
 1/18/21 FGZ     🆗 env Orbsh.Display.Colors : background color remains (due to no compatibility of {context.ShellEnv.Colors.Default} with background transparency)
 1/19/21 FGZ     🆗 env & var prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
-1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
-1/19/21 FGZ     💥🚩 prompt: crash (backspace,..) in compatibility mode
 1/19/21 FGZ     🆗 replace -env: by --env: in shell init (posix)
 
 improvements to do 👷
 ------------------
 
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
-18/1/21 FGZ     help: normal mode should be 'tech details less', should be got with -v + add infos to technical details
+18/1/21 FGZ     👷 help: normal mode should be 'tech details less', should be got with -v + add infos to technical details
 19/1/21 FGZ     add load settings from json + revert to json (add variables binding)
 19/1/21 FGZ     changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
@@ -38,6 +41,7 @@ improvements to do 👷
 21/1/21 FGZ     implements var-set
 22/1/21 FGZ     add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 22/1/21 FGZ     dir sort : alls folders before files ?
+22/1/21 FGZ     can have blank line before and after command exec ?
 
 olds:
 

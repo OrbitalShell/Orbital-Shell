@@ -14,7 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader.Interaction;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.FileSystem.FileSystem;
 using static DotNetConsoleAppToolkit.Lib.Str;
 using sc = System.Console;
@@ -162,7 +162,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Errorln($"unauthorized access to {path.PrintableFullName}");
+                    context.Errorln($"unauthorized access to {path.PrintableFullName}");
                     Environment.CurrentDirectory = bkpath;
                     return new CommandResult<DirectoryPath>( path, ReturnCode.Error);
                 }
@@ -200,7 +200,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
             {
                 drives = drives.Where(x => x.Name.Equals(drive, CommandLineParser.SyntaxMatchingRule));
                 if (drives.Count()==0) {
-                    Errorln($"drive \"{drive}\" not found");
+                    context.Errorln($"drive \"{drive}\" not found");
                 }
             }
             var table = new DataTable();
@@ -217,7 +217,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                     row["format"] = $"{context.ShellEnv.Colors.Name}{di.DriveFormat}{f}";
                     row["bytes"] = (di.TotalSize==0)?"": $"{HumanFormatOfSize(di.TotalFreeSpace, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)}{f}/{context.ShellEnv.Colors.Numeric}{HumanFormatOfSize(di.TotalSize, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)} {f}({context.ShellEnv.Colors.Highlight}{Math.Round((double)di.TotalFreeSpace / (double)di.TotalSize * 100d, 2)}{f} %)";
                 } catch (UnauthorizedAccessException) {
-                    Errorln($"unauthorized access to drive {di.Name}");
+                    context.Errorln($"unauthorized access to drive {di.Name}");
                     row["name"] = $"{context.ShellEnv.Colors.Highlight}{di.Name}{f}";
                     row["label"] = "?";
                     row["type"] = "?";
@@ -226,7 +226,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                 }
                 catch (Exception ex)
                 {
-                    Errorln($"error when accessing drive {di.Name}: {ex.Message}");
+                    context.Errorln($"error when accessing drive {di.Name}: {ex.Message}");
                     row["name"] = $"{context.ShellEnv.Colors.Highlight}{di.Name}{f}";
                     row["label"] = "?";
                     row["type"] = "?";
@@ -363,7 +363,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                     {
                         if (!dest.IsDirectory)
                         {
-                            Errorln("dest must be a directory");
+                            context.Errorln("dest must be a directory");
                             return new CommandResult<(List<(FileSystemPath, FileSystemPath)> items, FindCounts counts)>(
                                  ( new List<(FileSystemPath, FileSystemPath)> { (source, dest) }, counts), ReturnCode.Error
                                 );

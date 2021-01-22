@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using static DotNetConsoleAppToolkit.Console.ANSI;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.TextFileReader;
 using sc = System.Console;
 using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
@@ -34,9 +34,9 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Dev
                 echodirs += $"        {fi.Name},{CRLF}";
                 textwrapper += $"                {{ EchoDirectives.{fi.Name}+\"\" , (null,_Unicode,Unicode.{fi.Name}) }},{CRLF}";
             }
-            Out.Echoln(textwrapper);
-            Out.Echoln(echodirs);
-            Out.Echoln(commentdoc);
+            context.Out.Echoln(textwrapper);
+            context.Out.Echoln(echodirs);
+            context.Out.Echoln(commentdoc);
             return CommandVoidResult.Instance;
         }
 

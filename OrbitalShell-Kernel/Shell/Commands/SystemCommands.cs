@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using static DotNetConsoleAppToolkit.Console.EchoPrimitives;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using cons = DotNetConsoleAppToolkit.DotNetConsole;
 using static DotNetConsoleAppToolkit.Lib.Str;
 
 namespace DotNetConsoleAppToolkit.Shell.Commands
