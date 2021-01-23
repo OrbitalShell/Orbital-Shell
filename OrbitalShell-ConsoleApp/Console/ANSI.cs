@@ -566,5 +566,34 @@ namespace DotNetConsoleAppToolkit.Console
         }
 
         #endregion
+
+        #region ANSI string util
+
+        public static string AvoidANSISequencesAndNonPrintableCharacters(string s) {
+            s = s.Replace(""+(char)27,"\\x1b");
+            var r = "";
+            foreach (var c in s)
+                r += (c<32)?ToHexStr(c):""+c;
+            return r;
+        }
+
+        static string ToHexStr(int n) {
+            var s = string.Format("\\x{0:X}",n);
+            return s;
+        }
+
+        /// <summary>
+        /// TODO: returns true if the sequence starts by a ANSI sequence
+        /// <para>from https://en.wikipedia.org/wiki/ANSI_escape_code</para>
+        /// </summary>
+        /// <param name="s">string to be analyzed</param>
+        /// <returns>several information about any ansi sequence or not</returns>
+        public static (bool startsWithANSISequence,string ansiSequence,int nextIndex) StartsWithANSISequence(string s) 
+        {
+
+            return (false,null,1);
+        }
+
+        #endregion
     }
 }

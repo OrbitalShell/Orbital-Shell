@@ -1027,7 +1027,11 @@ namespace DotNetConsoleAppToolkit.Console
                         // call the EchoDirective component
                         EchoDirectiveProcessor.ParseTextAndApplyCommands(s.ToString(), false, "", doNotEvalutatePrintDirectives, printSequences);
                     else
-                        ConsolePrint(s.ToString(), false);
+                    {
+                        ConsolePrint( 
+                            ANSI.AvoidANSISequencesAndNonPrintableCharacters( s.ToString() )
+                        , false);
+                    }
                 }
 
                 if (lineBreak) LineBreak();

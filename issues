@@ -43,7 +43,7 @@ improvements to do 👷
 22/1/21 FGZ     add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 22/1/21 FGZ     dir sort : alls folders before files ?
 23/1/21 FGZ     ✅NEXT fix usage of console Warning (should be context.Warning). Add also context.Output (shortcut to Out.Echo)
-23/1/21 FGZ     👷 add a way to print ANSI sequences in objects dump for raw strings (tables)
+23/1/21 FGZ     🆗 add a way to print ANSI sequences in objects dump for raw strings (tables) : replace ESC by '\x1B' ?
 
 olds:
 -----
