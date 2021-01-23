@@ -1006,13 +1006,27 @@ namespace DotNetConsoleAppToolkit.Console
         
         public void Echo(char s, bool lineBreak = false, bool ignorePrintDirectives = false) => Echo(s + "", lineBreak, !ignorePrintDirectives);
 
+        /// <summary>
+        /// output to stream
+        /// </summary>
+        /// <param name="s">text to output</param>
+        /// <param name="lineBreak">if true, append a line break to output (call LineBreak()), default is false</param>
+        /// <param name="preserveColors">TODO: remove this parameter</param>
+        /// <param name="parseCommands">if true, echo directives are parsed and evaluated, default is true</param>
+        /// <param name="doNotEvalutatePrintDirectives">TODO: explain this parameter</param>
+        /// <param name="printSequences">to store echo sequence objects when collected</param>
+        /// <param name="avoidANSISequencesAndNonPrintableCharacters">if true and parseCommands=false, replace ansiseq and non printable chars by readable data</param>
+        /// <param name="getNonPrintablesASCIICodesAsLabel">if true and parseCommands=false, replace ascii non printables chars by labels</param>
         public void Echo(
             object s,
             bool lineBreak = false,
             bool preserveColors = false,        // TODO: remove this parameter + SaveColors property
             bool parseCommands = true,
-            bool doNotEvalutatePrintDirectives = false,
-            EchoSequenceList printSequences = null)
+            bool doNotEvalutatePrintDirectives = false,         // TODO: explain this
+            EchoSequenceList printSequences = null,
+            bool avoidANSISequencesAndNonPrintableCharacters = true,
+            bool getNonPrintablesASCIICodesAsLabel = true
+            )
         {
             lock (Lock)
             {
@@ -1028,9 +1042,10 @@ namespace DotNetConsoleAppToolkit.Console
                         EchoDirectiveProcessor.ParseTextAndApplyCommands(s.ToString(), false, "", doNotEvalutatePrintDirectives, printSequences);
                     else
                     {
-                        ConsolePrint( 
-                            ANSI.AvoidANSISequencesAndNonPrintableCharacters( s.ToString() )
-                        , false);
+                        var txt = s.ToString();
+                        if (getNonPrintablesASCIICodesAsLabel) txt = ASCII.GetNonPrintablesCodesAsLabel( txt, true /* show all symbols */ );
+                        if (avoidANSISequencesAndNonPrintableCharacters) txt = ANSI.AvoidANSISequencesAndNonPrintableCharacters( txt );
+                        ConsolePrint( txt , false);
                     }
                 }
 

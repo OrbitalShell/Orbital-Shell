@@ -3,7 +3,7 @@
 namespace DotNetConsoleAppToolkit.Console
 {
     /// <summary>
-    /// all ANSI codes that we take into account for the targetted consoles referential
+    /// all ANSI codes that we take into account for the targetted terminals referential
     /// from https://en.wikipedia.org/wiki/ANSI_escape_code
     /// </summary>
     public static class ANSI
