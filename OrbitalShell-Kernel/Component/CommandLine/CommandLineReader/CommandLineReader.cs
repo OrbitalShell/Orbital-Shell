@@ -198,7 +198,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                 {
                     if (enablePrePostComOutput && CommandLineProcessor!=null) {
                         if (Out.IsModified || Err.IsModified) {
-                            Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
+                            if (Out.CursorLeft!=0 && Out.CursorTop!=0)
+                                Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
                         }
                         Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
                     }
