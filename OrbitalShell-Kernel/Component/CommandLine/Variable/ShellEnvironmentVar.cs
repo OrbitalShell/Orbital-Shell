@@ -265,6 +265,21 @@
         settings_enableAvoidEndOfLineFilledWithBackgroundColor = 20,
 
         /// <summary>
+        /// output before command text analysis
+        /// </summary>       
+        settings_clr_comPreAnalysisOutput = 10100,
+
+        /// <summary>
+        /// output after command exec
+        /// </summary>       
+        settings_clr_comPostExecOutput = 10101,
+
+        /// <summary>
+        /// output after command exec if output has been modified
+        /// </summary>       
+        settings_clr_comPostExecOutModifiedOutput = 10102,
+
+        /// <summary>
         /// if enabled, trace information about pipelines analysis
         /// </summary>
         debug_pipeline = 21,

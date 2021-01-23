@@ -5,9 +5,10 @@
 issues 🆗🚩
 ------
 
-1/19/21 FGZ     💥🚩 prompt: crash (backspace,..) in compatibility mode
+1/19/21 FGZ     💥🚩 prompt: crash (backspace,..) in compatibility mode (vscode terminal problem!) - try to degrade gracefully ?
 
 olds:
+-----
 
 1/18/21 FGZ     🆗 review not compatible mode good usage of (rdc) or needs of (RSTXTA) in implemented commands
 1/18/21 FGZ     🆗 avoid usage of REVERT/INVERSE mode in implemented commands (too bugy in most terminals - @see default foreground and background colors behavior)
@@ -41,10 +42,13 @@ improvements to do 👷
 21/1/21 FGZ     implements var-set
 22/1/21 FGZ     add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 22/1/21 FGZ     dir sort : alls folders before files ?
-22/1/21 FGZ     ✅NEXT can have blank line before and after command exec ?
+23/1/21 FGZ     fix usage of console Warning (should be Out)
+23/1/21 FGZ     add a way to print ANSI sequences in objects dump for raw strings (tables)
 
 olds:
+-----
 
+22/1/21 FGZ     🆗 can have blank line before and after command exec ?
 22/1/21 FGZ     🆗 inheritance is not applied in static extension echo primitive selection (outside future map selection impl.)
 22/1/21 FGZ     🆗 add shell special vars: last com exception + last com (com text) + last com result (as object)
 22/1/21 FGZ     🆗 fix shell authorized names that sp__ shell env var are supported (/ and ^) --> catch name terminator as name when name is empty: allow $$, avoid $$x that should be ${$x} )

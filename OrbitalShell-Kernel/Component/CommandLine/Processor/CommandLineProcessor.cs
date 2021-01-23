@@ -225,6 +225,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             // end inits
             if (lbr) Out.Echoln();
+
+            Out.Echoln();
         }
 
         void ShellInitFromSettings() {
@@ -241,7 +243,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowWidth);
             var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight);
 
-            if (context.ShellEnv.OptionSetted(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode) ) {
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode) ) {
                 oWinWidth.SetValue(2000);
                 oWinHeight.SetValue(2000);
             }
@@ -758,7 +760,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         public ExpressionEvaluationResult Eval(
             CommandEvaluationContext context,
             string expr,
-            int outputX)
+            int outputX,
+            string postAnalysisPreExecOutput = null)
         {
             var pipelineParseResults = Parse(context, _syntaxAnalyzer, expr);
             bool allValid = true;
@@ -774,6 +777,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 context.ShellEnv.UpdateVarLastCommandReturn(expr,null,GetReturnCode(err),err.SyntaxError);
                 return err;
             }
+            if (!string.IsNullOrEmpty(postAnalysisPreExecOutput)) context.Out.Echo(postAnalysisPreExecOutput);
             var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
             context.ShellEnv.UpdateVarLastCommandReturn(expr,evalRes.Result,GetReturnCode(evalRes),evalRes.EvalErrorText,evalRes.EvalError);
             return evalRes;

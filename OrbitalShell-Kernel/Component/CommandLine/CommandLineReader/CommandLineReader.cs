@@ -20,7 +20,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
     {
         #region attributes
 
-        public delegate ExpressionEvaluationResult ExpressionEvaluationCommandDelegate(CommandEvaluationContext context, string com,int outputX);
+        public delegate ExpressionEvaluationResult ExpressionEvaluationCommandDelegate(
+            CommandEvaluationContext context, string com, int outputX, string postAnalysisPreExecOutput = null);
 
         Thread _inputReaderThread;
         
@@ -144,31 +145,38 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
             string commandLine, 
             ExpressionEvaluationCommandDelegate evalCommandDelegate,
             bool outputStartNextLine = false,
-            bool enableHistory = false)
+            bool enableHistory = false,
+            bool enablePrePostComOutput = true)
         {
             if (commandLine != null)
             {
-                if (outputStartNextLine) Out.LineBreak();
-
+                if (outputStartNextLine) {
+                    Out.LineBreak();
+                }                 
                 ExpressionEvaluationResult expressionEvaluationResult = null;
 
                 try
                 {
                     sc.CancelKeyPress += CancelKeyPress;
-                    CommandLineProcessor.CancellationTokenSource = new CancellationTokenSource();
+                    CommandLineProcessor.CancellationTokenSource = new CancellationTokenSource();                    
+                    Out.IsModified = false;
+                    Err.IsModified = false;
+
                     var task = Task.Run<ExpressionEvaluationResult>(
                         () => evalCommandDelegate(
-                            CommandLineProcessor.CommandEvaluationContext, 
-                            commandLine, 
-                            _prompt == null ? 0 : Out.GetPrint(_prompt).Length),
-                        CommandLineProcessor.CancellationTokenSource.Token
+                                CommandLineProcessor.CommandEvaluationContext, 
+                                commandLine, 
+                                _prompt == null ? 0 : Out.GetPrint(_prompt).Length,        // @TODO: has no sens with multi line prompt !!!
+                                (enablePrePostComOutput && CommandLineProcessor!=null)?
+                                    CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput) :"" ),
+                            CommandLineProcessor.CancellationTokenSource.Token
                         );
 
                     try
                     {
                         try
                         {
-                            task.Wait(CommandLineProcessor.CancellationTokenSource.Token);
+                            task.Wait(CommandLineProcessor.CancellationTokenSource.Token);                            
                         } catch (ThreadInterruptedException) {
                             // get interrupted after send input
                         }
@@ -176,13 +184,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                     }
                     catch (OperationCanceledException)
                     {
-                        var res = task.Result;
+                        //var res = task.Result;
+                        expressionEvaluationResult = task.Result;
                         Warningln($"command canceled: {commandLine}");
                     }
-                    finally
-                    {
-                        
-                    }                    
+                    finally {}                
                 }
                 catch (Exception ex)
                 {
@@ -190,18 +196,19 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                 }
                 finally
                 {
+                    if (enablePrePostComOutput && CommandLineProcessor!=null) {
+                        if (Out.IsModified || Err.IsModified) {
+                            Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
+                        }
+                        Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
+                    }
+
                     CommandLineProcessor.CancellationTokenSource.Dispose();
                     CommandLineProcessor.CancellationTokenSource = null;
                     sc.CancelKeyPress -= CancelKeyPress;
-                    lock (ConsoleLock)
-                    {
-                        /*if (!WorkArea.rect.IsEmpty && (WorkArea.rect.Y != CursorTop || WorkArea.rect.X != CursorLeft))
-                            LineBreak();*/      // case of auto line break (spacing)
-                        
-                        //Out.RestoreDefaultColors();   // FGZ removed
-                    }
                 }
             }
+
             if (enableHistory && !string.IsNullOrWhiteSpace(commandLine))
                 CommandLineProcessor.CmdsHistory.HistoryAppend(commandLine);
         }
@@ -610,7 +617,6 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                     EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
                     Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);*/
                     Out.ConsoleCursorPosRestore();
-                    //Out.Write($"{(char)27}[0J");   // CSI n J
                     Out.Write( ANSI.ED(ANSI.EDParameter.p0) );
                     _inputReaderStringBuilder.Clear();
                 }

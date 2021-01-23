@@ -71,6 +71,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight,-1);
             AddValue(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode,false);
             AddValue(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor,true);
+            AddValue(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput,ANSI.CRLF);
+            AddValue(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput,ANSI.CRLF);
+            AddValue(ShellEnvironmentVar.settings_clr_comPostExecOutput,"");
 
             InitializeSpecialVars(context);
 
@@ -282,7 +285,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
 
         public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true) => (T)GetDataValue(var, throwException).Value;
 
-        public bool OptionSetted(ShellEnvironmentVar @var) => GetValue<bool>(@var,false);    
+        public bool IsOptionSetted(ShellEnvironmentVar @var) => GetValue<bool>(@var,false);    
 
         #endregion
 
