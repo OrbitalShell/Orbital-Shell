@@ -66,7 +66,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
 
         public void SetPrompt(CommandEvaluationContext context,string prompt) {
             SetPrompt(prompt);
-            context.ShellEnv.SetValue(ShellEnvironmentVar.settings_prompt,prompt);
+            context.ShellEnv.SetValue(ShellEnvironmentVar.settings_console_prompt,prompt);
         }
 
         public string GetPrompt() => _prompt;
@@ -329,7 +329,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                             break;
 
                                         /// <summary>
-                                        /// : 
+                                        /// HOME : set cursor position at begin of input (just after prompt) 
                                         /// </summary>
                                         case ConsoleKey.Home:
                                             lock (ConsoleLock)
@@ -338,6 +338,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                             }
                                             break;
 
+                                        /// <summary>
+                                        /// END : set cursor position at end of input
+                                        /// </summary>
                                         case ConsoleKey.End:
                                             lock (ConsoleLock)
                                             {
@@ -574,7 +577,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                             var slines = Out.GetWorkAreaStringSplits(s, _beginOfLineCurPos).Splits;
                             if (slines.Count()>0) {
                                 var sline = slines.Last();
-                                Out.CursorPos = new Point( (sline.Text.Length==0)?0:sline.Text.Length + sline.X, sline.Y);
+                                Out.CursorPos = new Point( /*(sline.Text.Length==0)?0:*/sline.Text.Length + sline.X, sline.Y);
                             }
                         } catch (Exception) {}
 

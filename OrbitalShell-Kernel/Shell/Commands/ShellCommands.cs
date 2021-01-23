@@ -614,11 +614,11 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         [Command("enable console compatibility mode (try to fix common bugs on known consoles)")]        
         public CommandVoidResult EnableConsoleCompatibilityMode( CommandEvaluationContext context )
         {
-            var oFix=context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode);
+            var oFix=context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_enableCompatibilityMode);
             oFix.SetValue(true);
 
-            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowWidth);
-            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight);
+            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowWidth);
+            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowHeight);
 
             oWinWidth.SetValue(2000);
             oWinHeight.SetValue(2000);

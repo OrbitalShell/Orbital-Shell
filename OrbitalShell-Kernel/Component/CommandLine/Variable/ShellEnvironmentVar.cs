@@ -242,27 +242,27 @@
         /// <summary>
         /// if enabled, activate codes that try to fix bad known console behaviors (eg. VSCode)
         /// </summary>
-        settings_enableConsoleCompatibilityMode = 16,
+        settings_console_enableCompatibilityMode = 16,
 
         /// <summary>
         /// initial console width
         /// </summary>
-        settings_consoleInitialWindowWidth = 17,
+        settings_console_initialWindowWidth = 17,
 
         /// <summary>
         /// initial console height
         /// </summary>
-        settings_consoleInitialWindowHeight = 18,
+        settings_console_initialWindowHeight = 18,
 
         /// <summary>
         /// current prompt text
         /// </summary>       
-        settings_prompt = 19,
+        settings_console_prompt = 19,
 
         /// <summary>
         /// if enabled, activate a fix that cleanup properly end of lines (ConsoleTextWrapper.LNBRK)
         /// </summary>
-        settings_enableAvoidEndOfLineFilledWithBackgroundColor = 20,
+        settings_console_enableAvoidEndOfLineFilledWithBackgroundColor = 20,
 
         /// <summary>
         /// output before command text analysis

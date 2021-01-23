@@ -1043,7 +1043,7 @@ namespace DotNetConsoleAppToolkit.Console
                     else
                     {
                         var txt = s.ToString();
-                        if (getNonPrintablesASCIICodesAsLabel) txt = ASCII.GetNonPrintablesCodesAsLabel( txt, true /* show all symbols */ );
+                        if (getNonPrintablesASCIICodesAsLabel) txt = ASCII.GetNonPrintablesCodesAsLabel( txt, false /* true: show all symbols */ );
                         if (avoidANSISequencesAndNonPrintableCharacters) txt = ANSI.AvoidANSISequencesAndNonPrintableCharacters( txt );
                         ConsolePrint( txt , false);
                     }

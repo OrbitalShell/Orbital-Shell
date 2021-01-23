@@ -5,7 +5,7 @@
             //"shell": "C:\\Users\\franc\\Documents\\Visual Studio 2019\\Projects\\Applications\\dotnet-console-app-toolkit\\OrbitalShell\\OrbitalShell-CLI\\bin\\Debug\\netcoreapp3.1\\orbsh.exe",
             "shell": "orbsh.exe",
             // ,"-env:Settings.EnableConsoleBackgroundTransparentMode=true"
-            "args": ["--env:settings.enableConsoleCompatibilityMode=true"],
+            "args": ["--env:settings.console.enableCompatibilityMode=true"],
             "label": "Orbital Shell"
         },
         {

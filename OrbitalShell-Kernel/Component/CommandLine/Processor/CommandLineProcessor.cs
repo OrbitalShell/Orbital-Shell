@@ -231,8 +231,8 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         void ShellInitFromSettings() {
             var ctx=CommandEvaluationContext;
-            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor);
-            var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_prompt);
+            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor);
+            var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_prompt);
             CommandLineReader.SetDefaultPrompt(prompt);
         }
 
@@ -240,10 +240,10 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
         /// init the console. basic init that generally occurs before any display
         /// </summary>
         void ConsoleInit(CommandEvaluationContext context) {
-            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowWidth);
-            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight);
+            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowWidth);
+            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowHeight);
 
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode) ) {
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode) ) {
                 oWinWidth.SetValue(2000);
                 oWinHeight.SetValue(2000);
             }
@@ -775,21 +775,25 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // check pipeline syntax analysis
             foreach ( var pipelineParseResult in pipelineParseResults )
             {
-                allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
-                var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
-                evalParses.Add(evalParse);
+                allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid
+                    ;//|| pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Empty;    // empty is valid
+                if (pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid)
+                {
+                    var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
+                    evalParses.Add(evalParse);
+                }
             }
+
+            // eventually output the post analysis pre exec content
+            if (!string.IsNullOrEmpty(postAnalysisPreExecOutput)) context.Out.Echo(postAnalysisPreExecOutput);
 
             if (!allValid) {
                 // syntax error in pipeline - break exec
                 var err =  evalParses.FirstOrDefault();
-                context.ShellEnv.UpdateVarLastCommandReturn(expr,null,GetReturnCode(err),err.SyntaxError);
+                context.ShellEnv.UpdateVarLastCommandReturn(expr,null,err==null?ReturnCode.OK:GetReturnCode(err),err?.SyntaxError);
                 return err;
             }
-            
-            // eventually output the post analysis pre exec content
-            if (!string.IsNullOrEmpty(postAnalysisPreExecOutput)) context.Out.Echo(postAnalysisPreExecOutput);
-
+        e
             // run pipeline
             var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
 

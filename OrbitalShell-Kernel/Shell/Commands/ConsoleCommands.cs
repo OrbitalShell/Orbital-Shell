@@ -204,7 +204,7 @@ current print directives are:
         public CommandVoidResult Cls(CommandEvaluationContext context)
         {
             context.Out.ClearScreen();            
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode) )
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode) )
                 context.CommandLineProcessor.Eval(context,"enableconsolecompatibilitymode",0);
             return CommandVoidResult.Instance;
         }

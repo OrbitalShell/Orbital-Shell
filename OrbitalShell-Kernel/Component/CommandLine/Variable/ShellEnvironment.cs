@@ -66,11 +66,11 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
             
             // shell settings (defaults)
 
-            AddValue(ShellEnvironmentVar.settings_prompt, ANSI.RSTXTA+"> ");        // prompt   
-            AddValue(ShellEnvironmentVar.settings_consoleInitialWindowWidth,-1);
-            AddValue(ShellEnvironmentVar.settings_consoleInitialWindowHeight,-1);
-            AddValue(ShellEnvironmentVar.settings_enableConsoleCompatibilityMode,false);
-            AddValue(ShellEnvironmentVar.settings_enableAvoidEndOfLineFilledWithBackgroundColor,true);
+            AddValue(ShellEnvironmentVar.settings_console_prompt, ANSI.RSTXTA+"> ");        // prompt   
+            AddValue(ShellEnvironmentVar.settings_console_initialWindowWidth,-1);
+            AddValue(ShellEnvironmentVar.settings_console_initialWindowHeight,-1);
+            AddValue(ShellEnvironmentVar.settings_console_enableCompatibilityMode,false);
+            AddValue(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor,true);
             AddValue(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput,ANSI.CRLF);
             AddValue(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput,ANSI.CRLF);
             AddValue(ShellEnvironmentVar.settings_clr_comPostExecOutput,"");
