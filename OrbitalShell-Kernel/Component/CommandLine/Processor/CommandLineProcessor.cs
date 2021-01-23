@@ -777,7 +777,10 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 context.ShellEnv.UpdateVarLastCommandReturn(expr,null,GetReturnCode(err),err.SyntaxError);
                 return err;
             }
+            
+            // eventually output the post analysis pre exec content
             if (!string.IsNullOrEmpty(postAnalysisPreExecOutput)) context.Out.Echo(postAnalysisPreExecOutput);
+
             var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
             context.ShellEnv.UpdateVarLastCommandReturn(expr,evalRes.Result,GetReturnCode(evalRes),evalRes.EvalErrorText,evalRes.EvalError);
             return evalRes;

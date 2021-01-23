@@ -26,13 +26,13 @@ improvements to do 👷
 19/1/21 FGZ     changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
 20/1/21 FGZ     DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
-20/1/21 FGZ     🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC
+20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC
 20/1/21 FGZ     command 'eval' : a=5, $b = a , echo $b = a , eval echo \$$b == 5
 20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
 20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
 20/1/21 FGZ     variable defined as a reference to another but having its own path/name
 20/1/21 FGZ     variable value provided by a programmatic way
-20/1/21 FGZ     ANSI: GetCharactersLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
+20/1/21 FGZ     👷 ANSI: GetCharactersLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
 20/1/21 FGZ     please add sort in env table
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
 21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
@@ -42,8 +42,8 @@ improvements to do 👷
 21/1/21 FGZ     implements var-set
 22/1/21 FGZ     add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 22/1/21 FGZ     dir sort : alls folders before files ?
-23/1/21 FGZ     fix usage of console Warning (should be Out)
-23/1/21 FGZ     add a way to print ANSI sequences in objects dump for raw strings (tables)
+23/1/21 FGZ     ✅NEXT fix usage of console Warning (should be context.Warning). Add also context.Output (shortcut to Out.Echo)
+23/1/21 FGZ     👷 add a way to print ANSI sequences in objects dump for raw strings (tables)
 
 olds:
 -----

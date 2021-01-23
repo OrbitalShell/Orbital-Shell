@@ -138,7 +138,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
         void ProcessInput(IAsyncResult asyncResult)
         {
             var s = (string)asyncResult.AsyncState;
-            ProcessCommandLine(s, _evalCommandDelegate, true, true);
+            ProcessCommandLine(s, _evalCommandDelegate, true, true/*TODO: , enablePrePostComOutput setting*/);
         }
 
         public void ProcessCommandLine(
@@ -198,7 +198,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                 {
                     if (enablePrePostComOutput && CommandLineProcessor!=null) {
                         if (Out.IsModified || Err.IsModified) {
-                            if (Out.CursorLeft!=0 && Out.CursorTop!=0)
+                            if (!(Out.CursorLeft==0 && Out.CursorTop==0))
                                 Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
                         }
                         Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
@@ -312,20 +312,32 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
 
                                     switch (c.Key)
                                     {
+                                        /// <summary>
+                                        /// CR: default end of input
+                                        /// </summary>
                                         case ConsoleKey.Enter:
                                             eol = true;
                                             break;
+
+                                        /// <summary>
+                                        /// ESC : clean-up input and set cursor at begin of line (after prompt)
+                                        /// </summary>
                                         case ConsoleKey.Escape:
                                             //Out.HideCur();
                                             CleanUpReadln();
                                             //Out.ShowCur();
                                             break;
+
+                                        /// <summary>
+                                        /// : 
+                                        /// </summary>
                                         case ConsoleKey.Home:
                                             lock (ConsoleLock)
                                             {
                                                 Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
                                             }
                                             break;
+
                                         case ConsoleKey.End:
                                             lock (ConsoleLock)
                                             {
@@ -334,6 +346,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                                 Out.SetCursorPosConstraintedInWorkArea(sline.X + sline.Length, sline.Y);
                                             }
                                             break;
+
                                         case ConsoleKey.Tab:
                                             lock (ConsoleLock)
                                             {
@@ -341,6 +354,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                                 printed = true;
                                             }
                                             break;
+
                                         case ConsoleKey.LeftArrow:
                                             lock (ConsoleLock)
                                             {
@@ -360,6 +374,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                                 }
                                             }
                                             break;
+
                                         case ConsoleKey.RightArrow:
                                             lock (ConsoleLock)
                                             {
@@ -369,6 +384,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                                     Out.SetCursorPosConstraintedInWorkArea(Out.CursorLeft + 1, Out.CursorTop);
                                             }
                                             break;
+
                                         case ConsoleKey.Backspace:
                                             lock (ConsoleLock)
                                             {
@@ -400,6 +416,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                                 }
                                             }
                                             break;
+
                                         case ConsoleKey.Delete:
                                             lock (ConsoleLock)
                                             {
@@ -431,6 +448,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                                 }
                                             }
                                             break;
+
                                         case ConsoleKey.UpArrow:
                                             lock (ConsoleLock)
                                             {
@@ -455,6 +473,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                                 }
                                             }
                                             break;
+
                                         case ConsoleKey.DownArrow:
                                             lock (ConsoleLock)
                                             {
@@ -480,6 +499,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                                                 }
                                             }
                                             break;
+
                                         default:
                                             printedStr = c.KeyChar + "";
                                             printed = true;
