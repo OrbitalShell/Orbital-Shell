@@ -775,13 +775,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // check pipeline syntax analysis
             foreach ( var pipelineParseResult in pipelineParseResults )
             {
-                allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid
-                    ;//|| pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Empty;    // empty is valid
-                if (pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid)
-                {
-                    var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
-                    evalParses.Add(evalParse);
-                }
+                allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
+                var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
+                evalParses.Add(evalParse);
             }
 
             // eventually output the post analysis pre exec content
@@ -793,7 +789,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 context.ShellEnv.UpdateVarLastCommandReturn(expr,null,err==null?ReturnCode.OK:GetReturnCode(err),err?.SyntaxError);
                 return err;
             }
-        e
+        
             // run pipeline
             var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
 
