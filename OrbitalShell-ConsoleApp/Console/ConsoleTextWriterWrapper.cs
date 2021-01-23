@@ -52,8 +52,9 @@ namespace DotNetConsoleAppToolkit.Console
             {
                 // fix end of line remained filled with last colors
                 return                 
-                    EnableAvoidEndOfLineFilledWithBackgroundColor? $"{ANSI.RSTXTA}{ANSI.EL(ANSI.ELParameter.p0)}{CRLF}{GetRestoreDefaultColors}"        
-                    : $"{CRLF}";
+                    EnableAvoidEndOfLineFilledWithBackgroundColor? 
+                        $"{ANSI.RSTXTA}{ANSI.EL(ANSI.ELParameter.p0)}{CRLF}{GetRestoreDefaultColors}"        
+                        : $"{CRLF}";
             }
         }
 
@@ -810,7 +811,8 @@ namespace DotNetConsoleAppToolkit.Console
                 lock (Lock)
                 {
                     _cachedCursorPosition.Y = value;
-                    Write(ESC + "[2J" + ESC + $"[{value+1};{CursorLeft+1}H");
+                    Write(/*ESC + "[2J" +*/ ESC + $"[{value+1};{CursorLeft+1}H");
+                    //Write( ANSI.  );
                 }
             }
         }
@@ -822,6 +824,12 @@ namespace DotNetConsoleAppToolkit.Console
                 lock (Lock)
                 { 
                     return new Point(CursorLeft, CursorTop); 
+                }
+            }
+            set {
+                lock (Lock)
+                { 
+                    Write(ESC + $"[{value.Y+1};{value.X+1}H");
                 }
             }
         }

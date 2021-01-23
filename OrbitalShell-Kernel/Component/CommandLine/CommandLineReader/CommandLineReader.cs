@@ -264,15 +264,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                         {
                             lock (ConsoleLock)
                             {
+                                var _beginPromptPos = Out.CursorPos;
                                 Out.Echo(prompt);
                                 _beginOfLineCurPos = Out.CursorPos;
                                 Out.ConsoleCursorPosBackup();
-                            }
+                            
 #if FIX_LOW_ANSI
-                            Thread.Sleep(25);
-                            Out.ConsoleCursorPosRestore();                            
+                                Thread.Sleep(25);
+                                Out.ConsoleCursorPosRestore();                          
 #endif                            
-                            _readingStarted = true;
+                                _readingStarted = true;
+                            }
                         }
                         var eol = false;
                         while (!eol)
@@ -535,8 +537,18 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
                         }
 
                         // process input
+
                         var s = _inputReaderStringBuilder.ToString();
                         _inputReaderStringBuilder.Clear();
+
+                        // put the cursor at the end of the input
+                        try  {
+                            var slines = Out.GetWorkAreaStringSplits(s, _beginOfLineCurPos).Splits;
+                            if (slines.Count()>0) {
+                                var sline = slines.Last();
+                                Out.CursorPos = new Point( (sline.Text.Length==0)?0:sline.Text.Length + sline.X, sline.Y);
+                            }
+                        } catch (Exception) {}
 
                         var _enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
                         if (noWorkArea)

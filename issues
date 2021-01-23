@@ -5,7 +5,6 @@
 issues 🆗🚩
 ------
 
-1/19/21 FGZ     prompt: fill line from cursor. should do from end of line
 1/19/21 FGZ     💥🚩 prompt: crash (backspace,..) in compatibility mode
 
 olds:
@@ -15,6 +14,7 @@ olds:
 1/18/21 FGZ     🆗 env Orbsh.Display.Colors : background color remains (due to no compatibility of {context.ShellEnv.Colors.Default} with background transparency)
 1/19/21 FGZ     🆗 env & var prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
 1/19/21 FGZ     🆗 replace -env: by --env: in shell init (posix)
+1/19/21 FGZ     🆗 prompt: fill line from cursor. should do from end of line
 
 improvements to do 👷
 ------------------
@@ -41,7 +41,7 @@ improvements to do 👷
 21/1/21 FGZ     implements var-set
 22/1/21 FGZ     add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 22/1/21 FGZ     dir sort : alls folders before files ?
-22/1/21 FGZ     can have blank line before and after command exec ?
+22/1/21 FGZ     ✅NEXT can have blank line before and after command exec ?
 
 olds:
 
