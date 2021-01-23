@@ -750,13 +750,18 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         /// <summary>
         /// 1. parse command line
-        /// 2. execute command or error
-        ///     A. internal command (modules)
-        ///     B. underlying shell command
-        ///     C. unknown command
+        /// error or:
+        /// 2. execute command
+        ///     A. internal command (modules) or alias
+        ///     B. underlying shell command (found in scan paths)
+        //      file: 
+        ///         C. file (batch)
+        ///         D. non executable file
+        ///     not a file:
+        ///         E. unknown command
         /// </summary>
         /// <param name="expr">expression to be evaluated</param>
-        /// <returns>return code</returns>
+        /// <returns>data of the evaluation of the expression (error analysis or command returns)</returns>
         public ExpressionEvaluationResult Eval(
             CommandEvaluationContext context,
             string expr,
@@ -766,13 +771,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             var pipelineParseResults = Parse(context, _syntaxAnalyzer, expr);
             bool allValid = true;
             var evalParses = new List<ExpressionEvaluationResult>();
+
+            // check pipeline syntax analysis
             foreach ( var pipelineParseResult in pipelineParseResults )
             {
                 allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
                 var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
                 evalParses.Add(evalParse);
             }
+
             if (!allValid) {
+                // syntax error in pipeline - break exec
                 var err =  evalParses.FirstOrDefault();
                 context.ShellEnv.UpdateVarLastCommandReturn(expr,null,GetReturnCode(err),err.SyntaxError);
                 return err;
@@ -781,7 +790,10 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             // eventually output the post analysis pre exec content
             if (!string.IsNullOrEmpty(postAnalysisPreExecOutput)) context.Out.Echo(postAnalysisPreExecOutput);
 
+            // run pipeline
             var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
+
+            // update shell env
             context.ShellEnv.UpdateVarLastCommandReturn(expr,evalRes.Result,GetReturnCode(evalRes),evalRes.EvalErrorText,evalRes.EvalError);
             return evalRes;
         }
