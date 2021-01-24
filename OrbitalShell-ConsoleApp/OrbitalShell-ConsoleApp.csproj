@@ -16,6 +16,12 @@
   <ItemGroup>
     <Compile Remove="Program.cs" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Component/Parser/ANSI/ansi-seq-patterns.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.7.0-1.final" />

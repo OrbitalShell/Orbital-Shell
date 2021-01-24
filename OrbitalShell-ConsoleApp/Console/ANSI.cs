@@ -398,9 +398,9 @@ namespace DotNetConsoleAppToolkit.Console
         /// <summary>
         /// set foreground color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
         /// <para>parameters are red,green,blue luminosity from 0 to 255</para>
-        /// <para>format is: {r},{g},{b} 0<=r<=255 0<=g<=255 0<=b<=255</para>
+        /// <para>format is: {r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255</para>
         /// </summary>
-        /// <param name="s">{r},{g},{b} 0<=r<=255 0<=g<=255 0<=b<=255</param>
+        /// <param name="s">{r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255</param>
         /// <returns>ansi seq</returns>
         public static string SGRF24(object o) {
             if (!(o is string s)) return null;
@@ -486,9 +486,9 @@ namespace DotNetConsoleAppToolkit.Console
         /// <summary>
         /// set background color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
         /// <para>parameters are red,green,blue luminosity from 0 to 255</para>
-        /// <para>format is: {r},{g},{b} 0<=r<=255 0<=g<=255 0<=b<=255</para>
+        /// <para>format is: {r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255</para>
         /// </summary>
-        /// <param name="s">{r},{g},{b} 0<=r<=255 0<=g<=255 0<=b<=255</param>
+        /// <param name="s">{r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255</param>
         /// <returns>ansi seq</returns>
         public static string SGRB24(object o) {
             if (!(o is string s)) return null;

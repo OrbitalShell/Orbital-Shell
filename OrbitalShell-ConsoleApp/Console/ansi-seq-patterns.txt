@@ -1,9 +1,0 @@
-// ansi sequences patterns - https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
-// SP = (char)32
-// CSI = ESC [
-// OSC = ESC ]
-// APC = ESC _
-
-{}
-ESC P,^ {*}
-ESC SP {b}

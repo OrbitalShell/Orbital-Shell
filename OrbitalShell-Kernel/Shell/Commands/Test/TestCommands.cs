@@ -87,9 +87,10 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Test
         [Command("echo an ANSI / VT-100 sequence")]
         public CommandVoidResult ANSISeq(
             CommandEvaluationContext context,
-            [Parameter(0,"esc sequence (text behind ESC). replace character @ by ESC (\\x1b) to allow write new sequences in the string parameter")] string seq
+            [Parameter(0,"esc sequence (text behind ESC). replace character @ by ESC (\\x1b) to allow write new sequences in the string parameter")] string seq,
+            [Option("c","character to be used for ESC",true,true, (char)27)] char c
         ) {
-            seq = seq.Replace("@",ESC);
+            seq = seq.Replace(/*"@"*/""+c,ESC);
             context.Out.Echoln(ANSI.ESC+seq);
             return CommandVoidResult.Instance;
         }
