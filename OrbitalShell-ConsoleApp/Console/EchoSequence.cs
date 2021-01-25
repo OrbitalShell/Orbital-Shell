@@ -1,8 +1,8 @@
 ﻿using System;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.DotNetConsole;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     public class EchoSequence
     {

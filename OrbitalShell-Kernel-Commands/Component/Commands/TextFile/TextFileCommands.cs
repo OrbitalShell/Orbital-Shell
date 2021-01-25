@@ -1,28 +1,28 @@
-﻿using DotNetConsoleAppToolkit.Shell.Commands.FileSystem;
-using DotNetConsoleAppToolkit.Component.CommandLine;
-using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Shell.Commands.FileSystem;
+using OrbitalShell.Component.CommandLine;
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Console;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using static DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader.Interaction;
-using cons = DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Lib.TextFileReader;
-using static DotNetConsoleAppToolkit.Lib.Str;
+using static OrbitalShell.Component.CommandLine.CommandLineReader.Interaction;
+using cons = OrbitalShell.DotNetConsole;
+using static OrbitalShell.Lib.TextFileReader;
+using static OrbitalShell.Lib.Str;
 using sc = System.Console;
-using static DotNetConsoleAppToolkit.Lib.FileSystem.FileSystem;
+using static OrbitalShell.Lib.FileSystem.FileSystem;
 using System.IO;
 using System.Runtime.InteropServices;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Lib.FileSystem;
-using DotNetConsoleAppToolkit.Lib.Data;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Lib.FileSystem;
+using OrbitalShell.Lib.Data;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
+namespace OrbitalShell.Shell.Commands.TextFile
 {
     [Commands("commands related to text files")]
     public class TextFileCommands : ICommandsDeclaringType

@@ -1,15 +1,15 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Console;
 using System;
 using System.Collections.Generic;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Parsing.CommandLineSyntax;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
+using static OrbitalShell.DotNetConsole;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
+namespace OrbitalShell.Component.CommandLine.Pipeline
 {
     public class PipelineParser
     {

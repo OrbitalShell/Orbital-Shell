@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace DotNetConsoleAppToolkit.Lib
+namespace OrbitalShell.Lib
 {
     public static class TextFileReader
     {

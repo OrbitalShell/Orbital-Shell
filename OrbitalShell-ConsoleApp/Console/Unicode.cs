@@ -1,4 +1,4 @@
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     /// <summary>
     /// unicode characters

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotNetConsoleAppToolkit.Component.UI
+namespace OrbitalShell.Component.UI
 {
     public class WorkAreaScrollEventArgs
         : EventArgs

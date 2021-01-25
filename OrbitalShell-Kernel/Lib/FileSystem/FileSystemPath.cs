@@ -1,17 +1,17 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using System.IO;
-using static DotNetConsoleAppToolkit.Lib.Str;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using static OrbitalShell.Lib.Str;
+using static OrbitalShell.DotNetConsole;
 using System.Globalization;
-using DotNetConsoleAppToolkit.Console;
+using OrbitalShell.Console;
 using System;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Processor;
 using System.ComponentModel.Design;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using OrbitalShell.Component.CommandLine.Variable;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Lib.FileSystem
+namespace OrbitalShell.Lib.FileSystem
 {
     [CustomParameterType]
     public class FileSystemPath

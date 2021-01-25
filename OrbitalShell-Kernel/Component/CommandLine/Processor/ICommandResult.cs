@@ -1,4 +1,4 @@
-﻿namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
+﻿namespace OrbitalShell.Component.CommandLine.Processor
 {
     public interface ICommandResult
     {

@@ -1,15 +1,16 @@
 ﻿//#define enable_test_commands
 #define BannerEnabled
 
-using DotNetConsoleAppToolkit.Component.CommandLine.CommandBatch;
-using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Data;
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Component.CommandLine.Pipeline;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib;
-using lib=DotNetConsoleAppToolkit.Lib;
+using OrbitalShell.Component.CommandLine.CommandBatch;
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Pipeline;
+using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.CommandLine.Module;
+using OrbitalShell.Console;
+using OrbitalShell.Lib;
+using lib=OrbitalShell.Lib;
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
@@ -21,14 +22,14 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Parsing.CommandLineParser;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using cmdlr = DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader;
+using static OrbitalShell.Component.CommandLine.Parsing.CommandLineParser;
+using static OrbitalShell.DotNetConsole;
+using cmdlr = OrbitalShell.Component.CommandLine.CommandLineReader;
 using cons = System.Console;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
+namespace OrbitalShell.Component.CommandLine.Processor
 {
     public class CommandLineProcessor
     {
@@ -66,9 +67,9 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
         readonly SyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
 
-        readonly Dictionary<string, CommandsModule> _modules = new Dictionary<string, CommandsModule>();
+        readonly Dictionary<string, Module.ModuleModel> _modules = new Dictionary<string, Module.ModuleModel>();
 
-        public IReadOnlyDictionary<string, CommandsModule> Modules => new ReadOnlyDictionary<string, CommandsModule>(_modules);
+        public IReadOnlyDictionary<string, Module.ModuleModel> Modules => new ReadOnlyDictionary<string, Module.ModuleModel>(_modules);
 
         public IEnumerable<string> CommandDeclaringShortTypesNames => AllCommands.Select(x => x.DeclaringTypeShortName).Distinct();
         public IEnumerable<string> CommandDeclaringTypesNames => AllCommands.Select(x => x.DeclaringTypeFullName).Distinct();
@@ -565,11 +566,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
             CommandEvaluationContext context,
             Assembly assembly)
         {
-            if (_modules.ContainsKey(assembly.ManifestModule.Name))
+            var moduleAttr = assembly.GetCustomAttribute<ModuleAttribute>();
+            if (moduleAttr==null)
             {
-                Errorln($"commands module already registered: '{assembly.FullName}'");
+                context.Errorln($"assembly is not a shell module: '{assembly.FullName}'");
                 return (0,0);
             }
+            if (_modules.ContainsKey(assembly.ManifestModule.Name))
+            {
+                context.Errorln($"commands module already registered: '{assembly.FullName}'");
+                return (0,0);
+            }            
             var typesCount = 0;
             var comTotCount = 0;
             foreach ( var type in assembly.GetTypes())
@@ -583,11 +590,17 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                     typesCount++;
                 comTotCount += comCount;
             }
-            if (typesCount > 0)
+            if (true /*|| typesCount > 0*/)
             {
                 var descAttr = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
                 var description = (descAttr != null) ? descAttr.Description : "";
-                _modules.Add(Path.GetFileNameWithoutExtension(assembly.ManifestModule.Name), new CommandsModule(Path.GetFileNameWithoutExtension(assembly.Location), description, assembly, typesCount, comTotCount));
+                _modules.Add(
+                    Path.GetFileNameWithoutExtension(assembly.ManifestModule.Name), 
+                    new ModuleModel(Path.GetFileNameWithoutExtension(assembly.Location), 
+                    description, 
+                    assembly, 
+                    typesCount, 
+                    comTotCount));
             }
             return (typesCount,comTotCount);    
         }
@@ -742,7 +755,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 {
                     var descAttr = type.GetCustomAttribute<CommandsAttribute>();
                     var description = descAttr != null ? descAttr.Description : "";
-                    _modules.Add(type.FullName, new CommandsModule(CommandsModule.DeclaringTypeShortName(type), description, type.Assembly, 1, comsCount, type));
+                    _modules.Add(type.FullName, new ModuleModel(ModuleModel.DeclaringTypeShortName(type), description, type.Assembly, 1, comsCount, type));
                 }
             }
             return comsCount;

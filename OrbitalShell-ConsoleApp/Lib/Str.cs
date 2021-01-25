@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DotNetConsoleAppToolkit.Lib
+namespace OrbitalShell.Lib
 {
     public static class Str
     {

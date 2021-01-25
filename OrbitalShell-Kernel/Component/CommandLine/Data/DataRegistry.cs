@@ -1,8 +1,8 @@
-﻿using DotNetConsoleAppToolkit.Lib;
+﻿using OrbitalShell.Lib;
 using System.Collections.Generic;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Variable.VariableSyntax;
+using static OrbitalShell.Component.CommandLine.Variable.VariableSyntax;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
+namespace OrbitalShell.Component.CommandLine.Data
 {
     public class DataRegistry
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
+namespace OrbitalShell.Component.CommandLine.CommandModel
 {
     [AttributeUsage(AttributeTargets.Parameter,AllowMultiple =true,Inherited =false)]
     public class OptionRequireParameterAttribute : Attribute

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
+namespace OrbitalShell.Component.CommandLine.Pipeline
 {
     public enum PipelineCondition
     {

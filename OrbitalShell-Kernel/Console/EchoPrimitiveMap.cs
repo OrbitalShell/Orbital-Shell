@@ -1,9 +1,9 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+﻿using OrbitalShell.Component.CommandLine.Processor;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     public class EchoPrimitiveMap
     {

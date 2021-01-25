@@ -1,7 +1,7 @@
 using System.IO;
-using DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar;
+using OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar;
 
-namespace DotNetConsoleAppToolkit.Component.Parser.ANSI
+namespace OrbitalShell.Component.Parser.ANSI
 {
     public static class ANSIParser
     {

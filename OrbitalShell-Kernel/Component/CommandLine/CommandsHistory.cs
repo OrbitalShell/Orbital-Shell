@@ -1,9 +1,9 @@
-﻿using DotNetConsoleAppToolkit.Lib.FileSystem;
+﻿using OrbitalShell.Lib.FileSystem;
 using System.Collections.Generic;
 using System.IO;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using static OrbitalShell.DotNetConsole;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine
+namespace OrbitalShell.Component.CommandLine
 {
     public class CommandsHistory
     {

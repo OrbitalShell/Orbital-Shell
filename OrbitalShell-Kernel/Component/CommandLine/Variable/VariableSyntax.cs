@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Parsing.CommandLineSyntax;
+using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
+namespace OrbitalShell.Component.CommandLine.Variable
 {
     public static class VariableSyntax
     {        

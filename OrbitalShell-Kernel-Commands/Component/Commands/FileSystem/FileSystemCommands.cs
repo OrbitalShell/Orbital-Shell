@@ -1,11 +1,11 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib;
-using DotNetConsoleAppToolkit.Lib.Data;
-using DotNetConsoleAppToolkit.Lib.FileSystem;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Console;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.Data;
+using OrbitalShell.Lib.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,15 +13,15 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader.Interaction;
-using cons = DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Lib.FileSystem.FileSystem;
-using static DotNetConsoleAppToolkit.Lib.Str;
+using static OrbitalShell.Component.CommandLine.CommandLineReader.Interaction;
+using cons = OrbitalShell.DotNetConsole;
+using static OrbitalShell.Lib.FileSystem.FileSystem;
+using static OrbitalShell.Lib.Str;
 using sc = System.Console;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
+namespace OrbitalShell.Shell.Commands.FileSystem
 {
     [Commands("commands related to files,directories,mounts/filesystems and disks")]
     public class FileSystemCommands : ICommandsDeclaringType

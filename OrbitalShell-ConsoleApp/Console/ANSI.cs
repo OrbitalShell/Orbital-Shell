@@ -1,7 +1,7 @@
 ﻿using System;
-using DotNetConsoleAppToolkit.Component.Parser.ANSI;
+using OrbitalShell.Component.Parser.ANSI;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     /// <summary>
     /// all ANSI codes that we take into account for the targetted terminals referential
@@ -604,7 +604,7 @@ namespace DotNetConsoleAppToolkit.Console
         public static (bool startsWithANSISequence,string ansiSequence,int nextIndex) StartsWithANSISequence(string s) 
         {
             throw new NotImplementedException();
-            return (false,null,1);
+            //return (false,null,1);
         }
 
         #endregion

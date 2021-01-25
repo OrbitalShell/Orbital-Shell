@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using sys=System.Diagnostics;
 
-namespace DotNetConsoleAppToolkit.Lib.Process
+namespace OrbitalShell.Lib.Process
 {
     /// <summary>
     /// process wrapper

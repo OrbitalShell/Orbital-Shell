@@ -1,8 +1,8 @@
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.DotNetConsole;
+using OrbitalShell.Component.EchoDirective;
 using System;
 
-namespace DotNetConsoleAppToolkit.Component.EchoDirective
+namespace OrbitalShell.Component.EchoDirective
 {
     /// <summary>
     /// shortcuts to echo directives commands

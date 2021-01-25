@@ -1,6 +1,6 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+﻿using OrbitalShell.Component.CommandLine.Processor;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     public class EchoEvaluationContext
     {

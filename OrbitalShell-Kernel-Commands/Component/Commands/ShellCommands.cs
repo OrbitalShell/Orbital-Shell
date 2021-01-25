@@ -1,12 +1,13 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine;
-using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Data;
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib;
-using DotNetConsoleAppToolkit.Lib.FileSystem;
+﻿using OrbitalShell.Component.CommandLine;
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.CommandLine.Module;
+using OrbitalShell.Console;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,12 +16,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using static DotNetConsoleAppToolkit.Lib.Str;
-using cons = DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.Lib.Str;
+using cons = OrbitalShell.DotNetConsole;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands
+namespace OrbitalShell.Shell.Commands
 {
     [Commands("commands of the command line processor")]
     public class ShellCommands : ICommandsDeclaringType
@@ -245,7 +246,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
         [Command("list modules of commands if no option specified, else load or unload modules of commands")]
         [SuppressMessage("Style", "IDE0071:Simplifier l’interpolation", Justification = "<En attente>")]
         [SuppressMessage("Style", "IDE0071WithoutSuggestion:Simplifier l’interpolation", Justification = "<En attente>")]
-        public CommandResult<List<CommandsModule>> Module(
+        public CommandResult<List<Component.CommandLine.Module.ModuleModel>> Module(
             CommandEvaluationContext context,
             [Option("l", "load a module from the given path", true, true)] FilePath loadModulePath = null,
             [Option("u", "unload the module having the given name ", true, true)] string unloadModuleName = null
@@ -261,7 +262,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                             context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}assembly:{context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.FullName}");
                             context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}path:    {context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.Location}");
                         }
-                        return new CommandResult<List<CommandsModule>>(context.CommandLineProcessor.Modules.Values.ToList());
+                        return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(context.CommandLineProcessor.Modules.Values.ToList());
                     }
                     if (loadModulePath != null)
                     {
@@ -272,13 +273,13 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                             if (commandsCount == 0)
                             {
                                 context.Errorln("no commands have been loaded");
-                                return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
+                                return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
                             }
                             else
                                 context.Out.Echoln($"loaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
                         }
                         else
-                            return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
+                            return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
                     }
                     if (unloadModuleName != null)
                     {
@@ -288,7 +289,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                             if (commandsCount == 0)
                             {
                                 context.Errorln("no commands have been unloaded");
-                                return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
+                                return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
                             }
                             else
                                 context.Out.Echoln($"unloaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
@@ -296,10 +297,10 @@ namespace DotNetConsoleAppToolkit.Shell.Commands
                         else
                         {
                             context.Errorln($"commands module '{unloadModuleName}' not registered");
-                            return new CommandResult<List<CommandsModule>>(ReturnCode.Error);
+                            return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
                         }
                     }
-                    return new CommandResult<List<CommandsModule>>();
+                    return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>();
                 }
 
         #endregion

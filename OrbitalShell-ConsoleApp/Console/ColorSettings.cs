@@ -1,7 +1,7 @@
 ﻿using System;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using static OrbitalShell.DotNetConsole;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     public class ColorSettings 
     {        

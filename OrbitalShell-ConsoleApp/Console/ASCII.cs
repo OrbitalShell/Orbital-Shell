@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     /// <summary>
     /// all ASCII codes that we take into account for the targetted terminals referential

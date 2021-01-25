@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace DotNetConsoleAppToolkit.Lib
+namespace OrbitalShell.Lib
 {
     public static class RuntimeEnvironment
     {

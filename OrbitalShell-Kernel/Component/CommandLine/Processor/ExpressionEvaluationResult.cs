@@ -1,7 +1,7 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+﻿using OrbitalShell.Component.CommandLine.Parsing;
 using System;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
+namespace OrbitalShell.Component.CommandLine.Processor
 {
     public class ExpressionEvaluationResult
     {

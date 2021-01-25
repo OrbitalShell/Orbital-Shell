@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
+namespace OrbitalShell.Component.CommandLine.Data
 {
     public sealed class DataObjectReadOnlyException : Exception
     {

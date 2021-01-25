@@ -1,6 +1,6 @@
-﻿using DotNetConsoleAppToolkit.Component.UI;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
-using DotNetConsoleAppToolkit.Lib;
+﻿using OrbitalShell.Component.UI;
+using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,14 +8,14 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using itpsrv = System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using cons = DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Lib.Str;
+using static OrbitalShell.DotNetConsole;
+using cons = OrbitalShell.DotNetConsole;
+using static OrbitalShell.Lib.Str;
 using sc = System.Console;
-using static DotNetConsoleAppToolkit.Console.ANSI;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using static OrbitalShell.Console.ANSI;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     public class ConsoleTextWriterWrapper : TextWriterWrapper
     {

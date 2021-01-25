@@ -1,11 +1,11 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using static OrbitalShell.DotNetConsole;
+using OrbitalShell.Component.CommandLine.Processor;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public class SyntaxAnalyser
     {

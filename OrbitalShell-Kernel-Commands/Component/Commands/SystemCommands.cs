@@ -1,17 +1,17 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine;
-using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Component.CommandLine;
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Console;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using static DotNetConsoleAppToolkit.Console.EchoPrimitives;
-using cons = DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Lib.Str;
+using static OrbitalShell.Console.EchoPrimitives;
+using cons = OrbitalShell.DotNetConsole;
+using static OrbitalShell.Lib.Str;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands
+namespace OrbitalShell.Shell.Commands
 {
     [Commands("system commands")]
     public class SystemCommands : ICommandsDeclaringType

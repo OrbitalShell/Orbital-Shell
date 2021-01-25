@@ -1,16 +1,16 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Console;
+using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using cons = DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using cons = OrbitalShell.DotNetConsole;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands
+namespace OrbitalShell.Shell.Commands
 {
     [Commands("commands of the console")]
     public class ConsoleCommands : ICommandsDeclaringType

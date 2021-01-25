@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
+namespace OrbitalShell.Component.CommandLine.Data
 {
     public interface IDataObject
     {

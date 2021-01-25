@@ -1,6 +1,6 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Pipeline;
+﻿using OrbitalShell.Component.CommandLine.Pipeline;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public class PipelineParseResult
     {

@@ -1,15 +1,15 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib.Data;
+﻿using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Console;
+using OrbitalShell.Lib.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Lib.Str;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.DotNetConsole;
+using static OrbitalShell.Lib.Str;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Lib.FileSystem
+namespace OrbitalShell.Lib.FileSystem
 {
     public static partial class FileSystem
     {

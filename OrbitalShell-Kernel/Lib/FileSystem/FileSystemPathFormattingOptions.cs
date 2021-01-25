@@ -1,6 +1,6 @@
-﻿using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Console;
 
-namespace DotNetConsoleAppToolkit.Lib.FileSystem
+namespace OrbitalShell.Lib.FileSystem
 {
     public class FileSystemPathFormattingOptions : FormattingOptions
     {

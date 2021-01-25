@@ -1,4 +1,4 @@
-﻿namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
+﻿namespace OrbitalShell.Component.CommandLine.CommandModel
 {
     public interface ICommandsDeclaringType
     {

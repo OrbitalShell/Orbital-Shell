@@ -1,20 +1,20 @@
 ﻿//#define dbg
 #define FIX_LOW_ANSI
 
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Processor;
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Processor.CommandLineProcessor;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using static OrbitalShell.Component.CommandLine.Processor.CommandLineProcessor;
+using static OrbitalShell.DotNetConsole;
 using sc = System.Console;
-using DotNetConsoleAppToolkit.Console;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
+using OrbitalShell.Console;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.CommandLine.Variable;
+namespace OrbitalShell.Component.CommandLine.CommandLineReader
 {
     public class CommandLineReader
     {

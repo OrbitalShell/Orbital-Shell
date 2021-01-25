@@ -1,7 +1,7 @@
 ﻿#define dbg
 
-using DotNetConsoleAppToolkit.Component.UI;
-using DotNetConsoleAppToolkit.Console;
+using OrbitalShell.Component.UI;
+using OrbitalShell.Console;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System;
@@ -10,11 +10,11 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using RuntimeEnvironment = DotNetConsoleAppToolkit.Lib.RuntimeEnvironment;
+using RuntimeEnvironment = OrbitalShell.Lib.RuntimeEnvironment;
 using sc = System.Console;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
-namespace DotNetConsoleAppToolkit
+namespace OrbitalShell
 {
     /// <summary>
     /// dotnet core sdk helps build fastly nice console applications

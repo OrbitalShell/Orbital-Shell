@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetConsoleAppToolkit.Lib.Data
+namespace OrbitalShell.Lib.Data
 {
     public class FindCounts
     {

@@ -1,16 +1,16 @@
 ﻿//#define printDefaultValueInSyntax
 
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Console;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Console;
 using System.Reflection;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using static OrbitalShell.DotNetConsole;
 #if printDefaultValueInSyntax
-using static DotNetConsoleAppToolkit.Lib.Str;
+using static OrbitalShell.Lib.Str;
 #endif
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
+namespace OrbitalShell.Component.CommandLine.CommandModel
 {
     public class CommandParameterSpecification
     {

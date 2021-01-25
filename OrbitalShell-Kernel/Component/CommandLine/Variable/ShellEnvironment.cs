@@ -1,16 +1,16 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Data;
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib.FileSystem;
-using DotNetConsoleAppToolkit.Lib.Sys;
+﻿using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Console;
+using OrbitalShell.Lib.FileSystem;
+using OrbitalShell.Lib.Sys;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using static DotNetConsoleAppToolkit.Lib.Str;
+using static OrbitalShell.Lib.Str;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
+namespace OrbitalShell.Component.CommandLine.Variable
 {
     /// <summary>
     /// variables of the shell

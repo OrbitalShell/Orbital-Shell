@@ -1,20 +1,20 @@
 ﻿//#define debugParser
 
-using DotNetConsoleAppToolkit.Component.CommandLine.Data;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib;
+using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Console;
+using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Parsing.CommandLineSyntax;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Pipeline.PipelineParser;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Variable.Variables;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
+using static OrbitalShell.Component.CommandLine.Pipeline.PipelineParser;
+using static OrbitalShell.Component.CommandLine.Variable.Variables;
+using static OrbitalShell.DotNetConsole;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public static class CommandLineParser
     {        

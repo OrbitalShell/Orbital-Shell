@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using static DotNetConsoleAppToolkit.Lib.Str;
+using static OrbitalShell.Lib.Str;
 
-namespace DotNetConsoleAppToolkit.Lib.FileSystem
+namespace OrbitalShell.Lib.FileSystem
 {
     public class Drives
     {

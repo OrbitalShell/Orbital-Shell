@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
+namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
 {
     public class TreeNode {
         static int _counter = 0;

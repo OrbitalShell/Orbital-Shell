@@ -1,13 +1,13 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using static OrbitalShell.DotNetConsole;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
+namespace OrbitalShell.Component.CommandLine.Pipeline
 {
     public class PipelineProcessor
     {

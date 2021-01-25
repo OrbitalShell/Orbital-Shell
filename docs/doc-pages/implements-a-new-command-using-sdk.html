@@ -8,14 +8,14 @@ doctitle: Develop a new command using the orbsh SDK
 First add the necessary imports:
 
 <pre data-enlighter-language="csharp" data-enlighter-theme="{{site.data.settings.enjs_cs_theme}}" data-enlighter-linenumbers="false">
-  using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-  using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-  using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-  using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-  using DotNetConsoleAppToolkit.Console;
-  using DotNetConsoleAppToolkit.Lib;
-  using DotNetConsoleAppToolkit.Lib.Data;
-  using DotNetConsoleAppToolkit.Lib.FileSystem;
+  using OrbitalShell.Component.CommandLine.CommandModel;
+  using OrbitalShell.Component.CommandLine.Parsing;
+  using OrbitalShell.Component.CommandLine.Processor;
+  using OrbitalShell.Component.CommandLine.Variable;
+  using OrbitalShell.Console;
+  using OrbitalShell.Lib;
+  using OrbitalShell.Lib.Data;
+  using OrbitalShell.Lib.FileSystem;
   using System;
   using System.Collections.Generic;
   using System.Data;
@@ -23,10 +23,10 @@ First add the necessary imports:
   using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
-  using static DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader.Interaction;
-  using static DotNetConsoleAppToolkit.DotNetConsole;
-  using static DotNetConsoleAppToolkit.Lib.FileSystem.FileSystem;
-  using static DotNetConsoleAppToolkit.Lib.Str;
+  using static OrbitalShell.Component.CommandLine.CommandLineReader.Interaction;
+  using static OrbitalShell.DotNetConsole;
+  using static OrbitalShell.Lib.FileSystem.FileSystem;
+  using static OrbitalShell.Lib.Str;
   using sc = System.Console;
 </pre>
 

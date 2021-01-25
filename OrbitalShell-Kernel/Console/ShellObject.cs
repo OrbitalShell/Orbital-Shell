@@ -1,10 +1,10 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Lib;
+﻿using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Lib;
 using System.Reflection;
 using System.Text;
-using static DotNetConsoleAppToolkit.Console.EchoPrimitives;
+using static OrbitalShell.Console.EchoPrimitives;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     /// <summary>
     /// dynamically outputable &amp; convertible object that integrates with the shell

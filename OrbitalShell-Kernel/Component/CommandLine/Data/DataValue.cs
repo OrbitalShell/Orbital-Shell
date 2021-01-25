@@ -1,13 +1,13 @@
-﻿using DotNetConsoleAppToolkit.Lib;
+﻿using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using static DotNetConsoleAppToolkit.Lib.Str;
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
+using static OrbitalShell.Lib.Str;
+using OrbitalShell.Component.CommandLine.Parsing;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
+namespace OrbitalShell.Component.CommandLine.Data
 {
     public sealed class DataValueReadOnlyException : Exception
     {

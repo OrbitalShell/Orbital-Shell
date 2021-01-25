@@ -1,9 +1,9 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Lib;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Parsing.CommandLineSyntax;
+﻿using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Lib;
+using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 using System;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandBatch
+namespace OrbitalShell.Component.CommandLine.CommandBatch
 {
     public class CommandBatchProcessor
     {

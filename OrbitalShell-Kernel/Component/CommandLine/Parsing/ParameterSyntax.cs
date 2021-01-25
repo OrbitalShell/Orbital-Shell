@@ -1,11 +1,11 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Console;
 using System;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public class ParameterSyntax
     {

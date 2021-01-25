@@ -1,6 +1,6 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+﻿using OrbitalShell.Component.CommandLine.Processor;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     /// <summary>
     /// recommended but not mandatory interface of an object that might almost be displayed in the shell and used a a command parameter

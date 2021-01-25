@@ -1,18 +1,18 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib.FileSystem;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Console;
+using OrbitalShell.Lib.FileSystem;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using static DotNetConsoleAppToolkit.Console.ANSI;
-using cons = DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Lib.TextFileReader;
+using static OrbitalShell.Console.ANSI;
+using cons = OrbitalShell.DotNetConsole;
+using static OrbitalShell.Lib.TextFileReader;
 using sc = System.Console;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands.Test
+namespace OrbitalShell.Shell.Commands.Test
 {
     [Commands("tests commands")]
     public class TestCommands : ICommandsDeclaringType

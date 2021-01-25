@@ -1,9 +1,9 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Pipeline;
+﻿using OrbitalShell.Component.CommandLine.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     internal class CommandLineSyntax
     {

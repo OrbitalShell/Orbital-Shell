@@ -1,11 +1,11 @@
-﻿using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib.FileSystem;
+﻿using OrbitalShell.Console;
+using OrbitalShell.Lib.FileSystem;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
+namespace OrbitalShell.Shell.Commands.TextEditor
 {
     public class EditorBackup
     {

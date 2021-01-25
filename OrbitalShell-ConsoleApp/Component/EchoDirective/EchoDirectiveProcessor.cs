@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using DotNetConsoleAppToolkit.Console;
+using static OrbitalShell.DotNetConsole;
+using OrbitalShell.Console;
 using System;
 
-namespace DotNetConsoleAppToolkit.Component.EchoDirective
+namespace OrbitalShell.Component.EchoDirective
 {
     /// <summary>
     /// echo directives processor

@@ -1,7 +1,7 @@
-﻿using DotNetConsoleAppToolkit.Lib;
+﻿using OrbitalShell.Lib;
 using System.Collections.Generic;
 
-namespace DotNetConsoleAppToolkit.Console
+namespace OrbitalShell.Console
 {
     public class StringSegment
     {

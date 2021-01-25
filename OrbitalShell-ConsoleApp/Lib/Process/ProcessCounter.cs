@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace DotNetConsoleAppToolkit.Lib.Process
+namespace OrbitalShell.Lib.Process
 {
     /// <summary>
     /// process counter usable with ProcessWrapper

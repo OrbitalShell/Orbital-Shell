@@ -1,6 +1,6 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public interface IMatchingParameter
     {

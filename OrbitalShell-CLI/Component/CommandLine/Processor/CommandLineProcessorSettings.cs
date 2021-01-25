@@ -1,11 +1,8 @@
-﻿using proc = DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-
-namespace OrbitalShell.Component.CommandLine.Processor
+﻿namespace OrbitalShell.Component.CommandLine.Processor
 {
-    public class CommandLineProcessorSettings
-         : proc.CommandLineProcessorSettings
+    public class OrbitalShellCommandLineProcessorSettings : CommandLineProcessorSettings
     {
-        public CommandLineProcessorSettings()
+        public OrbitalShellCommandLineProcessorSettings()
         {
             AppName = "orbsh";
             AppLongName = "Orbital Shell";

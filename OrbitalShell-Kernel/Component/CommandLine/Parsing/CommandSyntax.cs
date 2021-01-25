@@ -1,16 +1,16 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Data;
-using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DotNetConsoleAppToolkit.Lib;
+using OrbitalShell.Lib;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Processor;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public class CommandSyntax
     {

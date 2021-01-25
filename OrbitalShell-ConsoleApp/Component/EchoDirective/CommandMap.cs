@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DotNetConsoleAppToolkit.Component.EchoDirective
+namespace OrbitalShell.Component.EchoDirective
 {
     public class CommandMap 
     {

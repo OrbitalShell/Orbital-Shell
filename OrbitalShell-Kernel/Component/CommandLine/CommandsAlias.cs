@@ -1,13 +1,13 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Lib.FileSystem;
+﻿using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Lib.FileSystem;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using DotNetConsoleAppToolkit.Lib;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using OrbitalShell.Lib;
+using static OrbitalShell.DotNetConsole;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine
+namespace OrbitalShell.Component.CommandLine
 {
     public class CommandsAlias
     {

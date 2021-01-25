@@ -1,10 +1,10 @@
 ﻿//#define dbg
 
-using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Console;
-using DotNetConsoleAppToolkit.Lib;
-using DotNetConsoleAppToolkit.Lib.FileSystem;
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Console;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,14 +14,14 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Lib.Str;
-using cons = DotNetConsoleAppToolkit.DotNetConsole;
+using static OrbitalShell.DotNetConsole;
+using static OrbitalShell.Lib.Str;
+using cons = OrbitalShell.DotNetConsole;
 using sc = System.Console;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands.TextEditor
+namespace OrbitalShell.Shell.Commands.TextEditor
 {
     [Commands("Text Editor")]
     public class TextEditor : ICommandsDeclaringType

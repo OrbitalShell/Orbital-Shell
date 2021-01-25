@@ -1,4 +1,4 @@
-﻿using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Console;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
+namespace OrbitalShell.Component.CommandLine.CommandModel
 {
     public class CommandSpecification
     {

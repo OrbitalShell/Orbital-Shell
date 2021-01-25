@@ -1,10 +1,10 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
-using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Console;
 using System;
 using System.Linq;
 using System.Reflection;
 
-namespace DotNetConsoleAppToolkit.Lib
+namespace OrbitalShell.Lib
 {
     /// <summary>
     /// extensions methods for: output filtering

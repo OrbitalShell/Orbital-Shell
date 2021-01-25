@@ -1,5 +1,5 @@
 ﻿   
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
+namespace OrbitalShell.Component.CommandLine.Processor
 {
     public class CommandVoidResult : ICommandResult
     {

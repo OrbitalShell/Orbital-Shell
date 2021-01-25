@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Text;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using static OrbitalShell.DotNetConsole;
+using OrbitalShell.Component.CommandLine.Processor;
 
-namespace DotNetConsoleAppToolkit.Lib.FileSystem
+namespace OrbitalShell.Lib.FileSystem
 {
     public class FilePath : FileSystemPath
     {

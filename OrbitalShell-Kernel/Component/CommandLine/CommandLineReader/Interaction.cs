@@ -1,10 +1,10 @@
-﻿using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Console;
 using System;
 using System.Collections.Generic;
-using static DotNetConsoleAppToolkit.DotNetConsole;
+using static OrbitalShell.DotNetConsole;
 using sc = System.Console;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandLineReader
+namespace OrbitalShell.Component.CommandLine.CommandLineReader
 {
     public static class Interaction
     {

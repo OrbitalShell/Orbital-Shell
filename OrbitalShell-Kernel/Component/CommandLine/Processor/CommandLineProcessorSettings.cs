@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
+namespace OrbitalShell.Component.CommandLine.Processor
 {
     /// <summary>
     /// @TODO: move in Orbsh settings

@@ -1,9 +1,9 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public class ParseError
     {

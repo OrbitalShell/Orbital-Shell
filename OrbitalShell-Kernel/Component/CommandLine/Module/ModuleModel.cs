@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Reflection;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine
+namespace OrbitalShell.Component.CommandLine.Module
 {
-    public class CommandsModule
+    /// <summary>
+    /// module model and related util methods
+    /// </summary>
+    public class ModuleModel
     {
         public readonly Assembly Assembly;
         public readonly Type Type;
@@ -12,7 +15,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine
         public readonly int TypesCount;
         public readonly int CommandsCount;
 
-        public CommandsModule(string name,string description,Assembly assembly,int typesCount,int commandsCount,Type type = null)
+        public ModuleModel(string name,string description,Assembly assembly,int typesCount,int commandsCount,Type type = null)
         {
             Name = name;
             Assembly = assembly;

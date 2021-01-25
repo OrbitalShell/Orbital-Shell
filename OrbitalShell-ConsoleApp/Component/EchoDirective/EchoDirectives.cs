@@ -1,4 +1,4 @@
-﻿namespace DotNetConsoleAppToolkit.Component.EchoDirective
+﻿namespace OrbitalShell.Component.EchoDirective
 {
     /// <summary>
     /// <para>

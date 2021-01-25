@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Data;
-using static DotNetConsoleAppToolkit.Console.EchoPrimitives;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+using static OrbitalShell.Console.EchoPrimitives;
+using OrbitalShell.Component.CommandLine.Processor;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Data
+namespace OrbitalShell.Component.CommandLine.Data
 {
     public class Table : DataTable
     {

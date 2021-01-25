@@ -1,7 +1,7 @@
-﻿using DotNetConsoleAppToolkit.Lib.FileSystem;
+﻿using OrbitalShell.Lib.FileSystem;
 using System.Runtime.InteropServices;
 
-namespace DotNetConsoleAppToolkit.Shell.Commands.TextFile
+namespace OrbitalShell.Shell.Commands.TextFile
 {
     public class TextFileInfo
     {

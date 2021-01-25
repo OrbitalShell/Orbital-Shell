@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Parsing
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public class CommandSyntaxParsingResult
     {

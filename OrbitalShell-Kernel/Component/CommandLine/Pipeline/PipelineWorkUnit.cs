@@ -1,12 +1,12 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Console;
 using System.Collections.Generic;
 using System.Linq;
-using static DotNetConsoleAppToolkit.DotNetConsole;
-using static DotNetConsoleAppToolkit.Component.EchoDirective.Shortcuts;
-using DotNetConsoleAppToolkit.Component.EchoDirective;
+using static OrbitalShell.DotNetConsole;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Pipeline
+namespace OrbitalShell.Component.CommandLine.Pipeline
 {
     public class PipelineWorkUnit
     {

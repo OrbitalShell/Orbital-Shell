@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using DotNetConsoleAppToolkit.Console;
+using OrbitalShell.Console;
 
-namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
+namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
 {
     public class SyntacticBlock 
     {

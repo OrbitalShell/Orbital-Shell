@@ -1,4 +1,4 @@
-namespace DotNetConsoleAppToolkit.Lib.Sys
+namespace OrbitalShell.Lib.Sys
 {
     public class StringWrapper
     {

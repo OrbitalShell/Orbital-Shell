@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.CommandModel
+namespace OrbitalShell.Component.CommandLine.CommandModel
 {
     [AttributeUsage(AttributeTargets.Method,AllowMultiple =false,Inherited =false)]
     public class CommandAttribute : Attribute

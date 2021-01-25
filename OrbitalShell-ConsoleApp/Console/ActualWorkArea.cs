@@ -1,4 +1,4 @@
-﻿namespace DotNetConsoleAppToolkit.Console
+﻿namespace OrbitalShell.Console
 {
     public class ActualWorkArea
     {

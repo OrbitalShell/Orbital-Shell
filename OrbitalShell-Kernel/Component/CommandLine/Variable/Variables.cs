@@ -1,13 +1,13 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Data;
-using DotNetConsoleAppToolkit.Component.CommandLine.Parsing;
-using DotNetConsoleAppToolkit.Component.CommandLine.Processor;
+﻿using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using static DotNetConsoleAppToolkit.Component.CommandLine.Variable.VariableSyntax;
+using static OrbitalShell.Component.CommandLine.Variable.VariableSyntax;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
+namespace OrbitalShell.Component.CommandLine.Variable
 {
     /// <summary>
     /// variables data store

@@ -1,9 +1,9 @@
-﻿using DotNetConsoleAppToolkit.Component.CommandLine.Variable;
-using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Console;
 using System.IO;
 using System;
 
-namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
+namespace OrbitalShell.Component.CommandLine.Processor
 {
     public class CommandEvaluationContext
     {

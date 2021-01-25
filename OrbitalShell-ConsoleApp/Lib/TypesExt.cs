@@ -1,11 +1,11 @@
-﻿using DotNetConsoleAppToolkit.Console;
+﻿using OrbitalShell.Console;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 
-namespace DotNetConsoleAppToolkit.Lib
+namespace OrbitalShell.Lib
 {
     public static partial class TypesExt
     {

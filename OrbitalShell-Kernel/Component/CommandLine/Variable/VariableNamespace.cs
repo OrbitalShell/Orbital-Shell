@@ -1,4 +1,4 @@
-﻿namespace DotNetConsoleAppToolkit.Component.CommandLine.Variable
+﻿namespace OrbitalShell.Component.CommandLine.Variable
 {
     public enum VariableNamespace
     {
