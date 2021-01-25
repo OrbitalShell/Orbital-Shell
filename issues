@@ -21,43 +21,44 @@ improvements to do 👷
 ------------------
 
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
-18/1/21 FGZ     🆗 help: normal mode should be 'tech details less', should be got with -v + add infos to technical details
-19/1/21 FGZ     add load settings from json + revert to json (add variables binding)
-19/1/21 FGZ     changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
+19/1/21 FGZ     ✅NEXT changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
 20/1/21 FGZ     DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
 20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC
-20/1/21 FGZ     command 'eval' : a=5, $b = a , echo $b = a , eval echo \$$b == 5
-20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
-20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
-20/1/21 FGZ     variable defined as a reference to another but having its own path/name
-20/1/21 FGZ     variable value provided by a programmatic way
-20/1/21 FGZ     🆗 ANSI: GetTextLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
-25/1/21 FGZ     🆗 text metric functions and echo parametrization : adapt to use of ANSI.GetTextLength(..)
-25/1/21 FGZ     🆗 echo command: add parameters for raws styles output (in the future will be output filter)
-25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
-20/1/21 FGZ     please add sort in env table
-21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
-21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
-21/1/21 FGZ     set should be arg-set command. we should implement {varname}={value} ? (affectation is an unique world [bash])
-21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
+
 21/1/21 FGZ     implements var-info
 21/1/21 FGZ     implements var-set
+20/1/21 FGZ     variable defined as a reference to another but having its own path/name
+20/1/21 FGZ     variable value provided by a programmatic way
+21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
+
+19/1/21 FGZ     add load settings from json + revert to json (add variables binding)
+20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
+
+25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 22/1/21 FGZ     👷 add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
+20/1/21 FGZ     please add sort in env table
 22/1/21 FGZ     dir sort : alls folders before files ?
-23/1/21 FGZ     ✅NEXT fix usage of console Warning (should be context.Warning). Add also context.Output (shortcut to Out.Echo)
-23/1/21 FGZ     🆗 add a way to print ANSI sequences in objects dump for raw strings (tables) : replace ESC by '\x1B' ?
+23/1/21 FGZ     ✅NEXT fix usage of console Warning (should be context.Warning). Add also add context.Echo (shortcut to Out.Echo)
+
+procrastinated:
+---------------
+
+20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
+20/1/21 FGZ     command 'eval' : a=5, $b = a , echo $b = a , eval echo \$$b == 5
+21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
+21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
 23/1/21 FGZ     help echo very slow, any particular reason ?
-25/1/21 FGZ     🆗 restructured projects. added official module folder, kernel commands became a project. reviewed shell init phasis
-
-procrastined:
--------------
-
-
 
 olds:
 -----
 
+25/1/21 FGZ     🆗 restructured projects. added official module folder, kernel commands became a project. reviewed shell init phasis
+18/1/21 FGZ     🆗 help: normal mode should be 'tech details less', should be got with -v + add infos to technical details
+23/1/21 FGZ     🆗 add a way to print ANSI sequences in objects dump for raw strings (tables) : replace ESC by '\x1B' ?
+20/1/21 FGZ     🆗 ANSI: GetTextLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
+25/1/21 FGZ     🆗 text metric functions and echo parametrization : adapt to use of ANSI.GetTextLength(..)
+25/1/21 FGZ     🆗 echo command: add parameters for raws styles output (in the future will be output filter)
 22/1/21 FGZ     🆗 can have blank line before and after command exec ?
 22/1/21 FGZ     🆗 inheritance is not applied in static extension echo primitive selection (outside future map selection impl.)
 22/1/21 FGZ     🆗 add shell special vars: last com exception + last com (com text) + last com result (as object)
