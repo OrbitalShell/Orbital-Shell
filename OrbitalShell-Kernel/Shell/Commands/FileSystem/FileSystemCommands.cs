@@ -346,9 +346,9 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
         public CommandResult<(List<(FileSystemPath source,FileSystemPath target)> items,FindCounts counts)> Mv(
             CommandEvaluationContext context, 
             [Parameter("source: file/directory or several corresponding to a wildcarded path")] WildcardFilePath source,
-            [Parameter(1,"destination: a file or a directory")] FileSystemPath dest,
+            [Parameter(1,"target: a file or a directory")] FileSystemPath dest,
             [Option("i","prompt before overwrite")] bool interactive,
-            [Option("v","explain what is being done")] bool verbose
+            [Option("v","explain what is being done, but actually does nothing")] bool verbose
             )
         {
             if (source.CheckExists(context))
@@ -363,7 +363,7 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.FileSystem
                     {
                         if (!dest.IsDirectory)
                         {
-                            context.Errorln("dest must be a directory");
+                            context.Errorln("target must be a directory");
                             return new CommandResult<(List<(FileSystemPath, FileSystemPath)> items, FindCounts counts)>(
                                  ( new List<(FileSystemPath, FileSystemPath)> { (source, dest) }, counts), ReturnCode.Error
                                 );

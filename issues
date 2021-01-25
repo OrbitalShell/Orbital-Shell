@@ -35,6 +35,7 @@ improvements to do 👷
 20/1/21 FGZ     🆗 ANSI: GetTextLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
 25/1/21 FGZ     🆗 text metric functions and echo parametrization : adapt to use of ANSI.GetTextLength(..)
 25/1/21 FGZ     🆗 echo command: add parameters for raws styles output (in the future will be output filter)
+25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
 21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
@@ -42,7 +43,7 @@ improvements to do 👷
 21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
 21/1/21 FGZ     implements var-info
 21/1/21 FGZ     implements var-set
-22/1/21 FGZ     add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
+22/1/21 FGZ     👷 add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 22/1/21 FGZ     dir sort : alls folders before files ?
 23/1/21 FGZ     ✅NEXT fix usage of console Warning (should be context.Warning). Add also context.Output (shortcut to Out.Echo)
 23/1/21 FGZ     🆗 add a way to print ANSI sequences in objects dump for raw strings (tables) : replace ESC by '\x1B' ?

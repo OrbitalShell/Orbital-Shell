@@ -1,19 +1,24 @@
 # Orbital Shell
-<b>Orbital Shell</b> is a multi-plateform (windows, linux, macos) command shell, inspired by <b><i>bash</i></b> and POSIX recommendations. Developed using C# 8, .NET Core 3.1 and .NET Standard 2.1
+
+<b>Orbital Shell</b> is a multi-plateform (windows, linux, macos) command shell, inspired by <b><i>bash</i></b> and POSIX recommendations. It provides any usual bash shell feature (even if modernized) and nice syntaxes and features allowing to access (get/set/call) C# objects. Developed using C# 8, .NET Core 3.1 and .NET Standard 2.1
 
 [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license.md) This project is licensed under the terms of the MIT license: [LICENSE.md](LICENSE.md)  
 ![version](https://img.shields.io/badge/Version-1.0.beta-green)
 
-<u>project repositories status:</u>  
+<u>project repositories status:</u>
 
-![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
-![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
-![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)   
 ![orbital-shell](https://img.shields.io/badge/orbital--shell-repository-lightgrey?style=plastic)
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/orbital-shell?style=plastic)
 ![version](https://img.shields.io/github/v/tag/franck-gaspoz/orbital-shell?style=plastic)  
 
-<img src="Doc/Assets/orbital-shell.png"/>
+*notice:*
+
+> The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now this library project repository is **CLOSED** because it has been integrated in the **orbital-shell** prokect repository.
+> ![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
+> ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
+> ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)   
+
+<img src="docs/assets/img/git-doc/orbital-shell.png"/>
 <small><i>a view of the shell running in terminal WSL2</i></small>
 
 ## Features
@@ -33,7 +38,7 @@
   - **Cancellation** of commands execution (Ctrl-Z)
 - **Variables**
   - Variables can store any data of **any C# object type**
-    - The command line syntax has been extended to support an object notation to indicate accessing an object member or invoking an object method
+    - The command line syntax has been extended to **support an object notation to indicate accessing an object member or invoking an object method**
     - commands returns a **result code** and can returns **values**. When returning values and when specified, a pipe ( **|** ) between commands can **pass objects instead of streams**
   - The **environment variables** are of type **String**
   - Are getted and setted with **$**, **set** and **=** 
@@ -48,7 +53,7 @@
     ``` csharp
     // a Unix rm command implementation:
     [Command("remove file(s) and/or the directory(ies)")]
-    public List<string> Rm(
+    public CommandResult<List<string>> Rm(
         [Parameter("file or folder path")] WildcardFilePath path,
         [Option("r", "also remove files and folders in sub directories")] bool recurse,
         [Option("i","prompt before any removal")] bool interactive,
@@ -62,13 +67,15 @@
         if (path.CheckExists())
         {
             /* ... */
+            context.Out.Echoln("this is the (uon,f=red)'rm'(uoff,rdc) command!");
+            /* ... */
         }
-        return r;
+        return new CommandResult<List<string>>(r,ReturnCode.OK);
     }
     ```
   - that will be auto documented like this by the shell help feature:
   
-    <img src="Doc/Assets/2020-06-13 06_36_43-Window.png"/>
+    <img src="docs/assets/img/git-doc/2020-06-13%2006_36_43-Window.png"/>
 
 
 
