@@ -384,7 +384,7 @@ namespace DotNetConsoleAppToolkit.Console
             return null; 
             }
         object _SetCursorX(object x) { CursorLeft = GetCursorX(x); return null; }
-        object _SetCursorY(object x) { CursorLeft = GetCursorX(x); return null; }
+        object _SetCursorY(object x) { CursorTop = GetCursorY(x); return null; }
         object _ExecCSharp(object x) { return ExecCSharp((string)x); }
         void _MoveCursorTop() { MoveCursorTop(1); }
         void _MoveCursorDown() { MoveCursorDown(1); }

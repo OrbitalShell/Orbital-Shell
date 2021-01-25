@@ -20,6 +20,7 @@ olds:
 improvements to do 👷
 ------------------
 
+1/19/21 FGZ     👷 🚩 namespaces refactoring : DotNetConsoleAppToolkit devient OrbitalShell partout !! (fin du projet indépendant DotNetConsoleAppToolkit)
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
 19/1/21 FGZ     ✅NEXT changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
