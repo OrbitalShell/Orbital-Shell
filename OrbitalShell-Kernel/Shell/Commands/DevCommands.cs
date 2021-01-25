@@ -47,7 +47,6 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Dev
             var str = ANSI.CSI+"1;2Z"+ANSI.RIS+ANSI.CHA(10)+"hello"+ANSI.CRLF+ANSI.SGRF24("50:100:150")+"WORLD(f=red) RED";
             //var str = ANSI.ESC;
             
-            //context.Out.Echoln(str);
             context.Out.Echoln(str,true);
             context.Out.Echoln();
             var paths = ANSIParser.Parse(str);
@@ -55,7 +54,8 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Dev
                 context.Out.Echoln(ASCII.GetNonPrintablesCodesAsLabel( p.ToString() , false ),true);
 
             context.Out.Echoln();
-            context.Out.Echoln($"text= {paths.GetText()}",true);
+            context.Out.Echoln($"text={paths.GetText()}",true);
+            context.Out.Echoln($"text length={paths.GetTextLength()}",true);
 
             return CommandVoidResult.Instance;
         }

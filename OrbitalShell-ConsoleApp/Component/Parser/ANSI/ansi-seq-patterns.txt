@@ -1,8 +1,16 @@
-// ansi sequences patterns - https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+// -----------------------------------------------------------------------------------
+// ansi sequences patterns
+// from https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+// -----------------------------------------------------------------------------------
 // in terminal wt,vscode we observe :
 // num? <-> numlist?
 // numlist := (;123456789)*
 // lowest priority rules are added to cover these cases
+// -----------------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------------
+// lexical
+// -----------------------------------------------------------------------------------
 
 ESC := \x1b
 SP := \x20
@@ -15,7 +23,14 @@ BEL := \x7
 NONE := \x0
 PM := ESC ^
 
-// rule syntax: rule:= ( seq_symbol | list_of_symbol | char | text | numlist | num ) [// comment] , list_of_symbol := symbol (,symbol)*
+// -----------------------------------------------------------------------------------
+// syntactic rules
+// rule syntax: rule:= ( symbol | list_of_symbol | char | text | numlist? | num )
+// list_of_symbol := symbol (,symbol)*
+// -----------------------------------------------------------------------------------
+
+// single character functions (except ESC)
+scf
 
 ESC D,E,H,M,N,O,P,V,W,X,Z,6,7,8,9,=,>,F,c,l,m,n,o,|,},~
 ESC SP L,M,N

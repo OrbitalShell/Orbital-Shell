@@ -1,4 +1,5 @@
 ﻿using System;
+using DotNetConsoleAppToolkit.Component.Parser.ANSI;
 
 namespace DotNetConsoleAppToolkit.Console
 {
@@ -569,6 +570,18 @@ namespace DotNetConsoleAppToolkit.Console
 
         #region ANSI string util
 
+        /// <summary>
+        /// get the real length of the text without ansi sequences non printed characters
+        /// </summary>
+        /// <returns>length of visible part of the text</returns>
+        public static int GetLength(string s) => GetText(s).Length;
+
+        /// <summary>
+        /// gets the text part of the syntactic elements
+        /// </summary>
+        /// <returns>string without ansi sequences</returns>
+        public static string GetText(string s) => ANSIParser.Parse(s).GetText();
+
         public static string AvoidANSISequencesAndNonPrintableCharacters(string s) {
             s = s.Replace(""+(char)27,"\\x1b");
             var r = "";
@@ -590,7 +603,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// <returns>several information about any ansi sequence or not</returns>
         public static (bool startsWithANSISequence,string ansiSequence,int nextIndex) StartsWithANSISequence(string s) 
         {
-
+            throw new NotImplementedException();
             return (false,null,1);
         }
 

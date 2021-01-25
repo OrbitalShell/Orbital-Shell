@@ -1,12 +1,40 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar;
 
 namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
 {
     public class NonRecursiveFunctionGrammarParser
     {
+        #region predefined grammar functions
+
+        /// <summary>
+        /// ascii<32 && !=27 (Single Code Function)
+        /// </summary>
+        public const string SCF = "scf";
+
+        /// <summary>
+        /// char
+        /// </summary>
+        public const string CHAR = "char";
+
+        /// <summary>
+        /// CHAR*
+        /// </summary>
+        public const string TEXT = "text";
+
+        /// <summary>
+        /// (NUM? ;? NUM?)*
+        /// </summary>
+        public const string NUMLIST = "numlist?";
+
+        /// <summary>
+        /// [0-9]+
+        /// </summary>
+        public const string NUM = "num";
+
+        #endregion
+
         #region attributes
 
         Dictionary<string,string> _lexs = new Dictionary<string,string>();
@@ -14,7 +42,7 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
         List<Rule> _rules = new List<Rule>();
         Dictionary<string,Rule> _rulesIndex = new Dictionary<string,Rule>();
 
-        TreeNode _gramTree = new TreeNode("/");
+        TreeNode _gramTree;
 
         #endregion
 
@@ -57,6 +85,7 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
 
         void _BuildGramTree() 
         {
+            _gramTree = new TreeNode();
             foreach ( var rule in _rules ) {
                 _AddRuleToGramTree(_gramTree,rule,rule);
             }
@@ -146,7 +175,7 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
             var t = s.ToCharArray();
             int i = 0;
             var paths = new SyntacticBlockList();
-            var rootNode = _gramTree.SubNodes.Values.First();
+            var rootNode = _gramTree;
             _Parse(ref t,i,rootNode,rootNode,paths);  
             return paths;      
         }
@@ -158,6 +187,7 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
             TreeNode node,
             SyntacticBlockList paths,
             TreePath currentPath=null,
+            bool returnImmediately = false,
             int recurseLevel = 0
             ) 
         {
@@ -174,68 +204,102 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                 matching = false;
                 var beginIndex = i;
 
-                if (node.Label==sc)
-                {
-                    // exact match - potential matching sequence
-                    matching = true;        
-                    partialMatching = false;     
-                }
-                else 
-                {
-                    if (node.Label=="char")
+                /*if (recurseLevel==0 && node==null) {
+                    // start by grammar multi roots
+                    foreach ( var kv in rootNode.SubNodes ) 
                     {
-                        matching = true;
-                        partialMatching = false;
+                        _Parse(ref chars,i,rootNode,kv.Value,paths,currentPath,recurseLevel); 
                     }
-                    else if (node.Label=="text")
+                    SelectPaths(ref chars,ref i,ref matching,ref partialMatching,rootNode,ref node);
+                }*/
+
+                if (!node.IsRoot) 
+                {
+                    if (node.Label==sc)
                     {
-                        matching = true;
-                        partialMatching = true;
-                    } 
-                    else if (node.Label=="numlist?")
+                        // exact match - potential matching sequence
+                        matching = true;        
+                        partialMatching = false;     
+                    }
+                    else 
                     {
-                        if (char.IsDigit(c) || c==';') {
+                        if (node.Label==SCF)
+                        {
+                            matching = c<32 && c!=27;
+                            partialMatching = false;
+                        }
+                        else if (node.Label==CHAR)
+                        {
                             matching = true;
-                            partialMatching = true;
-                        } else 
-                            matching = !partialMatching;
-                    } 
-                    else if (node.Label=="num")
-                    {
-                        if (char.IsDigit(c)) 
+                            partialMatching = false;
+                        }
+                        else if (node.Label==TEXT)
                         {
                             matching = true;
                             partialMatching = true;
+                        } 
+                        else if (node.Label==NUMLIST)
+                        {
+                            if (char.IsDigit(c) || c==';') {
+                                matching = true;
+                                partialMatching = true;
+                            } else 
+                                matching = !partialMatching;
+                        } 
+                        else if (node.Label==NUM)
+                        {
+                            if (char.IsDigit(c)) 
+                            {
+                                matching = true;
+                                partialMatching = true;
 
-                        }
-                    } else matching = false;                  
+                            }
+                        } else matching = false;                  
+                    }
+                    
+                    i++;
                 }
-                
-                i++;
+                else {
+                    matching = true;
+                    partialMatching = false;
+                }
+
+                #region functions
 
                 void AddRemainingText(ref char[] chars,SyntacticBlock selected)
                 {
-                    if (selected.Index>0 && paths.Count>1) {
-                        int holeSize,blockIndex;
-                        if (paths.Count>1)
-                        {                            
-                            var previous = paths[paths.Count-2];
-                            holeSize = selected.Index - ( previous.Index + previous.Text.Length-1 ) - 1;
-                            blockIndex = previous.Index + previous.Text.Length;
-                        } else
+                    if (selected.Index>0) {
+                        if ( paths.Count>1 )
                         {
-                            holeSize = selected.Index;
-                            blockIndex = 0;
-                        }
+                            int holeSize,blockIndex;
+                            if (paths.Count>1)
+                            {                            
+                                var previous = paths[paths.Count-2];
+                                holeSize = selected.Index - ( previous.Index + previous.Text.Length-1 ) - 1;
+                                blockIndex = previous.Index + previous.Text.Length;
+                            } else
+                            {
+                                holeSize = selected.Index;
+                                blockIndex = 0;
+                            }
 
-                        if (holeSize>0) {
+                            if (holeSize>0) {
+                                var textBlock = new SyntacticBlock(
+                                    blockIndex,
+                                    null,
+                                    new string(chars,blockIndex,holeSize),
+                                    true,false
+                                );
+                                paths.Insert(paths.Count-1,textBlock);
+                            }
+                        } else {
                             var textBlock = new SyntacticBlock(
-                                blockIndex,
-                                null,
-                                new string(chars,blockIndex,holeSize),
-                                true,false
-                            );
-                            paths.Insert(paths.Count-1,textBlock);
+                                    0,
+                                    null,
+                                    new string(chars,0,selected.Index),
+                                    true,false
+                                );
+                                paths.Insert(paths.Count-1,textBlock);
                         }
                     }
                 }
@@ -260,7 +324,7 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                         var longests = _paths.Where(x => x.Text.Length == maxLength);
                         t = new List<SyntacticBlock>(longests);
                         t.Sort((x,y) => x.SyntacticRule.Rule.ID.CompareTo(y.SyntacticRule.Rule.ID));
-                    } else t = paths;
+                    } else t = _paths;
 
                     // keep only the right syntax
                     var selected = t.First();
@@ -282,15 +346,21 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                     currentPath = null;                    
                 }
 
+                #endregion
+
                 if ( 
                     (matching && !partialMatching) ||
                     (!matching && partialMatching)                   
                     ) {
                     if (!partialMatching || !matching)
                     {
-                        if (currentPath==null) currentPath = new TreePath(null,beginIndex);
-                        else currentPath = new TreePath(currentPath.Rule,currentPath.Index,currentPath);   
-                        currentPath.Add(node);
+                        if (!node.IsRoot) 
+                        {
+                            if (currentPath==null) currentPath = new TreePath(null,beginIndex);
+                            else currentPath = new TreePath(currentPath.Rule,currentPath.Index,currentPath);   
+                            currentPath.Add(node);
+                        }
+
                         if (node.SubNodes.Count==0) {
 
                             // gram path match
@@ -313,9 +383,6 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                             }
                             else
                                 return; // stop on result
-                                // go on scanning from next position : i
-                                //matching = partialMatching = false;
-                                //currentPath = null;
                         }
                         else
                         {
@@ -325,12 +392,20 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                             //matching = partialMatching = false;
                             // explore gram next
                             foreach ( var kv in node.SubNodes ) {
-                                _Parse(ref chars,i,rootNode,kv.Value,paths,currentPath,recurseLevel+1); 
+                                var pathsCount = paths.Count;
+                                _Parse(
+                                    ref chars,i,rootNode,kv.Value,paths,currentPath,
+                                    node.IsRoot,
+                                    recurseLevel+1); 
+                                var hasNewPath = paths.Count > pathsCount;
+                                //if (node.IsRoot)
+                                //    SelectPaths(ref chars,ref i,ref matching,ref partialMatching,rootNode,ref node);
                             }
 
                             if (recurseLevel==0 )
                             {
                                 SelectPaths(ref chars,ref i,ref matching,ref partialMatching,rootNode,ref node);
+                                if (node.IsRoot) i++;
                             }
                             else
                                 // stop on result
@@ -350,6 +425,9 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                             currentPath = null;
                             return; // rule not fit at i - stop on result
                         }
+                        else {
+                            if (returnImmediately) return;
+                        }
                     } 
                     else {
                         // scan next of current pattern ('node' partial matching)
@@ -358,6 +436,8 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
             }
 
             // end string
+
+            #region handle tail
 
             if (currentPath!=null) {
                 // path match to the end of the string but not ended
@@ -390,6 +470,8 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                 );
                 paths.Add(textBlock);
             }
+
+            #endregion
         }
 
         #endregion
