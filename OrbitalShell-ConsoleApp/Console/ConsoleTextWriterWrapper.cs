@@ -909,8 +909,11 @@ namespace DotNetConsoleAppToolkit.Console
                 EnableConstraintConsolePrintInsideWorkArea = false;
                 if (!ignorePrintDirectives)
                 {
+                    // directives are removed
+                    s = ANSI.GetText(s);    // also removed ansi sequences
                     Echo(s, lineBreak, false, true, true, printSequences);
                 } else {
+                    // directives are keeped
                     Echo(s, lineBreak, false, false, true, printSequences,false,false);
                 }
                 EnableConstraintConsolePrintInsideWorkArea = e;

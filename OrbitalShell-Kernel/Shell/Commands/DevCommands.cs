@@ -41,6 +41,45 @@ namespace DotNetConsoleAppToolkit.Shell.Commands.Dev
             return CommandVoidResult.Instance;
         }
 
+        [Command("ansi parser test (25/1/21)")]
+        public CommandVoidResult EchoRawMeasureTest(CommandEvaluationContext context) 
+        {
+            var str = ANSI.ESC+"[38;2;50;100;150m"+"HELLO(f=red)YOU"; // 5 printables cars
+            
+            context.Out.Echoln("parsed echo:");
+            context.Out.Echoln(str);
+
+            context.Out.Echoln("raw mode from echo:");
+            context.Out.Echoln(str,true);
+
+            string s;
+
+            // good arg is: ignorePrintDirectives
+            // ansi pass throught
+
+            // ignorePrintDirectives = false , doNotEvaluatePrintPrimitives = false
+            context.Out.Echo("text from echo printable chars only mode 1 (GetText,GetPrint defaults)="+(s=context.Out.GetText(str)) );
+            context.Out.Echoln("(rdc)  length = "+s.Length);
+            context.Out.Echoln("raw ="+s,true );
+
+            // ignorePrintDirectives = false , doNotEvaluatePrintPrimitives = true
+            context.Out.Echo("text from echo printable chars only mode 2="+ (s=context.Out.GetPrint(str,false,false,true)));
+            context.Out.Echoln("(rdc)  length = "+s.Length);
+            context.Out.Echoln("raw ="+s,true );
+
+            // ignorePrintDirectives = true , doNotEvaluatePrintPrimitives = true
+            context.Out.Echo("text from echo printable chars only mode 3="+ (s=context.Out.GetPrint(str,false,true,true)));
+            context.Out.Echoln("(rdc)  length = "+s.Length);
+            context.Out.Echoln("raw ="+s,true );
+
+            // ignorePrintDirectives = true , doNotEvaluatePrintPrimitives = false
+            context.Out.Echo("text from echo printable chars only mode 4="+ (s=context.Out.GetPrint(str,false,true,false)));
+            context.Out.Echoln("(rdc)  length = "+s.Length);
+            context.Out.Echoln("raw ="+s,true );
+
+            return CommandVoidResult.Instance;
+        }
+
         [Command("ansi parser test (22/1/21)")]
         public CommandVoidResult Ansiparsetest(CommandEvaluationContext context) 
         {

@@ -33,7 +33,7 @@ improvements to do 👷
 20/1/21 FGZ     variable defined as a reference to another but having its own path/name
 20/1/21 FGZ     variable value provided by a programmatic way
 20/1/21 FGZ     🆗 ANSI: GetTextLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
-25/1/21 FGZ     👷 text metric functions and echo parametrization : adapt to use of ANSI.GetTextLength(..)
+25/1/21 FGZ     🆗 text metric functions and echo parametrization : adapt to use of ANSI.GetTextLength(..)
 25/1/21 FGZ     👷 echo command: add parameters for raws styles output (in the future will be output filter)
 20/1/21 FGZ     please add sort in env table
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
