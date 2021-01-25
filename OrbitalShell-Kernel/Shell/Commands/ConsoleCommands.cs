@@ -86,7 +86,8 @@ current print directives are:
         public CommandVoidResult Echo(
             CommandEvaluationContext context,
             [Parameter("text or other (value of type object) to be writen to output", true, "")] object obj,
-            [Option("n","no line break: do not add a line break after output")] bool avoidLineBreak = false
+            [Option("n","no line break: do not add a line break after output")] bool avoidLineBreak = false,
+            [Option("r","raw mode - echo directives and ansi sequences are replaces by readable text")] bool raw = false
             )
         {
             lock (context.Out.Lock)
@@ -100,10 +101,15 @@ current print directives are:
                 if (obj != null)
                 {
                     if (obj is string s)
-                        context.Out.Echo(s, !avoidLineBreak);
+                        context.Out.Echo(s, !avoidLineBreak, raw);
                     else
                     {
-                        obj.Echo(new EchoEvaluationContext(context.Out, context, null));
+                        obj.Echo(
+                            new EchoEvaluationContext(
+                                context.Out, 
+                                context, 
+                                new FormattingOptions(!avoidLineBreak,raw)
+                            ));
                         if (!avoidLineBreak) context.Out.Echo("",true);
                     }
                 }
