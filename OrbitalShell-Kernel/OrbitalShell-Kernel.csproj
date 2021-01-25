@@ -20,12 +20,6 @@
   <ItemGroup>
     <None Remove="Component\CommandLine\Defaults\.aliases" />
     <None Remove="Component\CommandLine\Defaults\.profile" />
-    <None Remove="Shell\Commands\CommandLineProcessor\banner-2.txt" />
-    <None Remove="Shell\Commands\CommandLineProcessor\banner-3.txt" />
-    <None Remove="Shell\Commands\CommandLineProcessor\banner.txt" />
-    <None Remove="Shell\Commands\Test\commandsSamples.sh" />
-    <None Remove="Shell\Commands\Test\testPrintDirectives.sh" />
-    <None Remove="Shell\Commands\TextEditor\edit-help.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,25 +28,7 @@
     </Content>
     <Content Include="Component\CommandLine\Defaults\.profile">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Shell\Commands\CommandLineProcessor\banner-2.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Shell\Commands\CommandLineProcessor\banner-3.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Shell\Commands\CommandLineProcessor\banner.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Shell\Commands\Test\commandsSamples.sh">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Shell\Commands\Test\testPrintDirectives.sh">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Shell\Commands\TextEditor\edit-help.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Content>    
   </ItemGroup>
 
   <ItemGroup>

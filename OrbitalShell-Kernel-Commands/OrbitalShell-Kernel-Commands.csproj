@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>OrbitalShell.Component.Commands</RootNamespace>
+    <AssemblyName>OrbitalShell-Kernel-Commands</AssemblyName>
+    <NeutralLanguage>en-US</NeutralLanguage>
+	  <IsPackable>true</IsPackable>
+    <Authors>Orbital Shell team</Authors>
+    <Company>franck.gaspoz@gmail.com, gaspard moyrand</Company>
+    <Product>Orbital Shell - Kernel module</Product>
+    <Description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core and.Net Standard 2.1</Description>
+    <Copyright>(c) 2020 Licence MIT</Copyright>
+  </PropertyGroup>
+
+<ItemGroup>
+    <None Remove="Component\Commands\CommandLineProcessor\banner-2.txt" />
+    <None Remove="Component\Commands\CommandLineProcessor\banner-3.txt" />
+    <None Remove="Component\Commands\CommandLineProcessor\banner.txt" />
+    <None Remove="Component\Commands\Test\commandsSamples.sh" />
+    <None Remove="Component\Commands\Test\testPrintDirectives.sh" />
+    <None Remove="Component\Commands\TextEditor\edit-help.txt" />
+</ItemGroup>
+
+<ItemGroup>
+    <Content Include="Component\Commands\CommandLineProcessor\banner-2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Component\Commands\CommandLineProcessor\banner-3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Component\Commands\CommandLineProcessor\banner.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Component\Commands\Test\commandsSamples.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Component\Commands\Test\testPrintDirectives.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Component\Commands\TextEditor\edit-help.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
+    <ProjectReference Include="..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />
+  </ItemGroup>
+
+</Project>

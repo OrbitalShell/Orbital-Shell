@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-ConsoleApp", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel", "OrbitalShell-Kernel\OrbitalShell-Kernel.csproj", "{EBBBA271-C794-4F7C-92A9-8D774A3CABB8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel-Commands", "OrbitalShell-Kernel-Commands\OrbitalShell-Kernel-Commands.csproj", "{EBBBA271-C794-4F7C-92A9-8D774A3CABB8}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-CLI", "OrbitalShell-CLI\OrbitalShell-CLI.csproj", "{C2920F91-71BE-4B0F-8742-4C52F4A75D56}"
 EndProject
 Global

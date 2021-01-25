@@ -55,6 +55,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />
+    <ProjectReference Include="..\OrbitalShell-Kernel-Commands\OrbitalShell-Kernel-Commands.csproj" />
   </ItemGroup>
 
 </Project>

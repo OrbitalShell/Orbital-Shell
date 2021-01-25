@@ -1,0 +1,14 @@
+-------------------------------------------------------
+ Orbital Shell official modules source-code repository
+-------------------------------------------------------
+
+module project: /OrbitalShell-Module-{moduleName}
+
+deployment on NuGet:
+
+    OrbitalShell-Module-{moduleName}
+
+deployment on Orbital Shell modules repository:
+
+    https://github.com/franck-gaspoz/orbital-shell-modules.git
+

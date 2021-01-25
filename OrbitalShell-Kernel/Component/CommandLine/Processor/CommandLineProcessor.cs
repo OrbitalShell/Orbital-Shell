@@ -197,12 +197,18 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
 
             if (settings.PrintInfo) PrintInfo(CommandEvaluationContext);
 
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands: '{Assembly.GetExecutingAssembly()}' ... ",true,false);
+            // load kernel modules
 
-            // load kernel commands
-            (int typesCount,int commandsCount) = RegisterCommandsAssembly(CommandEvaluationContext,Assembly.GetExecutingAssembly());
-
+            var a = Assembly.GetExecutingAssembly();
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel module: '{a}' ... ",true,false);
+            (int typesCount,int commandsCount) = RegisterCommandsAssembly(CommandEvaluationContext,a);
             Done($"commands:{commandsCount} in {typesCount} types");
+
+            // can't reference by type an external module for which we have not a project reference
+            a = Assembly.LoadWithPartialName("OrbitalShell-Kernel-Commands");
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands module: '{a}' ... ",true,false);
+            (int typesCount2,int commandsCount2) = RegisterCommandsAssembly(CommandEvaluationContext,a);
+            Done($"commands:{commandsCount2} in {typesCount2} types");
             
             var lbr = false;
 
@@ -459,7 +465,7 @@ namespace DotNetConsoleAppToolkit.Component.CommandLine.Processor
                 File.ReadAllLines(
                 Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "Shell",
+                    "Component",
                     "Commands",
                     "CommandLineProcessor",
                     "banner.txt"));

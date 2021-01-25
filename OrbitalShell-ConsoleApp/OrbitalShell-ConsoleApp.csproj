@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>OrbitalShell</RootNamespace>
-    <AssemblyName>OrbitalShell-ConsoleApp</AssemblyName>
+    <AssemblyName>OrbitalShell-ConsoleApp</AssemblyName>    
     <NeutralLanguage>en-US</NeutralLanguage>
     <IsPackable>true</IsPackable>
     <Authors>Orbital Shell team</Authors>
