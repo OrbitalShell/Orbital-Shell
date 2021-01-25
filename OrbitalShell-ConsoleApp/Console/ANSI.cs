@@ -574,7 +574,7 @@ namespace DotNetConsoleAppToolkit.Console
         /// get the real length of the text without ansi sequences non printed characters
         /// </summary>
         /// <returns>length of visible part of the text</returns>
-        public static int GetLength(string s) => GetText(s).Length;
+        public static int GetTextLength(string s) => GetText(s).Length;
 
         /// <summary>
         /// gets the text part of the syntactic elements

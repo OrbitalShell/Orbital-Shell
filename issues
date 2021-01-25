@@ -32,7 +32,7 @@ improvements to do 👷
 20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
 20/1/21 FGZ     variable defined as a reference to another but having its own path/name
 20/1/21 FGZ     variable value provided by a programmatic way
-20/1/21 FGZ     👷 ANSI: GetTextLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
+20/1/21 FGZ     🆗 ANSI: GetTextLength(string s) : length without ansi sequences + bool IsAnsiSequence(ArraySegment<string> s,out int nextIndex)
 20/1/21 FGZ     please add sort in env table
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
 21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
