@@ -881,6 +881,17 @@ namespace DotNetConsoleAppToolkit.Console
             lock (Lock) {  sc.CursorVisible = true; }
         }              
 
+        /// <summary>
+        /// text only, no print directives, no ansi
+        /// </summary>
+        /// <param name="s">text to be filtered</param>
+        /// <returns>text visible characters only</returns>
+        public string GetText(string s)
+        {
+            var r = GetPrint(s,false,false,false);
+            return r;
+        }
+
         public string GetPrint(
             string s,
             bool lineBreak = false,
@@ -896,7 +907,12 @@ namespace DotNetConsoleAppToolkit.Console
                 cons.RedirectOut(sw);
                 var e = EnableConstraintConsolePrintInsideWorkArea;
                 EnableConstraintConsolePrintInsideWorkArea = false;
-                Echo(s, lineBreak, false, !ignorePrintDirectives, true, printSequences);
+                if (!ignorePrintDirectives)
+                {
+                    Echo(s, lineBreak, false, true, true, printSequences);
+                } else {
+                    Echo(s, lineBreak, false, false, true, printSequences,false,false);
+                }
                 EnableConstraintConsolePrintInsideWorkArea = e;
                 sw.Flush();
                 ms.Position = 0;
