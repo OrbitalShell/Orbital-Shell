@@ -1,27 +1,36 @@
 # Orbital Shell
 
-<b>Orbital Shell</b> is a multi-plateform (windows, linux, macos) command shell, inspired by <b><i>bash</i></b> and POSIX recommendations. It provides any usual bash shell feature (even if modernized) and nice syntaxes and features allowing to access (get/set/call) C# objects. Developed using C# 8, .NET Core 3.1 and .NET Standard 2.1
+<b>Orbital Shell</b> is a multi-plateform (**windows, linux, macos**) command shell, inspired by <b><i>bash</i></b> and POSIX recommendations. It provides any usual bash shell feature (even if modernized) and nice syntaxes and features allowing to access (get/set/call) C# objects. Developed using **C# 8, .NET Core 3.1/Net 5 and .NET Standard 2.1**
+
+This shell integrates the <u>most usefull shell commands</u>, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (<u>scripts, functions, aliases, settings, parametrization,...</u>). Having a strong <u>ANSI/VT-100-220-300-500</u> support, it provides structured and colorized display of data and information (support of <u>ASCII, Unicode and 24 bits colors</u>).
+
+## About the project
+
+> Find anything about this project on the project's Web Site at: [Orbital SHell Git-Pages](https://franck-gaspoz.github.io/orbital-shell) 
+
+> The full documentation of the **Orbital Shell**, for users and developers, is available here: [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
+
 
 [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license.md) This project is licensed under the terms of the MIT license: [LICENSE.md](LICENSE.md)  
-![version](https://img.shields.io/badge/Version-1.0.beta-green)
 
 <u>project repositories status:</u>
 
 ![orbital-shell](https://img.shields.io/badge/orbital--shell-repository-lightgrey?style=plastic)
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/orbital-shell?style=plastic)
-![version](https://img.shields.io/github/v/tag/franck-gaspoz/orbital-shell?style=plastic)  
+![version](https://img.shields.io/github/v/tag/franck-gaspoz/orbital-shell?style=plastic) ![version](https://img.shields.io/badge/Version-1.0.beta-green)
 
 *notice:*
 
-> The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now this library project repository is **CLOSED** because it has been integrated in the **orbital-shell** prokect repository.
+> The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **CLOSED** because it has been integrated in the **orbital-shell** project repository, so it is still under development but code has been moved to this repository
 > ![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
 > ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 > ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)   
 
-<img src="docs/assets/img/git-doc/orbital-shell.png"/>
-<small><i>a view of the shell running in terminal WSL2</i></small>
-
 ## Features
+
+<img src="docs/assets/img/git-doc/orbital-shell.png"/>
+<center><small><i>a view of the shell running in terminal WSL2</i></small></center>
+
 
 - Is a '**bash** style' command shell
 - The existing **modules** of commands contains **the most classical shell commands** (ls/dir,rm,mv,cp,find,echo,clear,more,env,set,export,history,alias,...), tests commands, and a **text editor command**
@@ -76,17 +85,6 @@
   - that will be auto documented like this by the shell help feature:
   
     <img src="docs/assets/img/git-doc/2020-06-13%2006_36_43-Window.png"/>
-
-
-
-## About the project
-
-This shell integrates the most usefull shell commands, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (scripts, functions, aliases, parametrization,...)
-
-This shell is built on the library [Dot Net Console App Toolkit](https://github.com/franck-gaspoz/dotnet-console-app-toolkit/blob/master/README.md) and the library component [DotNetConsoleAppToolkit-Shell](https://github.com/franck-gaspoz/orbital-shell/tree/master/DotNetConsoleAppToolkit-Shell)
-
-The documentation of the **Orbital Shell** is available here: [Index](https://github.com/franck-gaspoz/orbital-shell/blob/master/Doc/ReadMe.md)  
-The documentation for development of **Orbital Shell** is available here: [Developer Guide](https://github.com/franck-gaspoz/orbital-shell/blob/master/Doc/DeveloperGuide.md)
 
 ## Packages dependencies:
 
