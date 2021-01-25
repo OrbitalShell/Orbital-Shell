@@ -12,14 +12,6 @@
 // lexical
 // -----------------------------------------------------------------------------------
 
-ESC := \x1b
-CSI := ESC [
-OSC := ESC ]
-APC := ESC _
-DCS := ESC P
-ST := ESC \
-PM := ESC ^
-
 // scf (revision 1967)
 
 NONE := \x0
@@ -49,11 +41,21 @@ ETB := \x17
 CAN := \x18
 EM := \x19
 SUB := \x1a
+ESC := \x1b
 FS := \x1c
 GS := \x1d
 RS := \x1e
 US := \x1f
-SP := \x20
+//SP := \x20 // is visible
+
+// C1 Control characters
+
+CSI := ESC [
+OSC := ESC ]
+APC := ESC _
+DCS := ESC P
+ST := ESC \
+PM := ESC ^
 
 // -----------------------------------------------------------------------------------
 // syntactic rules
@@ -93,7 +95,7 @@ FS
 GS 
 RS 
 US 
-SP 
+SP
 scf
 
 ESC D,E,H,M,N,O,P,V,W,X,Z,6,7,8,9,=,>,F,c,l,m,n,o,|,},~

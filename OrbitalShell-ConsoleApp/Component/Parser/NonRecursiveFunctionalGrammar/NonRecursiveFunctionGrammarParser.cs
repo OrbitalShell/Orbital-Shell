@@ -40,6 +40,7 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
         Dictionary<string,string> _lexs = new Dictionary<string,string>();
 
         List<Rule> _rules = new List<Rule>();
+
         Dictionary<string,Rule> _rulesIndex = new Dictionary<string,Rule>();
 
         TreeNode _gramTree;
@@ -67,7 +68,7 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                             _lexs.Add(t[0].Trim(),v);
                         } else {
                             // rule def
-                            rules.Add(s);
+                            rules.Add(s.Trim());
                         }
                     }
                 }
@@ -129,12 +130,17 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
             foreach ( var x in t ) {
                 if (_lexs.TryGetValue(x,out var lex))
                 {
-                    var tlex = lex.Split(' ');
-                    foreach ( var colex in tlex ) {
-                        var nlex = colex;
-                        if (_lexs.TryGetValue(colex,out var trlex)) nlex = trlex;
-                        AddSeq(nlex);
-                    }                        
+                    if (lex==" ") 
+                        AddSeq(lex);    // fix for SP
+                    else 
+                    {
+                        var tlex = lex.Split(' ');
+                        foreach ( var colex in tlex ) {
+                            var nlex = colex;
+                            if (_lexs.TryGetValue(colex,out var trlex)) nlex = trlex;
+                            AddSeq(nlex);
+                        } 
+                    }                       
                 }            
                 else {
                     if (!x.Contains(','))
@@ -235,6 +241,7 @@ namespace DotNetConsoleAppToolkit.Component.Parser.NonRecursiveFunctionalGrammar
                         }
                         else if (node.Label==TEXT)
                         {
+                            // @TODO: develop
                             matching = true;
                             partialMatching = true;
                         } 
