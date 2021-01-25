@@ -13,15 +13,47 @@
 // -----------------------------------------------------------------------------------
 
 ESC := \x1b
-SP := \x20
 CSI := ESC [
 OSC := ESC ]
 APC := ESC _
 DCS := ESC P
 ST := ESC \
-BEL := \x7
-NONE := \x0
 PM := ESC ^
+
+// scf (revision 1967)
+
+NONE := \x0
+SOH := \x1
+STX := \x2
+ETX := \x3
+EOT := \x4
+ENQ := \x5
+ACK := \x6
+BEL := \x7
+BS := \x8
+HT := \x9
+LF := \xa
+VT := \xb
+FF := \xC
+CR := \xd
+SO := \xe
+SI := \xf
+DLE := \x10
+DC1 := \x11
+DC2 := \x12
+DC3 := \x13
+DC4 := \x14
+NAK := \x15
+SYN := \x16
+ETB := \x17
+CAN := \x18
+EM := \x19
+SUB := \x1a
+FS := \x1c
+GS := \x1d
+RS := \x1e
+US := \x1f
+SP := \x20
 
 // -----------------------------------------------------------------------------------
 // syntactic rules
@@ -30,6 +62,38 @@ PM := ESC ^
 // -----------------------------------------------------------------------------------
 
 // single character functions (except ESC)
+NONE
+SOH
+STX
+ETX
+EOT
+ENQ
+ACK
+BEL
+BS
+HT
+LF
+VT
+FF 
+CR 
+SO 
+SI 
+DLE
+DC1
+DC2
+DC3
+DC4
+NAK
+SYN
+ETB
+CAN
+EM 
+SUB
+FS 
+GS 
+RS 
+US 
+SP 
 scf
 
 ESC D,E,H,M,N,O,P,V,W,X,Z,6,7,8,9,=,>,F,c,l,m,n,o,|,},~
