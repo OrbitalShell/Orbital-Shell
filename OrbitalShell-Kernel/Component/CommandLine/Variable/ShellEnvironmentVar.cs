@@ -4,7 +4,7 @@
     /// standard shell environment namespaces
     /// </summary>
     public enum ShellEnvironmentVar
-    {        
+    {
         // traditional bash special variables
 
         /// <summary>
@@ -31,7 +31,7 @@
         /// last command error text (if any, else blank) (extension to bash special vars)
         /// </summary>     
         sp__lastCommandErrorText = '%',
-        
+
         /// <summary>
         /// active shell pid
         /// </summary>
@@ -46,7 +46,7 @@
         /// active shell thread id (extension to bash special vars)
         /// </summary>
         sp__activeShellThreadID = '|',
-        
+
         /// <summary>
         /// in bash is a process id, for orbital shell is a thread id
         /// </summary>
@@ -61,12 +61,12 @@
         /// active shell args list (separator ' ') (empty string if not defined)
         /// </summary>
         sp__ArgList = '*',
-        
+
         /// <summary>
         /// active shell separated args list (separator ',',args are quoted) (empty string if not defined)
         /// </summary>
         sp__ArgSepList = '@',
-        
+
         /// <summary>
         /// args count
         /// </summary>
@@ -260,6 +260,26 @@
         settings_console_prompt = 19,
 
         /// <summary>
+        /// path of the banner file if any
+        /// </summary>
+        settings_console_banner_path = 10200,
+
+        /// <summary>
+        /// banner start color index (if any banner)
+        /// </summary>
+        settings_console_banner_startColorIndex = 10204,
+
+        /// <summary>
+        /// banner start color index step (if any banner)
+        /// </summary>
+        settings_console_banner_colorIndexStep = 10205,
+
+        /// <summary>
+        /// is init banner enabled
+        /// </summary>
+        settings_console_banner_isEnabled = 10206,
+
+        /// <summary>
         /// if enabled, activate a fix that cleanup properly end of lines (ConsoleTextWrapper.LNBRK)
         /// </summary>
         settings_console_enableAvoidEndOfLineFilledWithBackgroundColor = 20,
@@ -293,7 +313,7 @@
         /// file system path formatting options
         /// </summary>
         display_fileSystemPathFormattingOptions = 23,
-        
+
         /// <summary>
         /// colors settings
         /// </summary>
@@ -339,6 +359,6 @@
         /// <summary>
         /// shell licence name
         /// </summary>
-        SHELL__LICENSE = 32,        
+        SHELL__LICENSE = 32,
     }
 }

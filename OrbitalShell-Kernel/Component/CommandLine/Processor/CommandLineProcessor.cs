@@ -1,5 +1,4 @@
 ﻿//#define enable_test_commands
-#define BannerEnabled
 
 using OrbitalShell.Component.CommandLine.CommandBatch;
 using OrbitalShell.Component.CommandLine.CommandModel;
@@ -28,6 +27,7 @@ using cmdlr = OrbitalShell.Component.CommandLine.CommandLineReader;
 using cons = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -487,23 +487,28 @@ namespace OrbitalShell.Component.CommandLine.Processor
             context.Out.Echoln($" {Settings.AppEditor}");
             context.Out.Echoln($" {RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture} - {RuntimeInformation.FrameworkDescription} - {lib.RuntimeEnvironment.OSType}");
 
-#if BannerEnabled
-            var banner =
-                File.ReadAllLines(
-                Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "Commands",
-                    "CommandLineProcessor",
-                    "banner.txt"));
-            int c = 202;
-            foreach (var line in banner)
+            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_banner_isEnabled))
             {
-                context.Out.SetForeground(c);
-                context.Out.Echoln(line);
-                c++;
+                try
+                {
+                    var banner =
+                        File.ReadAllLines(
+                            context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_banner_path)
+                        );
+                    int c = context.ShellEnv.GetValue<int>(ShellEnvironmentVar.settings_console_banner_startColorIndex);
+                    foreach (var line in banner)
+                    {
+                        context.Out.SetForeground(c);
+                        context.Out.Echoln(line);
+                        c+=context.ShellEnv.GetValue<int>(ShellEnvironmentVar.settings_console_banner_colorIndexStep);;
+                    }
+                    context.Out.Echoln();
+                }
+                catch (Exception ex)
+                {
+                    Error("banner error: " + ex.Message, true);
+                }
             }
-#endif
-            context.Out.Echoln();
         }
 
         #region shell log operations
@@ -884,7 +889,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     try
                     {
                         var outputData = InvokeCommand(CommandEvaluationContext, syntaxParsingResult.CommandSyntax.CommandSpecification, syntaxParsingResult.MatchingParameters);
-                        
+
                         r = new ExpressionEvaluationResult(null, ParseResultType.Valid, outputData, (int)ReturnCode.OK, null);
                     } catch (Exception commandInvokeError)
                     {

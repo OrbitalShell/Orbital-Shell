@@ -54,5 +54,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public string KernelCommandsModuleAssemblyName = "OrbitalShell-Kernel-Commands";
 
+        public string KernelCommandsRootNamespace = "Commands";
+
     }
 }

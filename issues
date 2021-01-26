@@ -43,6 +43,7 @@ procrastinated:
 olds:
 -----
 
+26/1/21 FGZ     🆗 added init banner parametrization
 26/1/21 FGZ     🆗 restructured projects (little namespaces changes)
 22/1/21 FGZ     🆗 changed bool echo primitive colorization
 22/1/21 FGZ     🆗 add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
