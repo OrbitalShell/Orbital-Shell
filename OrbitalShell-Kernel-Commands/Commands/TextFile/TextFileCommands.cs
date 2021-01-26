@@ -1,4 +1,4 @@
-﻿using OrbitalShell.Shell.Commands.FileSystem;
+﻿using OrbitalShell.Component.Commands.FileSystem;
 using OrbitalShell.Component.CommandLine;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Console;
@@ -22,7 +22,7 @@ using OrbitalShell.Lib.Data;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 
-namespace OrbitalShell.Shell.Commands.TextFile
+namespace OrbitalShell.Commands.TextFile
 {
     [Commands("commands related to text files")]
     public class TextFileCommands : ICommandsDeclaringType
@@ -42,25 +42,25 @@ namespace OrbitalShell.Shell.Commands.TextFile
                 foreach (var item in items)
                 {
                     PrintFile(context, (FilePath)item, hideLineNumbers);
-                    r.Add( new TextFileInfo((FilePath)item, null,OSPlatform.Create("?"),null));
+                    r.Add(new TextFileInfo((FilePath)item, null, OSPlatform.Create("?"), null));
                 }
                 if (items.Count == 0)
                 {
                     context.Errorln($"more: no such file: {path.OriginalPath}");
-                    return new CommandResult<List<TextFileInfo>>( new List<TextFileInfo> { new TextFileInfo( new FilePath(path.OriginalPath),null,OSPlatform.Create("?"),null) }, ReturnCode.Error);
+                    return new CommandResult<List<TextFileInfo>>(new List<TextFileInfo> { new TextFileInfo(new FilePath(path.OriginalPath), null, OSPlatform.Create("?"), null) }, ReturnCode.Error);
                 }
                 context.Out.ShowCur();
-                return new CommandResult<List<TextFileInfo>>( r );
+                return new CommandResult<List<TextFileInfo>>(r);
             }
             else
-                return new CommandResult<List<TextFileInfo>>( new List<TextFileInfo> { new TextFileInfo( new FilePath(path.FullName), null, OSPlatform.Create("?"),null) }, ReturnCode.Error);
+                return new CommandResult<List<TextFileInfo>>(new List<TextFileInfo> { new TextFileInfo(new FilePath(path.FullName), null, OSPlatform.Create("?"), null) }, ReturnCode.Error);
         }
 
         [SuppressMessage("Style", "IDE0071:Simplifier l’interpolation", Justification = "<En attente>")]
         [SuppressMessage("Style", "IDE0071WithoutSuggestion:Simplifier l’interpolation", Justification = "<En attente>")]
         TextFileInfo PrintFile(
-            CommandEvaluationContext context, 
-            FilePath file, 
+            CommandEvaluationContext context,
+            FilePath file,
             bool hideLineNumbers)
         {
             const int cl = -14;
@@ -127,7 +127,7 @@ namespace OrbitalShell.Shell.Commands.TextFile
                         context.Out.HideCur();
                         while (i < curNbLines && pos + decpos + i < nblines)
                         {
-                            if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested) 
+                            if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
                                 return new TextFileInfo(file, rlines, filePlatform, eol);
                             var prefix = hideLineNumbers ? "" : (context.ShellEnv.Colors.Dark + "  " + (pos + decpos + i + 1).ToString().PadRight(linecollength, ' ') + "  ");
                             context.Out.Echoln(prefix + context.ShellEnv.Colors.Default + lines[pos + decpos + i]);
@@ -198,20 +198,20 @@ namespace OrbitalShell.Shell.Commands.TextFile
                 }
             }
 
-            return new TextFileInfo(file,rlines, filePlatform, eol);
+            return new TextFileInfo(file, rlines, filePlatform, eol);
         }
 
-        [Command("check integrity of one or several text files","output a message for each corrupted file.\nThese command will declares a text file to be not integre as soon that it detects than the ratio of non printable caracters (excepted CR,LF) is geater than a fixed amount when reading the file")]
+        [Command("check integrity of one or several text files", "output a message for each corrupted file.\nThese command will declares a text file to be not integre as soon that it detects than the ratio of non printable caracters (excepted CR,LF) is geater than a fixed amount when reading the file")]
         public CommandResult<List<FilePath>> FckIntegrity(
             CommandEvaluationContext context,
-            [Parameter( "path of a file to be checked or path from where find files to to be checked")] FileSystemPath fileOrDir,
+            [Parameter("path of a file to be checked or path from where find files to to be checked")] FileSystemPath fileOrDir,
             [Option("p", "select names that matches the pattern", true, true)] string pattern,
             [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
             [Option("a", "print file system attributes")] bool printAttr,
             [Option("t", "search in top directory only")] bool top,
-            [Option("q", "quiet mode: do not print error message below corrupted file name" )] bool quiet,
-            [Option("r", "acceptable ratio of non printable characters",true,true)] double ratio = 30,
-            [Option("s", "minimum size of analysed part of the text",true,true)] int minSeqLength = 1024
+            [Option("q", "quiet mode: do not print error message below corrupted file name")] bool quiet,
+            [Option("r", "acceptable ratio of non printable characters", true, true)] double ratio = 30,
+            [Option("s", "minimum size of analysed part of the text", true, true)] int minSeqLength = 1024
             )
         {
             var r = new List<FilePath>();
@@ -219,9 +219,9 @@ namespace OrbitalShell.Shell.Commands.TextFile
             {
                 if (fileOrDir.IsFile)
                 {
-                    var (isValid,filePath) = CheckIntegrity(context, new FilePath(fileOrDir.FullName), ratio, printAttr, minSeqLength, quiet);
+                    var (isValid, filePath) = CheckIntegrity(context, new FilePath(fileOrDir.FullName), ratio, printAttr, minSeqLength, quiet);
                     if (!isValid) r.Add(filePath);
-                    return new CommandResult<List<FilePath>>( r);
+                    return new CommandResult<List<FilePath>>(r);
                 }
                 else
                 {
@@ -249,15 +249,17 @@ namespace OrbitalShell.Shell.Commands.TextFile
                         if (corruptedFilesCount > 0) context.Out.Echoln();
                         var crprt = (double)corruptedFilesCount / (double)counts.FilesCount * 100d;
                         context.Out.Echoln($"found {context.ShellEnv.Colors.Numeric}{Plur("corrupted file", corruptedFilesCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("file", counts.FilesCount, f)} corruption ratio={Cyan}{crprt}%");
-                        return new CommandResult<List<FilePath>>( r);
-                    } else
+                        return new CommandResult<List<FilePath>>(r);
+                    }
+                    else
                         return new CommandResult<List<FilePath>>(r);
                 }
-            } else
-                return new CommandResult<List<FilePath>>( new List<FilePath> { new FilePath(fileOrDir.FullName) }, ReturnCode.Error);
+            }
+            else
+                return new CommandResult<List<FilePath>>(new List<FilePath> { new FilePath(fileOrDir.FullName) }, ReturnCode.Error);
         }
 
-        (bool isValid,FilePath filePath) CheckIntegrity(
+        (bool isValid, FilePath filePath) CheckIntegrity(
             CommandEvaluationContext context,
             FilePath filePath,
             double maxRatio,
@@ -271,13 +273,13 @@ namespace OrbitalShell.Shell.Commands.TextFile
             var r = true;
             double nonPrintableCount = 0;
             double rt = 0;
-            var cti = arr.Length-1;
+            var cti = arr.Length - 1;
 
-            for (int i=0;i<arr.Length;i++)
+            for (int i = 0; i < arr.Length; i++)
             {
-                if (arr[i]!=10 && arr[i]!=13 && ( arr[i]<32 || arr[i]>255) ) nonPrintableCount++;
-                rt = nonPrintableCount / (i+1) * 100d;
-                if (rt>maxRatio && i>minSeqLength)
+                if (arr[i] != 10 && arr[i] != 13 && (arr[i] < 32 || arr[i] > 255)) nonPrintableCount++;
+                rt = nonPrintableCount / (i + 1) * 100d;
+                if (rt > maxRatio && i > minSeqLength)
                 {
                     cti = i;
                     r = false;
@@ -287,10 +289,10 @@ namespace OrbitalShell.Shell.Commands.TextFile
             r &= rt <= maxRatio;
             if (!r)
             {
-                filePath.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(printAttr, false, "", !quiet ? $"{Red} seems corrupted from index {cti}: bad chars ratio={rt}%":"")));
+                filePath.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(printAttr, false, "", !quiet ? $"{Red} seems corrupted from index {cti}: bad chars ratio={rt}%" : "")));
                 context.Out.LineBreak();
             }
-            return (r,filePath);
+            return (r, filePath);
         }
     }
 }

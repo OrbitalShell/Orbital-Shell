@@ -22,7 +22,7 @@ using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 
-namespace OrbitalShell.Shell.Commands.TextEditor
+namespace OrbitalShell.Commands.TextEditor
 {
     [Commands("Text Editor")]
     public class TextEditor : ICommandsDeclaringType
@@ -80,15 +80,15 @@ namespace OrbitalShell.Shell.Commands.TextEditor
         [Command("text editor")]
         public CommandVoidResult Edit(
             CommandEvaluationContext context,
-            [Parameter("path of an existing or of a new file. the path directory must exists",true)] FilePath filePath
+            [Parameter("path of an existing or of a new file. the path directory must exists", true)] FilePath filePath
             )
         {
             Context = context;
-            if (filePath==null || filePath.CheckPathExists(context))
+            if (filePath == null || filePath.CheckPathExists(context))
             {
                 Init();
                 InitEditor();
-                if (filePath!=null && filePath.FileSystemInfo.Exists) 
+                if (filePath != null && filePath.FileSystemInfo.Exists)
                     LoadFile(filePath);
                 else
                 {
@@ -109,7 +109,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
             RedirectErr(_errorStreamWriter);
         }
 
-        void InitEditor(bool clearEditorBackups=true,bool forgetCurrentFile=true)
+        void InitEditor(bool clearEditorBackups = true, bool forgetCurrentFile = true)
         {
             if (clearEditorBackups) _editorBackups = new Stack<EditorBackup>();
             _splitedLineIndex = 0;
@@ -150,16 +150,17 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                     _width = sc.WindowWidth;
                     _height = sc.WindowHeight;
                     ComputeBarVisible();
-                    SetCursorHome(); 
+                    SetCursorHome();
                     DisplayFile();
                     EmptyInfoBar();
                     DisplayInfoBar(false);
                     Context.Out.SetCursorPos(_X, _Y);
                     Context.Out.ShowCur();
-                }                
-            } catch (Exception ex)
+                }
+            }
+            catch (Exception ex)
             {
-                Errorln(ex+"");
+                Errorln(ex + "");
             }
         }
 
@@ -184,7 +185,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                             if (_splitedLineIndex == 0)
                             {
                                 if (p.X > 0)
-                                    Context.Out.CursorLeft = p.X - 1;                                
+                                    Context.Out.CursorLeft = p.X - 1;
                             }
                             else
                             {
@@ -206,11 +207,11 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                         lock (ConsoleLock)
                         {
                             var line = _text[_currentLine];
-                            var spl = Context.Out.GetIndexLineSplitsInWorkAreaConstraintedString(line, _beginOfLineCurPos, Context.Out.CursorPos.X, Context.Out.CursorPos.Y, true,false, !_rawMode);
+                            var spl = Context.Out.GetIndexLineSplitsInWorkAreaConstraintedString(line, _beginOfLineCurPos, Context.Out.CursorPos.X, Context.Out.CursorPos.Y, true, false, !_rawMode);
                             var index = spl.CursorIndex;
                             var curY = Context.Out.CursorTop;
                             if (index < spl.PrintSequences.TextLength)
-                                Context.Out.SetCursorPosConstraintedInWorkArea(Context.Out.CursorLeft + 1, Context.Out.CursorTop,true,true,false);
+                                Context.Out.SetCursorPosConstraintedInWorkArea(Context.Out.CursorLeft + 1, Context.Out.CursorTop, true, true, false);
                             _X = Context.Out.CursorLeft;
                             _Y = Context.Out.CursorTop;
                             if (Context.Out.CursorTop > curY) _splitedLineIndex++;
@@ -220,9 +221,9 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                     case ConsoleKey.DownArrow:
                         lock (ConsoleLock)
                         {
-                            if (_currentLine < _text.Count-1)
+                            if (_currentLine < _text.Count - 1)
                             {
-                                if (_linesSplits[_currentLine]==null)
+                                if (_linesSplits[_currentLine] == null)
                                 {
                                     _linesSplits[_currentLine] = GetLineSplits(_currentLine, 0, _Y);
                                 }
@@ -246,7 +247,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                                 else
                                 {
                                     _Y = _barY - 1;
-                                    if (_splitedLineIndex==0)
+                                    if (_splitedLineIndex == 0)
                                         _beginOfLineCurPos.Y = _Y;
                                     Scroll(-1);
                                     Context.Out.SetCursorPos(_X, _Y);
@@ -261,7 +262,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                     case ConsoleKey.UpArrow:
                         lock (ConsoleLock)
                         {
-                            if (_currentLine > 0 || _splitedLineIndex>0 )
+                            if (_currentLine > 0 || _splitedLineIndex > 0)
                             {
                                 if (_splitedLineIndex == 0)
                                 {
@@ -270,17 +271,18 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                                     _currentLine--;
                                     _beginOfLineCurPos.X = _X;
                                     _beginOfLineCurPos.Y = _Y - (_linesSplits[_currentLine].Count - 1);
-                                    _splitedLineIndex = _linesSplits[_currentLine].Count-1;
+                                    _splitedLineIndex = _linesSplits[_currentLine].Count - 1;
                                 }
                                 else
                                 {
                                     _splitedLineIndex--;
-                                    _Y--;                                  
+                                    _Y--;
                                 }
                                 if (_Y >= 0)
                                 {
                                     Context.Out.SetCursorPos(_X, _Y);
-                                } else
+                                }
+                                else
                                 {
                                     _Y = 0;
                                     _beginOfLineCurPos.Y = _Y - (_linesSplits[_currentLine].Count - 1);
@@ -303,7 +305,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                         break;
                 }
 
-                if (c.Key==_cmdKey)
+                if (c.Key == _cmdKey)
                 {
                     if (!_barVisible)
                         ToggleBarVisibility();
@@ -319,7 +321,8 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                             _cmdInput = false;
                             _cmdBarIndex = 0;
                             if (_barVisible) ToggleBarVisibility();
-                        } else
+                        }
+                        else
                         {
                             _cmdBarIndex++;
                         }
@@ -345,10 +348,11 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                             case ConsoleKey.I:
                                 // show file info bar
                                 hideBar = false;
-                                _statusText = null;                                
+                                _statusText = null;
                                 _cmdInput = false;
                                 printOnlyCursorInfo = false;
-                                lock (ConsoleLock) {
+                                lock (ConsoleLock)
+                                {
                                     BackupCursorPos();
                                     EmptyInfoBar();
                                     RestoreCursorPos();
@@ -403,7 +407,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
 
                             case ConsoleKey.R:
                                 _rawMode = !_rawMode;
-                                _statusText = "raw mode is " + (_rawMode?"enabled":"disabled");
+                                _statusText = "raw mode is " + (_rawMode ? "enabled" : "disabled");
                                 hideBar = false;
                                 printOnlyCursorInfo = false;
                                 RefreshEditor();
@@ -497,7 +501,9 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                     File.WriteAllText(_filePath.FullName, text);
                     _fileModified = false;
                     UpdateFileInfoBar();
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     Error(ex.Message);
                     return false;
                 }
@@ -513,7 +519,8 @@ namespace OrbitalShell.Shell.Commands.TextEditor
         {
             if (_barVisible && _cmdInput && _statusText == null)
             {
-                lock (ConsoleLock) {
+                lock (ConsoleLock)
+                {
                     BackupCursorPos();
                     DisplayInfoBar();
                     RestoreCursorPos();
@@ -526,7 +533,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
             lock (ConsoleLock)
             {
                 var bVis = ShowEmptyBar();
-                PrintBarMessage(Bred + text + ". Press a key to continue..."+Context.ShellEnv.Colors.Default);
+                PrintBarMessage(Bred + text + ". Press a key to continue..." + Context.ShellEnv.Colors.Default);
                 var c = sc.ReadKey(true);
                 if (bVis) ToggleBarVisibility();
             }
@@ -560,7 +567,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                 //Context.Out.DisableTextDecoration();
                 var s = c.KeyChar.ToString().ToLower();
                 if (!bVis) ToggleBarVisibility();
-                return s=="y";
+                return s == "y";
             }
         }
 
@@ -591,12 +598,14 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                     "Commands",
                     "TextEditor",
-                    "edit-help.txt")))) {
+                    "edit-help.txt"))))
+                {
                     _readOnly = true;
                     _barVisible = true;
                     ComputeBarVisible();
                     DisplayEditor();
-                } else
+                }
+                else
                 {
                     RestorePreviousFile();
                 }
@@ -611,11 +620,11 @@ namespace OrbitalShell.Shell.Commands.TextEditor
             DisplayEditor();
         }
 
-        void ClearCurrentEditor(bool newFile=false)
+        void ClearCurrentEditor(bool newFile = false)
         {
             lock (ConsoleLock)
             {
-                InitEditor(false,newFile);
+                InitEditor(false, newFile);
                 _fileModified = !newFile;
                 _fileSize = 0;
                 DisplayEditor();
@@ -671,9 +680,9 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                 {
                     Context.Out.HideCur();
                     EraseInfoBar();
-                    if (_lastVisibleLineIndex < _text.Count-1)
+                    if (_lastVisibleLineIndex < _text.Count - 1)
                     {
-                        var slines = Context.Out.GetWorkAreaStringSplits(_text[_lastVisibleLineIndex], new Point(_X, _Y), true, false,!_rawMode).Splits;
+                        var slines = Context.Out.GetWorkAreaStringSplits(_text[_lastVisibleLineIndex], new Point(_X, _Y), true, false, !_rawMode).Splits;
                         var y = _barY;
                         var newBarY = _barY + _barHeight;
                         Context.Out.SetCursorPos(_X, _barY);
@@ -684,7 +693,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                             if (slines.Count == 1 || _splitedLastVisibleLineIndex == slines.Count - 1)
                             {
                                 if (i == 0) _lastVisibleLineIndex++;
-                                if (_lastVisibleLineIndex < _text.Count-1)
+                                if (_lastVisibleLineIndex < _text.Count - 1)
                                 {
                                     (atBottom, splitedLineIndex, slines) = PrintLine(_lastVisibleLineIndex, 0, newBarY);
                                     if (i == 1) break;
@@ -740,10 +749,10 @@ namespace OrbitalShell.Shell.Commands.TextEditor
 #endif
         }
 
-        void DecrementLineYPosition(int count=1)
+        void DecrementLineYPosition(int count = 1)
         {
-            for (int i=0;i<count;i++)
-            {                
+            for (int i = 0; i < count; i++)
+            {
                 if (_splitedLastVisibleLineIndex > 0)
                     _splitedLastVisibleLineIndex--;
                 else
@@ -785,13 +794,14 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                     if (dy < 0)
                     {
                         Context.Out.SetCursorPos(0, _barY - 1);
-                        PrintLineSplit(slines[_splitedLineIndex].Text,_splitedLastVisibleLineIndex==slines.Count-1);
+                        PrintLineSplit(slines[_splitedLineIndex].Text, _splitedLastVisibleLineIndex == slines.Count - 1);
                         _lastVisibleLineIndex = _currentLine;
                         _splitedLastVisibleLineIndex = _splitedLineIndex;
-                    } else
+                    }
+                    else
                     {
                         Context.Out.SetCursorPos(0, 0);
-                        PrintLineSplit(slines[_splitedLineIndex].Text, _splitedLineIndex==slines.Count-1);
+                        PrintLineSplit(slines[_splitedLineIndex].Text, _splitedLineIndex == slines.Count - 1);
                         DecrementLineYPosition();
                     }
 
@@ -837,7 +847,8 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                 for (int i = 0; i < _text.Count; i++) _linesSplits.Add(null);
                 _fileEOL = platform;
                 return true;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Error(ex.Message);
                 return false;
@@ -857,7 +868,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                     var r = PrintLine(index++);
                     atBottom = r.atBottom;
                     var splitedLastLineIndex = r.splitedLineIndex;
-                    _lastVisibleLineIndex = index-1;
+                    _lastVisibleLineIndex = index - 1;
                     _splitedLastVisibleLineIndex = splitedLastLineIndex;
                     y = Context.Out.CursorTop;
                 }
@@ -890,37 +901,37 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                 );
         }
 
-        (bool atBottom,int splitedLineIndex, List<StringSegment> slines) PrintLine(int index,int subIndex=0,int maxY=-1)
+        (bool atBottom, int splitedLineIndex, List<StringSegment> slines) PrintLine(int index, int subIndex = 0, int maxY = -1)
         {
             if (maxY == -1) maxY = _barY;
             lock (ConsoleLock)
             {
                 var y = Context.Out.CursorTop;
                 var line = _text[index];
-                
+
                 var slines = Context.Out.GetWorkAreaStringSplits(line, new Point(0, y), true, false, !_rawMode).Splits;
 
                 int i = subIndex;
-                while (i<slines.Count && y < maxY)
+                while (i < slines.Count && y < maxY)
                 {
-                    Context.Out.SetCursorPos(0, y);                    
-                    PrintLineSplit(slines[i].Text,i== slines.Count-1);
+                    Context.Out.SetCursorPos(0, y);
+                    PrintLineSplit(slines[i].Text, i == slines.Count - 1);
                     y++; i++;
                 }
                 if (y < maxY) Context.Out.SetCursorPos(0, y);
                 _linesSplits[index] = slines;
                 var atBottom = y >= maxY;
-                return (atBottom,i-1,slines);
+                return (atBottom, i - 1, slines);
             }
         }
 
-        void PrintLineSplit(string s,bool eol)
+        void PrintLineSplit(string s, bool eol)
         {
             Context.Out.Echo(s, false, _rawMode);
             if (!_rawMode) Context.Out.Echo(Context.ShellEnv.Colors.Default.ToString());
         }
 
-        List<StringSegment> GetLineSplits(int lineIndex, int x,int y) => Context.Out.GetWorkAreaStringSplits(_text[lineIndex], new Point(x, y), true, false, !_rawMode).Splits;
+        List<StringSegment> GetLineSplits(int lineIndex, int x, int y) => Context.Out.GetWorkAreaStringSplits(_text[lineIndex], new Point(x, y), true, false, !_rawMode).Splits;
 
         void EraseInfoBar()
         {
@@ -959,13 +970,13 @@ namespace OrbitalShell.Shell.Commands.TextEditor
             }
         }
 
-        void DisplayInfoBar(bool showCursor=true,bool onlyCursorInfo=false)
+        void DisplayInfoBar(bool showCursor = true, bool onlyCursorInfo = false)
         {
             if (!_barVisible) return;
             lock (ConsoleLock)
             {
                 var r = ActualWorkArea(false);
-                Context.Out.CropX = r.Right-2;
+                Context.Out.CropX = r.Right - 2;
                 Context.Out.HideCur();
 
                 if (!onlyCursorInfo)
@@ -1008,40 +1019,40 @@ namespace OrbitalShell.Shell.Commands.TextEditor
                 //Context.Out.DisableTextDecoration();
 
                 Context.Out.Echo(ANSI.RSTXTA);
-                
+
                 if (showCursor) Context.Out.ShowCur();
             }
         }
 
         void PrintCursorInfo()
         {
-            Context.Out.SetCursorPos(1, _barY+ 1 );
+            Context.Out.SetCursorPos(1, _barY + 1);
             //Context.Out.EnableInvert();
-            Context.Out.Echo($"{GetPositionInfo()} | {_splitedLineIndex} | {GetCursorInfo()} | {GetLastKeyInfo()}               ");            
+            Context.Out.Echo($"{GetPositionInfo()} | {_splitedLineIndex} | {GetCursorInfo()} | {GetLastKeyInfo()}               ");
         }
 
         string GetBarIndex() => $"({_cmdBarIndex}/{_maxCmdBarIndex})";
 
-        string GetLastKeyInfo() => $"[{_lastKeyInfo.Key}]{(_lastKeyInfo.Modifiers.HasFlag(ConsoleModifiers.Alt)?"[Alt]":"")}{(_lastKeyInfo.Modifiers.HasFlag(ConsoleModifiers.Control) ? "[Ctl]" : "")}{(_lastKeyInfo.Modifiers.HasFlag(ConsoleModifiers.Shift) ? "[Shf]" : "")}";
+        string GetLastKeyInfo() => $"[{_lastKeyInfo.Key}]{(_lastKeyInfo.Modifiers.HasFlag(ConsoleModifiers.Alt) ? "[Alt]" : "")}{(_lastKeyInfo.Modifiers.HasFlag(ConsoleModifiers.Control) ? "[Ctl]" : "")}{(_lastKeyInfo.Modifiers.HasFlag(ConsoleModifiers.Shift) ? "[Shf]" : "")}";
 
-        string GetPositionInfo() => "line "+(_currentLine+1)+"";
+        string GetPositionInfo() => "line " + (_currentLine + 1) + "";
 
         string GetCursorInfo() => $"{_X},{_Y}";
 
         string GetFileInfo()
         {
-            return $"{((_filePath == null) ? "no file" : _filePath.Name)}{(_readOnly ? "(ro)" : "")}{(_fileModified ? "*" : "")} | {Plur("line", _text.Count)} | size={HumanFormatOfSize(_fileSize,2)} | enc={((_fileEncoding==null)?"?":_fileEncoding.EncodingName)} | eol={FileEOL} | {(_rawMode?"raw":"parsed")} mode";
+            return $"{((_filePath == null) ? "no file" : _filePath.Name)}{(_readOnly ? "(ro)" : "")}{(_fileModified ? "*" : "")} | {Plur("line", _text.Count)} | size={HumanFormatOfSize(_fileSize, 2)} | enc={((_fileEncoding == null) ? "?" : _fileEncoding.EncodingName)} | eol={FileEOL} | {(_rawMode ? "raw" : "parsed")} mode";
         }
 
         string GetCmdsInfo()
         {
-            string ShcutOpt(string shortCut,bool ifNotReadOnly=false,bool addCmdKeyStr=true) => $"{((ifNotReadOnly && _readOnly) ? Context.ShellEnv.Colors.InteractionPanelDisabledCmdKeys: Context.ShellEnv.Colors.InteractionPanelCmdKeys )}{(addCmdKeyStr?_cmdKeyStr:"")}{shortCut}{Context.ShellEnv.Colors.InteractionPanel}";
-            string Opt(string shortCut,string label, bool ifNotReadOnly = false, bool addCmdKeyStr = true) => $"{ShcutOpt(shortCut, ifNotReadOnly, addCmdKeyStr)} {((ifNotReadOnly&&_readOnly)?Context.ShellEnv.Colors.InteractionPanelDisabledCmdLabel:Context.ShellEnv.Colors.InteractionPanelCmdLabel)}{label}{Context.ShellEnv.Colors.InteractionPanel}";
+            string ShcutOpt(string shortCut, bool ifNotReadOnly = false, bool addCmdKeyStr = true) => $"{((ifNotReadOnly && _readOnly) ? Context.ShellEnv.Colors.InteractionPanelDisabledCmdKeys : Context.ShellEnv.Colors.InteractionPanelCmdKeys)}{(addCmdKeyStr ? _cmdKeyStr : "")}{shortCut}{Context.ShellEnv.Colors.InteractionPanel}";
+            string Opt(string shortCut, string label, bool ifNotReadOnly = false, bool addCmdKeyStr = true) => $"{ShcutOpt(shortCut, ifNotReadOnly, addCmdKeyStr)} {((ifNotReadOnly && _readOnly) ? Context.ShellEnv.Colors.InteractionPanelDisabledCmdLabel : Context.ShellEnv.Colors.InteractionPanelCmdLabel)}{label}{Context.ShellEnv.Colors.InteractionPanel}";
             return _cmdBarIndex switch
             {
                 2 => $" {Opt("t", "Top")} | {Opt("b", "Bottom")} | {Opt("z", "Next page")} | {Opt("a", "Previous page")}",
-                1 => $" {Opt("l", "Load")} | {Opt("s", "Save", true)} | {Opt("c", "Clear",true)} | {Opt("n", "New")} | {Opt("r", "Toggle raw mode")}",
-                _ => $" {Opt("q", "Quit")} | {Opt("x", "Exit all")} | {Opt("v", "Toggle bar")} | {Opt("i", "Info bar")} | {Opt("F1", "Help",false,false)}",
+                1 => $" {Opt("l", "Load")} | {Opt("s", "Save", true)} | {Opt("c", "Clear", true)} | {Opt("n", "New")} | {Opt("r", "Toggle raw mode")}",
+                _ => $" {Opt("q", "Quit")} | {Opt("x", "Exit all")} | {Opt("v", "Toggle bar")} | {Opt("i", "Info bar")} | {Opt("F1", "Help", false, false)}",
             };
         }
 

@@ -6,5 +6,5 @@ using OrbitalShell.Component.CommandLine.Module;
 [assembly: Module("1.0.0-beta-preview")]
 namespace OrbitalShell.Kernel
 {
-    public class Assembly {}
+    public class Assembly { }
 }

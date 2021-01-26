@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace OrbitalShell.Shell.Commands.TextEditor
+namespace OrbitalShell.Commands.TextEditor
 {
     public class EditorBackup
     {

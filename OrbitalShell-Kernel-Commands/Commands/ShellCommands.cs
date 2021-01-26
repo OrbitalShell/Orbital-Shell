@@ -23,7 +23,7 @@ using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 
-namespace OrbitalShell.Shell.Commands
+namespace OrbitalShell.Component.Commands
 {
     [Commands("commands of the command line processor")]
     public class ShellCommands : ICommandsDeclaringType
@@ -33,12 +33,12 @@ namespace OrbitalShell.Shell.Commands
         [Command("runs a batch file [Experimental]")]
         public CommandVoidResult Batch(
             CommandEvaluationContext context,
-            [Parameter(0,"path of the batch file (attempt a text file, starting or not by #orbsh!)")] FilePath path
+            [Parameter(0, "path of the batch file (attempt a text file, starting or not by #orbsh!)")] FilePath path
             )
         {
             if (path.CheckExists(context))
             {
-                context.CommandLineProcessor.CommandBatchProcessor.RunBatch(context,path.FileSystemInfo.FullName);
+                context.CommandLineProcessor.CommandBatchProcessor.RunBatch(context, path.FileSystemInfo.FullName);
             }
             return CommandVoidResult.Instance;
         }
@@ -52,9 +52,9 @@ namespace OrbitalShell.Shell.Commands
             CommandEvaluationContext context,
             [Option("s", "set short view: decrase output details")] bool shortView,
             [Option("v", "set verbose view: increase output details")] bool verboseView,
-            [Option("all","list all commands")] bool all,
-            [Option("t","filter commands list by command declaring type. if t is * list types",true,true)] string type,
-            [Option("m", "filter commands list by module name. if m is * list modules", true,true)] string module,
+            [Option("all", "list all commands")] bool all,
+            [Option("t", "filter commands list by command declaring type. if t is * list types", true, true)] string type,
+            [Option("m", "filter commands list by module name. if m is * list modules", true, true)] string module,
             [Parameter("output help for the command with name 'commandName'", true)] string commandName
             )
         {
@@ -71,7 +71,7 @@ namespace OrbitalShell.Shell.Commands
                     if (type != "*" && !context.CommandLineProcessor.CommandDeclaringShortTypesNames.Contains(type))
                     {
                         context.Errorln($"unknown command declaring type: '{type}'");
-                        return new CommandVoidResult( ReturnCode.Error);
+                        return new CommandVoidResult(ReturnCode.Error);
                     }
 
                     shortView = !verboseView;
@@ -107,7 +107,7 @@ namespace OrbitalShell.Shell.Commands
                     if (module != "*" && !context.CommandLineProcessor.Modules.Values.Select(x => x.Name).Contains(module))
                     {
                         context.Errorln($"unknown command module: '{module}'");
-                        return new CommandVoidResult( ReturnCode.Error);
+                        return new CommandVoidResult(ReturnCode.Error);
                     }
 
                     shortView = !verboseView;
@@ -148,27 +148,27 @@ namespace OrbitalShell.Shell.Commands
             else
             {
                 context.Errorln($"Command not found: '{commandName}'");
-                return new CommandVoidResult( ReturnCode.Error);
+                return new CommandVoidResult(ReturnCode.Error);
             }
             return new CommandVoidResult();
         }
 
         void PrintCommandHelp(
             CommandEvaluationContext context,
-            CommandSpecification com, 
-            bool shortView = false, 
-            bool verboseView = false, 
-            bool list = false, 
-            int maxcnamelength=-1, 
-            int maxcmdtypelength=-1, 
-            int maxmodlength=-1, 
-            bool singleout=false)
+            CommandSpecification com,
+            bool shortView = false,
+            bool verboseView = false,
+            bool list = false,
+            int maxcnamelength = -1,
+            int maxcmdtypelength = -1,
+            int maxmodlength = -1,
+            bool singleout = false)
         {
 #pragma warning disable IDE0071 // Simplifier l’interpolation
 #pragma warning disable IDE0071WithoutSuggestion // Simplifier l’interpolation
             if (maxcnamelength == -1) maxcnamelength = com.Name.Length + 1;
-            if (maxcmdtypelength == -1) maxcmdtypelength = com.DeclaringTypeShortName.Length + 1;       
-            var col = singleout? "": "".PadRight(maxcnamelength, ' ');
+            if (maxcmdtypelength == -1) maxcmdtypelength = com.DeclaringTypeShortName.Length + 1;
+            var col = singleout ? "" : "".PadRight(maxcnamelength, ' ');
             var f = GetCmd(EchoDirectives.f + "", cons.DefaultForeground.ToString().ToLower());
             if (list)
             {
@@ -203,17 +203,18 @@ namespace OrbitalShell.Shell.Commands
                         foreach (var p in com.ParametersSpecifications.Values)
                         {
                             var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.Name}{f}" : "";
-                            var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue!=null && (!p.IsOption || p.ParameterValueTypeName!=typeof(bool).Name )) ? ((ptype!=""?". ":"") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context,p.DefaultValue)}{f}") : "";
+                            var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue != null && (!p.IsOption || p.ParameterValueTypeName != typeof(bool).Name)) ? ((ptype != "" ? ". " : "") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}") : "";
                             var supdef = $"{ptype}{pdef}";
                             // method 'Echo if has' else to string (with stream capture ?)
-                            context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors,false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");
+                            context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors, false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");
                             if (!string.IsNullOrWhiteSpace(supdef)) context.Out.Echoln($"{col}{Tab}{" ".PadRight(mpl)}{supdef}");
                         }
 
                         if (string.IsNullOrWhiteSpace(com.Documentation)) context.Out.Echoln();
                         context.Out.Echo(GetPrintableDocText(com.Documentation, list, shortView, singleout ? 0 : maxcnamelength));
-                        
-                    } else
+
+                    }
+                    else
                     {
                         context.Out.Echoln(GetPrintableDocText(com.Documentation, list, shortView, singleout ? 0 : maxcnamelength));
                     }
@@ -228,17 +229,17 @@ namespace OrbitalShell.Shell.Commands
 #pragma warning restore IDE0071 // Simplifier l’interpolation
         }
 
-        string GetPrintableDocText(string docText,bool list,bool shortView,int leftMarginSize)
+        string GetPrintableDocText(string docText, bool list, bool shortView, int leftMarginSize)
         {
             if (string.IsNullOrWhiteSpace(docText) || shortView || list) return "";
             var lineStart = Environment.NewLine;
             var prfx0 = "{]=);:_&é'(";
             var prfx1 = "$*^ùè-_à'";
-            docText = docText.Replace(lineStart, prfx0+prfx1);
+            docText = docText.Replace(lineStart, prfx0 + prfx1);
             var lst = docText.Split(prfx0).AsQueryable();
             if (string.IsNullOrWhiteSpace(lst.FirstOrDefault())) lst = lst.Skip(1);
             lst = lst.Select(x => "".PadRight(leftMarginSize, ' ') + x + Br);
-            return Br+string.Join( "", lst).Replace(prfx1, "");
+            return Br + string.Join("", lst).Replace(prfx1, "");
         }
 
         #endregion
@@ -253,57 +254,57 @@ namespace OrbitalShell.Shell.Commands
             [Option("l", "load a module from the given path", true, true)] FilePath loadModulePath = null,
             [Option("u", "unload the module having the given name ", true, true)] string unloadModuleName = null
             )
+        {
+            var f = context.ShellEnv.Colors.Default.ToString();
+            if (loadModulePath == null && unloadModuleName == null)
+            {
+                var col1length = context.CommandLineProcessor.Modules.Values.Select(x => x.Name.Length).Max() + 1;
+                foreach (var kvp in context.CommandLineProcessor.Modules)
                 {
-                    var f = context.ShellEnv.Colors.Default.ToString();
-                    if (loadModulePath == null && unloadModuleName == null)
-                    {
-                        var col1length = context.CommandLineProcessor.Modules.Values.Select(x => x.Name.Length).Max() + 1;
-                        foreach (var kvp in context.CommandLineProcessor.Modules)
-                        {
-                            context.Out.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description} [types count={Cyan}{kvp.Value.TypesCount}{f} commands count={Cyan}{kvp.Value.CommandsCount}{f}]");
-                            context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}assembly:{context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.FullName}");
-                            context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}path:    {context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.Location}");
-                        }
-                        return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(context.CommandLineProcessor.Modules.Values.ToList());
-                    }
-                    if (loadModulePath != null)
-                    {
-                        if (loadModulePath.CheckExists(context))
-                        {
-                            var a = Assembly.LoadFrom(loadModulePath.FileSystemInfo.FullName);
-                            var (typesCount, commandsCount) = context.CommandLineProcessor.RegisterCommandsAssembly(context, a);
-                            if (commandsCount == 0)
-                            {
-                                context.Errorln("no commands have been loaded");
-                                return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
-                            }
-                            else
-                                context.Out.Echoln($"loaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
-                        }
-                        else
-                            return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
-                    }
-                    if (unloadModuleName != null)
-                    {
-                        if (context.CommandLineProcessor.Modules.Values.Any(x => x.Name == unloadModuleName))
-                        {
-                            var (typesCount, commandsCount) = context.CommandLineProcessor.UnregisterCommandsAssembly(context, unloadModuleName);
-                            if (commandsCount == 0)
-                            {
-                                context.Errorln("no commands have been unloaded");
-                                return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
-                            }
-                            else
-                                context.Out.Echoln($"unloaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
-                        }
-                        else
-                        {
-                            context.Errorln($"commands module '{unloadModuleName}' not registered");
-                            return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
-                        }
-                    }
-                    return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>();
+                    context.Out.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description} [types count={Cyan}{kvp.Value.TypesCount}{f} commands count={Cyan}{kvp.Value.CommandsCount}{f}]");
+                    context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}assembly:{context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.FullName}");
+                    context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}path:    {context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.Location}");
                 }
+                return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(context.CommandLineProcessor.Modules.Values.ToList());
+            }
+            if (loadModulePath != null)
+            {
+                if (loadModulePath.CheckExists(context))
+                {
+                    var a = Assembly.LoadFrom(loadModulePath.FileSystemInfo.FullName);
+                    var (typesCount, commandsCount) = context.CommandLineProcessor.RegisterCommandsAssembly(context, a);
+                    if (commandsCount == 0)
+                    {
+                        context.Errorln("no commands have been loaded");
+                        return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
+                    }
+                    else
+                        context.Out.Echoln($"loaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
+                }
+                else
+                    return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
+            }
+            if (unloadModuleName != null)
+            {
+                if (context.CommandLineProcessor.Modules.Values.Any(x => x.Name == unloadModuleName))
+                {
+                    var (typesCount, commandsCount) = context.CommandLineProcessor.UnregisterCommandsAssembly(context, unloadModuleName);
+                    if (commandsCount == 0)
+                    {
+                        context.Errorln("no commands have been unloaded");
+                        return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
+                    }
+                    else
+                        context.Out.Echoln($"unloaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
+                }
+                else
+                {
+                    context.Errorln($"commands module '{unloadModuleName}' not registered");
+                    return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
+                }
+            }
+            return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>();
+        }
 
         #endregion
 
@@ -312,10 +313,10 @@ namespace OrbitalShell.Shell.Commands
         [Command("outputs a table of environment variables and values")]
         public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context,
-            [Parameter(0,"variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root",true)] string varPath,
-            [Option("u","unfold namespaces")] bool unfoldNamespaces = false,
-            [Option("o","unfold values of type object")] bool unfoldObjects = false,
-            [Option("p","echo string values in parsed mode (ansi and directives)")] bool parsed = false
+            [Parameter(0, "variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
+            [Option("u", "unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o", "unfold values of type object")] bool unfoldObjects = false,
+            [Option("p", "echo string values in parsed mode (ansi and directives)")] bool parsed = false
             )
         {
             object obj;
@@ -331,21 +332,21 @@ namespace OrbitalShell.Shell.Commands
                 IsRawModeEnabled = !parsed
             };
 
-            if (obj is DataValue value) 
+            if (obj is DataValue value)
             {
                 var lst = new List<IDataObject>() { value };
-                var resultValue = new CommandResult<List<IDataObject>>( lst );
+                var resultValue = new CommandResult<List<IDataObject>>(lst);
                 var wrapper = new DataObject("");
-                wrapper.Set(new string[]{"x"},value);
-                wrapper.Echo(new EchoEvaluationContext(context.Out,context,options));
+                wrapper.Set(new string[] { "x" }, value);
+                wrapper.Echo(new EchoEvaluationContext(context.Out, context, options));
                 return resultValue;
-            } 
-            else 
+            }
+            else
             {
                 if (obj is IDataObject envVars)
                 {
                     var values = envVars.GetAttributes();
-                    envVars.Echo(new EchoEvaluationContext(context.Out, context,options));
+                    envVars.Echo(new EchoEvaluationContext(context.Out, context, options));
                     return new CommandResult<List<IDataObject>>(values);
                 }
                 else
@@ -360,17 +361,17 @@ namespace OrbitalShell.Shell.Commands
         [Command("outputs a table of variables and values")]
         public CommandResult<List<IDataObject>> Vars(
             CommandEvaluationContext context,
-            [Parameter(0,"variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root",true)] string varPath,
-            [Option("u","unfold namespaces")] bool unfoldNamespaces = false,
-            [Option("o","unfold values of type object")] bool unfoldObjects = false,
-            [Option("p","echo string values in parsed mode (ansi and directives)")] bool parsed = false
+            [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
+            [Option("u", "unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o", "unfold values of type object")] bool unfoldObjects = false,
+            [Option("p", "echo string values in parsed mode (ansi and directives)")] bool parsed = false
             )
         {
             object obj;
             if (varPath == null)
                 obj = context.Variables.RootObject;
             else
-                context.Variables.GetObject( varPath, out obj);
+                context.Variables.GetObject(varPath, out obj);
 
             var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
             {
@@ -379,20 +380,21 @@ namespace OrbitalShell.Shell.Commands
                 IsRawModeEnabled = !parsed
             };
 
-            if (obj is DataValue value) 
+            if (obj is DataValue value)
             {
                 var lst = new List<IDataObject>() { value };
-                var resultValue = new CommandResult<List<IDataObject>>( lst );
+                var resultValue = new CommandResult<List<IDataObject>>(lst);
                 var wrapper = new DataObject("");
-                wrapper.Set(new string[]{"x"},value);
-                wrapper.Echo(new EchoEvaluationContext(context.Out,context,options));
+                wrapper.Set(new string[] { "x" }, value);
+                wrapper.Echo(new EchoEvaluationContext(context.Out, context, options));
                 return resultValue;
-            } 
-            else {
+            }
+            else
+            {
                 if (obj is IDataObject envVars)
                 {
                     var values = envVars.GetAttributes();
-                    envVars.Echo(new EchoEvaluationContext(context.Out, context,options));
+                    envVars.Echo(new EchoEvaluationContext(context.Out, context, options));
                     return new CommandResult<List<IDataObject>>(values);
                 }
                 else
@@ -402,27 +404,28 @@ namespace OrbitalShell.Shell.Commands
                     return new CommandResult<List<IDataObject>>(null);
                 }
             }
-        }        
+        }
 
         [Command("set a command alias if a name and a value is provided. If only the name is provided, clear the alias definition. it no parameters is specified, list all alias")]
         public CommandResult<List<string>> Alias(
             CommandEvaluationContext context,
-            [Parameter(0,"name of the alias",true)] string name,
-            [Parameter(1,"text of the alias",true)] [OptionRequireParameter("name")] string text,
-            [Option("s","save current aliases to user aliases file")] bool save
+            [Parameter(0, "name of the alias", true)] string name,
+            [Parameter(1, "text of the alias", true)][OptionRequireParameter("name")] string text,
+            [Option("s", "save current aliases to user aliases file")] bool save
             )
         {
             var r = new List<string>();
-            if (name==null)
+            if (name == null)
             {
-                foreach ( var kvp in context.CommandLineProcessor.CommandsAlias.Aliases )
+                foreach (var kvp in context.CommandLineProcessor.CommandsAlias.Aliases)
                     context.Out.Echoln(CommandsAlias.BuildAliasCommand(kvp.Key, kvp.Value));
-            } else
+            }
+            else
             {
                 if (string.IsNullOrWhiteSpace(text))
-                    context.CommandLineProcessor.CommandsAlias.UnsetAlias(context,name);
+                    context.CommandLineProcessor.CommandsAlias.UnsetAlias(context, name);
                 else
-                    context.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(context,name, text);
+                    context.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(context, name, text);
             }
             if (save)
                 context.CommandLineProcessor.CommandsAlias.SaveAliases(context);
@@ -453,7 +456,7 @@ namespace OrbitalShell.Shell.Commands
 
         [Command("set the command line prompt")]
         public CommandResult<string> Prompt(
-            CommandEvaluationContext context, 
+            CommandEvaluationContext context,
             [Parameter("outputs the text of command line prompt if it is specified, else outputs the current prompt text", true)] string prompt = null
             )
         {
@@ -461,11 +464,11 @@ namespace OrbitalShell.Shell.Commands
             if (prompt == null)
             {
                 prompt = context.CommandLineProcessor.CommandLineReader.GetPrompt();
-                context.Out.Echoln(prompt,true);
+                context.Out.Echoln(prompt, true);
             }
             else
-                context.CommandLineProcessor.CommandLineReader.SetPrompt(context,prompt);
-            return new CommandResult<string>( prompt );
+                context.CommandLineProcessor.CommandLineReader.SetPrompt(context, prompt);
+            return new CommandResult<string>(prompt);
         }
 
         #endregion
@@ -478,7 +481,7 @@ namespace OrbitalShell.Shell.Commands
             )
         {
             cons.Exit();
-            return new CommandResult<int>( 0);
+            return new CommandResult<int>(0);
         }
 
         [Command("print command processor infos")]
@@ -498,18 +501,18 @@ namespace OrbitalShell.Shell.Commands
         [SuppressMessage("Style", "IDE0071WithoutSuggestion:Simplifier l’interpolation", Justification = "<En attente>")]
         [SuppressMessage("Style", "IDE0071:Simplifier l’interpolation", Justification = "<En attente>")]
         public CommandVoidResult History(
-            CommandEvaluationContext context, 
+            CommandEvaluationContext context,
             [Option("i", "invoke the command at the entry number in the history list", true, true)] int num,
             [Option("c", "clear the loaded history list")] bool clear,
             [Option("w", "write history lines to the history file (content of the file is replaced)")]
             [OptionRequireParameter("file")]  bool writeToFile,
             [Option("a", "append history lines to the history file")]
             [OptionRequireParameter("file")]  bool appendToFile,
-            [Option("r","read the history file and append the content to the history list")] 
+            [Option("r","read the history file and append the content to the history list")]
             [OptionRequireParameter("file")]  bool readFromFile,
-            [Option("n","read the history file and append the content not already in the history list to the history list")] 
+            [Option("n","read the history file and append the content not already in the history list to the history list")]
             [OptionRequireParameter("file")] bool appendFromFile,
-            [Parameter(1,"file",true)] FilePath file
+            [Parameter(1, "file", true)] FilePath file
             )
         {
             var hist = context.CommandLineProcessor.CmdsHistory.History;
@@ -517,14 +520,14 @@ namespace OrbitalShell.Shell.Commands
             int i = 1;
             var f = DefaultForegroundCmd;
 
-            if (num>0)
+            if (num > 0)
             {
-                if (num<1 || num>hist.Count)
+                if (num < 1 || num > hist.Count)
                 {
                     context.Errorln($"history entry number out of range (1..{hist.Count})");
                     return new CommandVoidResult(ReturnCode.Error);
                 }
-                var h = hist[num-1];
+                var h = hist[num - 1];
                 context.CommandLineProcessor.CommandLineReader.SendNextInput(h);
                 return new CommandVoidResult();
             }
@@ -550,22 +553,22 @@ namespace OrbitalShell.Shell.Commands
                     {
                         var lines = File.ReadAllLines(file.FullName);
                         foreach (var line in lines) context.CommandLineProcessor.CmdsHistory.HistoryAppend(line);
-                        context.CommandLineProcessor.CmdsHistory.HistorySetIndex(-1,false);
+                        context.CommandLineProcessor.CmdsHistory.HistorySetIndex(-1, false);
                     }
                     if (appendFromFile)
                     {
                         var lines = File.ReadAllLines(file.FullName);
                         foreach (var line in lines) if (!context.CommandLineProcessor.CmdsHistory.HistoryContains(line)) context.CommandLineProcessor.CmdsHistory.HistoryAppend(line);
-                        context.CommandLineProcessor.CmdsHistory.HistorySetIndex(-1,false);
+                        context.CommandLineProcessor.CmdsHistory.HistorySetIndex(-1, false);
                     }
                 }
                 return new CommandVoidResult();
             }
 
-            foreach ( var h in hist )
+            foreach (var h in hist)
             {
                 if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
-                    break; 
+                    break;
                 var hp = $"  {context.ShellEnv.Colors.Numeric}{i.ToString().PadRight(max + 2, ' ')}{f}";
                 context.Out.Echo(hp);
                 context.Out.ConsolePrint(h, true);
@@ -587,7 +590,7 @@ namespace OrbitalShell.Shell.Commands
         }
 
         [Command("repeat the command specified by absolute or relative line number in command history list")]
-        [CommandName("!")]        
+        [CommandName("!")]
         public CommandResult<string> HistoryPreviousCommand(
             CommandEvaluationContext context,
             [Parameter("line number in the command history list if positive, else current command minus n if negative (! -1 equivalent to !!)")] int n
@@ -614,10 +617,10 @@ namespace OrbitalShell.Shell.Commands
 
         #region fixes
 
-        [Command("enable console compatibility mode (try to fix common bugs on known consoles)")]        
-        public CommandVoidResult EnableConsoleCompatibilityMode( CommandEvaluationContext context )
+        [Command("enable console compatibility mode (try to fix common bugs on known consoles)")]
+        public CommandVoidResult EnableConsoleCompatibilityMode(CommandEvaluationContext context)
         {
-            var oFix=context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_enableCompatibilityMode);
+            var oFix = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_enableCompatibilityMode);
             oFix.SetValue(true);
 
             var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowWidth);
@@ -628,13 +631,13 @@ namespace OrbitalShell.Shell.Commands
 
             var WinWidth = (int)oWinWidth.Value;
             var winHeight = (int)oWinHeight.Value;
-            
-            if (WinWidth>-1) System.Console.WindowWidth = WinWidth;
-            if (winHeight>-1) System.Console.WindowHeight = winHeight;
-            
+
+            if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
+            if (winHeight > -1) System.Console.WindowHeight = winHeight;
+
             System.Console.Clear();
             //context.Out.Echo(ANSI.RIS);
-            
+
             return CommandVoidResult.Instance;
         }
 

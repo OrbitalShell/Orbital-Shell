@@ -11,7 +11,7 @@ using static OrbitalShell.Console.EchoPrimitives;
 using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.Str;
 
-namespace OrbitalShell.Shell.Commands
+namespace OrbitalShell.Component.Commands
 {
     [Commands("system commands")]
     public class SystemCommands : ICommandsDeclaringType

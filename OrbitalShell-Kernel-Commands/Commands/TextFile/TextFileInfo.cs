@@ -1,7 +1,7 @@
 ﻿using OrbitalShell.Lib.FileSystem;
 using System.Runtime.InteropServices;
 
-namespace OrbitalShell.Shell.Commands.TextFile
+namespace OrbitalShell.Commands.TextFile
 {
     public class TextFileInfo
     {
@@ -10,7 +10,7 @@ namespace OrbitalShell.Shell.Commands.TextFile
         public readonly OSPlatform OSPlatform;
         public readonly string Eol;
 
-        public TextFileInfo(FilePath file,string[] textLines, OSPlatform oSPlatform, string eol)
+        public TextFileInfo(FilePath file, string[] textLines, OSPlatform oSPlatform, string eol)
         {
             File = file;
             TextLines = textLines;

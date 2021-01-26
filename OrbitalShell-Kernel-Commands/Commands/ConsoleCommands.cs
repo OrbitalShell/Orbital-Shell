@@ -10,7 +10,7 @@ using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 
-namespace OrbitalShell.Shell.Commands
+namespace OrbitalShell.Component.Commands
 {
     [Commands("commands of the console")]
     public class ConsoleCommands : ICommandsDeclaringType

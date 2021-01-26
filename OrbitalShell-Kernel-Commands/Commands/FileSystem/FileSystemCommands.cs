@@ -21,21 +21,21 @@ using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 
-namespace OrbitalShell.Shell.Commands.FileSystem
+namespace OrbitalShell.Commands.FileSystem
 {
     [Commands("commands related to files,directories,mounts/filesystems and disks")]
     public class FileSystemCommands : ICommandsDeclaringType
     {
         [Command("search for files and/or folders")]
-        public CommandResult<(List<FileSystemPath> items,FindCounts counts)> Find(
-            CommandEvaluationContext context, 
+        public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Find(
+            CommandEvaluationContext context,
             [Parameter("search path")] DirectoryPath path,
             [Option("p", "select names that matches the pattern", true, true)] string pattern,
             [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
-            [Option("f","check pattern on fullname instead of name")] bool checkPatternOnFullName,
+            [Option("f", "check pattern on fullname instead of name")] bool checkPatternOnFullName,
             [Option("c", "files that contains the string", true, true)] string contains,
             [Option("a", "print file system attributes")] bool attributes,
-            [Option("s","print short pathes")] bool shortPathes,
+            [Option("s", "print short pathes")] bool shortPathes,
             [Option("all", "select files and directories")] bool all,
             [Option("d", "select only directories")] bool dirs,
             [Option("t", "search in top directory only")] bool top
@@ -45,20 +45,20 @@ namespace OrbitalShell.Shell.Commands.FileSystem
             {
                 var sp = string.IsNullOrWhiteSpace(pattern) ? "*" : pattern;
                 var counts = new FindCounts();
-                var items = FindItems(context,path.FullName, sp, top,all,dirs,attributes,shortPathes,contains, checkPatternOnFullName,counts,true,false, ignoreCase);
+                var items = FindItems(context, path.FullName, sp, top, all, dirs, attributes, shortPathes, contains, checkPatternOnFullName, counts, true, false, ignoreCase);
                 var f = DefaultForegroundCmd;
                 counts.Elapsed = DateTime.Now - counts.BeginDateTime;
                 if (items.Count > 0) context.Out.Echoln();
-                context.Out.Echoln($"found {context.ShellEnv.Colors.Numeric}{Plur("file",counts.FilesCount,f)} and {context.ShellEnv.Colors.Numeric}{Plur("folder",counts.FoldersCount,f)}. scanned {context.ShellEnv.Colors.Numeric}{Plur("file",counts.ScannedFilesCount,f)} in {context.ShellEnv.Colors.Numeric}{Plur("folder",counts.ScannedFoldersCount,f)} during {TimeSpanDescription(counts.Elapsed, context.ShellEnv.Colors.Numeric.ToString(), f)}");
-                return new CommandResult<(List<FileSystemPath>, FindCounts)>( (items,counts));
+                context.Out.Echoln($"found {context.ShellEnv.Colors.Numeric}{Plur("file", counts.FilesCount, f)} and {context.ShellEnv.Colors.Numeric}{Plur("folder", counts.FoldersCount, f)}. scanned {context.ShellEnv.Colors.Numeric}{Plur("file", counts.ScannedFilesCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("folder", counts.ScannedFoldersCount, f)} during {TimeSpanDescription(counts.Elapsed, context.ShellEnv.Colors.Numeric.ToString(), f)}");
+                return new CommandResult<(List<FileSystemPath>, FindCounts)>((items, counts));
             }
-            return new CommandResult<(List<FileSystemPath>, FindCounts)>( (new List<FileSystemPath>(),new FindCounts()) , ReturnCode.Error);
+            return new CommandResult<(List<FileSystemPath>, FindCounts)>((new List<FileSystemPath>(), new FindCounts()), ReturnCode.Error);
         }
-              
+
         [Command("list files and folders in a path. eventually recurse in sub paths")]
-        public CommandResult<(List<FileSystemPath> items,FindCounts counts)> Dir(
-            CommandEvaluationContext context, 
-            [Parameter("path where to list files and folders. if not specified is equal to the current directory. use wildcards * and ? to filter files and folders names",true)] WildcardFilePath path,
+        public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Dir(
+            CommandEvaluationContext context,
+            [Parameter("path where to list files and folders. if not specified is equal to the current directory. use wildcards * and ? to filter files and folders names", true)] WildcardFilePath path,
             [Option("na", "do not print file system attributes")] bool noattributes,
             [Option("r", "also list files and folders in sub directories. force display files full path")] bool recurse,
             [Option("w", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide
@@ -69,7 +69,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
             if (path.CheckExists(context))
             {
                 var counts = new FindCounts();
-                var items = FindItems(context,path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false,false);
+                var items = FindItems(context, path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false, false);
                 var f = DefaultForegroundCmd;
                 long totFileSize = 0;
                 var cancellationTokenSource = new CancellationTokenSource();
@@ -77,14 +77,14 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                 void postCmd(object o, EventArgs e)
                 {
                     sc.CancelKeyPress -= cancelCmd;
-                    context.Out.Echoln($"{Tab}{context.ShellEnv.Colors.Numeric}{Plur("file", counts.FilesCount, f),-30}{HumanFormatOfSize(totFileSize, 2," ", context.ShellEnv.Colors.Numeric.ToString(), f)}");
-                    context.Out.Echoln($"{Tab}{context.ShellEnv.Colors.Numeric}{Plur("folder", counts.FoldersCount, f),-30}{Drives.GetDriveInfo(path.FileSystemInfo.FullName,false, context.ShellEnv.Colors.Numeric.ToString(), f," ",2)}");
+                    context.Out.Echoln($"{Tab}{context.ShellEnv.Colors.Numeric}{Plur("file", counts.FilesCount, f),-30}{HumanFormatOfSize(totFileSize, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)}");
+                    context.Out.Echoln($"{Tab}{context.ShellEnv.Colors.Numeric}{Plur("folder", counts.FoldersCount, f),-30}{Drives.GetDriveInfo(path.FileSystemInfo.FullName, false, context.ShellEnv.Colors.Numeric.ToString(), f, " ", 2)}");
                 }
                 void cancelCmd(object o, ConsoleCancelEventArgs e)
                 {
                     e.Cancel = true;
-                    cancellationTokenSource.Cancel(); 
-                }                
+                    cancellationTokenSource.Cancel();
+                }
                 int printResult()
                 {
                     var i = 0;
@@ -103,8 +103,8 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                         maxitlength = Math.Max(item.Name.Length, maxitlength);
                     }
                     maxitlength += 4;
-                    var (id,left,top,right,bottom) = DotNetConsole.ActualWorkArea();
-                    var nbcols = Math.Floor((double)(right - left+1)/(double)maxitlength);
+                    var (id, left, top, right, bottom) = DotNetConsole.ActualWorkArea();
+                    var nbcols = Math.Floor((double)(right - left + 1) / (double)maxitlength);
 
                     int nocol = 0;
                     foreach (var item in items)
@@ -114,19 +114,19 @@ namespace OrbitalShell.Shell.Commands.FileSystem
 
                         item.Echo(
                             new EchoEvaluationContext(
-                                context.Out,context,
+                                context.Out, context,
                                 new FileSystemPathFormattingOptions(
-                                    !noattributes, 
+                                    !noattributes,
                                     !recurse,
-                                    "", 
-                                    ((!wide || recurse || nocol == nbcols - 1) ? Br : ""), 
-                                    (wide && !recurse) ? maxitlength : -1,"")));
+                                    "",
+                                    ((!wide || recurse || nocol == nbcols - 1) ? Br : ""),
+                                    (wide && !recurse) ? maxitlength : -1, "")));
                         i++;
                         nocol++;
                         if (nocol == nbcols)
                             nocol = 0;
                     }
-                    if (!recurse && wide && nocol < nbcols && nocol>0) context.Out.Echoln();
+                    if (!recurse && wide && nocol < nbcols && nocol > 0) context.Out.Echoln();
                     return i;
                 }
                 sc.CancelKeyPress += cancelCmd;
@@ -140,15 +140,15 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                 {
                     var res = task.Result;
                 }
-                postCmd(null,null);
-                return new CommandResult<(List<FileSystemPath>, FindCounts)>( (items, counts));
+                postCmd(null, null);
+                return new CommandResult<(List<FileSystemPath>, FindCounts)>((items, counts));
             }
-            return new CommandResult<(List<FileSystemPath>, FindCounts)>((r,new FindCounts()),ReturnCode.Error);
+            return new CommandResult<(List<FileSystemPath>, FindCounts)>((r, new FindCounts()), ReturnCode.Error);
         }
-       
+
         [Command("sets the path of the working directory")]
         public CommandResult<DirectoryPath> Cd(
-            CommandEvaluationContext context, 
+            CommandEvaluationContext context,
             [Parameter("path where to list files and folders. if not specified is equal to the current directory", true)] DirectoryPath path
             )
         {
@@ -164,12 +164,12 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                 {
                     context.Errorln($"unauthorized access to {path.PrintableFullName}");
                     Environment.CurrentDirectory = bkpath;
-                    return new CommandResult<DirectoryPath>( path, ReturnCode.Error);
+                    return new CommandResult<DirectoryPath>(path, ReturnCode.Error);
                 }
-                return new CommandResult<DirectoryPath>( path, ReturnCode.OK);
+                return new CommandResult<DirectoryPath>(path, ReturnCode.OK);
             }
             else
-                return new CommandResult<DirectoryPath>( path, ReturnCode.Error);
+                return new CommandResult<DirectoryPath>(path, ReturnCode.Error);
         }
 
         [Command("print the path of the current working directory")]
@@ -182,7 +182,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
             if (path.CheckExists(context))
             {
                 path.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(!noattributes, false, "", Br)));
-                return new CommandResult<DirectoryPath>( path );
+                return new CommandResult<DirectoryPath>(path);
             }
             else
                 return new CommandResult<DirectoryPath>();
@@ -190,22 +190,23 @@ namespace OrbitalShell.Shell.Commands.FileSystem
 
         [Command("print informations about drives/mount points")]
         public CommandResult<List<DriveInfo>> Driveinfo(
-            CommandEvaluationContext context, 
-            [Parameter("drive name for which informations must be printed. if no drive specified, list all drives",true)] string drive,
+            CommandEvaluationContext context,
+            [Parameter("drive name for which informations must be printed. if no drive specified, list all drives", true)] string drive,
             [Option("b", "if set add table borders")] bool borders
             )
         {
             var drives = DriveInfo.GetDrives().AsQueryable();
-            if (drive!=null)
+            if (drive != null)
             {
                 drives = drives.Where(x => x.Name.Equals(drive, CommandLineParser.SyntaxMatchingRule));
-                if (drives.Count()==0) {
+                if (drives.Count() == 0)
+                {
                     context.Errorln($"drive \"{drive}\" not found");
                 }
             }
             var table = new DataTable();
-            table.AddColumns("name","label","type","format","bytes");
-            foreach ( var di in drives )
+            table.AddColumns("name", "label", "type", "format", "bytes");
+            foreach (var di in drives)
             {
                 var f = DefaultForegroundCmd;
                 var row = table.NewRow();
@@ -215,8 +216,10 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                     row["label"] = $"{context.ShellEnv.Colors.Highlight}{di.VolumeLabel}{f}";
                     row["type"] = $"{context.ShellEnv.Colors.Name}{di.DriveType}{f}";
                     row["format"] = $"{context.ShellEnv.Colors.Name}{di.DriveFormat}{f}";
-                    row["bytes"] = (di.TotalSize==0)?"": $"{HumanFormatOfSize(di.TotalFreeSpace, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)}{f}/{context.ShellEnv.Colors.Numeric}{HumanFormatOfSize(di.TotalSize, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)} {f}({context.ShellEnv.Colors.Highlight}{Math.Round((double)di.TotalFreeSpace / (double)di.TotalSize * 100d, 2)}{f} %)";
-                } catch (UnauthorizedAccessException) {
+                    row["bytes"] = (di.TotalSize == 0) ? "" : $"{HumanFormatOfSize(di.TotalFreeSpace, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)}{f}/{context.ShellEnv.Colors.Numeric}{HumanFormatOfSize(di.TotalSize, 2, " ", context.ShellEnv.Colors.Numeric.ToString(), f)} {f}({context.ShellEnv.Colors.Highlight}{Math.Round((double)di.TotalFreeSpace / (double)di.TotalSize * 100d, 2)}{f} %)";
+                }
+                catch (UnauthorizedAccessException)
+                {
                     context.Errorln($"unauthorized access to drive {di.Name}");
                     row["name"] = $"{context.ShellEnv.Colors.Highlight}{di.Name}{f}";
                     row["label"] = "?";
@@ -238,17 +241,17 @@ namespace OrbitalShell.Shell.Commands.FileSystem
             table.Echo(
                 new EchoEvaluationContext(context.Out, context,
                     new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions))
-                        { NoBorders = !borders }));
+                    { NoBorders = !borders }));
 
-            return new CommandResult<List<DriveInfo>>( drives.ToList() );
+            return new CommandResult<List<DriveInfo>>(drives.ToList());
         }
 
         [Command("remove file(s) and/or the directory(ies)")]
-        public CommandResult<(List<FileSystemPath> items,FindCounts counts)> Rm(
-            CommandEvaluationContext context, 
+        public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Rm(
+            CommandEvaluationContext context,
             [Parameter("file or folder path")] WildcardFilePath path,
             [Option("r", "also remove files and folders in sub directories")] bool recurse,
-            [Option("i","prompt before any removal")] bool interactive,
+            [Option("i", "prompt before any removal")] bool interactive,
             [Option("v", "explain what is being done")] bool verbose,
             [Option("d", "remove empty directories")] bool rmEmptyDirs,
             [Option("na", "do not print file system attributes when verbose")] bool noattributes,
@@ -259,7 +262,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
             var counts = new FindCounts();
             if (path.CheckExists(context))
             {
-                var items = FindItems(context,path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false, false);
+                var items = FindItems(context, path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false, false);
                 var cancellationTokenSource = new CancellationTokenSource();
                 verbose |= simulate;
                 void cancelCmd(object o, ConsoleCancelEventArgs e)
@@ -274,7 +277,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                 List<FileSystemPath> processRemove()
                 {
                     var r = new List<FileSystemPath>();
-                    foreach ( var item in items )
+                    foreach (var item in items)
                     {
                         if (cancellationTokenSource.IsCancellationRequested) return r;
                         bool deleted = false;
@@ -288,7 +291,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                                     {
                                         if (!simulate) item.FileSystemInfo.Delete();
                                         deleted = true;
-                                    }    
+                                    }
                                 }
                                 else
                                 {
@@ -296,7 +299,8 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                                     deleted = true;
                                 }
                             }
-                        } else
+                        }
+                        else
                         {
                             var dp = (DirectoryPath)item;
                             if ((rmEmptyDirs && dp.IsEmpty) || recurse)
@@ -304,7 +308,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                                 if (dp.DirectoryInfo.Exists && !r.Contains(dp))
                                 {
                                     if (interactive)
-                                        r.Merge(RecurseInteractiveDeleteDir(context,dp, simulate, noattributes, verbose, cancellationTokenSource));
+                                        r.Merge(RecurseInteractiveDeleteDir(context, dp, simulate, noattributes, verbose, cancellationTokenSource));
                                     else
                                     {
                                         if (!simulate) dp.DirectoryInfo.Delete(recurse);
@@ -332,23 +336,23 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                     r = task.Result;
                 }
                 postCmd(null, null);
-                return new CommandResult<(List<FileSystemPath>, FindCounts)>( (r, counts), ReturnCode.OK);
+                return new CommandResult<(List<FileSystemPath>, FindCounts)>((r, counts), ReturnCode.OK);
             }
             else
-                return new CommandResult<(List<FileSystemPath>, FindCounts)>((r,counts),ReturnCode.Error);
+                return new CommandResult<(List<FileSystemPath>, FindCounts)>((r, counts), ReturnCode.Error);
         }
 
-        [Command("move or rename files and directories" ,
+        [Command("move or rename files and directories",
 @"- if multiple source, move to a directory that must exists
 - if source is a file or a directory and dest is an existing directory move the source
 - if source and target are a file that exists remame the source and replace the dest
 - if dest doesn't exists rename the source that must be a file or a directory")]
-        public CommandResult<(List<(FileSystemPath source,FileSystemPath target)> items,FindCounts counts)> Mv(
-            CommandEvaluationContext context, 
+        public CommandResult<(List<(FileSystemPath source, FileSystemPath target)> items, FindCounts counts)> Mv(
+            CommandEvaluationContext context,
             [Parameter("source: file/directory or several corresponding to a wildcarded path")] WildcardFilePath source,
-            [Parameter(1,"target: a file or a directory")] FileSystemPath dest,
-            [Option("i","prompt before overwrite")] bool interactive,
-            [Option("v","explain what is being done, but actually does nothing")] bool verbose
+            [Parameter(1, "target: a file or a directory")] FileSystemPath dest,
+            [Option("i", "prompt before overwrite")] bool interactive,
+            [Option("v", "explain what is being done, but actually does nothing")] bool verbose
             )
         {
             if (source.CheckExists(context))
@@ -365,7 +369,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                         {
                             context.Errorln("target must be a directory");
                             return new CommandResult<(List<(FileSystemPath, FileSystemPath)> items, FindCounts counts)>(
-                                 ( new List<(FileSystemPath, FileSystemPath)> { (source, dest) }, counts), ReturnCode.Error
+                                 (new List<(FileSystemPath, FileSystemPath)> { (source, dest) }, counts), ReturnCode.Error
                                 );
                         }
                         else
@@ -385,7 +389,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                                     else
                                     {
                                         var newdest = Path.Combine(dest.FullName, item.Name);
-                                        Directory.Move(item.FullName, newdest );
+                                        Directory.Move(item.FullName, newdest);
                                         r.Add((item, new DirectoryPath(newdest)));
                                     }
                                     if (verbose) context.Out.Echoln(msg.Replace("move ", "moved "));
@@ -413,7 +417,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                                 else
                                 {
                                     var newdest = Path.Combine(dest.FullName, source.NameWithWildcard);
-                                    Directory.Move(source.FullName,newdest);
+                                    Directory.Move(source.FullName, newdest);
                                     r.Add((source, new DirectoryPath(newdest)));
                                 }
                                 if (verbose) context.Out.Echoln(msg.Replace("move ", "moved "));
@@ -427,7 +431,7 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                             {
                                 dest.FileSystemInfo.Delete();
                                 File.Move(source.FullNameWithWildcard, dest.FullName);
-                                r.Add((new FilePath(source.FullNameWithWildcard),dest));
+                                r.Add((new FilePath(source.FullNameWithWildcard), dest));
                                 if (verbose) context.Out.Echoln(msg.Replace("rename ", "renamed "));
                             }
                         }
@@ -453,15 +457,15 @@ namespace OrbitalShell.Shell.Commands.FileSystem
                     }
                 }
                 return new CommandResult<(List<(FileSystemPath source, FileSystemPath target)> items, FindCounts counts)>
-                    ( (r, counts));
+                    ((r, counts));
             }
             else
                 return new CommandResult<(List<(FileSystemPath, FileSystemPath)> items, FindCounts counts)>
-                    ( (new List<(FileSystemPath, FileSystemPath)> { (source, null) }, new FindCounts()));
+                    ((new List<(FileSystemPath, FileSystemPath)> { (source, null) }, new FindCounts()));
         }
 
         List<FileSystemPath> RecurseInteractiveDeleteDir(
-            CommandEvaluationContext context, 
+            CommandEvaluationContext context,
             DirectoryPath dir,
             bool simulate,
             bool noattributes,
@@ -472,25 +476,25 @@ namespace OrbitalShell.Shell.Commands.FileSystem
             var r = new List<FileSystemPath>();
             verbose |= simulate;
             if (cancellationTokenSource.IsCancellationRequested) return r;
-            if (dir.IsEmpty || Confirm("rm: descend "+dir.GetPrintableName(fullname)))
+            if (dir.IsEmpty || Confirm("rm: descend " + dir.GetPrintableName(fullname)))
             {
-                foreach ( var subdir in dir.DirectoryInfo.EnumerateDirectories())
-                    r.Merge(RecurseInteractiveDeleteDir(context,new DirectoryPath(subdir.FullName), simulate, noattributes, verbose, cancellationTokenSource));
+                foreach (var subdir in dir.DirectoryInfo.EnumerateDirectories())
+                    r.Merge(RecurseInteractiveDeleteDir(context, new DirectoryPath(subdir.FullName), simulate, noattributes, verbose, cancellationTokenSource));
 
                 var options = new FileSystemPathFormattingOptions(!noattributes, false, "", Br, -1, "removed ");
                 var echoContext = new EchoEvaluationContext(context.Out, context, options);
 
-                foreach ( var subfile in dir.DirectoryInfo.EnumerateFiles())
+                foreach (var subfile in dir.DirectoryInfo.EnumerateFiles())
                 {
                     var subfi = new FilePath(subfile.FullName);
-                    if (Confirm("rm: remove file "+subfi.GetPrintableName(fullname)))
+                    if (Confirm("rm: remove file " + subfi.GetPrintableName(fullname)))
                     {
                         if (!simulate) subfi.FileSystemInfo.Delete();
                         if (verbose) subfi.Echo(echoContext);
                         r.Add(subfi);
                     }
                 }
-                if (Confirm("rm: remove directory "+dir.GetPrintableName(fullname)))
+                if (Confirm("rm: remove directory " + dir.GetPrintableName(fullname)))
                 {
                     if (!simulate) dir.DirectoryInfo.Delete(true);
                     if (verbose) dir.Echo(echoContext);

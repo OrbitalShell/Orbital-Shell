@@ -12,18 +12,18 @@ using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 
-namespace OrbitalShell.Shell.Commands.Test
+namespace OrbitalShell.Commands.Test
 {
     [Commands("tests commands")]
     public class TestCommands : ICommandsDeclaringType
-    {        
+    {
         [Command("print cursor info")]
         public CommandResult<Point> CursorInfo(CommandEvaluationContext context)
         {
             int x = sc.CursorLeft, y = sc.CursorTop;
             context.Out.Echoln($"crx={x} cry={y}");
             //context.Out.Echoln($"{(char)27}[6n"); // test query cursor - no return in vscode conPty integrated terminal , return ok in windows terminal
-            return new CommandResult<Point>( new Point(x, y));
+            return new CommandResult<Point>(new Point(x, y));
         }
 
         [Command("backup ansi cursor pos")]
@@ -31,7 +31,7 @@ namespace OrbitalShell.Shell.Commands.Test
         {
             int x = sc.CursorLeft, y = sc.CursorTop;
             context.Out.Echo(ANSI.DECSC);
-            return new CommandResult<Point>( new Point(x, y));
+            return new CommandResult<Point>(new Point(x, y));
         }
 
         [Command("restore ansi cursor pos")]
@@ -39,25 +39,25 @@ namespace OrbitalShell.Shell.Commands.Test
         {
             int x = sc.CursorLeft, y = sc.CursorTop;
             context.Out.Echo(ANSI.DECRC);
-            return new CommandResult<Point>( new Point(x, y));
+            return new CommandResult<Point>(new Point(x, y));
         }
 
-        [Command("set console windows size")]        
+        [Command("set console windows size")]
         public CommandVoidResult ConsoleSetWindowSize(
             CommandEvaluationContext context,
-            [Parameter(0,"width")]  int w,
-            [Parameter(1,"height")] int h)
+            [Parameter(0, "width")] int w,
+            [Parameter(1, "height")] int h)
         {
             System.Console.WindowWidth = w;
             System.Console.WindowHeight = h;
             return CommandVoidResult.Instance;
         }
 
-        [Command("set console buffer size")]        
+        [Command("set console buffer size")]
         public CommandVoidResult ConsoleSetBufferSize(
             CommandEvaluationContext context,
-            [Parameter(0,"width")] int w,
-            [Parameter(1,"height")] int h)
+            [Parameter(0, "width")] int w,
+            [Parameter(1, "height")] int h)
         {
             System.Console.WindowWidth = w;
             System.Console.WindowHeight = h;
@@ -79,38 +79,42 @@ namespace OrbitalShell.Shell.Commands.Test
                     r.Add(s);
                     context.Out.Echoln(s);
                 }
-                return new CommandResult<List<string>>( r);
+                return new CommandResult<List<string>>(r);
             }
-            else return new CommandResult<List<string>>( r, ReturnCode.Error);
+            else return new CommandResult<List<string>>(r, ReturnCode.Error);
         }
 
         [Command("echo an ANSI / VT-100 sequence")]
         public CommandVoidResult ANSISeq(
             CommandEvaluationContext context,
-            [Parameter(0,"esc sequence (text behind ESC). replace character @ by ESC (\\x1b) to allow write new sequences in the string parameter")] string seq,
-            [Option("c","character to be used for ESC",true,true, (char)27)] char c
-        ) {
-            seq = seq.Replace(/*"@"*/""+c,ESC);
-            context.Out.Echoln(ANSI.ESC+seq);
+            [Parameter(0, "esc sequence (text behind ESC). replace character @ by ESC (\\x1b) to allow write new sequences in the string parameter")] string seq,
+            [Option("c", "character to be used for ESC", true, true, (char)27)] char c
+        )
+        {
+            seq = seq.Replace(/*"@"*/"" + c, ESC);
+            context.Out.Echoln(ANSI.ESC + seq);
             return CommandVoidResult.Instance;
         }
 
         [Command("echo an unicode character")]
         public CommandVoidResult Unicode(
             CommandEvaluationContext context,
-            [Parameter(0,"decimal unicode character index")] int n
-        ) {
-            context.Out.Echoln(""+(char)n);
+            [Parameter(0, "decimal unicode character index")] int n
+        )
+        {
+            context.Out.Echoln("" + (char)n);
             return CommandVoidResult.Instance;
         }
 
         [Command("echo unicode characters from Console.Unicode (Codepage - 850)")]
         public CommandVoidResult UnicodeTest(
             CommandEvaluationContext context
-        ) {
+        )
+        {
             var t = typeof(Console.Unicode);
-            foreach (var fi in  t.GetFields()) {
-                context.Out.Echo(fi.GetValue(null)+" ");
+            foreach (var fi in t.GetFields())
+            {
+                context.Out.Echo(fi.GetValue(null) + " ");
             }
             context.Out.Echoln();
             return CommandVoidResult.Instance;
