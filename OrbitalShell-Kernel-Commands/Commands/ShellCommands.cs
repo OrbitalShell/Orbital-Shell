@@ -60,7 +60,7 @@ namespace OrbitalShell.Component.Commands
         {
             var hascn = !string.IsNullOrWhiteSpace(commandName);
             var list = !all && !hascn;
-            var cmds = context.CommandLineProcessor.AllCommands.AsQueryable();
+            var cmds = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.AllCommands.AsQueryable();
             if (hascn)
                 cmds = cmds.Where(x => x.Name.Equals(commandName, CommandLineParser.SyntaxMatchingRule));
 
@@ -68,7 +68,7 @@ namespace OrbitalShell.Component.Commands
             {
                 if (!string.IsNullOrWhiteSpace(type))
                 {
-                    if (type != "*" && !context.CommandLineProcessor.CommandDeclaringShortTypesNames.Contains(type))
+                    if (type != "*" && !context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringShortTypesNames.Contains(type))
                     {
                         context.Errorln($"unknown command declaring type: '{type}'");
                         return new CommandVoidResult(ReturnCode.Error);
@@ -80,7 +80,7 @@ namespace OrbitalShell.Component.Commands
                         cmds = cmds.Where(x => x.DeclaringTypeShortName == type);
                     else
                     {
-                        var typenames = context.CommandLineProcessor.CommandDeclaringTypesNames.ToList();
+                        var typenames = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringTypesNames.ToList();
                         var typelst = typenames.Select(x => Type.GetType(x)).ToList();
                         typelst.Sort((x, y) => x.Name.CompareTo(y.Name));
 
@@ -104,7 +104,7 @@ namespace OrbitalShell.Component.Commands
                 }
                 if (cmds.Count() > 0 && !string.IsNullOrWhiteSpace(module))
                 {
-                    if (module != "*" && !context.CommandLineProcessor.Modules.Values.Select(x => x.Name).Contains(module))
+                    if (module != "*" && !context.CommandLineProcessor.ModuleManager.Modules.Values.Select(x => x.Name).Contains(module))
                     {
                         context.Errorln($"unknown command module: '{module}'");
                         return new CommandVoidResult(ReturnCode.Error);
@@ -116,7 +116,7 @@ namespace OrbitalShell.Component.Commands
                         cmds = cmds.Where(x => x.ModuleName == module);
                     else
                     {
-                        var mods = context.CommandLineProcessor.Modules;
+                        var mods = context.CommandLineProcessor.ModuleManager.Modules;
                         var modnames = mods.Values.Select(x => x.Name).ToList();
                         modnames.Sort();
                         var maxml = modnames.Select(x => x.Length).Max();
@@ -246,10 +246,8 @@ namespace OrbitalShell.Component.Commands
 
         #region modules
 
-        [Command("list modules of commands if no option specified, else load or unload modules of commands")]
-        [SuppressMessage("Style", "IDE0071:Simplifier l’interpolation", Justification = "<En attente>")]
-        [SuppressMessage("Style", "IDE0071WithoutSuggestion:Simplifier l’interpolation", Justification = "<En attente>")]
-        public CommandResult<List<Component.CommandLine.Module.ModuleModel>> Module(
+        [Command("list modules if no option specified, else load or unload modules")]
+        public CommandResult<List<ModuleSpecification>> Module(
             CommandEvaluationContext context,
             [Option("l", "load a module from the given path", true, true)] FilePath loadModulePath = null,
             [Option("u", "unload the module having the given name ", true, true)] string unloadModuleName = null
@@ -258,52 +256,45 @@ namespace OrbitalShell.Component.Commands
             var f = context.ShellEnv.Colors.Default.ToString();
             if (loadModulePath == null && unloadModuleName == null)
             {
-                var col1length = context.CommandLineProcessor.Modules.Values.Select(x => x.Name.Length).Max() + 1;
-                foreach (var kvp in context.CommandLineProcessor.Modules)
+                var col1length = context.CommandLineProcessor.ModuleManager.Modules.Values.Select(x => x.Name.Length).Max() + 1;
+                int n=1;
+                foreach (var kvp in context.CommandLineProcessor.ModuleManager.Modules)
                 {
-                    context.Out.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description} [types count={Cyan}{kvp.Value.TypesCount}{f} commands count={Cyan}{kvp.Value.CommandsCount}{f}]");
+                    context.Out.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description}");
+                    context.Out.Echoln($"{"".PadRight(col1length, ' ')}{kvp.Value.Info.GetDescriptor(context)}");
                     context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}assembly:{context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.FullName}");
                     context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}path:    {context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.Location}");
+                    if (n<context.CommandLineProcessor.ModuleManager.Modules.Count) context.Out.Echoln();
+                    n++;
                 }
-                return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(context.CommandLineProcessor.Modules.Values.ToList());
+                return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
             }
             if (loadModulePath != null)
             {
                 if (loadModulePath.CheckExists(context))
                 {
                     var a = Assembly.LoadFrom(loadModulePath.FileSystemInfo.FullName);
-                    var (typesCount, commandsCount) = context.CommandLineProcessor.RegisterCommandsAssembly(context, a);
-                    if (commandsCount == 0)
-                    {
-                        context.Errorln("no commands have been loaded");
-                        return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
-                    }
-                    else
-                        context.Out.Echoln($"loaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
+                    var moduleSpecification = context.CommandLineProcessor.ModuleManager.RegisterModule(context, a);
+                    context.Out.Echoln($"loaded: {moduleSpecification.Info.GetDescriptor(context)}");
                 }
                 else
-                    return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
+                    return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
             }
+
             if (unloadModuleName != null)
             {
-                if (context.CommandLineProcessor.Modules.Values.Any(x => x.Name == unloadModuleName))
+                if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == unloadModuleName))
                 {
-                    var (typesCount, commandsCount) = context.CommandLineProcessor.UnregisterCommandsAssembly(context, unloadModuleName);
-                    if (commandsCount == 0)
-                    {
-                        context.Errorln("no commands have been unloaded");
-                        return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
-                    }
-                    else
-                        context.Out.Echoln($"unloaded {context.ShellEnv.Colors.Numeric}{Plur("command", commandsCount, f)} in {context.ShellEnv.Colors.Numeric}{Plur("type", typesCount, f)}");
+                    var moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, unloadModuleName);
+                    context.Out.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
                 }
                 else
                 {
-                    context.Errorln($"commands module '{unloadModuleName}' not registered");
-                    return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>(ReturnCode.Error);
+                    context.Errorln($"module '{unloadModuleName}' is not registered");
+                    return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
                 }
             }
-            return new CommandResult<List<Component.CommandLine.Module.ModuleModel>>();
+            return new CommandResult<List<ModuleSpecification>>();
         }
 
         #endregion

@@ -11,7 +11,7 @@
     <Authors>Orbital Shell team</Authors>
     <Company>franck.gaspoz@gmail.com, zepzic@gmail.com</Company>
     <Product>Orbital Shell</Product>
-    <Description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core and.Net Standard 2.1</Description>
+    <Description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Version>1.0.0-beta-preview</Version>

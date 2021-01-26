@@ -41,8 +41,6 @@ namespace OrbitalShell.Console
         protected ConsoleColor _backgroundBackup = ConsoleColor.Black;
         protected ConsoleColor _foregroundBackup = ConsoleColor.White;
 
-        //protected Dictionary<string, (Engine.SimpleCommandDelegate simpleCommand,Engine.CommandDelegate command)>  _drtvs;
-
         EchoDirectiveProcessor EchoDirectiveProcessor;
 
         public static readonly string ESC = (char)27 + "";

@@ -14,7 +14,6 @@ improvements to do 👷
 19/1/21 FGZ     ✅NEXT changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 26/1/21 FGZ     ✅NEXT add support of posix cmd line options : -short-one-letter-syntax and --long-letter-syntax
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
-20/1/21 FGZ     👷 DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
 20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC
 
 21/1/21 FGZ     implements var-info
@@ -43,6 +42,7 @@ procrastinated:
 olds:
 -----
 
+20/1/21 FGZ     🆗 DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
 26/1/21 FGZ     🆗 set all projects to netcore3.1 (remove standard2.1 coz vscode omnisharp intellisense fail on it) - net5.0 is too slow (console output default)
 26/1/21 FGZ     🆗 added init banner parametrization + updated init banners
 26/1/21 FGZ     🆗 restructured projects (little namespaces changes)

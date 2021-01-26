@@ -9,9 +9,9 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <IsPackable>true</IsPackable>
     <Authors>Orbital Shell team</Authors>
-    <Company>franck.gaspoz@gmail.com, gaspard moyrand</Company>
+    <Company>franck.gaspoz@gmail.com, zepzic@gmail.com</Company>
     <Product>Orbital Shell - ConsoleApp</Product>
-    <Description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core and.Net Standard 2.1</Description>
+    <Description>Orbital Shell console application library</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
   </PropertyGroup>
 
