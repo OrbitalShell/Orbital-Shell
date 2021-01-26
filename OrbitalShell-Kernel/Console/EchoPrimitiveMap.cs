@@ -5,6 +5,7 @@ using System.Text;
 
 namespace OrbitalShell.Console
 {
+    // TODO: still a draft ...
     public class EchoPrimitiveMap
     {
         public bool MappedCall(

@@ -3,13 +3,13 @@ using static OrbitalShell.DotNetConsole;
 
 namespace OrbitalShell.Console
 {
-    public class ColorSettings 
-    {        
+    public class ColorSettings
+    {
         /// <summary>
         /// defaults shell foreground and background - if is setted. designed to preserve console default background transparency
         /// </summary>
         /// <returns></returns>
-        public TextColor Default => new TextColor(DefaultForeground, DefaultBackground,ANSI.RSTXTA);
+        public TextColor Default => new TextColor(DefaultForeground, DefaultBackground, ANSI.RSTXTA);
 
         public TextColor Inverted => new TextColor(DefaultBackground, DefaultForeground);
 
@@ -26,14 +26,14 @@ namespace OrbitalShell.Console
         public TextColor BoxOk = new TextColor(ConsoleColor.White, ConsoleColor.DarkGreen);
         public TextColor BoxError => new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
         public TextColor BoxUnknown = new TextColor(ConsoleColor.Green, ConsoleColor.DarkCyan);
-        public TextColor BoxNotIdentified = new TextColor(ConsoleColor.Yellow, ConsoleColor.Red );
+        public TextColor BoxNotIdentified = new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
 
-        public TextColor Information = new TextColor(ConsoleColor.DarkCyan,null);
+        public TextColor Information = new TextColor(ConsoleColor.DarkCyan, null);
 
         // DotNetConsoleAppToolkit-UI
 
         public TextColor TitleBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
-        public TextColor TitleDarkText = new TextColor(ConsoleColor.Gray,ConsoleColor.DarkBlue);
+        public TextColor TitleDarkText = new TextColor(ConsoleColor.Gray, ConsoleColor.DarkBlue);
         public TextColor InteractionBar = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
         public TextColor InteractionPanel = new TextColor(ConsoleColor.White, ConsoleColor.DarkBlue);
         public TextColor InteractionPanelCmdKeys = new TextColor(ConsoleColor.Black, ConsoleColor.White);
@@ -44,12 +44,14 @@ namespace OrbitalShell.Console
 
         // system library types
 
-        public TextColor ExceptionText = new TextColor(ConsoleColor.Yellow,ConsoleColor.Red);
+        public TextColor ExceptionText = new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
 
         // DotNetConsoleAppToolkit-Shell
 
         //      values types
-        
+
+        public TextColor Null = new TextColor(ConsoleColor.Green, null);
+        public TextColor Quotes = new TextColor(ConsoleColor.Green, null);
         public TextColor Numeric = new TextColor(ConsoleColor.Cyan, null);
         public TextColor Boolean = new TextColor(ConsoleColor.Gray, null);
         public TextColor Integer = new TextColor(ConsoleColor.Cyan, null);
@@ -76,8 +78,8 @@ namespace OrbitalShell.Console
 
         //      global ? 
 
-        public TextColor TableBorder = new TextColor(ConsoleColor.Cyan,null);
-        public TextColor TableColumnName = new TextColor(ConsoleColor.Yellow,null);
+        public TextColor TableBorder = new TextColor(ConsoleColor.Cyan, null);
+        public TextColor TableColumnName = new TextColor(ConsoleColor.Yellow, null);
 
         //      syntax
 

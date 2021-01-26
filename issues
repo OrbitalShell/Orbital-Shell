@@ -37,7 +37,6 @@ improvements to do 👷
 20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
 
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
-22/1/21 FGZ     👷 add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 20/1/21 FGZ     please add sort in env table
 22/1/21 FGZ     dir sort : alls folders before files ?
 
@@ -53,6 +52,7 @@ procrastinated:
 olds:
 -----
 
+22/1/21 FGZ     🆗 add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 23/1/21 FGZ     🆗 fix usage of console Warning (should be context.Warning). Add also add context.Echo (shortcut to Out.Echo)
 25/1/21 FGZ     🆗 improved shell module declaration (ModuleAttribute), by convention on class Assembly.cs
 19/1/21 FGZ     🆗 namespaces refactoring : DotNetConsoleAppToolkit devient OrbitalShell partout !! (fin du projet indépendant DotNetConsoleAppToolkit)

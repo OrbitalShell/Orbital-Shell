@@ -52,10 +52,10 @@ namespace OrbitalShell.Console
             var prfx = context.ShellEnv.Colors.HalfDarkLabel;
             foreach (var (name, value, inf) in obj.GetMemberValues())
             {
-                var attrs = GetMemberConstraintsText(context,inf);
+                var attrs = GetMemberConstraintsText(context, inf);
                 if (value == null)
                 {
-                    table.Rows.Add(tab + prfx + name + attrs + Rdc, inf.GetMemberValueType().Name, DumpAsText(context,null));
+                    table.Rows.Add(tab + prfx + name + attrs + Rdc, inf.GetMemberValueType().Name, DumpAsText(context, null));
                 }
                 else
                 {
@@ -101,7 +101,7 @@ namespace OrbitalShell.Console
             bool isStatic = false;
             bool readOnly = obj.IsReadOnly;
             bool canRead = true;
-            
+
             if (isStatic) r += "s";
             if (readOnly) r += "r";
             if (!canRead) r += "-";
@@ -130,7 +130,7 @@ namespace OrbitalShell.Console
                 var val = dv?.Value;
                 var foldSymbol = options.UnfoldCategories ? "[-]" : "[+]";
                 var valnprefix = (dv == null) ? (context.ShellEnv.Colors.Highlight + foldSymbol + " ") : "";
-                var attrs = GetIDataOjbectContraintsText(context,value);
+                var attrs = GetIDataOjbectContraintsText(context, value);
 
                 var str = tab + valnprefix + value.Name + attrs;
 
@@ -139,8 +139,9 @@ namespace OrbitalShell.Console
                     table.Rows.Add(
                         str,
                         valueType,
-                        ""
-                        );
+                        new StringWrapper(
+                            (dv == null) ? "" : DumpAsText(context, null)
+                        ));
                 }
                 else
                 {
@@ -175,7 +176,13 @@ namespace OrbitalShell.Console
             var (@out, context, options) = ctx;
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
-            @out.Echo(obj,false,(ctx.Options==null)?false:ctx.Options.IsRawModeEnabled);
+            if (obj.Length == 0)
+            {
+                obj = QuotedString(context, obj);
+                @out.Echo(obj, false, false);
+            }
+            else
+                @out.Echo(obj, false, (ctx.Options == null) ? false : ctx.Options.IsRawModeEnabled);
         }
 
         public static void Echo(
@@ -193,7 +200,7 @@ namespace OrbitalShell.Console
         public static void Echo(
             int obj,
             EchoEvaluationContext ctx)
-    {
+        {
             var (@out, context, options) = ctx;
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
@@ -256,12 +263,16 @@ namespace OrbitalShell.Console
 
         public static string NullText = "{null}";
 
-        public static string DumpAsText(CommandEvaluationContext context,object o, bool quoteStrings = true)
+        public static string DumpAsText(CommandEvaluationContext context, object o, bool quoteStrings = true)
         {
-            if (o == null) return context.ShellEnv.Colors.Debug+NullText+Rdc ?? null;
+            if (o == null)
+                return context.ShellEnv.Colors.Null + NullText + Rdc ?? null;
             if (o is string s && quoteStrings) return $"\"{s}\"";
             return o.ToString();
         }
+
+        public static string QuotedString(CommandEvaluationContext context, string s)
+            => $"{context.ShellEnv.Colors.Quotes}\"{context.ShellEnv.Colors.Default}{s}{context.ShellEnv.Colors.Quotes}\"{context.ShellEnv.Colors.Default}";
 
         #endregion
 
@@ -272,7 +283,7 @@ namespace OrbitalShell.Console
             EchoEvaluationContext ctx)
         {
             var (@out, context, options) = ctx;
-            if (context.EchoMap.MappedCall(obj,ctx)) return;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{obj.Key}{context.ShellEnv.Colors.HighlightSymbol}={context.ShellEnv.Colors.Value}");
             Echo(obj.Value, ctx);
@@ -312,9 +323,10 @@ namespace OrbitalShell.Console
             var (@out, context, _) = ctx;
             if (context.EchoMap.MappedCall(obj, ctx)) return;
             var r = "";
-            switch (obj) {
+            switch (obj)
+            {
                 case ReturnCode.Error:
-                    r += context.ShellEnv.Colors.BoxError; 
+                    r += context.ShellEnv.Colors.BoxError;
                     break;
                 case ReturnCode.OK:
                     r += context.ShellEnv.Colors.BoxOk;
@@ -323,10 +335,10 @@ namespace OrbitalShell.Console
                     r += context.ShellEnv.Colors.BoxUnknown;
                     break;
                 case ReturnCode.NotIdentified:
-                    r += context.ShellEnv.Colors.BoxNotIdentified; 
+                    r += context.ShellEnv.Colors.BoxNotIdentified;
                     break;
             }
-            @out.Echo(r+obj+ANSI.RSTXTA);
+            @out.Echo(r + obj + ANSI.RSTXTA);
         }
 
         #endregion
@@ -353,7 +365,7 @@ namespace OrbitalShell.Console
                 @out.Echo(str, (options != null) ? options.LineBreak : false);
             }
         }
-        
+
         /// <summary>
         /// echo fallback method
         /// </summary>
@@ -440,8 +452,8 @@ namespace OrbitalShell.Console
             var options = opts as TableFormattingOptions;
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
-            var dt = GetVarsDataTable(context, obj,new List<IDataObject>(), options);
-            dt.Echo( new EchoEvaluationContext(@out,context,options));
+            var dt = GetVarsDataTable(context, obj, new List<IDataObject>(), options);
+            dt.Echo(new EchoEvaluationContext(@out, context, options));
         }
 
         public static void Echo(
@@ -467,10 +479,10 @@ namespace OrbitalShell.Console
                     && !(dataValue.Value is IDataObject))
             {
                 container = dataValue.Value;
-            } 
+            }
 
-            var dt = GetVarsDataTable(context,container,attrs,options);
-            dt.Echo( new EchoEvaluationContext(@out,context,options));
+            var dt = GetVarsDataTable(context, container, attrs, options);
+            dt.Echo(new EchoEvaluationContext(@out, context, options));
         }
 
         public static void Echo(
@@ -484,8 +496,8 @@ namespace OrbitalShell.Console
             options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
             var values = variables.GetDataValues();
             values.Sort((x, y) => x.Name.CompareTo(y.Name));
-            var dt = GetVarsDataTable(context,null,values,options);
-            dt.Echo( new EchoEvaluationContext(@out,context,options));
+            var dt = GetVarsDataTable(context, null, values, options);
+            dt.Echo(new EchoEvaluationContext(@out, context, options));
         }
 
         #endregion
@@ -528,7 +540,7 @@ namespace OrbitalShell.Console
                     string s = null, s2 = null;
                     if (table is Table t)
                     {
-                        s = @out.GetPrint(t.GetFormatedValue(context,table.Columns[i].ColumnName, cols[i]?.ToString())) ?? "";
+                        s = @out.GetPrint(t.GetFormatedValue(context, table.Columns[i].ColumnName, cols[i]?.ToString())) ?? "";
                         colLengths[i] = Math.Max(s.Length, colLengths[i]);
                         s2 = @out.GetPrint(t.GetFormatedHeader(table.Columns[i].ColumnName)) ?? "";
                         colLengths[i] = Math.Max(s2.Length, colLengths[i]);
@@ -556,7 +568,7 @@ namespace OrbitalShell.Console
                 if (i == 0) @out.Echo(colsep);
                 var col = table.Columns[i];
                 var colName = (i == table.Columns.Count - 1 && !options.PadLastColumn) ?
-                    fxh(col.ColumnName) 
+                    fxh(col.ColumnName)
                     : fxh(col.ColumnName).PadRight(colLengths[i], ' ');
                 var prfx = (options.NoBorders) ? Uon : "";
                 var pofx = (options.NoBorders) ? Tdoff : "";
@@ -565,7 +577,7 @@ namespace OrbitalShell.Console
             @out.Echoln();
             if (!options.NoBorders) @out.Echoln(line);
 
-            string fhv(string header, string value) => (table is Table t) ? t.GetFormatedValue(context,header, value) : value;
+            string fhv(string header, string value) => (table is Table t) ? t.GetFormatedValue(context, header, value) : value;
             foreach (var rw in table.Rows)
             {
                 if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
@@ -585,8 +597,8 @@ namespace OrbitalShell.Console
                     var o = arr[i];
 
                     MethodInfo mi = null;
-                    if (( (!(o is string)) || table.Columns[i].DataType==typeof(object)) 
-                            && o != null && (mi=o.GetEchoMethod())!=null)
+                    if (((!(o is string)) || table.Columns[i].DataType == typeof(object))
+                            && o != null && (mi = o.GetEchoMethod()) != null)
                     {
                         // value dump via Echo primitive
                         @out.Echo(context.ShellEnv.Colors.Default);
@@ -598,9 +610,9 @@ namespace OrbitalShell.Console
                         // value dump by ToString
                         var l = @out.GetPrint(fvalue).Length;
                         var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
-                        @out.Echo(context.ShellEnv.Colors.Default );
-                        @out.Echo( fvalue );
-                        @out.Echo( spc + colsep );
+                        @out.Echo(context.ShellEnv.Colors.Default);
+                        @out.Echo(fvalue);
+                        @out.Echo(spc + colsep);
                     }
                 }
                 @out.Echoln();
