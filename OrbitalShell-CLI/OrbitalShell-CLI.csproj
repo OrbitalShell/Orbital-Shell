@@ -41,15 +41,21 @@
     <!--<Folder Include="obj\" />-->
     <!--<Folder Include="Settings\" />-->
     <!--<Folder Include="Properties\" />-->
-    <Folder Include="Scripts\">
+    <Folder Include="scripts\">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Folder>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Scripts\unicode-boxes.sh">
+    <Content Include="scripts\unicode-boxes.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="scripts\commandsSamples.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\testPrintDirectives.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>    
   </ItemGroup>
 
   <ItemGroup>

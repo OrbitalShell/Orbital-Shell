@@ -52,5 +52,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public char ErrorPositionMarker = '^';
 
+        public string KernelCommandsModuleAssemblyName = "OrbitalShell-Kernel-Commands";
+
     }
 }

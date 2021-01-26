@@ -14,31 +14,23 @@
   </PropertyGroup>
 
 <ItemGroup>
-    <None Remove="Component\Commands\CommandLineProcessor\banner-2.txt" />
-    <None Remove="Component\Commands\CommandLineProcessor\banner-3.txt" />
-    <None Remove="Component\Commands\CommandLineProcessor\banner.txt" />
-    <None Remove="Component\Commands\Test\commandsSamples.sh" />
-    <None Remove="Component\Commands\Test\testPrintDirectives.sh" />
-    <None Remove="Component\Commands\TextEditor\edit-help.txt" />
+    <None Remove="Commands\CommandLineProcessor\banner-2.txt" />
+    <None Remove="Commands\CommandLineProcessor\banner-3.txt" />
+    <None Remove="Commands\CommandLineProcessor\banner.txt" />
+    <None Remove="Commands\TextEditor\edit-help.txt" />
 </ItemGroup>
 
 <ItemGroup>
-    <Content Include="Component\Commands\CommandLineProcessor\banner-2.txt">
+    <Content Include="Commands\CommandLineProcessor\banner-2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Component\Commands\CommandLineProcessor\banner-3.txt">
+    <Content Include="Commands\CommandLineProcessor\banner-3.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Component\Commands\CommandLineProcessor\banner.txt">
+    <Content Include="Commands\CommandLineProcessor\banner.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Component\Commands\Test\commandsSamples.sh">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Component\Commands\Test\testPrintDirectives.sh">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Component\Commands\TextEditor\edit-help.txt">
+    <Content Include="Commands\TextEditor\edit-help.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

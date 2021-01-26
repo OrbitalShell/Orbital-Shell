@@ -10,7 +10,7 @@ using OrbitalShell.Component.CommandLine.Variable;
 using OrbitalShell.Component.CommandLine.Module;
 using OrbitalShell.Console;
 using OrbitalShell.Lib;
-using lib=OrbitalShell.Lib;
+using lib = OrbitalShell.Lib;
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
@@ -47,15 +47,17 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public string[] Args => (string[])_args?.Clone();
 
         string[] _args;
-        
+
         bool _isInitialized = false;
 
         readonly Dictionary<string, List<CommandSpecification>> _commands = new Dictionary<string, List<CommandSpecification>>();
 
         public ReadOnlyDictionary<string, List<CommandSpecification>> Commands => new ReadOnlyDictionary<string, List<CommandSpecification>>(_commands);
 
-        public List<CommandSpecification> AllCommands {
-            get {
+        public List<CommandSpecification> AllCommands
+        {
+            get
+            {
                 var coms = new List<CommandSpecification>();
                 foreach (var kvp in _commands)
                     foreach (var com in kvp.Value)
@@ -111,18 +113,25 @@ namespace OrbitalShell.Component.CommandLine.Processor
             _args = (string[])args?.Clone();
 
             // parse and apply any -env:{VarName}={VarValue} argument
-            foreach ( var arg in args ) {
-                if (arg.StartsWith(OPT_ENV+OPT_NAME_VALUE_SEPARATOR)) {
-                    try {
+            foreach (var arg in args)
+            {
+                if (arg.StartsWith(OPT_ENV + OPT_NAME_VALUE_SEPARATOR))
+                {
+                    try
+                    {
                         var t = arg.Split(':');
                         var t2 = t[1].Split('=');
-                        if (t.Length==2 && t[0]==OPT_ENV && t2.Length==2) {                            
-                            SetVariable(context,t2[0],t2[1]);
+                        if (t.Length == 2 && t[0] == OPT_ENV && t2.Length == 2)
+                        {
+                            SetVariable(context, t2[0], t2[1]);
                             appliedSettings.Add(arg);
-                        } else
-                            Error($"shell arg set error: syntax error: {arg}",true);
-                    } catch (Exception ex) {
-                        Error($"shell arg set error: {arg} (error is: {ex.Message})",true);
+                        }
+                        else
+                            Error($"shell arg set error: syntax error: {arg}", true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Error($"shell arg set error: {arg} (error is: {ex.Message})", true);
                     }
                 }
             }
@@ -133,15 +142,17 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// </summary>
         /// <param name="name">name including namespace</param>
         /// <param name="value">value that must be converted to var type an assigned to the var</param>
-        void SetVariable(CommandEvaluationContext context,string name,string value) {
+        void SetVariable(CommandEvaluationContext context, string name, string value)
+        {
             var tn = VariableSyntax.SplitPath(name);
-            var t = new ArraySegment<string>(tn);           
-            if (context.ShellEnv.Get(t,out var o) && o is DataValue val) {
-                var v = ValueTextParser.ToTypedValue(value,val.ValueType);
+            var t = new ArraySegment<string>(tn);
+            if (context.ShellEnv.Get(t, out var o) && o is DataValue val)
+            {
+                var v = ValueTextParser.ToTypedValue(value, val.ValueType);
                 val.SetValue(v);
             }
             else
-                Error($"variable not found: {Variables.Nsp(VariableNamespace.env,context.ShellEnv.Name,name)}",true);
+                Error($"variable not found: {Variables.Nsp(VariableNamespace.env, context.ShellEnv.Name, name)}", true);
         }
 
         #endregion
@@ -158,7 +169,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             _commandEvaluationContext = commandEvaluationContext;
             settings ??= new CommandLineProcessorSettings();
             _settings = settings;
-            CommandBatchProcessor = new CommandBatchProcessor();            
+            CommandBatchProcessor = new CommandBatchProcessor();
         }
 
         /// <summary>
@@ -169,12 +180,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <param name="commandEvaluationContext">shell default command evaluation context.Provides null to build a new one</param>
         void ShellInit(
             string[] args,
-            CommandLineProcessorSettings settings, 
+            CommandLineProcessorSettings settings,
             CommandEvaluationContext commandEvaluationContext = null)
         {
             _args = (string[])args?.Clone();
             Settings = settings;
-                        
+
             commandEvaluationContext ??= new CommandEvaluationContext(
                 this,
                 Out,
@@ -185,12 +196,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CommandEvaluationContext = commandEvaluationContext;
 
             // pre console init
-            if (DefaultForeground!=null) cons.ForegroundColor = DefaultForeground.Value; 
+            if (DefaultForeground != null) cons.ForegroundColor = DefaultForeground.Value;
 
             // apply orbsh command args -env:{varName}={varValue}
             var appliedSettings = new List<string>();
-            SetArgs(args,CommandEvaluationContext,appliedSettings);
-            
+            SetArgs(args, CommandEvaluationContext, appliedSettings);
+
             // init from settings
             ShellInitFromSettings();
 
@@ -201,34 +212,34 @@ namespace OrbitalShell.Component.CommandLine.Processor
             // load kernel modules
 
             var a = Assembly.GetExecutingAssembly();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel module: '{a}' ... ",true,false);
-            (int typesCount,int commandsCount) = RegisterCommandsAssembly(CommandEvaluationContext,a);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel module: '{a}' ... ", true, false);
+            (int typesCount, int commandsCount) = RegisterCommandsAssembly(CommandEvaluationContext, a);
             Done($"commands:{commandsCount} in {typesCount} types");
 
             // can't reference by type an external module for which we have not a project reference
-            a = Assembly.LoadWithPartialName("OrbitalShell-Kernel-Commands");
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands module: '{a}' ... ",true,false);
-            (int typesCount2,int commandsCount2) = RegisterCommandsAssembly(CommandEvaluationContext,a);
+            a = Assembly.LoadWithPartialName(settings.KernelCommandsModuleAssemblyName);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands module: '{a}' ... ", true, false);
+            (int typesCount2, int commandsCount2) = RegisterCommandsAssembly(CommandEvaluationContext, a);
             Done($"commands:{commandsCount2} in {typesCount2} types");
-            
+
             var lbr = false;
 
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"init user profile from: '{Settings.AppDataFolderPath}' ... ",true,false);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"init user profile from: '{Settings.AppDataFolderPath}' ... ", true, false);
 
             lbr = InitUserProfileFolder(lbr);
 
             Done();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{Settings.HistoryFilePath}' ... ",true,false);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{Settings.HistoryFilePath}' ... ", true, false);
 
             lbr |= CreateRestoreUserHistoryFile(lbr);
 
             Done();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading user aliases: '{Settings.CommandsAliasFilePath}' ... ",true,false);
+            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading user aliases: '{Settings.CommandsAliasFilePath}' ... ", true, false);
 
             lbr |= CreateRestoreUserAliasesFile(lbr);
 
             Done();
-            if (appliedSettings.Count>0) Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"shell args: {string.Join(" ",appliedSettings)}");
+            if (appliedSettings.Count > 0) Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"shell args: {string.Join(" ", appliedSettings)}");
 
             // end inits
             if (lbr) Out.Echoln();
@@ -236,8 +247,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
             Out.Echoln();
         }
 
-        void ShellInitFromSettings() {
-            var ctx=CommandEvaluationContext;
+        void ShellInitFromSettings()
+        {
+            var ctx = CommandEvaluationContext;
             Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor);
             var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_prompt);
             CommandLineReader.SetDefaultPrompt(prompt);
@@ -246,25 +258,30 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <summary>
         /// init the console. basic init that generally occurs before any display
         /// </summary>
-        void ConsoleInit(CommandEvaluationContext context) {
+        void ConsoleInit(CommandEvaluationContext context)
+        {
             var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowWidth);
             var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowHeight);
 
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode) ) {
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
+            {
                 oWinWidth.SetValue(2000);
                 oWinHeight.SetValue(2000);
             }
 
             var WinWidth = (int)oWinWidth.Value;
             var winHeight = (int)oWinHeight.Value;
-            try {
-                if (WinWidth>-1) System.Console.WindowWidth = WinWidth;
-                if (winHeight>-1) System.Console.WindowHeight = winHeight;
+            try
+            {
+                if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
+                if (winHeight > -1) System.Console.WindowHeight = winHeight;
                 System.Console.Clear();
-            } catch {}
+            }
+            catch { }
         }
 
-        public bool CreateRestoreUserAliasesFile(bool lbr) {
+        public bool CreateRestoreUserAliasesFile(bool lbr)
+        {
             // create/restore user aliases
             CommandsAlias = new CommandsAlias();
             var createNewCommandsAliasFile = !File.Exists(Settings.CommandsAliasFilePath);
@@ -278,7 +295,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     File.Copy(defaultAliasFilePath, Settings.CommandsAliasFilePath);
                     lbr |= true;
                     Success();
-                }           
+                }
             }
             catch (Exception createUserProfileFileException)
             {
@@ -287,11 +304,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
             return lbr;
         }
 
-        public bool CreateRestoreUserHistoryFile(bool lbr) {
+        public bool CreateRestoreUserHistoryFile(bool lbr)
+        {
             // create/restore commands history
             CmdsHistory = new CommandsHistory();
             var createNewHistoryFile = !File.Exists(Settings.HistoryFilePath);
-            if (createNewHistoryFile)                
+            if (createNewHistoryFile)
                 Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", false);
             try
             {
@@ -308,7 +326,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
             lbr |= createNewHistoryFile;
             return lbr;
-        }        
+        }
 
         public bool InitUserProfileFolder(bool lbr)
         {
@@ -318,12 +336,13 @@ namespace OrbitalShell.Component.CommandLine.Processor
             if (!Directory.Exists(Settings.AppDataFolderPath))
             {
                 Settings.LogAppendAllLinesErrorIsEnabled = false;
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user shell folder: '{Settings.AppDataFolderPath}' ... ",true,false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user shell folder: '{Settings.AppDataFolderPath}' ... ", true, false);
                 try
                 {
                     Directory.CreateDirectory(Settings.AppDataFolderPath);
                     Success();
-                } catch (Exception createAppDataFolderPathException)
+                }
+                catch (Exception createAppDataFolderPathException)
                 {
                     Fail(createAppDataFolderPathException);
                 }
@@ -333,11 +352,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
             // initialize log file
             if (!File.Exists(Settings.LogFilePath))
             {
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating log file: '{Settings.LogFilePath}' ... ",true,false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating log file: '{Settings.LogFilePath}' ... ", true, false);
                 try
                 {
                     var logError = Log($"file created on {System.DateTime.Now}");
-                    if (logError==null)
+                    if (logError == null)
                         Success();
                     else
                         throw logError;
@@ -353,7 +372,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             // initialize user profile
             if (!File.Exists(Settings.UserProfileFilePath))
             {
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ",true,false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ", true, false);
                 try
                 {
                     var defaultProfileFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.UserProfileFileName);
@@ -366,7 +385,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 }
                 lbr = true;
             }
-            
+
             return lbr;
         }
 
@@ -377,19 +396,25 @@ namespace OrbitalShell.Component.CommandLine.Processor
         {
             if (_isInitialized) return;
 
-            ShellInit( _args, _settings, _commandEvaluationContext);
+            ShellInit(_args, _settings, _commandEvaluationContext);
 
             // run user profile
-            try {
+            try
+            {
                 CommandBatchProcessor.RunBatch(CommandEvaluationContext, Settings.UserProfileFilePath);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Warning($"Run 'user profile file' skipped. Reason is : {ex.Message}");
             }
 
             // run user aliases
-            try {
-                CommandsAlias.Init(CommandEvaluationContext, Settings.AppDataFolderPath, Settings.CommandsAliasFileName);            
-            } catch (Exception ex) {
+            try
+            {
+                CommandsAlias.Init(CommandEvaluationContext, Settings.AppDataFolderPath, Settings.CommandsAliasFileName);
+            }
+            catch (Exception ex)
+            {
                 Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
             }
             _isInitialized = true;
@@ -397,56 +422,57 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         #region log screeen + file methods
 
-        private string _LogMessage(string message,string prefix,string postfix=" : ")
-            => (string.IsNullOrWhiteSpace(prefix))? message : (prefix + (message==null?"":$"{postfix}{message}"));
+        private string _LogMessage(string message, string prefix, string postfix = " : ")
+            => (string.IsNullOrWhiteSpace(prefix)) ? message : (prefix + (message == null ? "" : $"{postfix}{message}"));
 
-        void Success(string message = null,bool log=true,bool lineBreak = true,string prefix="Success")
-        {            
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message,prefix);
+        void Success(string message = null, bool log = true, bool lineBreak = true, string prefix = "Success")
+        {
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message, prefix);
             Out.Echoln(logMessage);
             if (log) Log(logMessage);
         }
 
-        void Done(string message = null,bool log=true,bool lineBreak = true,string prefix="Done")
+        void Done(string message = null, bool log = true, bool lineBreak = true, string prefix = "Done")
         {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message,prefix);
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message, prefix);
             Out.Echoln(logMessage);
             if (log) Log(logMessage);
         }
 
-        void Info(string message,bool log=true,bool lineBreak = true,string prefix="")
-        {   var logMessage = CommandEvaluationContext.ShellEnv.Colors.Log + _LogMessage(message,prefix);
-            Out.Echo(logMessage,lineBreak);
-            if (log) Log(logMessage);
-        }
-
-        void Fail(string message=null,bool log=true,bool lineBreak = true,string prefix="Fail")
+        void Info(string message, bool log = true, bool lineBreak = true, string prefix = "")
         {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + _LogMessage(message,prefix,"");
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Log + _LogMessage(message, prefix);
             Out.Echo(logMessage, lineBreak);
             if (log) Log(logMessage);
-        } 
+        }
 
-        void Warning(string message=null,bool log=true,bool lineBreak = true,string prefix="Warning")
+        void Fail(string message = null, bool log = true, bool lineBreak = true, string prefix = "Fail")
         {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Warning + _LogMessage(message,prefix);
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + _LogMessage(message, prefix, "");
+            Out.Echo(logMessage, lineBreak);
+            if (log) Log(logMessage);
+        }
+
+        void Warning(string message = null, bool log = true, bool lineBreak = true, string prefix = "Warning")
+        {
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Warning + _LogMessage(message, prefix);
             Out.Echo(logMessage, lineBreak);
             if (log) LogWarning(logMessage);
         }
 
-        void Fail(Exception exception,bool log=true,bool lineBreak=true,string prefix="Fail : ")
+        void Fail(Exception exception, bool log = true, bool lineBreak = true, string prefix = "Fail : ")
         {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + exception?.Message ;
-            Out.Echo(logMessage,lineBreak);
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + exception?.Message;
+            Out.Echo(logMessage, lineBreak);
             if (log) LogError(logMessage);
         }
 
-        void Error(string message=null,bool log=false,bool lineBreak = true,string prefix="")
+        void Error(string message = null, bool log = false, bool lineBreak = true, string prefix = "")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + (message == null ? "" : $"{message}");
             Out.Echo(logMessage, lineBreak);
             if (log) LogError(logMessage);
-        }  
+        }
 
         #endregion
 
@@ -457,7 +483,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public void PrintInfo(CommandEvaluationContext context)
         {
-            context.Out.Echoln($"{CommandEvaluationContext.ShellEnv.Colors.Label}{Uon} {Settings.AppLongName} ({Settings.AppName}) version {Assembly.GetExecutingAssembly().GetName().Version}" + ("".PadRight(18,' ')) + Tdoff);
+            context.Out.Echoln($"{CommandEvaluationContext.ShellEnv.Colors.Label}{Uon} {Settings.AppLongName} ({Settings.AppName}) version {Assembly.GetExecutingAssembly().GetName().Version}" + ("".PadRight(18, ' ')) + Tdoff);
             context.Out.Echoln($" {Settings.AppEditor}");
             context.Out.Echoln($" {RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture} - {RuntimeInformation.FrameworkDescription} - {lib.RuntimeEnvironment.OSType}");
 
@@ -466,12 +492,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 File.ReadAllLines(
                 Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "Component",
                     "Commands",
                     "CommandLineProcessor",
                     "banner.txt"));
             int c = 202;
-            foreach ( var line in banner )
+            foreach (var line in banner)
             {
                 context.Out.SetForeground(c);
                 context.Out.Echoln(line);
@@ -482,7 +507,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         #region shell log operations
-        
+
         public Exception Log(string text)
         {
             return LogInternal(text);
@@ -490,24 +515,25 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public Exception LogError(string text)
         {
-            return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Error+"ERR");
+            return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Error + "ERR");
         }
 
         public Exception LogWarning(string text)
         {
-            return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Warning+"ERR");
+            return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Warning + "ERR");
         }
 
-        Exception LogInternal(string text,string logPrefix="INF")
+        Exception LogInternal(string text, string logPrefix = "INF")
         {
             var str = $"{logPrefix} [{Process.GetCurrentProcess().ProcessName}:{Process.GetCurrentProcess().Id},{Thread.CurrentThread.Name}:{Thread.CurrentThread.ManagedThreadId}] {System.DateTime.Now}.{System.DateTime.Now.Millisecond} | {text}";
-            lock ( _logFileLock )
+            lock (_logFileLock)
             {
                 try
                 {
                     File.AppendAllLines(Settings.LogFilePath, new List<string> { str });
                     return null;
-                } catch (Exception logAppendAllLinesException)
+                }
+                catch (Exception logAppendAllLinesException)
                 {
                     if (Settings.LogAppendAllLinesErrorIsEnabled)
                         Errorln(logAppendAllLinesException.Message);
@@ -520,13 +546,13 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         #region commands registration
 
-        public (int typesCount,int commandsCount) 
+        public (int typesCount, int commandsCount)
             UnregisterCommandsAssembly(
             CommandEvaluationContext context,
             string assemblyName)
         {
             var module = _modules.Values.Where(x => x.Name == assemblyName).FirstOrDefault();
-            if (module!=null)
+            if (module != null)
             {
                 foreach (var com in AllCommands)
                     if (com.MethodInfo.DeclaringType.Assembly == module.Assembly)
@@ -559,33 +585,33 @@ namespace OrbitalShell.Component.CommandLine.Processor
             string assemblyPath)
         {
             var assembly = Assembly.LoadFrom(assemblyPath);
-            return RegisterCommandsAssembly(context,assembly);
+            return RegisterCommandsAssembly(context, assembly);
         }
 
-        public (int typesCount,int commandsCount) RegisterCommandsAssembly(
+        public (int typesCount, int commandsCount) RegisterCommandsAssembly(
             CommandEvaluationContext context,
             Assembly assembly)
         {
             var moduleAttr = assembly.GetCustomAttribute<ModuleAttribute>();
-            if (moduleAttr==null)
+            if (moduleAttr == null)
             {
                 context.Errorln($"assembly is not a shell module: '{assembly.FullName}'");
-                return (0,0);
+                return (0, 0);
             }
             if (_modules.ContainsKey(assembly.ManifestModule.Name))
             {
                 context.Errorln($"commands module already registered: '{assembly.FullName}'");
-                return (0,0);
-            }            
+                return (0, 0);
+            }
             var typesCount = 0;
             var comTotCount = 0;
-            foreach ( var type in assembly.GetTypes())
+            foreach (var type in assembly.GetTypes())
             {
                 var comsAttr = type.GetCustomAttribute<CommandsAttribute>();
 
                 var comCount = 0;
-                if (comsAttr != null && type.GetInterface(typeof(ICommandsDeclaringType).FullName)!=null )
-                    comCount = RegisterCommandsClass(context,type,false);                
+                if (comsAttr != null && type.GetInterface(typeof(ICommandsDeclaringType).FullName) != null)
+                    comCount = RegisterCommandsClass(context, type, false);
                 if (comCount > 0)
                     typesCount++;
                 comTotCount += comCount;
@@ -595,36 +621,36 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 var descAttr = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
                 var description = (descAttr != null) ? descAttr.Description : "";
                 _modules.Add(
-                    Path.GetFileNameWithoutExtension(assembly.ManifestModule.Name), 
-                    new ModuleModel(Path.GetFileNameWithoutExtension(assembly.Location), 
-                    description, 
-                    assembly, 
-                    typesCount, 
+                    Path.GetFileNameWithoutExtension(assembly.ManifestModule.Name),
+                    new ModuleModel(Path.GetFileNameWithoutExtension(assembly.Location),
+                    description,
+                    assembly,
+                    typesCount,
                     comTotCount));
             }
-            return (typesCount,comTotCount);    
+            return (typesCount, comTotCount);
         }
 
-        public void RegisterCommandsClass<T>(CommandEvaluationContext context) => RegisterCommandsClass(context,typeof(T),true);
+        public void RegisterCommandsClass<T>(CommandEvaluationContext context) => RegisterCommandsClass(context, typeof(T), true);
 
-        public int RegisterCommandsClass(CommandEvaluationContext context, Type type) => RegisterCommandsClass(context,type, true);
+        public int RegisterCommandsClass(CommandEvaluationContext context, Type type) => RegisterCommandsClass(context, type, true);
 
-        int RegisterCommandsClass(CommandEvaluationContext context, Type type,bool registerAsModule)
+        int RegisterCommandsClass(CommandEvaluationContext context, Type type, bool registerAsModule)
         {
-            if (type.GetInterface(typeof(ICommandsDeclaringType).FullName)==null)
+            if (type.GetInterface(typeof(ICommandsDeclaringType).FullName) == null)
                 throw new Exception($"the type '{type.FullName}' must implements interface '{typeof(ICommandsDeclaringType).FullName}' to be registered as a command class");
             var comsCount = 0;
-            object instance = Activator.CreateInstance(type,new object[] { });            
+            object instance = Activator.CreateInstance(type, new object[] { });
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             if (registerAsModule && _modules.ContainsKey(type.FullName))
             {
                 context.Errorln($"a module with same name than commands type '{type.FullName}' is already registered");
                 return 0;
             }
-            foreach ( var method in methods )
+            foreach (var method in methods)
             {
                 var cmd = method.GetCustomAttribute<CommandAttribute>();
-                if (cmd!=null)
+                if (cmd != null)
                 {
                     if (!method.ReturnType.HasInterface(typeof(ICommandResult)))
                     {
@@ -652,8 +678,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
                                 CommandParameterSpecification pspec = null;
                                 object defval = null;
                                 if (!parameter.HasDefaultValue && parameter.ParameterType.IsValueType)
-                                    defval = Activator.CreateInstance(parameter.ParameterType); 
-                                
+                                    defval = Activator.CreateInstance(parameter.ParameterType);
+
                                 var paramAttr = parameter.GetCustomAttribute<ParameterAttribute>();
                                 if (paramAttr != null)
                                 {
@@ -792,7 +818,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             var evalParses = new List<ExpressionEvaluationResult>();
 
             // check pipeline syntax analysis
-            foreach ( var pipelineParseResult in pipelineParseResults )
+            foreach (var pipelineParseResult in pipelineParseResults)
             {
                 allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
                 var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
@@ -802,26 +828,30 @@ namespace OrbitalShell.Component.CommandLine.Processor
             // eventually output the post analysis pre exec content
             if (!string.IsNullOrEmpty(postAnalysisPreExecOutput)) context.Out.Echo(postAnalysisPreExecOutput);
 
-            if (!allValid) {
+            if (!allValid)
+            {
                 // syntax error in pipeline - break exec
-                var err =  evalParses.FirstOrDefault();
-                context.ShellEnv.UpdateVarLastCommandReturn(expr,null,err==null?ReturnCode.OK:GetReturnCode(err),err?.SyntaxError);
+                var err = evalParses.FirstOrDefault();
+                context.ShellEnv.UpdateVarLastCommandReturn(expr, null, err == null ? ReturnCode.OK : GetReturnCode(err), err?.SyntaxError);
                 return err;
             }
-        
+
             // run pipeline
             var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
 
             // update shell env
-            context.ShellEnv.UpdateVarLastCommandReturn(expr,evalRes.Result,GetReturnCode(evalRes),evalRes.EvalErrorText,evalRes.EvalError);
+            context.ShellEnv.UpdateVarLastCommandReturn(expr, evalRes.Result, GetReturnCode(evalRes), evalRes.EvalErrorText, evalRes.EvalError);
             return evalRes;
         }
 
-        ReturnCode GetReturnCode(ExpressionEvaluationResult expr) {       
-            var r = ReturnCode.Error;     
-            try {
+        ReturnCode GetReturnCode(ExpressionEvaluationResult expr)
+        {
+            var r = ReturnCode.Error;
+            try
+            {
                 r = (ReturnCode)expr.EvalResultCode;
-            } catch (Exception){}
+            }
+            catch (Exception) { }
             return r;
         }
 
@@ -839,7 +869,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             int outputX,
             ParseResult parseResult
             )
-        { 
+        {
             ExpressionEvaluationResult r = null;
             var errorText = "";
             string[] t;
@@ -866,14 +896,14 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 */
 
                 case ParseResultType.Empty:
-                    r = new ExpressionEvaluationResult(expr,null, parseResult.ParseResultType, null, (int)ReturnCode.OK, null);
+                    r = new ExpressionEvaluationResult(expr, null, parseResult.ParseResultType, null, (int)ReturnCode.OK, null);
                     break;
 
                 case ParseResultType.NotValid:  /* command syntax not valid */
                     var perComErrs = new Dictionary<string, List<CommandSyntaxParsingResult>>();
                     foreach (var prs in parseResult.SyntaxParsingResults)
                         if (prs.CommandSyntax != null)
-                        { 
+                        {
                             if (perComErrs.TryGetValue(prs.CommandSyntax?.CommandSpecification?.Name, out var lst))
                                 lst.Add(prs);
                             else
@@ -895,7 +925,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                                 if (!errs.Contains(perr.Description))
                                     errs.Add(perr.Description);
                             }
-                            errorText += Br + Red + string.Join(Br+Red, errs);
+                            errorText += Br + Red + string.Join(Br + Red, errs);
                         }
                         errorText += $"{Br}{Red}for syntax: {comSyntax}{Br}";
                     }
@@ -907,13 +937,13 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     for (int i = 0; i < t.Length; i++) t[i] = " ";
                     foreach (var errPos in errPositions)
                     {
-                        t[GetIndex(context, errPos, expr)] = Settings.ErrorPositionMarker+"";
+                        t[GetIndex(context, errPos, expr)] = Settings.ErrorPositionMarker + "";
                     }
                     serr = string.Join("", t);
-                    Error(" ".PadLeft(outputX + 1) + serr,false,false);
+                    Error(" ".PadLeft(outputX + 1) + serr, false, false);
 
                     Error(errorText);
-                    r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
+                    r = new ExpressionEvaluationResult(expr, errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
 
                 case ParseResultType.Ambiguous:
@@ -921,7 +951,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     foreach (var prs in parseResult.SyntaxParsingResults)
                         errorText += $"{Red}{prs.CommandSyntax}{Br}";
                     Error(errorText);
-                    r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
+                    r = new ExpressionEvaluationResult(expr, errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
 
                 case ParseResultType.NotIdentified:
@@ -929,12 +959,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     for (int j = 0; j < t.Length; j++) t[j] = " ";
                     var err = parseResult.SyntaxParsingResults.First().ParseErrors.First();
                     idx = err.Position;
-                    t[idx] = Settings.ErrorPositionMarker+"";
+                    t[idx] = Settings.ErrorPositionMarker + "";
                     errorText += Red + err.Description;
                     serr = string.Join("", t);
                     context.Errorln(" ".PadLeft(outputX) + serr);
                     context.Errorln(errorText);
-                    r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
+                    r = new ExpressionEvaluationResult(expr, errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
 
                 case ParseResultType.SyntaxError:
@@ -942,12 +972,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     for (int j = 0; j < t.Length; j++) t[j] = " ";
                     var err2 = parseResult.SyntaxParsingResults.First().ParseErrors.First();
                     idx = err2.Index;
-                    t[idx] = Settings.ErrorPositionMarker+"";
+                    t[idx] = Settings.ErrorPositionMarker + "";
                     errorText += Red + err2.Description;
                     serr = string.Join("", t);
                     context.Errorln(" ".PadLeft(outputX) + serr);
                     context.Errorln(errorText);
-                    r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
+                    r = new ExpressionEvaluationResult(expr, errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
             }
 
@@ -976,7 +1006,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 .Invoke(commandSpecification.MethodOwner, parameters.ToArray());
             return r;
         }
-                
+
         #endregion
     }
 }

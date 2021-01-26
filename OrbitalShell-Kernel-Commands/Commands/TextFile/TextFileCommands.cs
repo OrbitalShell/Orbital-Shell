@@ -1,4 +1,4 @@
-﻿using OrbitalShell.Component.Commands.FileSystem;
+﻿using OrbitalShell.Commands.FileSystem;
 using OrbitalShell.Component.CommandLine;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Console;
