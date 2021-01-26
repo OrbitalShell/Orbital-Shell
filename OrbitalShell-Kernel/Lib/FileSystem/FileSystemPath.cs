@@ -67,12 +67,12 @@ namespace OrbitalShell.Lib.FileSystem
             if (_CanNormalizePath(originalName))
             {
                 var path = _NormalizePath(originalName);
-                if (fileSystemInfo is DirectoryInfo di)
+                if (fileSystemInfo is DirectoryInfo)
                 {
                     FileSystemInfo = new DirectoryInfo(path);
                 }
                 else
-                    if (fileSystemInfo is FileInfo fi)
+                    if (fileSystemInfo is FileInfo)
                 {
                     FileSystemInfo = new FileInfo(path);
                 }
