@@ -1,5 +1,4 @@
-﻿using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.CommandLine.Variable;
 using OrbitalShell.Console;
@@ -8,12 +7,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using static OrbitalShell.Console.EchoPrimitives;
-using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.Str;
 
 namespace OrbitalShell.Component.Commands
 {
     [Commands("system commands")]
+    [CommandsNamespace(CommandNamespace.sys)]
     public class SystemCommands : ICommandsDeclaringType
     {
         [Command("print a report of current processes")]
@@ -40,11 +39,11 @@ namespace OrbitalShell.Component.Commands
             //var cvms = table.Columns.Add("vms");
             //var ctitle = table.Columns.Add("window title");
             //var cmname = table.Columns.Add("Module name");
-            foreach ( var process in processes )
+            foreach (var process in processes)
             {
                 var select = true;
-                select &= (fsid==-1 || process.SessionId == fsid);
-                select &= (fpid==-1 || process.Id == fpid);
+                select &= (fsid == -1 || process.SessionId == fsid);
+                select &= (fpid == -1 || process.Id == fpid);
 
                 var row = table.NewRow();
                 row[cpid] = process.Id;
@@ -69,22 +68,22 @@ namespace OrbitalShell.Component.Commands
                     r.Add(process);
                 }
             }
-            
+
             table.Echo(
                 new EchoEvaluationContext(context.Out, context,
                     new TableFormattingOptions(context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions))
-                        { NoBorders = !borders }));
+                    { NoBorders = !borders }));
 
             return new CommandResult<List<Process>>(r);
         }
 
         [Command("get information about current user")]
-        public CommandResult<(string userName,string userDomainName)> Whoami(
+        public CommandResult<(string userName, string userDomainName)> Whoami(
             CommandEvaluationContext context
             )
         {
             context.Out.Echoln($"{Environment.UserName} [{context.ShellEnv.Colors.Highlight}{Environment.UserDomainName}{context.ShellEnv.Colors.Default}]");
-            return new CommandResult<(string,string)>((Environment.UserName,Environment.UserDomainName));
+            return new CommandResult<(string, string)>((Environment.UserName, Environment.UserDomainName));
         }
     }
 }

@@ -35,13 +35,15 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         public static char CommandGroupBegin = '(';
         public static char CommandGroupEnd = ')';
 
-        public static bool IsNotAnOperator(string s) => 
+        public static char CommandNamespaceSeparator = '-';
+
+        public static bool IsNotAnOperator(string s) =>
             !IsRedirectOutput(s) &&
             !IsRedirectInput(s) &&
             !IsRedirectError(s) &&
             !IsPipeOperator(s);
 
-        public static bool IsRedirectOutput(string s) => 
+        public static bool IsRedirectOutput(string s) =>
             StdOut.Contains(s);
 
         public static bool IsRedirectInput(string s) =>
@@ -53,7 +55,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
         public static bool IsRedirectError(string s) => false;
 
-        public static bool IsPipeOperator(string s) => s==Pipeline || s==ConditionalPipelineFail || s==ConditionalPipelineSuccess;
+        public static bool IsPipeOperator(string s) => s == Pipeline || s == ConditionalPipelineFail || s == ConditionalPipelineSuccess;
 
         public static string PipelineConditionToStr(PipelineCondition pipelineCondition)
         {
@@ -64,7 +66,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 case PipelineCondition.Success: return ConditionalPipelineSuccess;
                 case PipelineCondition.Error: return ConditionalPipelineFail;
                 default: return null;
-             }
+            }
         }
 
         // -----

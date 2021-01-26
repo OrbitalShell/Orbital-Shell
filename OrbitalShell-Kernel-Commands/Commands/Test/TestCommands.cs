@@ -6,15 +6,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using static OrbitalShell.Console.ANSI;
-using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.TextFileReader;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Component;
 
 namespace OrbitalShell.Commands.Test
 {
     [Commands("tests commands")]
+    [CommandsNamespace(CommandNamespace.test)]
     public class TestCommands : ICommandsDeclaringType
     {
         [Command("print cursor info")]

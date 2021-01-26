@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design.Serialization;
-using System.Threading;
-using OrbitalShell.Component.CommandLine;
+﻿using OrbitalShell.Component.CommandLine;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Data;
 using OrbitalShell.Component.CommandLine.Parsing;
@@ -18,14 +16,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using static OrbitalShell.Lib.Str;
 using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
+using System.Collections.Specialized;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace OrbitalShell.Component.Commands
 {
     [Commands("commands of the command line processor")]
+    [CommandsNamespace(CommandNamespace.shell)]
     public class ShellCommands : ICommandsDeclaringType
     {
         #region shell exec
@@ -53,7 +54,8 @@ namespace OrbitalShell.Component.Commands
             [Option("s", "set short view: decrase output details")] bool shortView,
             [Option("v", "set verbose view: increase output details")] bool verboseView,
             [Option("all", "list all commands")] bool all,
-            [Option("t", "filter commands list by command declaring type. if t is * list types", true, true)] string type,
+            [Option("n", "filter commands list by namespace. if t is * list namespaces", true, true)] string @namespace,
+            [Option("t", "filter commands list by command declaring type. if t is * list declaring types", true, true)] string type,
             [Option("m", "filter commands list by module name. if m is * list modules", true, true)] string module,
             [Parameter("output help for the command with name 'commandName'", true)] string commandName
             )
@@ -61,11 +63,16 @@ namespace OrbitalShell.Component.Commands
             var hascn = !string.IsNullOrWhiteSpace(commandName);
             var list = !all && !hascn;
             var cmds = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.AllCommands.AsQueryable();
+            var namespaces = cmds.Select(x => x.Namespace).Distinct().ToList();
+            namespaces.Sort();
+
             if (hascn)
                 cmds = cmds.Where(x => x.Name.Equals(commandName, CommandLineParser.SyntaxMatchingRule));
 
             if (cmds.Count() > 0)
             {
+
+                #region filter on declaring type
                 if (!string.IsNullOrWhiteSpace(type))
                 {
                     if (type != "*" && !context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringShortTypesNames.Contains(type))
@@ -102,6 +109,9 @@ namespace OrbitalShell.Component.Commands
                         return new CommandVoidResult();
                     }
                 }
+                #endregion
+
+                #region filter on module
                 if (cmds.Count() > 0 && !string.IsNullOrWhiteSpace(module))
                 {
                     if (module != "*" && !context.CommandLineProcessor.ModuleManager.Modules.Values.Select(x => x.Name).Contains(module))
@@ -125,6 +135,30 @@ namespace OrbitalShell.Component.Commands
                         return new CommandVoidResult();
                     }
                 }
+                #endregion
+
+                #region filter on namespace
+                if (cmds.Count() > 0 && !string.IsNullOrWhiteSpace(@namespace))
+                {
+                    if (@namespace != "*" && !namespaces.Contains(@namespace))
+                    {
+                        context.Errorln($"unknown command namespace: '{@namespace}'");
+                        return new CommandVoidResult(ReturnCode.Error);
+                    }
+
+                    shortView = !verboseView;
+
+                    if (@namespace != "*")
+                        cmds = cmds.Where(x => x.Namespace == @namespace);
+                    else
+                    {
+                        foreach (var ns in namespaces)
+                            context.Out.Echoln(Darkcyan + ns);
+                        return new CommandVoidResult();
+                    }
+                }
+                #endregion
+
                 var ncmds = cmds.ToList();
                 ncmds.Sort(new Comparison<CommandSpecification>((x, y) => x.Name.CompareTo(y.Name)));
                 cmds = ncmds.AsQueryable();
@@ -133,15 +167,40 @@ namespace OrbitalShell.Component.Commands
                     var maxcmdlength = cmds.Select(x => x.Name.Length).Max() + 1;
                     var maxcmdtypelength = cmds.Select(x => x.DeclaringTypeShortName.Length).Max() + 1;
                     var maxmodlength = cmds.Select(x => Path.GetFileNameWithoutExtension(x.MethodInfo.DeclaringType.Assembly.Location).Length).Max() + 1;
-                    int n = 0;
+                    var maxnslength = cmds.Select(x => x.Namespace.Length).Max() + 1;
 
                     if (list) shortView = !verboseView;
 
-                    foreach (var cmd in cmds)
+                    var groupByNs = list; //&& shortView;
+                    if (groupByNs)
                     {
-                        if (!list && n > 0) context.Out.Echoln();
-                        PrintCommandHelp(context, cmd, shortView, verboseView, list, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
-                        n++;
+                        // get all fs
+                        var cmdByNs = cmds.GroupBy((x) => x.Namespace).ToList(); // ordered
+                        cmdByNs.Sort((x, y) => x.Key.CompareTo(y.Key));
+                        int g = 0;
+                        foreach (var grouping in cmdByNs)
+                        {
+                            if (grouping.Count() > 0)
+                            {
+                                if (g > 0) context.Out.Echoln();
+                                context.Out.Echoln($"{ANSI.SGR_Underline}{context.ShellEnv.Colors.Highlight}{grouping.Key}{ANSI.SGR_UnderlineOff}{context.ShellEnv.Colors.Default}{ANSI.CRLF}");
+                                foreach (var item in grouping)
+                                {
+                                    PrintCommandHelp(context, item, shortView, verboseView, list, maxnslength, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
+                                }
+                                g++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int n = 0;
+                        foreach (var cmd in cmds)
+                        {
+                            if (!list && n > 0) context.Out.Echoln();
+                            PrintCommandHelp(context, cmd, shortView, verboseView, list, maxnslength, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
+                            n++;
+                        }
                     }
                 }
             }
@@ -159,21 +218,24 @@ namespace OrbitalShell.Component.Commands
             bool shortView = false,
             bool verboseView = false,
             bool list = false,
+            int maxnslength = -1,
             int maxcnamelength = -1,
             int maxcmdtypelength = -1,
             int maxmodlength = -1,
-            bool singleout = false)
+            bool singleout = false
+            )
         {
 #pragma warning disable IDE0071 // Simplifier l’interpolation
 #pragma warning disable IDE0071WithoutSuggestion // Simplifier l’interpolation
             if (maxcnamelength == -1) maxcnamelength = com.Name.Length + 1;
+            if (maxnslength == -1) maxnslength = com.Namespace.Length + 1;
             if (maxcmdtypelength == -1) maxcmdtypelength = com.DeclaringTypeShortName.Length + 1;
             var col = singleout ? "" : "".PadRight(maxcnamelength, ' ');
             var f = GetCmd(EchoDirectives.f + "", cons.DefaultForeground.ToString().ToLower());
             if (list)
             {
                 if (!shortView)
-                    context.Out.Echoln($"{Darkcyan}{com.ModuleName.PadRight(maxmodlength, ' ')}   {com.DeclaringTypeShortName.PadRight(maxcmdtypelength, ' ')}{Tab}{context.ShellEnv.Colors.Highlight}{com.Name.PadRight(maxcnamelength, ' ')}{Tab}{f}{com.Description}{context.ShellEnv.Colors.Default}");
+                    context.Out.Echoln($"{Darkcyan}{com.ModuleName.PadRight(maxmodlength, ' ')}   {com.DeclaringTypeShortName.PadRight(maxcmdtypelength, ' ')}   {com.Namespace.PadRight(maxnslength, ' ')}{Tab}{context.ShellEnv.Colors.Highlight}{com.Name.PadRight(maxcnamelength, ' ')}{Tab}{f}{com.Description}{context.ShellEnv.Colors.Default}");
                 else
                     context.Out.Echoln($"{context.ShellEnv.Colors.Highlight}{com.Name.PadRight(maxcnamelength, ' ')}{f}{Tab}{com.Description}{context.ShellEnv.Colors.Default}");
             }
@@ -205,7 +267,7 @@ namespace OrbitalShell.Component.Commands
                             var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.Name}{f}" : "";
                             var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue != null && (!p.IsOption || p.ParameterValueTypeName != typeof(bool).Name)) ? ((ptype != "" ? ". " : "") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}") : "";
                             var supdef = $"{ptype}{pdef}";
-                            // method 'Echo if has' else to string (with stream capture ?)
+                            // method 'Echo if has' else to string
                             context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors, false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");
                             if (!string.IsNullOrWhiteSpace(supdef)) context.Out.Echoln($"{col}{Tab}{" ".PadRight(mpl)}{supdef}");
                         }
@@ -221,8 +283,9 @@ namespace OrbitalShell.Component.Commands
                 }
                 if (verboseView)
                 {
-                    context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}type  : {context.ShellEnv.Colors.HalfDarkLabel}{com.DeclaringTypeShortName}");
-                    context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}module: {context.ShellEnv.Colors.HalfDarkLabel}{com.ModuleName}{context.ShellEnv.Colors.Default}");
+                    context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}namespace       : {context.ShellEnv.Colors.HalfDarkLabel}{com.Namespace}");
+                    context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}declaring type  : {context.ShellEnv.Colors.HalfDarkLabel}{com.DeclaringTypeShortName}");
+                    context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}module          : {context.ShellEnv.Colors.HalfDarkLabel}{com.ModuleName}{context.ShellEnv.Colors.Default}");
                 }
             }
 #pragma warning restore IDE0071WithoutSuggestion // Simplifier l’interpolation
@@ -257,14 +320,14 @@ namespace OrbitalShell.Component.Commands
             if (loadModulePath == null && unloadModuleName == null)
             {
                 var col1length = context.CommandLineProcessor.ModuleManager.Modules.Values.Select(x => x.Name.Length).Max() + 1;
-                int n=1;
+                int n = 1;
                 foreach (var kvp in context.CommandLineProcessor.ModuleManager.Modules)
                 {
                     context.Out.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description}");
                     context.Out.Echoln($"{"".PadRight(col1length, ' ')}{kvp.Value.Info.GetDescriptor(context)}");
                     context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}assembly:{context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.FullName}");
                     context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}path:    {context.ShellEnv.Colors.HalfDark}{kvp.Value.Assembly.Location}");
-                    if (n<context.CommandLineProcessor.ModuleManager.Modules.Count) context.Out.Echoln();
+                    if (n < context.CommandLineProcessor.ModuleManager.Modules.Count) context.Out.Echoln();
                     n++;
                 }
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
@@ -443,27 +506,6 @@ namespace OrbitalShell.Component.Commands
 
         #endregion
 
-        #region command line
-
-        [Command("set the command line prompt")]
-        public CommandResult<string> Prompt(
-            CommandEvaluationContext context,
-            [Parameter("outputs the text of command line prompt if it is specified, else outputs the current prompt text", true)] string prompt = null
-            )
-        {
-            context.CommandLineProcessor.AssertCommandLineProcessorHasACommandLineReader();
-            if (prompt == null)
-            {
-                prompt = context.CommandLineProcessor.CommandLineReader.GetPrompt();
-                context.Out.Echoln(prompt, true);
-            }
-            else
-                context.CommandLineProcessor.CommandLineReader.SetPrompt(context, prompt);
-            return new CommandResult<string>(prompt);
-        }
-
-        #endregion
-
         #region app
 
         [Command("exit the shell")]
@@ -606,32 +648,5 @@ namespace OrbitalShell.Component.Commands
 
         #endregion
 
-        #region fixes
-
-        [Command("enable console compatibility mode (try to fix common bugs on known consoles)")]
-        public CommandVoidResult EnableConsoleCompatibilityMode(CommandEvaluationContext context)
-        {
-            var oFix = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_enableCompatibilityMode);
-            oFix.SetValue(true);
-
-            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowWidth);
-            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowHeight);
-
-            oWinWidth.SetValue(2000);
-            oWinHeight.SetValue(2000);
-
-            var WinWidth = (int)oWinWidth.Value;
-            var winHeight = (int)oWinHeight.Value;
-
-            if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
-            if (winHeight > -1) System.Console.WindowHeight = winHeight;
-
-            System.Console.Clear();
-            //context.Out.Echo(ANSI.RIS);
-
-            return CommandVoidResult.Instance;
-        }
-
-        #endregion
     }
 }

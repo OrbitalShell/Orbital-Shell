@@ -14,16 +14,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static OrbitalShell.Component.CommandLine.CommandLineReader.Interaction;
-using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.FileSystem.FileSystem;
 using static OrbitalShell.Lib.Str;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Component;
 
 namespace OrbitalShell.Commands.FileSystem
 {
     [Commands("commands related to files,directories,mounts/filesystems and disks")]
+    [CommandsNamespace(CommandNamespace.fs)]
     public class FileSystemCommands : ICommandsDeclaringType
     {
         [Command("search for files and/or folders")]

@@ -18,19 +18,23 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         public readonly string Documentation;
         public readonly string Name;
 
+        public readonly string Namespace;
+
         readonly Dictionary<string, CommandParameterSpecification> _parametersSpecifications = new Dictionary<string, CommandParameterSpecification>();
 
-        public ReadOnlyDictionary<string, CommandParameterSpecification> ParametersSpecifications => new ReadOnlyDictionary<string,CommandParameterSpecification>(_parametersSpecifications);
+        public ReadOnlyDictionary<string, CommandParameterSpecification> ParametersSpecifications => new ReadOnlyDictionary<string, CommandParameterSpecification>(_parametersSpecifications);
 
         public CommandSpecification(
+            string @namespace,
             string name,
             string description,
             string longDescription,
             string documentation,
-            MethodInfo methodInfo, 
+            MethodInfo methodInfo,
             object methodOwner,
             IList<CommandParameterSpecification> commandParameterSpecifications = null)
         {
+            Namespace = @namespace;
             Name = name;
             Description = description;
             LongDescription = longDescription;
@@ -38,7 +42,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             MethodOwner = methodOwner;
             MethodInfo = methodInfo;
             if (commandParameterSpecifications != null)
-                commandParameterSpecifications.ToList().ForEach(x => _parametersSpecifications.Add(x.ActualName,x));
+                commandParameterSpecifications.ToList().ForEach(x => _parametersSpecifications.Add(x.ActualName, x));
         }
 
         public string ModuleName => Path.GetFileNameWithoutExtension(MethodInfo.DeclaringType.Assembly.Location);
@@ -109,7 +113,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         {
             get
             {
-                if (_requiredOptionsCount==-1)
+                if (_requiredOptionsCount == -1)
                 {
                     int n = 0;
                     foreach (var pspec in _parametersSpecifications.Values)
@@ -134,7 +138,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             foreach (var p in _parametersSpecifications.Values)
                 if (p.Index == -1)
                     parameters.Add(++maxIndex, p.ToString());
-            return r+((parameters.Values.Count==0)?"":(" "+string.Join(' ',parameters.Values)));
+            return r + ((parameters.Values.Count == 0) ? "" : (" " + string.Join(' ', parameters.Values)));
         }
 
         public string ToColorizedString(ColorSettings colorSettings)

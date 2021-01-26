@@ -6,13 +6,12 @@ using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
 
 namespace OrbitalShell.Component.Commands
 {
     [Commands("commands of the console")]
+    [CommandsNamespace(CommandNamespace.cons)]
     public class ConsoleCommands : ICommandsDeclaringType
     {
         const string _printDocText =
@@ -86,8 +85,8 @@ current print directives are:
         public CommandVoidResult Echo(
             CommandEvaluationContext context,
             [Parameter("text or other (value of type object) to be writen to output", true, "")] object obj,
-            [Option("n","no line break: do not add a line break after output")] bool avoidLineBreak = false,
-            [Option("r","raw mode - echo directives and ansi sequences are replaces by readable text")] bool raw = false
+            [Option("n", "no line break: do not add a line break after output")] bool avoidLineBreak = false,
+            [Option("r", "raw mode - echo directives and ansi sequences are replaces by readable text")] bool raw = false
             )
         {
             lock (context.Out.Lock)
@@ -106,11 +105,11 @@ current print directives are:
                     {
                         obj.Echo(
                             new EchoEvaluationContext(
-                                context.Out, 
-                                context, 
-                                new FormattingOptions(!avoidLineBreak,raw)
+                                context.Out,
+                                context,
+                                new FormattingOptions(!avoidLineBreak, raw)
                             ));
-                        if (!avoidLineBreak) context.Out.Echo("",true);
+                        if (!avoidLineBreak) context.Out.Echo("", true);
                     }
                 }
                 return CommandVoidResult.Instance;
@@ -120,7 +119,7 @@ current print directives are:
         [Command("get/set console output encoding")]
         public CommandResult<Encoding> Encoding(
             CommandEvaluationContext context,
-            [Parameter(0,"encoding name",true)] string encodingName
+            [Parameter(0, "encoding name", true)] string encodingName
             )
         {
             var setEncoding = !string.IsNullOrWhiteSpace(encodingName);
@@ -130,7 +129,7 @@ current print directives are:
             var @out = context.Out;
             void echokv(string name, object value)
             {
-                new KeyValuePair<string, object>(name, value).Echo(new EchoEvaluationContext(@out,context));
+                new KeyValuePair<string, object>(name, value).Echo(new EchoEvaluationContext(@out, context));
             };
 
             if (setEncoding)
@@ -140,12 +139,14 @@ current print directives are:
                     var ne = System.Text.Encoding.GetEncoding(encodingName);
                     System.Console.OutputEncoding = ne;
                     ret = ne;
-                } catch (ArgumentException)
+                }
+                catch (ArgumentException)
                 {
                     context.Errorln($"encoding not found: '{encodingName}'");
                     setEncoding = true;
                 }
-            } else
+            }
+            else
             {
                 echokv("name", e.EncodingName);
                 echokv(" code page", e.CodePage);
@@ -157,7 +158,7 @@ current print directives are:
                 @out.Echoln($"{Br}{Uon}available encodings are:{Tdoff}{Br}");
 
                 var lst = new List<object>(System.Text.Encoding.GetEncodings());
-                foreach (var o in lst )
+                foreach (var o in lst)
                 {
                     if (o is EncodingInfo encoding)
                     {
@@ -173,19 +174,19 @@ current print directives are:
         [Command("outputs the table of characters")]
         public CommandVoidResult CharTable(
             CommandEvaluationContext context,
-            [Parameter( 0, "start char index",true, 32)] int startIndex,
+            [Parameter(0, "start char index", true, 32)] int startIndex,
             [OptionRequireParameter("startIndex")]
             [Parameter( 1, "end char index",true,255)] int endIndex,
-            [Option("f","turns output to a flat list instead of a table view")] bool flatList
+            [Option("f", "turns output to a flat list instead of a table view")] bool flatList
             )
-        {            
+        {
             int nbCols = 8;
             int col = 0;
             for (int i = startIndex; i <= endIndex; i++)
             {
                 if (!context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
                 {
-                    var c = Convert.ToChar(i);  
+                    var c = Convert.ToChar(i);
                     if (!flatList)
                         context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i,4}{Rdc}   {c,-2} {context.ShellEnv.Colors.Symbol}| {Rdc}");
                     else
@@ -209,9 +210,9 @@ current print directives are:
         [Command("clear console screen")]
         public CommandVoidResult Cls(CommandEvaluationContext context)
         {
-            context.Out.ClearScreen();            
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode) )
-                context.CommandLineProcessor.Eval(context,"enableconsolecompatibilitymode",0);
+            context.Out.ClearScreen();
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
+                context.CommandLineProcessor.Eval(context, "enableconsolecompatibilitymode", 0);
             return CommandVoidResult.Instance;
         }
 
@@ -228,5 +229,54 @@ current print directives are:
             context.Out.ShowCur();
             return CommandVoidResult.Instance;
         }
+
+        #region command line
+
+        [Command("set the command line prompt")]
+        public CommandResult<string> Prompt(
+            CommandEvaluationContext context,
+            [Parameter("outputs the text of command line prompt if it is specified, else outputs the current prompt text", true)] string prompt = null
+            )
+        {
+            context.CommandLineProcessor.AssertCommandLineProcessorHasACommandLineReader();
+            if (prompt == null)
+            {
+                prompt = context.CommandLineProcessor.CommandLineReader.GetPrompt();
+                context.Out.Echoln(prompt, true);
+            }
+            else
+                context.CommandLineProcessor.CommandLineReader.SetPrompt(context, prompt);
+            return new CommandResult<string>(prompt);
+        }
+
+        #endregion
+
+        #region fixes
+
+        [Command("enable console compatibility mode (try to fix common bugs on known consoles)")]
+        public CommandVoidResult EnableConsoleCompatibilityMode(CommandEvaluationContext context)
+        {
+            var oFix = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_enableCompatibilityMode);
+            oFix.SetValue(true);
+
+            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowWidth);
+            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowHeight);
+
+            oWinWidth.SetValue(2000);
+            oWinHeight.SetValue(2000);
+
+            var WinWidth = (int)oWinWidth.Value;
+            var winHeight = (int)oWinHeight.Value;
+
+            if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
+            if (winHeight > -1) System.Console.WindowHeight = winHeight;
+
+            System.Console.Clear();
+            //context.Out.Echo(ANSI.RIS);
+
+            return CommandVoidResult.Instance;
+        }
+
+        #endregion        
     }
 }

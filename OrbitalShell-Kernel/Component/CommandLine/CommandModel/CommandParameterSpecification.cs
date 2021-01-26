@@ -31,15 +31,15 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
 
         public CommandParameterSpecification(
             string parameterName,
-            string description, 
-            bool isOptional, 
-            int index, 
+            string description,
+            bool isOptional,
+            int index,
             string optionName,
             bool hasValue,
             bool hasDefaultValue,
             object defaultValue,
             ParameterInfo parameterInfo,
-            string requiredParameterName=null)
+            string requiredParameterName = null)
         {
             RequiredParameterName = requiredParameterName;
             ParameterName = parameterName;
@@ -53,7 +53,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             DefaultValue = defaultValue;
 
             if (HasValue && requiredParameterName != null)
-                throw new AmbiguousParameterSpecificationException($"parameter '{ParameterName}' can't both having a value and requiring a parameter (name '{requiredParameterName}')"); 
+                throw new AmbiguousParameterSpecificationException($"parameter '{ParameterName}' can't both having a value and requiring a parameter (name '{requiredParameterName}')");
         }
 
         public string ParameterValueTypeName => ParameterInfo.ParameterType.Name;
@@ -77,7 +77,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             return r;
         }
 
-        public string ToColorizedString(ColorSettings colors,bool grammarSymbolsVisible=true)
+        public string ToColorizedString(ColorSettings colors, bool grammarSymbolsVisible = true)
         {
             var f = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
             var r = $"{colors.ParameterName}{ParameterName}{f}";

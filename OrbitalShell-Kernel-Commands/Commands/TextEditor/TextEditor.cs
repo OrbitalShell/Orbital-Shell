@@ -1,5 +1,4 @@
-﻿using System.Security.AccessControl;
-//#define dbg
+﻿//#define dbg
 
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
@@ -20,11 +19,12 @@ using static OrbitalShell.Lib.Str;
 using cons = OrbitalShell.DotNetConsole;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Component;
 
 namespace OrbitalShell.Commands.TextEditor
 {
     [Commands("Text Editor")]
+    [CommandsNamespace(CommandNamespace.text)]
     public class TextEditor : ICommandsDeclaringType
     {
         #region attributes

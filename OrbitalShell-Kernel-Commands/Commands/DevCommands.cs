@@ -1,22 +1,15 @@
 ﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Console;
-using OrbitalShell.Lib.FileSystem;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using static OrbitalShell.Console.ANSI;
-using cons = OrbitalShell.DotNetConsole;
-using static OrbitalShell.Lib.TextFileReader;
-using sc = System.Console;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
 using OrbitalShell.Component.Parser.ANSI;
 using System;
+using OrbitalShell.Component;
 
 namespace OrbitalShell.Commands.Dev
 {
     [Commands("for shell development")]
+    [CommandsNamespace(CommandNamespace.dev)]
     public class DevCommands : ICommandsDeclaringType
     {
         [Command("generate EchoDirectives from Console.Unicode (19/1/21)")]

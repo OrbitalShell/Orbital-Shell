@@ -8,6 +8,8 @@ using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
+using System.Reflection.Metadata;
 
 namespace OrbitalShell.Component.CommandLine.Module
 {
@@ -99,6 +101,17 @@ namespace OrbitalShell.Component.CommandLine.Module
 
         public int RegisterCommandClass(CommandEvaluationContext context, Type type) => RegisterCommandClass(context, type, true);
 
+        string _CheckAndNormalizeCommandNamespace(string[] segments)
+        {
+            for (int i = 0; i < segments.Length; i++)
+            {
+                var s = segments[i];
+                if (string.IsNullOrWhiteSpace(s)) throw new Exception("invalid namespace segment: '{s}'");
+                segments[i] = s.ToLower();
+            }
+            return string.Join(CommandLineSyntax.CommandNamespaceSeparator, segments);
+        }
+
         public int RegisterCommandClass(
             CommandEvaluationContext context,
             Type type,
@@ -107,14 +120,19 @@ namespace OrbitalShell.Component.CommandLine.Module
         {
             if (type.GetInterface(typeof(ICommandsDeclaringType).FullName) == null)
                 throw new Exception($"the type '{type.FullName}' must implements interface '{typeof(ICommandsDeclaringType).FullName}' to be registered as a command class");
+
+            var dtNamespaceAttr = type.GetCustomAttribute<CommandsNamespaceAttribute>();
+            var dtNamespace = (dtNamespaceAttr == null) ? "" : _CheckAndNormalizeCommandNamespace(dtNamespaceAttr.Segments);
+
             var comsCount = 0;
             object instance = Activator.CreateInstance(type, new object[] { });
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             if (registerAsModule && _modules.ContainsKey(type.FullName))
             {
-                context.Errorln($"a module with same name than commands type '{type.FullName}' is already registered");
+                context.Errorln($"a module with same name than the commands declaring type '{type.FullName}' is already registered");
                 return 0;
             }
+
             foreach (var method in methods)
             {
                 var cmd = method.GetCustomAttribute<CommandAttribute>();
@@ -126,6 +144,9 @@ namespace OrbitalShell.Component.CommandLine.Module
                     }
                     else
                     {
+                        var cmdNamespaceAttr = method.GetCustomAttribute<CommandNamespaceAttribute>();
+                        var cmdNamespace = cmdNamespaceAttr == null ? dtNamespace : _CheckAndNormalizeCommandNamespace(cmdNamespaceAttr.Segments);
+
                         var paramspecs = new List<CommandParameterSpecification>();
                         bool syntaxError = false;
                         var pindex = 0;
@@ -148,6 +169,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                                 if (!parameter.HasDefaultValue && parameter.ParameterType.IsValueType)
                                     defval = Activator.CreateInstance(parameter.ParameterType);
 
+                                // param
                                 var paramAttr = parameter.GetCustomAttribute<ParameterAttribute>();
                                 if (paramAttr != null)
                                 {
@@ -166,6 +188,8 @@ namespace OrbitalShell.Component.CommandLine.Module
                                             : ((parameter.HasDefaultValue) ? parameter.DefaultValue : defval),
                                                 parameter);
                                 }
+
+                                // option
                                 var optAttr = parameter.GetCustomAttribute<OptionAttribute>();
                                 if (optAttr != null)
                                 {
@@ -191,6 +215,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                                         context.Errorln(ex.Message);
                                     }
                                 }
+
                                 if (pspec == null)
                                 {
                                     syntaxError = true;
@@ -210,6 +235,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                                 : (cmd.Name ?? method.Name.ToLower());
 
                             var cmdspec = new CommandSpecification(
+                                cmdNamespace,
                                 cmdName,
                                 cmd.Description,
                                 cmd.LongDescription,

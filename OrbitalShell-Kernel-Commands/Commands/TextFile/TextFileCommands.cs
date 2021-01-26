@@ -1,6 +1,4 @@
-﻿using OrbitalShell.Commands.FileSystem;
-using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Console;
 using System;
 using System.Collections.Generic;
@@ -20,11 +18,12 @@ using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib.FileSystem;
 using OrbitalShell.Lib.Data;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Component;
 
 namespace OrbitalShell.Commands.TextFile
 {
     [Commands("commands related to text files")]
+    [CommandsNamespace(CommandNamespace.tfx)]
     public class TextFileCommands : ICommandsDeclaringType
     {
         [Command("output the content of one or several text files")]
@@ -202,7 +201,7 @@ namespace OrbitalShell.Commands.TextFile
         }
 
         [Command("check integrity of one or several text files", "output a message for each corrupted file.\nThese command will declares a text file to be not integre as soon that it detects than the ratio of non printable caracters (excepted CR,LF) is geater than a fixed amount when reading the file")]
-        public CommandResult<List<FilePath>> FckIntegrity(
+        public CommandResult<List<FilePath>> checkIntegrity(
             CommandEvaluationContext context,
             [Parameter("path of a file to be checked or path from where find files to to be checked")] FileSystemPath fileOrDir,
             [Option("p", "select names that matches the pattern", true, true)] string pattern,
