@@ -79,7 +79,7 @@ namespace OrbitalShell.Component.CommandLine.Variable
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                     context.CommandLineProcessor.Settings.KernelCommandsRootNamespace,
                     nameof(CommandLineProcessor),
-                    "banner-2.txt"));
+                    "banner-4.txt"));
             AddValue(ShellEnvironmentVar.settings_console_banner_isEnabled,true);
             AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex, 202);// 167);
             AddValue(ShellEnvironmentVar.settings_console_banner_colorIndexStep, 1);// 167);
