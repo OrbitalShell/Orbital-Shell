@@ -23,6 +23,7 @@ improvements to do 👷
 25/1/21 FGZ     add support for ~ in paths (cd,dir,...)
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
 19/1/21 FGZ     ✅NEXT changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
+26/1/21 FGZ     ✅NEXT add support of posix cmd line options : -short-one-letter-syntax and --long-letter-syntax
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
 20/1/21 FGZ     DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
 20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC
@@ -38,7 +39,7 @@ improvements to do 👷
 
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
-22/1/21 FGZ     dir sort : alls folders before files ?
+22/1/21 FGZ     dir sort : alls folders before files ? default ? + options list only dirs
 
 procrastinated:
 ---------------
@@ -52,6 +53,7 @@ procrastinated:
 olds:
 -----
 
+22/1/21 FGZ     🆗 changed bool echo primitive colorization
 22/1/21 FGZ     🆗 add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 23/1/21 FGZ     🆗 fix usage of console Warning (should be context.Warning). Add also add context.Echo (shortcut to Out.Echo)
 25/1/21 FGZ     🆗 improved shell module declaration (ModuleAttribute), by convention on class Assembly.cs

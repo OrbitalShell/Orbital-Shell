@@ -53,7 +53,9 @@ namespace OrbitalShell.Console
         public TextColor Null = new TextColor(ConsoleColor.Green, null);
         public TextColor Quotes = new TextColor(ConsoleColor.Green, null);
         public TextColor Numeric = new TextColor(ConsoleColor.Cyan, null);
-        public TextColor Boolean = new TextColor(ConsoleColor.Gray, null);
+        public TextColor Boolean = new TextColor(ConsoleColor.Magenta, null);
+        public TextColor BooleanTrue = new TextColor(ConsoleColor.Magenta, null);
+        public TextColor BooleanFalse = new TextColor(ConsoleColor.DarkMagenta, null);
         public TextColor Integer = new TextColor(ConsoleColor.Cyan, null);
         public TextColor Double = new TextColor(ConsoleColor.Cyan, null);
         public TextColor Float = new TextColor(ConsoleColor.Cyan, null);

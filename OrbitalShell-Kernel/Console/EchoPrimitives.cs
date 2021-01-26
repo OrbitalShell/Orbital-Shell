@@ -192,7 +192,7 @@ namespace OrbitalShell.Console
             var (@out, context, options) = ctx;
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
-            @out.Echo($"{context.ShellEnv.Colors.Boolean}");
+            @out.Echo("" + (obj ? context.ShellEnv.Colors.BooleanTrue : context.ShellEnv.Colors.BooleanFalse));
             @out.Echo(obj.ToString().ToLower());
             @out.Echo(Rdc);
         }
@@ -261,6 +261,7 @@ namespace OrbitalShell.Console
 
         #region -- public util --
 
+        // TODO: from config
         public static string NullText = "{null}";
 
         public static string DumpAsText(CommandEvaluationContext context, object o, bool quoteStrings = true)
