@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-ConsoleApp", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel", "OrbitalShell-Kernel\OrbitalShell-Kernel.csproj", "{EBBBA271-C794-4F7C-92A9-8D774A3CABB8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel-Commands", "OrbitalShell-Kernel-Commands\OrbitalShell-Kernel-Commands.csproj", "{EBBBA271-C794-4F7C-92A9-8D774A3CABB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel-Commands", "OrbitalShell-Kernel-Commands\OrbitalShell-Kernel-Commands.csproj", "{B46DB3C8-E040-44B6-87D6-B9744E5657D8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-CLI", "OrbitalShell-CLI\OrbitalShell-CLI.csproj", "{C2920F91-71BE-4B0F-8742-4C52F4A75D56}"
 EndProject
@@ -27,6 +27,10 @@ Global
 		{EBBBA271-C794-4F7C-92A9-8D774A3CABB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBBBA271-C794-4F7C-92A9-8D774A3CABB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBBBA271-C794-4F7C-92A9-8D774A3CABB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B46DB3C8-E040-44B6-87D6-B9744E5657D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B46DB3C8-E040-44B6-87D6-B9744E5657D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B46DB3C8-E040-44B6-87D6-B9744E5657D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B46DB3C8-E040-44B6-87D6-B9744E5657D8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -10,11 +10,12 @@ issues 🆗🚩
 improvements to do 👷
 ------------------
 
-25/1/21 FGZ     add support for ~ in paths (cd,dir,...)
 19/1/21 FGZ     ✅NEXT changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 26/1/21 FGZ     ✅NEXT add support of posix cmd line options : -short-one-letter-syntax and --long-letter-syntax
-19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
-20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC
+19/1/21 FGZ     💥 add hooks and hooks settings (kernel major action points)
+20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC (anyway avoid command line reader crashing)
+
+📂variables
 
 21/1/21 FGZ     implements var-info
 21/1/21 FGZ     implements var-set
@@ -22,8 +23,12 @@ improvements to do 👷
 20/1/21 FGZ     variable value provided by a programmatic way
 21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
 
+📂settings
+
 19/1/21 FGZ     add load settings from json + revert to json (add variables binding)
 20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
+
+📂various
 
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
@@ -42,6 +47,7 @@ procrastinated:
 olds:
 -----
 
+26/1/21 FGZ     🆗 add support for ~ in paths (cd,dir,...)
 20/1/21 FGZ     🆗 DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
 26/1/21 FGZ     🆗 set all projects to netcore3.1 (remove standard2.1 coz vscode omnisharp intellisense fail on it) - net5.0 is too slow (console output default)
 26/1/21 FGZ     🆗 added init banner parametrization + updated init banners

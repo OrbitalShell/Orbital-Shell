@@ -1,21 +1,24 @@
 ﻿using OrbitalShell.Component.CommandLine.CommandModel;
+using System;
 using System.IO;
 using static OrbitalShell.Lib.Str;
 using static OrbitalShell.DotNetConsole;
 using System.Globalization;
 using OrbitalShell.Console;
-using System;
 using OrbitalShell.Component.CommandLine.Processor;
 using System.ComponentModel.Design;
 using OrbitalShell.Component.CommandLine.Variable;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
+using System.Reflection;
 
 namespace OrbitalShell.Lib.FileSystem
 {
     [CustomParameterType]
     public class FileSystemPath
     {
+        public const string UserHomePathSymbol = "~";
+
         public static string ErrorColorization = $"{Red}";
         public static string NormalDirectoryColorization = $"{Blue}";
         public static string WritableDirectoryColorization = $"{Bdarkgreen}{White}";
@@ -49,6 +52,7 @@ namespace OrbitalShell.Lib.FileSystem
 
         public FileSystemPath(string fileSystemPath)
         {
+            fileSystemPath = _NormalizePath(fileSystemPath);
             FileSystemInfo = new DirectoryInfo(fileSystemPath);
             if (!FileSystemInfo.Exists)
             {
@@ -59,10 +63,48 @@ namespace OrbitalShell.Lib.FileSystem
 
         public FileSystemPath(FileSystemInfo fileSystemInfo)
         {
-            FileSystemInfo = fileSystemInfo;
+            var originalName = GetOriginalPath(fileSystemInfo);
+            if (_CanNormalizePath(originalName))
+            {
+                var path = _NormalizePath(originalName);
+                if (fileSystemInfo is DirectoryInfo di)
+                {
+                    FileSystemInfo = new DirectoryInfo(path);
+                }
+                else
+                    if (fileSystemInfo is FileInfo fi)
+                {
+                    FileSystemInfo = new FileInfo(path);
+                }
+                else
+                {
+                    FileSystemInfo = fileSystemInfo;
+                }
+            }
+            else
+                FileSystemInfo = fileSystemInfo;
         }
 
-        public virtual bool CheckExists(CommandEvaluationContext context,bool dumpError = true)
+        Type _fileSystemInfoType = typeof(FileSystemInfo);
+        protected string GetOriginalPath(FileSystemInfo fsi)
+        {
+            var mi = _fileSystemInfoType.GetField("OriginalPath", BindingFlags.NonPublic | BindingFlags.Instance);
+            return (string)mi.GetValue(fsi);
+        }
+
+        protected bool _CanNormalizePath(string path) => path.StartsWith(UserHomePathSymbol);
+
+        protected string _NormalizePath(string path)
+        {
+            if (path.StartsWith(UserHomePathSymbol))
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+                        + path.Substring(UserHomePathSymbol.Length);
+            }
+            return path;
+        }
+
+        public virtual bool CheckExists(CommandEvaluationContext context, bool dumpError = true)
         {
             if (!FileSystemInfo.Exists)
             {
@@ -117,7 +159,7 @@ namespace OrbitalShell.Lib.FileSystem
                 var h = IsHidden ? "h" : "-";
                 //var c = IsCompressed ? "c" : "-";
                 var a = IsArchive ? "a" : "-";
-                var size = (IsDirectory || FileSystemInfo==null) ? "" : HumanFormatOfSize(((FileInfo)FileSystemInfo).Length, 2);
+                var size = (IsDirectory || FileSystemInfo == null) ? "" : HumanFormatOfSize(((FileInfo)FileSystemInfo).Length, 2);
                 hidden = IsHidden ? "*" : "";
                 string smoddat = "";
                 if (FileSystemInfo != null)

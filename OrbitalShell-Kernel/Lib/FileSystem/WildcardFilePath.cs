@@ -9,8 +9,16 @@ namespace OrbitalShell.Lib.FileSystem
         public readonly string WildCardFileName;
         public readonly string OriginalPath;
 
-        public WildcardFilePath(string path) : base(path) {
-            OriginalPath = path;
+        public WildcardFilePath(string path) : base(path)
+        {
+            //OriginalPath = path;
+            OriginalPath = GetOriginalPath(FileSystemInfo);
+
+            if (_CanNormalizePath(path))
+            {
+                path = _NormalizePath(path);
+            }
+
             if (ContainsWildcardFileName(path))
             {
                 var basepath = Path.GetDirectoryName(path);
@@ -18,15 +26,16 @@ namespace OrbitalShell.Lib.FileSystem
                 WildCardFileName = Path.GetFileName(path);
                 FileSystemInfo = new DirectoryInfo(basepath);
             }
-            else 
-            { 
+            else
+            {
                 if (File.Exists(path))
                 {
                     var basepath = Path.GetDirectoryName(path);
                     if (string.IsNullOrWhiteSpace(basepath)) basepath = System.Environment.CurrentDirectory;
                     WildCardFileName = Path.GetFileName(path);
                     FileSystemInfo = new DirectoryInfo(basepath);
-                } else
+                }
+                else
                 {
                     if (Directory.Exists(path))
                     {
@@ -37,7 +46,7 @@ namespace OrbitalShell.Lib.FileSystem
             DirectoryInfo = (DirectoryInfo)FileSystemInfo;
         }
 
-        public override bool CheckExists(CommandEvaluationContext context,bool dumpError = true)
+        public override bool CheckExists(CommandEvaluationContext context, bool dumpError = true)
         {
             if (!DirectoryInfo.Exists)
             {
@@ -47,13 +56,14 @@ namespace OrbitalShell.Lib.FileSystem
             return true;
         }
 
-        public static bool ContainsWildcardFileName(string path) {
+        public static bool ContainsWildcardFileName(string path)
+        {
             var ext = Path.GetFileName(path);
             return ext.Contains('*') || ext.Contains('?');
         }
 
         public string NameWithWildcard => WildCardFileName ?? Name;
-        public string FullNameWithWildcard => Path.Combine(FileSystemInfo.FullName,WildCardFileName);
+        public string FullNameWithWildcard => Path.Combine(FileSystemInfo.FullName, WildCardFileName);
         public string PrintableFullNameWithWildCard
         {
             get
