@@ -43,7 +43,8 @@ procrastinated:
 olds:
 -----
 
-26/1/21 FGZ     🆗 added init banner parametrization
+26/1/21 FGZ     🆗 set all projects to netcore3.1 (remove standard2.1 coz vscode omnisharp intellisense fail on it) - net5.0 is too slow (console output default)
+26/1/21 FGZ     🆗 added init banner parametrization + updated init banners
 26/1/21 FGZ     🆗 restructured projects (little namespaces changes)
 22/1/21 FGZ     🆗 changed bool echo primitive colorization
 22/1/21 FGZ     🆗 add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)

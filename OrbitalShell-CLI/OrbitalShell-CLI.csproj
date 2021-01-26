@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <!--<TargetFramework>net5.0</TargetFramework>-->
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>OrbitalShell</RootNamespace>
     <AssemblyName>orbsh</AssemblyName>
@@ -50,10 +51,10 @@
     <Content Include="scripts\unicode-boxes.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="scripts\commandsSamples.sh">
+    <Content Include="scripts\prompt-samples.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="scripts\testPrintDirectives.sh">
+    <Content Include="scripts\echo-directives-test.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>    
   </ItemGroup>

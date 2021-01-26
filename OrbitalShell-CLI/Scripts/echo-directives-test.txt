@@ -1,11 +1,14 @@
-﻿#!orbsh
-f=cyan,b=darkcyan)test: list of directives -- HJKLDJSLJDLSJLJCKLN89738290789032703928JKSHJDH93878409830498ABCDEFGHIJKLMNOP(f=white,b=black)
-begin text|(f=cyan,b=darkblue)test: begin with a text and having directives(f=white,b=black)
-(b=black)
-(fr=cyanure)test: unknown directive name(f=white,b=black)
-(f=cyanure)test: bad directive value(f=white,b=black)	ERROR 2
-(f=red,f=cyanure)test 1: bad directive name at pos>0 in list(f=white,b=black) ERROR 1
-(f=darkyellow,fr=cyanure)test 1: unknown directive value at pos>0 in list(f=white,b=black)
+﻿------------------------------------------------
+ tests of echo directives
+------------------------------------------------
+
+(f=cyan,b=darkcyan)test: list of directives(rdc)
+
+begin text|(f=cyan,b=darkblue)test: begin with a text and having directives(rdc)
+(fr=cyanure)test: unknown directive name(rdc)
+(f=cyanure)(f=darkyellow)test: bad directive value(rdc)	ERROR 2
+(f=red,f=cyanure)(f=darkyellow)test 1: bad directive name at pos>0 in list(rdc) ERROR 1
+(f=yellow,fr=cyanure)test 1: unknown directive value at pos>0 in list(rdc)
 (f=cyan)unique directive(f=white)
 
 (f=cyan)set foreground(f=white)
