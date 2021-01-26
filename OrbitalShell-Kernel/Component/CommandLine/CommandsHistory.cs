@@ -1,4 +1,6 @@
-﻿using OrbitalShell.Lib.FileSystem;
+﻿using OrbitalShell.Console;
+using OrbitalShell.Lib.FileSystem;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using static OrbitalShell.DotNetConsole;
@@ -19,10 +21,11 @@ namespace OrbitalShell.Component.CommandLine
 
         #endregion
 
-        public CommandsHistory() {
+        public CommandsHistory()
+        {
         }
-        
-        public void Init(string folderPath,string fileName)
+
+        public void Init(string folderPath, string fileName)
         {
             Folder = folderPath;
             FileName = fileName;
@@ -67,14 +70,14 @@ namespace OrbitalShell.Component.CommandLine
             _historyIndex = _history.Count;
         }
 
-        public void HistorySetIndex(int index,bool checkIndex=true)
+        public void HistorySetIndex(int index, bool checkIndex = true)
         {
             if (index == -1)
                 index = _history.Count;
             else
                 index--;
             if (checkIndex && (index < 0 || index >= _history.Count))
-                Errorln($"history index out of bounds (1..{_history.Count})");
+                throw new IndexOutOfRangeException($"history index out of bounds (1..{_history.Count})");
             else _historyIndex = index;
         }
 

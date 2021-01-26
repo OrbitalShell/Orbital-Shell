@@ -20,6 +20,7 @@ olds:
 improvements to do 👷
 ------------------
 
+25/1/21 FGZ     add support for ~ in paths (cd,dir,...)
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
 19/1/21 FGZ     ✅NEXT changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 19/1/21 FGZ     add hooks and hooks settings (kernel major action points)
@@ -39,13 +40,12 @@ improvements to do 👷
 22/1/21 FGZ     👷 add default dump (echo primitives) for empty string (eg. "") and null (eg. {null} already defined as const in..)
 20/1/21 FGZ     please add sort in env table
 22/1/21 FGZ     dir sort : alls folders before files ?
-23/1/21 FGZ     ✅NEXT fix usage of console Warning (should be context.Warning). Add also add context.Echo (shortcut to Out.Echo)
 
 procrastinated:
 ---------------
 
 20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
-20/1/21 FGZ     command 'eval' : a=5, $b = a , echo $b = a , eval echo \$$b == 5
+20/1/21 FGZ     command 'eval' (alias .) : a=5, $b = a , echo $b = a , eval echo \$$b == 5
 21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
 23/1/21 FGZ     help echo very slow, any particular reason ?
@@ -53,8 +53,9 @@ procrastinated:
 olds:
 -----
 
-25/19/21 FGZ    🆗 improved shell module declaration (ModuleAttribute), by convention on class Assembly.cs
-1/19/21 FGZ     🆗 namespaces refactoring : DotNetConsoleAppToolkit devient OrbitalShell partout !! (fin du projet indépendant DotNetConsoleAppToolkit)
+23/1/21 FGZ     🆗 fix usage of console Warning (should be context.Warning). Add also add context.Echo (shortcut to Out.Echo)
+25/1/21 FGZ     🆗 improved shell module declaration (ModuleAttribute), by convention on class Assembly.cs
+19/1/21 FGZ     🆗 namespaces refactoring : DotNetConsoleAppToolkit devient OrbitalShell partout !! (fin du projet indépendant DotNetConsoleAppToolkit)
 25/1/21 FGZ     🆗 restructured projects. added official module folder, kernel commands became a project. reviewed shell init phasis
 18/1/21 FGZ     🆗 help: normal mode should be 'tech details less', should be got with -v + add infos to technical details
 23/1/21 FGZ     🆗 add a way to print ANSI sequences in objects dump for raw strings (tables) : replace ESC by '\x1B' ?

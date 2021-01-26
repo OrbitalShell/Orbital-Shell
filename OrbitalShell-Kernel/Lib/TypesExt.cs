@@ -73,7 +73,6 @@ namespace OrbitalShell.Lib
             var t = o.GetType();
             try
             {
-                // TODO: search first inherited also !
                 var inheritanceChain = t.GetInheritanceChain();
 
                 MethodInfo mi = null;

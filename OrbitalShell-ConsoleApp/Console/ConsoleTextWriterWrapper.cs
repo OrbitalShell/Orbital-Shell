@@ -20,7 +20,7 @@ namespace OrbitalShell.Console
     public class ConsoleTextWriterWrapper : TextWriterWrapper
     {
         #region attributes
-        
+
         public bool RedirecToErr = false;
 
         public ColorSettings ColorSettings = Colors;
@@ -40,20 +40,21 @@ namespace OrbitalShell.Console
         protected int _cursorTopBackup;
         protected ConsoleColor _backgroundBackup = ConsoleColor.Black;
         protected ConsoleColor _foregroundBackup = ConsoleColor.White;
-        
+
         //protected Dictionary<string, (Engine.SimpleCommandDelegate simpleCommand,Engine.CommandDelegate command)>  _drtvs;
 
         EchoDirectiveProcessor EchoDirectiveProcessor;
 
-        public static readonly string ESC = (char)27+"";
-        
-        public string LNBRK {
+        public static readonly string ESC = (char)27 + "";
+
+        public string LNBRK
+        {
             get
             {
                 // fix end of line remained filled with last colors
-                return                 
-                    EnableAvoidEndOfLineFilledWithBackgroundColor? 
-                        $"{ANSI.RSTXTA}{ANSI.EL(ANSI.ELParameter.p0)}{CRLF}{GetRestoreDefaultColors}"        
+                return
+                    EnableAvoidEndOfLineFilledWithBackgroundColor ?
+                        $"{ANSI.RSTXTA}{ANSI.EL(ANSI.ELParameter.p0)}{CRLF}{GetRestoreDefaultColors}"
                         : $"{CRLF}";
             }
         }
@@ -78,7 +79,7 @@ namespace OrbitalShell.Console
         /// </summary>
         void Init()
         {
-            #if NO
+#if NO
             DefaultForeground = sc.ForegroundColor;
             DefaultBackground = sc.BackgroundColor;
             // fix for linux
@@ -87,18 +88,19 @@ namespace OrbitalShell.Console
             
             _cachedForegroundColor = DefaultForeground;
             _cachedBackgroundColor = DefaultBackground;
-             #endif
+#endif
 
             // TIP: dot not affect background color through System.Console.Background to preserve terminal console background transparency
-             DefaultForeground = sc.ForegroundColor;
-             _cachedForegroundColor = DefaultForeground;
+            DefaultForeground = sc.ForegroundColor;
+            _cachedForegroundColor = DefaultForeground;
 
             InitEchoDirectives();
         }
 
-        void InitEchoDirectives() {
+        void InitEchoDirectives()
+        {
             // echo_directive => SimpleCommandDelegate, CommandDelegate, parameter
-            var _drtvs = new Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand, EchoDirectiveProcessor.CommandDelegate command,object parameter)>() {
+            var _drtvs = new Dictionary<string, (EchoDirectiveProcessor.SimpleCommandDelegate simpleCommand, EchoDirectiveProcessor.CommandDelegate command, object parameter)>() {
                 { EchoDirectives.bkf+""   , (BackupForeground, null,null) },
                 { EchoDirectives.bkb+""   , (BackupBackground, null,null) },
                 { EchoDirectives.rsf+""   , (RestoreForeground, null,null) },
@@ -116,7 +118,7 @@ namespace OrbitalShell.Console
                 { EchoDirectives.rdc+""   , (RestoreDefaultColors, null,null) },
 
                 { EchoDirectives.cls+""   , (ClearScreen, null,null) },
-                
+
                 { EchoDirectives.br+""    , (LineBreak, null,null) },
                 { EchoDirectives.inf+""   , (Infos, null,null) },
                 { EchoDirectives.bkcr+""  , (BackupCursorPos, null,null) },
@@ -284,7 +286,7 @@ namespace OrbitalShell.Console
 
             EchoDirectiveProcessor = new EchoDirectiveProcessor(
                 this,
-                new CommandMap ( _drtvs )
+                new CommandMap(_drtvs)
                 );
         }
 
@@ -297,63 +299,81 @@ namespace OrbitalShell.Console
 
         object _ANSI(object p) => p as string;
 
-        object _Unicode(object p) => ((char)p)+"";
+        object _Unicode(object p) => ((char)p) + "";
 
-        object _ANSI_2Int(object parameters) 
-        {          
+        object _ANSI_2Int(object parameters)
+        {
             if (parameters is EchoDirectiveProcessor.Command2pIntDelegate com)
-                return com.Invoke();              
-            if (parameters is ValueTuple<object,string>) {
-                var p = (ValueTuple<object,string>)parameters;
-                try {
+                return com.Invoke();
+            if (parameters is ValueTuple<object, string>)
+            {
+                var p = (ValueTuple<object, string>)parameters;
+                try
+                {
                     var command = (EchoDirectiveProcessor.Command2pIntDelegate)p.Item1;
                     var t = p.Item2.Split(":");
                     var x = Convert.ToInt32(t[0]);
                     var y = Convert.ToInt32(t[1]);
-                    return command.Invoke(x,y);
-                } catch (Exception) {
+                    return command.Invoke(x, y);
+                }
+                catch (Exception)
+                {
                     Error($"bad format and/or int value: {p.Item2} - attempted is {{Int}}:{{Int}}");
                 }
             }
-            return null;      
+            return null;
         }
 
-        object _ANSI_Int(object parameters) 
-        {          
+        object _ANSI_Int(object parameters)
+        {
             if (parameters is EchoDirectiveProcessor.Command1pIntDelegate com)
-                return com.Invoke();              
-            if (parameters is ValueTuple<object,string>) {
-                var p = (ValueTuple<object,string>)parameters;
-                try {
+                return com.Invoke();
+            if (parameters is ValueTuple<object, string>)
+            {
+                var p = (ValueTuple<object, string>)parameters;
+                try
+                {
                     var command = (EchoDirectiveProcessor.Command1pIntDelegate)p.Item1;
                     return command.Invoke(Convert.ToInt32(p.Item2));
-                } catch (Exception) {
+                }
+                catch (Exception)
+                {
                     Error($"bad Int value: {p.Item2}");
                 }
             }
-            return null;      
+            return null;
         }
 
-        object _ANSI_EDParameter(object parameters) {
-            if (parameters is ValueTuple<object,string>) {
-                var p = (ValueTuple<object,string>)parameters;
-                try {
+        object _ANSI_EDParameter(object parameters)
+        {
+            if (parameters is ValueTuple<object, string>)
+            {
+                var p = (ValueTuple<object, string>)parameters;
+                try
+                {
                     var command = (Command1pEDParameterDelegate)p.Item1;
                     return command.Invoke(Enum.Parse<EDParameter>(p.Item2));
-                } catch (Exception) {
+                }
+                catch (Exception)
+                {
                     Error($"bad EDParameter value: {p.Item2}");
                 }
             }
             return null;
         }
 
-        object _ANSI_ELParameter(object parameters) {
-            if (parameters is ValueTuple<object,string>) {
-                var p = (ValueTuple<object,string>)parameters;
-                try {
+        object _ANSI_ELParameter(object parameters)
+        {
+            if (parameters is ValueTuple<object, string>)
+            {
+                var p = (ValueTuple<object, string>)parameters;
+                try
+                {
                     var command = (Command1pELParameterDelegate)p.Item1;
                     return command.Invoke(Enum.Parse<ELParameter>(p.Item2));
-                } catch (Exception) {
+                }
+                catch (Exception)
+                {
                     Error($"bad ELParameter value: {p.Item2}");
                 }
             }
@@ -365,24 +385,27 @@ namespace OrbitalShell.Console
         object _SetForegroundParse8BitColor(object x) { SetForeground(TextColor.Parse8BitColor(x)); return null; }
         object _SetForegroundParse24BitColor(object x) { SetForeground(TextColor.Parse24BitColor(x)); return null; }
 
-        object _SetBackgroundColor(object x) { 
-            var c = TextColor.ParseColor(x); 
-            if (c.HasValue) SetBackground(c.Value); 
-            return null; 
+        object _SetBackgroundColor(object x)
+        {
+            var c = TextColor.ParseColor(x);
+            if (c.HasValue) SetBackground(c.Value);
+            return null;
         }
 
         object _SetBackgroundParse8BitColor(object x) { SetBackground(TextColor.Parse8BitColor(x)); return null; }
         object _SetBackgroundParse24BitColor(object x) { SetBackground(TextColor.Parse24BitColor(x)); return null; }
-        object _SetDefaultForeground(object x) { 
-            var c = TextColor.ParseColor(x); 
-            if (c.HasValue) SetDefaultForeground(c.Value);            
-            return null; 
-            }
-        object _SetDefaultBackground(object x) { 
-            var c = TextColor.ParseColor(x); 
+        object _SetDefaultForeground(object x)
+        {
+            var c = TextColor.ParseColor(x);
+            if (c.HasValue) SetDefaultForeground(c.Value);
+            return null;
+        }
+        object _SetDefaultBackground(object x)
+        {
+            var c = TextColor.ParseColor(x);
             if (c.HasValue) SetDefaultBackground(c.Value);
-            return null; 
-            }
+            return null;
+        }
         object _SetCursorX(object x) { CursorLeft = GetCursorX(x); return null; }
         object _SetCursorY(object x) { CursorTop = GetCursorY(x); return null; }
         object _ExecCSharp(object x) { return ExecCSharp((string)x); }
@@ -396,7 +419,7 @@ namespace OrbitalShell.Console
         object _MoveCursorRight(object x) { MoveCursorRight(Convert.ToInt32(x)); return null; }
 
         #endregion
-        
+
 
         #region buffering operations
 
@@ -450,30 +473,35 @@ namespace OrbitalShell.Console
                 Out.Echoln($"default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
                 if (RuntimeEnvironment.OSType == itpsrv.OSPlatform.Windows)
                 {
-                    Out.Echoln($"{Bkf}number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");            // TODO: not supported on linux ubuntu 18.04 wsl
-                    Out.Echo($"{Bkf}cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");     // TODO: not supported on linux ubuntu 18.04 wsl
+                    Out.Echoln($"{Bkf}number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");
+                    Out.Echo($"{Bkf}cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");
                 }
             };
         }
 
-        public void RSTXTA() {
+        public void RSTXTA()
+        {
             lock (Lock) { Write(ANSI.RSTXTA); }
         }
 
-        public void CursorHome() { 
+        public void CursorHome()
+        {
             lock (Lock) { Write($"{(char)27}[H"); }
         }
-        
-        public void ClearLineFromCursorRight() { 
-            lock (Lock) {  Write($"{(char)27}[K"); };
+
+        public void ClearLineFromCursorRight()
+        {
+            lock (Lock) { Write($"{(char)27}[K"); };
         }
-        
-        public void ClearLineFromCursorLeft() { 
-            lock (Lock) {  Write($"{(char)27}[1K"); }
+
+        public void ClearLineFromCursorLeft()
+        {
+            lock (Lock) { Write($"{(char)27}[1K"); }
         }
-        
-        public void ClearLine() { 
-            lock (Lock) {  Write($"{(char)27}[2K"); }
+
+        public void ClearLine()
+        {
+            lock (Lock) { Write($"{(char)27}[2K"); }
         }
 
         public void FillFromCursorRight()
@@ -484,44 +512,54 @@ namespace OrbitalShell.Console
             }
         }
 
-        public void EnableInvert() { 
-            lock (Lock) {  Write($"{(char)27}[7m"); }
-        }
-        
-        public void EnableBlink() { 
-            lock (Lock) {  Write($"{(char)27}[5m"); }           // not available on many consoles
-        }
-        
-        public void EnableLowIntensity() { 
-            lock (Lock) {  Write($"{(char)27}[2m"); }    // not available on many consoles
-        }
-        
-        public void EnableUnderline() { 
-            lock (Lock) {  Write($"{(char)27}[4m"); }
-        }
-        
-        public void EnableBold() { 
-            lock (Lock) {  Write($"{(char)27}[1m"); }            // not available on many consoles
-        }
-        
-        public void DisableTextDecoration() { 
-            lock (Lock) {  Write($"{(char)27}[0m"); /*RestoreDefaultColors();*/ }
+        public void EnableInvert()
+        {
+            lock (Lock) { Write($"{(char)27}[7m"); }
         }
 
-        public void MoveCursorDown(int n = 1){ 
-            lock (Lock) {  Write($"{(char)27}[{n}B"); }
+        public void EnableBlink()
+        {
+            lock (Lock) { Write($"{(char)27}[5m"); }           // not available on many consoles
         }
 
-        public void MoveCursorTop(int n = 1) { 
-            lock (Lock) {  Write($"{(char)27}[{n}A"); }
+        public void EnableLowIntensity()
+        {
+            lock (Lock) { Write($"{(char)27}[2m"); }    // not available on many consoles
         }
 
-        public void MoveCursorLeft(int n = 1) { 
-            lock (Lock) {  Write($"{(char)27}[{n}D"); }
+        public void EnableUnderline()
+        {
+            lock (Lock) { Write($"{(char)27}[4m"); }
         }
 
-        public void MoveCursorRight(int n = 1) { 
-            lock (Lock) {  Write($"{(char)27}[{n}C"); }
+        public void EnableBold()
+        {
+            lock (Lock) { Write($"{(char)27}[1m"); }            // not available on many consoles
+        }
+
+        public void DisableTextDecoration()
+        {
+            lock (Lock) { Write($"{(char)27}[0m"); /*RestoreDefaultColors();*/ }
+        }
+
+        public void MoveCursorDown(int n = 1)
+        {
+            lock (Lock) { Write($"{(char)27}[{n}B"); }
+        }
+
+        public void MoveCursorTop(int n = 1)
+        {
+            lock (Lock) { Write($"{(char)27}[{n}A"); }
+        }
+
+        public void MoveCursorLeft(int n = 1)
+        {
+            lock (Lock) { Write($"{(char)27}[{n}D"); }
+        }
+
+        public void MoveCursorRight(int n = 1)
+        {
+            lock (Lock) { Write($"{(char)27}[{n}C"); }
         }
 
         public void ScrollWindowDown(int n = 1) { Write(((char)27) + $"[{n}T"); }
@@ -531,8 +569,10 @@ namespace OrbitalShell.Console
         /// <summary>
         /// backup the current 3bit foreground color
         /// </summary>
-        public void BackupForeground() { 
-            lock (Lock) { 
+        public void BackupForeground()
+        {
+            lock (Lock)
+            {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
                 _foregroundBackup = sc.ForegroundColor;
             }
@@ -541,19 +581,23 @@ namespace OrbitalShell.Console
         /// <summary>
         /// backup the current 3bit background color
         /// </summary>
-        public void BackupBackground() { 
-            lock (Lock) { 
+        public void BackupBackground()
+        {
+            lock (Lock)
+            {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
                 _backgroundBackup = sc.BackgroundColor;
             };
         }
 
-        public void RestoreForeground() { 
-            lock (Lock) {  SetForeground( DefaultForeground ); }
+        public void RestoreForeground()
+        {
+            lock (Lock) { SetForeground(DefaultForeground); }
         }
 
-        public void RestoreBackground() { 
-            lock (Lock) { SetBackground( DefaultBackground ); }
+        public void RestoreBackground()
+        {
+            lock (Lock) { SetBackground(DefaultBackground); }
         }
 
         /// <summary>
@@ -562,7 +606,7 @@ namespace OrbitalShell.Console
         /// <param name="c"></param>
         public void SetForeground(ConsoleColor? c)
         {
-            if (c==null) return;
+            if (c == null) return;
             lock (Lock)
             {
                 _cachedForegroundColor = c;
@@ -573,7 +617,7 @@ namespace OrbitalShell.Console
 
         public void SetBackground(ConsoleColor? c)
         {
-            if (c==null) return;
+            if (c == null) return;
             lock (Lock)
             {
                 _cachedBackgroundColor = c;
@@ -586,8 +630,10 @@ namespace OrbitalShell.Console
         /// set foreground color from a 8 bit palette color (vt/ansi)
         /// </summary>
         /// <param name="c"></param>
-        public void SetForeground(int c) { 
-            lock (Lock) {
+        public void SetForeground(int c)
+        {
+            lock (Lock)
+            {
                 Write($"{(char)27}[38;5;{c}m");
             }
         }
@@ -596,8 +642,10 @@ namespace OrbitalShell.Console
         /// set background color from a 8 bit palette color (vt/ansi)
         /// </summary>
         /// <param name="c"></param>
-        public void SetBackground(int c) { 
-            lock (Lock) { 
+        public void SetBackground(int c)
+        {
+            lock (Lock)
+            {
                 Write($"{(char)27}[48;5;{c}m");
             }
         }
@@ -608,8 +656,10 @@ namespace OrbitalShell.Console
         /// <param name="r">red from 0 to 255</param>
         /// <param name="g">green from 0 to 255</param>
         /// <param name="b">blue from 0 to 255</param>
-        public void SetForeground(int r, int g, int b) { 
-            lock (Lock) { 
+        public void SetForeground(int r, int g, int b)
+        {
+            lock (Lock)
+            {
                 Write($"{(char)27}[38;2;{r};{g};{b}m");
             }
         }
@@ -620,54 +670,64 @@ namespace OrbitalShell.Console
         /// <param name="r">red from 0 to 255</param>
         /// <param name="g">green from 0 to 255</param>
         /// <param name="b">blue from 0 to 255</param>
-        public void SetBackground(int r, int g, int b) { 
-            lock (Lock) { 
+        public void SetBackground(int r, int g, int b)
+        {
+            lock (Lock)
+            {
                 Write($"{(char)27}[48;2;{r};{g};{b}m");
             }
         }
 
         public void SetForeground((int r, int g, int b) color) => SetForeground(color.r, color.g, color.b);
-        
+
         public void SetBackground((int r, int g, int b) color) => SetBackground(color.r, color.g, color.b);
 
-        public void SetDefaultForeground(ConsoleColor c) { 
-            lock (Lock) { 
+        public void SetDefaultForeground(ConsoleColor c)
+        {
+            lock (Lock)
+            {
                 DefaultForeground = c; sc.ForegroundColor = c;
             }
         }
-        
-        public void SetDefaultBackground(ConsoleColor c) { 
-            lock (Lock) { 
-                DefaultBackground = c; sc.BackgroundColor = c; 
+
+        public void SetDefaultBackground(ConsoleColor c)
+        {
+            lock (Lock)
+            {
+                DefaultBackground = c; sc.BackgroundColor = c;
             };
         }
 
-        public void SetDefaultColors(ConsoleColor foregroundColor, ConsoleColor backgroundColor) 
-        { 
-            lock (Lock) { 
-                SetDefaultForeground( foregroundColor );
-                SetDefaultBackground( backgroundColor );
+        public void SetDefaultColors(ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+        {
+            lock (Lock)
+            {
+                SetDefaultForeground(foregroundColor);
+                SetDefaultBackground(backgroundColor);
             };
         }
 
         /// <summary>
         /// use RSTXTA to force colors set to defaults (avoid to reset to transparency colors)
         /// </summary>
-        public void RestoreDefaultColors() 
-        { 
-            lock (Lock) { 
+        public void RestoreDefaultColors()
+        {
+            lock (Lock)
+            {
                 Write(ANSI.RSTXTA);
-                SetForeground( DefaultForeground ); 
-                SetBackground( DefaultBackground ); 
+                SetForeground(DefaultForeground);
+                SetBackground(DefaultBackground);
                 if (DefaultForeground.HasValue) sc.ForegroundColor = DefaultForeground.Value;
             }
         }
 
-        string GetRestoreDefaultColors {
-            get {
+        string GetRestoreDefaultColors
+        {
+            get
+            {
                 var r = ANSI.RSTXTA;
-                if (DefaultForeground.HasValue) r+= Set4BitsColorsForeground(To4BitColorNum(DefaultForeground.Value));
-                if (DefaultBackground.HasValue) r+= Set4BitsColorsBackground(To4BitColorNum(DefaultBackground.Value));
+                if (DefaultForeground.HasValue) r += Set4BitsColorsForeground(To4BitColorNum(DefaultForeground.Value));
+                if (DefaultBackground.HasValue) r += Set4BitsColorsBackground(To4BitColorNum(DefaultBackground.Value));
                 if (DefaultForeground.HasValue) sc.ForegroundColor = DefaultForeground.Value;
                 return r;
             }
@@ -680,20 +740,21 @@ namespace OrbitalShell.Console
                 return Set4BitsColors(To4BitColorNum(DefaultForeground), To4BitColorNum(DefaultBackground));
             }
         }
-        
+
         public void ClearScreen()
         {
             lock (Lock)
             {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
-                
+
                 //RestoreDefaultColors();       // removed for the moment - can be restored in the future
-                try {                    
-                    
-                    
+                try
+                {
+
+
 
                     WriteLine(ANSI.RSTXTA);         // reset text attr
-                    
+
                     System.Threading.Thread.Sleep(10);
 
                     //WriteLine(ANSI.RSTXTA+"     ");         // reset text attr
@@ -701,23 +762,25 @@ namespace OrbitalShell.Console
                     //Write(ANSI.RSTXTA+" ");
 
                     sc.Write(ANSI.RIS);
-                    sc.Clear();                   
+                    sc.Clear();
                     //sc.Write(ANSI.RIS);
 
                     //Write(ESC + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
-                    
+
                     //Write(Esc + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
                     //base._textWriter.Flush();
                     //Write(Esc + "[2J");         // bug set arbitrary cursor pos on low-ansi terminals
 
-                } catch (System.IO.IOException) {
+                }
+                catch (System.IO.IOException)
+                {
 
                 }
                 //Write(Esc+"[2J" + Esc + "[0;0H"); // bugged on windows
                 //UpdateUI(true, false);
             };
         }
-        
+
         public void LineBreak()
         {
             lock (Lock)
@@ -726,25 +789,32 @@ namespace OrbitalShell.Console
             };
         }
 
-        public void ConsoleCursorPosBackup() {
-            lock (Lock) {
+        public void ConsoleCursorPosBackup()
+        {
+            lock (Lock)
+            {
                 Write(ANSI.DECSC);
             }
         }
 
-        public void ConsoleCursorPosBackupAndRestore() {
+        public void ConsoleCursorPosBackupAndRestore()
+        {
             ConsoleCursorPosBackup();
             ConsoleCursorPosRestore();
         }
 
-        public void ConsoleCursorPosRestore() {
-            lock (Lock) {
+        public void ConsoleCursorPosRestore()
+        {
+            lock (Lock)
+            {
                 Write(ANSI.DECRC);
             }
         }
 
-        public Task ConsoleCursorPosRestoreAsync() {
-            lock (Lock) {
+        public Task ConsoleCursorPosRestoreAsync()
+        {
+            lock (Lock)
+            {
                 return WriteAsync(ANSI.DECRC);
             }
         }
@@ -757,7 +827,7 @@ namespace OrbitalShell.Console
                 _cursorTopBackup = CursorTop;
             };
         }
-        
+
         /// <summary>
         /// compat problem on low ansi
         /// </summary>
@@ -765,35 +835,38 @@ namespace OrbitalShell.Console
         {
             lock (Lock)
             {
-                Write(ESC + "[2J" + ESC + $"[{_cursorTopBackup+1};{_cursorLeftBackup+1}H");
+                Write(ESC + "[2J" + ESC + $"[{_cursorTopBackup + 1};{_cursorLeftBackup + 1}H");
                 //_textWriter.CursorLeft = _cursorLeftBackup;
                 //_textWriter.CursorTop = _cursorTopBackup;
             };
         }
-        
+
         //public void SetCursorLeft(int x) => Locked(() => _textWriter.CursorLeft = FixX(x));
-        
+
         //public void SetCursorTop(int y) => Locked(() => _textWriter.CursorTop = FixY(y));
-        
+
         /// <summary>
         /// get/set cursor column
         /// </summary>
         public int CursorLeft
         {
-            get { 
-                lock (Lock) { 
-                    return IsBufferEnabled? _cachedCursorPosition.X : sc.CursorLeft; 
-                } 
+            get
+            {
+                lock (Lock)
+                {
+                    return IsBufferEnabled ? _cachedCursorPosition.X : sc.CursorLeft;
+                }
             }
-            set {  
+            set
+            {
                 lock (Lock)
                 {
                     _cachedCursorPosition.X = value;
-                    Write(ESC + "["+(value+1)+"G");
-                } 
+                    Write(ESC + "[" + (value + 1) + "G");
+                }
             }
         }
-        
+
         /// <summary>
         /// get/set cursor top
         /// </summary>
@@ -811,29 +884,30 @@ namespace OrbitalShell.Console
                 lock (Lock)
                 {
                     _cachedCursorPosition.Y = value;
-                    Write(/*ESC + "[2J" +*/ ESC + $"[{value+1};{CursorLeft+1}H");
+                    Write(/*ESC + "[2J" +*/ ESC + $"[{value + 1};{CursorLeft + 1}H");
                     //Write( ANSI.  );
                 }
             }
         }
-        
+
         public Point CursorPos
         {
             get
             {
                 lock (Lock)
-                { 
-                    return new Point(CursorLeft, CursorTop); 
+                {
+                    return new Point(CursorLeft, CursorTop);
                 }
             }
-            set {
+            set
+            {
                 lock (Lock)
-                { 
-                    Write(ESC + $"[{value.Y+1};{value.X+1}H");
+                {
+                    Write(ESC + $"[{value.Y + 1};{value.X + 1}H");
                 }
             }
         }
-        
+
         public void SetCursorPos(Point p)
         {
             lock (Lock)
@@ -848,10 +922,10 @@ namespace OrbitalShell.Console
                 }
                 //_textWriter.CursorLeft = x;
                 //_textWriter.CursorTop = y;
-                Write(ESC + $"[{y+1};{x+1}H");
+                Write(ESC + $"[{y + 1};{x + 1}H");
             }
         }
-        
+
         /// <summary>
         /// set cursor pos - @[y+1;x+1H
         /// </summary>
@@ -867,19 +941,21 @@ namespace OrbitalShell.Console
                     _cachedCursorPosition.X = x;
                     _cachedCursorPosition.Y = y;
                 }
-                Write(ESC + $"[{(y+1)};{(x+1)}H");
+                Write(ESC + $"[{(y + 1)};{(x + 1)}H");
             }
         }
-        
+
         public bool CursorVisible => sc.CursorVisible;
-        
-        public void HideCur() { 
-            lock (Lock) { sc.CursorVisible = false;}
+
+        public void HideCur()
+        {
+            lock (Lock) { sc.CursorVisible = false; }
         }
-        
-        public void ShowCur() { 
-            lock (Lock) {  sc.CursorVisible = true; }
-        }              
+
+        public void ShowCur()
+        {
+            lock (Lock) { sc.CursorVisible = true; }
+        }
 
         /// <summary>
         /// text only, no print directives, no ansi
@@ -888,7 +964,7 @@ namespace OrbitalShell.Console
         /// <returns>text visible characters only</returns>
         public string GetText(string s)
         {
-            var r = GetPrint(s,false,false,false);
+            var r = GetPrint(s, false, false, false);
             return r;
         }
 
@@ -912,9 +988,11 @@ namespace OrbitalShell.Console
                     // directives are removed
                     s = ANSI.GetText(s);    // also removed ansi sequences
                     Echo(s, lineBreak, false, true, true, printSequences);
-                } else {
+                }
+                else
+                {
                     // directives are keeped
-                    Echo(s, lineBreak, false, false, true, printSequences,false,false);
+                    Echo(s, lineBreak, false, false, true, printSequences, false, false);
                 }
                 EnableConstraintConsolePrintInsideWorkArea = e;
                 sw.Flush();
@@ -948,7 +1026,7 @@ namespace OrbitalShell.Console
                 return txt;
             }
         }
-                
+
         public void ConsolePrint(string s, bool lineBreak = false)
         {
             // any print goes here...
@@ -982,8 +1060,8 @@ namespace OrbitalShell.Console
         public override void EchoDebug(
             string s,
             bool lineBreak = false,
-            [CallerMemberName]string callerMemberName = "",
-            [CallerLineNumber]int callerLineNumber = -1)
+            [CallerMemberName] string callerMemberName = "",
+            [CallerLineNumber] int callerLineNumber = -1)
         {
             if (!FileEchoDebugEnabled) return;
             if (FileEchoDebugDumpDebugInfo)
@@ -1011,18 +1089,18 @@ namespace OrbitalShell.Console
         }
 
         public void Echoln(IEnumerable<string> ls, bool ignorePrintDirectives = false) { foreach (var s in ls) Echoln(s, ignorePrintDirectives); }
-        
+
         public void Echo(IEnumerable<string> ls, bool lineBreak = false, bool ignorePrintDirectives = false) { foreach (var s in ls) Echo(s, lineBreak, ignorePrintDirectives); }
-        
+
         public void Echoln(string s = "", bool ignorePrintDirectives = false) => Echo(s, true, false, !ignorePrintDirectives);
-        
+
         public void Echo(
-            string s = "", 
-            bool lineBreak = false, 
+            string s = "",
+            bool lineBreak = false,
             bool ignorePrintDirectives = false) => Echo(s, lineBreak, false, !ignorePrintDirectives);
-        
+
         public void Echoln(char s, bool ignorePrintDirectives = false) => Echo(s + "", true, false, !ignorePrintDirectives);
-        
+
         public void Echo(char s, bool lineBreak = false, bool ignorePrintDirectives = false) => Echo(s + "", lineBreak, !ignorePrintDirectives);
 
         /// <summary>
@@ -1062,9 +1140,9 @@ namespace OrbitalShell.Console
                     else
                     {
                         var txt = s.ToString();
-                        if (getNonPrintablesASCIICodesAsLabel) txt = ASCII.GetNonPrintablesCodesAsLabel( txt, false /* true: show all symbols */ );
-                        if (avoidANSISequencesAndNonPrintableCharacters) txt = ANSI.AvoidANSISequencesAndNonPrintableCharacters( txt );
-                        ConsolePrint( txt , false);
+                        if (getNonPrintablesASCIICodesAsLabel) txt = ASCII.GetNonPrintablesCodesAsLabel(txt, false /* true: show all symbols */ );
+                        if (avoidANSISequencesAndNonPrintableCharacters) txt = ANSI.AvoidANSISequencesAndNonPrintableCharacters(txt);
+                        ConsolePrint(txt, false);
                     }
                 }
 
@@ -1072,7 +1150,18 @@ namespace OrbitalShell.Console
             }
         }
 
-        
+        public void Warningln(string s) => Warning(s, true);
+
+        public void Warning(string s, bool lineBreak = true) => Out.Echo($"{Colors.Warning}{s}{Colors.Default}", lineBreak);
+
+        public void Errorln(string s) => Error(s, true);
+
+        public void Error(string s, bool lineBreak = true)
+        {
+            Out.RedirecToErr = true;
+            Out.Echo($"{Colors.Error}{s}{Colors.Default}", lineBreak);
+            Out.RedirecToErr = false;
+        }
 
         void ConsoleSubPrint(string s, bool lineBreak = false)
         {
@@ -1137,11 +1226,12 @@ namespace OrbitalShell.Console
                         //if (!IsRedirected) FillLineFromCursor(' ');   // this fix avoid background color to fill the full line on wsl/linux
                     }
                     else*/
-                        Write(s);
-                    
+                    Write(s);
+
                     EchoDebug(s);
-                    
-                    if (lineBreak) {
+
+                    if (lineBreak)
+                    {
 #if fix_colors_on_br
                         var f = _cachedForegroundColor;
                         var b = _cachedBackgroundColor;
@@ -1153,7 +1243,8 @@ namespace OrbitalShell.Console
                             _textWriter.WriteLine(string.Empty);
                         }
 #else
-                         /*_textWriter*/ WriteLine(string.Empty);
+                        /*_textWriter*/
+                        WriteLine(string.Empty);
 #endif
 
                         EchoDebug(string.Empty, true);
@@ -1183,16 +1274,16 @@ namespace OrbitalShell.Console
                 var y = CursorTop;
                 if (useDefaultColors)
                 {
-                    SetForeground( ColorSettings.Default.Foreground.Value );
-                    SetBackground( ColorSettings.Default.Background.Value );
+                    SetForeground(ColorSettings.Default.Foreground.Value);
+                    SetBackground(ColorSettings.Default.Background.Value);
                 }
                 Write("".PadLeft(nb, c));   // TODO: BUG in WINDOWS: do not print the last character
                 SetCursorPos(nb, y);
                 Write(" ");
                 if (useDefaultColors)
                 {
-                    SetForeground( f );
-                    SetBackground( b );
+                    SetForeground(f);
+                    SetBackground(b);
                 }
                 if (resetCursorLeft)
                     CursorLeft = x;
@@ -1473,7 +1564,7 @@ namespace OrbitalShell.Console
                                 left, top, right, bottom - top,
                                 left, top + 1,
                                 ' ',
-                                DefaultForeground ?? ConsoleColor.White, DefaultBackground ?? ConsoleColor.Black );
+                                DefaultForeground ?? ConsoleColor.White, DefaultBackground ?? ConsoleColor.Black);
                     }
 
                     if (enableOutput && cy > bottom /*- 1*/)
@@ -1487,7 +1578,7 @@ namespace OrbitalShell.Console
                                 left, top - dy, right, nh,
                                 left, top,
                                 ' ',
-                                DefaultForeground ?? ConsoleColor.White, DefaultBackground ?? ConsoleColor.Black );
+                                DefaultForeground ?? ConsoleColor.White, DefaultBackground ?? ConsoleColor.Black);
                         }
                     }
                 }

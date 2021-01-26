@@ -14,10 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Program.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Component\CommandLine\Defaults\.aliases" />
     <None Remove="Component\CommandLine\Defaults\.profile" />
   </ItemGroup>

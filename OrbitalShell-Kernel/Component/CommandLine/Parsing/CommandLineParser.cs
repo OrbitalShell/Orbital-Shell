@@ -290,7 +290,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     }
                     catch (VariablePathNotFoundException ex)
                     {
-                        Errorln(ex.Message);
+                        context.Errorln(ex.Message);
                         // keep bad var name in place (? can be option of the shell. Bash let it blank)
                         nexpr.Append( CommandLineSyntax.VariablePrefix + vr.Text);
                     }

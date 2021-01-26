@@ -535,7 +535,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
             else
             {
-                Errorln($"commands module '{assemblyName}' not registered");
+                context.Errorln($"commands module '{assemblyName}' not registered");
                 return (0, 0);
             }
         }
@@ -618,7 +618,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             if (registerAsModule && _modules.ContainsKey(type.FullName))
             {
-                Errorln($"a module with same name than commands type '{type.FullName}' is already registered");
+                context.Errorln($"a module with same name than commands type '{type.FullName}' is already registered");
                 return 0;
             }
             foreach ( var method in methods )
@@ -628,7 +628,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 {
                     if (!method.ReturnType.HasInterface(typeof(ICommandResult)))
                     {
-                        Errorln($"class={type.FullName} method={method.Name} wrong return type. should be of type '{typeof(ICommandResult).FullName}', but is of type: {method.ReturnType.FullName}");
+                        context.Errorln($"class={type.FullName} method={method.Name} wrong return type. should be of type '{typeof(ICommandResult).FullName}', but is of type: {method.ReturnType.FullName}");
                     }
                     else
                     {
@@ -642,7 +642,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                                 // manadatory: param 0 is CommandEvaluationContext
                                 if (parameter.ParameterType != typeof(CommandEvaluationContext))
                                 {
-                                    Errorln($"class={type.FullName} method={method.Name} parameter 0 ('{parameter.Name}') should be of type '{typeof(CommandEvaluationContext).FullName}', but is of type: {parameter.ParameterType.FullName}");
+                                    context.Errorln($"class={type.FullName} method={method.Name} parameter 0 ('{parameter.Name}') should be of type '{typeof(CommandEvaluationContext).FullName}', but is of type: {parameter.ParameterType.FullName}");
                                     syntaxError = true;
                                     break;
                                 }
@@ -694,13 +694,13 @@ namespace OrbitalShell.Component.CommandLine.Processor
                                     }
                                     catch (Exception ex)
                                     {
-                                        Errorln(ex.Message);
+                                        context.Errorln(ex.Message);
                                     }
                                 }
                                 if (pspec == null)
                                 {
                                     syntaxError = true;
-                                    Errorln($"invalid parameter: class={type.FullName} method={method.Name} name={parameter.Name}");
+                                    context.Errorln($"invalid parameter: class={type.FullName} method={method.Name} name={parameter.Name}");
                                 }
                                 else
                                     paramspecs.Add(pspec);
@@ -729,7 +729,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                             {
                                 if (cmdlst.Select(x => x.MethodInfo.DeclaringType == type).Any())
                                 {
-                                    Errorln($"command already registered: '{cmdspec.Name}' in type '{cmdspec.DeclaringTypeFullName}'");
+                                    context.Errorln($"command already registered: '{cmdspec.Name}' in type '{cmdspec.DeclaringTypeFullName}'");
                                     registered = false;
                                 }
                                 else
@@ -750,7 +750,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             if (registerAsModule)
             {
                 if (comsCount == 0)
-                    Errorln($"no commands found in type '{type.FullName}'");
+                    context.Errorln($"no commands found in type '{type.FullName}'");
                 else
                 {
                     var descAttr = type.GetCustomAttribute<CommandsAttribute>();
@@ -859,7 +859,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     } catch (Exception commandInvokeError)
                     {
                         var commandError = commandInvokeError.InnerException ?? commandInvokeError;
-                        Errorln(commandError.Message);
+                        context.Errorln(commandError.Message);
                         return new ExpressionEvaluationResult(null, parseResult.ParseResultType, null, (int)ReturnCode.Error, commandError);
                     }
                     break;
@@ -932,8 +932,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     t[idx] = Settings.ErrorPositionMarker+"";
                     errorText += Red + err.Description;
                     serr = string.Join("", t);
-                    Errorln(" ".PadLeft(outputX) + serr);
-                    Errorln(errorText);
+                    context.Errorln(" ".PadLeft(outputX) + serr);
+                    context.Errorln(errorText);
                     r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
 
@@ -945,8 +945,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     t[idx] = Settings.ErrorPositionMarker+"";
                     errorText += Red + err2.Description;
                     serr = string.Join("", t);
-                    Errorln(" ".PadLeft(outputX) + serr);
-                    Errorln(errorText);
+                    context.Errorln(" ".PadLeft(outputX) + serr);
+                    context.Errorln(errorText);
                     r = new ExpressionEvaluationResult(expr,errorText, parseResult.ParseResultType, null, (int)ReturnCode.NotIdentified, null);
                     break;
             }

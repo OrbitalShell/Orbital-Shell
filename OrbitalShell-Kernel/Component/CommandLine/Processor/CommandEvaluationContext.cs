@@ -38,7 +38,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <summary>
         /// input data to begin the context with
         /// </summary>
-        public readonly object InputData;        
+        public readonly object InputData;
 
         /// <summary>
         /// eventual parent context
@@ -69,11 +69,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <param name="err">error stream</param>
         /// <param name="inputData">input data to begin the context with</param>
         /// <param name="parentContext">parent context (optionnal, default null)</param>
-        public CommandEvaluationContext(            
-            CommandLineProcessor commandLineProcessor, 
-            ConsoleTextWriterWrapper @out, 
-            TextReader @in, 
-            TextWriterWrapper err, 
+        public CommandEvaluationContext(
+            CommandLineProcessor commandLineProcessor,
+            ConsoleTextWriterWrapper @out,
+            TextReader @in,
+            TextWriterWrapper err,
             object inputData,
             CommandEvaluationContext parentContext = null)
         {
@@ -90,30 +90,30 @@ namespace OrbitalShell.Component.CommandLine.Processor
             InputData = inputData;
 
             SetupShellEnvVar();
-            Variables = new Variables( (VariableNamespace.env, ShellEnv) );
+            Variables = new Variables((VariableNamespace.env, ShellEnv));
             ShellEnv.Initialize(this);
 
             EchoMap = new EchoPrimitiveMap();
             ParentContext = parentContext;
-            
+
             @out.ColorSettings = ShellEnv.Colors;
         }
 
         void SetupShellEnvVar()
         {
-            ShellEnv = new ShellEnvironment(VariableNamespace.env+"");         
+            ShellEnv = new ShellEnvironment(VariableNamespace.env + "");
         }
 
-        public void Errorln(string s) => Error(s, true);
+        #region output shortcuts
 
-        public void Error(string s, bool lineBreak = false)
-        {
-            lock (Out.Lock)
-            {
-                Out.RedirecToErr = true;
-                Out.Echo($"{ShellEnv.Colors.Error}{s}{ShellEnv.Colors.Default}", lineBreak);
-                Out.RedirecToErr = false;
-            }
-        }
+        public void Errorln(string s) => Out.Error(s, true);
+
+        public void Error(string s, bool lineBreak = false) => Out.Error(s, lineBreak);
+
+        public void Warningln(string s) => Out.Warning(s, true);
+
+        public void Warning(string s, bool lineBreak = false) => Out.Warning(s, lineBreak);
+
+        #endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿//#define dbg
+﻿using System.Security.AccessControl;
+//#define dbg
 
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
@@ -83,7 +84,7 @@ namespace OrbitalShell.Shell.Commands.TextEditor
             )
         {
             Context = context;
-            if (filePath==null || filePath.CheckPathExists())
+            if (filePath==null || filePath.CheckPathExists(context))
             {
                 Init();
                 InitEditor();
@@ -800,7 +801,8 @@ namespace OrbitalShell.Shell.Commands.TextEditor
             }
             else
             {
-                // TODO: workarea enabled mode
+                // workarea enabled mode
+                throw new NotImplementedException();
             }
         }
 

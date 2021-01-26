@@ -58,7 +58,7 @@ namespace OrbitalShell.Lib.FileSystem
                             sitem = null;
 
                         if (!top)
-                            items.AddRange(FindItems(context,fsinf.FullName, pattern, top, all, dirs, attributes, shortPathes, contains, checkPatternOnFullName, counts, print, alwaysSelectDirs, ignoreCase));
+                            items.AddRange(FindItems(context, fsinf.FullName, pattern, top, all, dirs, attributes, shortPathes, contains, checkPatternOnFullName, counts, print, alwaysSelectDirs, ignoreCase));
                     }
                     else
                     {
@@ -75,7 +75,7 @@ namespace OrbitalShell.Lib.FileSystem
                                 }
                                 catch (Exception ex)
                                 {
-                                    Errorln($"file read error: {ex.Message} when accessing file: {sitem.PrintableFullName}");
+                                    context.Errorln($"file read error: {ex.Message} when accessing file: {sitem.PrintableFullName}");
                                 }
                             }
                             if (sitem != null)
@@ -96,7 +96,7 @@ namespace OrbitalShell.Lib.FileSystem
             }
             catch (UnauthorizedAccessException)
             {
-                Errorln($"unauthorized access to {new DirectoryPath(path).PrintableFullName}");
+                context.Errorln($"unauthorized access to {new DirectoryPath(path).PrintableFullName}");
                 return items;
             }
         }

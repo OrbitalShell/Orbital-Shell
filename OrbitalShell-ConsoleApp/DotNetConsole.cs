@@ -22,11 +22,6 @@ namespace OrbitalShell
     /// slowness due to:
     /// - many system calls on both linux (ConsolePal.Unix.cs) and windows (ConsolePal.Windows.cs)
     /// - the .net core make use of interop for each console method call in windows (ConsolePal.Windows.cs)
-    /// implemented the workaround:
-    /// - 'retains mode' : echo in a buffer in order to output as much text as possible in one time
-    /// - needs a re-factorization: 
-    /// -- dotnetconsole api placed on top of streams out,error as a wrapper (Console/ConsoleTextWriterWrapper.cs)
-    /// -- explode DotNetConsole in small parts
     /// </para>
     /// </summary>
     public static class DotNetConsole
@@ -57,11 +52,11 @@ namespace OrbitalShell
         //public static int UIWatcherThreadDelay = 500;
         //public static ViewResizeStrategy ViewResizeStrategy = ViewResizeStrategy.FitViewSize;
         public static bool ClearOnViewResized = true;      // false not works properly in Windows Terminal + fit view size
-        
+
         public static bool SaveColors = /*true*/ false; /*bug fix*/ // TODO: remove
-        
+
         public static bool TraceCommandErrors = true;
-        
+
         public static bool DumpExceptions = true;
         public static ConsoleColor? DefaultForeground;
         public static ConsoleColor? DefaultBackground;
@@ -128,7 +123,8 @@ namespace OrbitalShell
                 .Select(x => Colors.Error + x)
                 .ToList();
                 if (message != null) ls.Insert(0, $"{Colors.Error}{message}");
-            } else
+            }
+            else
                 ls.Insert(0, $"{Colors.Error}{message}: {ex.Message}");
             Errorln(ls);
         }
@@ -204,8 +200,8 @@ namespace OrbitalShell
                 Out.Echoln($"{White}default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
                 if (RuntimeEnvironment.OSType == OSPlatform.Windows)
                 {
-                    Out.Echoln($"number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");            // TODO: not supported on linux ubuntu 18.04 wsl
-                    Out.Echoln($"cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");     // TODO: not supported on linux ubuntu 18.04 wsl
+                    Out.Echoln($"number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");
+                    Out.Echoln($"cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");
                 }
             };
         }
@@ -235,7 +231,7 @@ namespace OrbitalShell
         public static void Exit(int r = 0) => Environment.Exit(r);
 
         #region work area operations
-        
+
         /// <summary>
         /// this setting limit wide of lines (available width -1) to prevent sys console to automatically put a line break when reaching end of line (console bug ?)
         /// </summary>
@@ -246,10 +242,14 @@ namespace OrbitalShell
         /// </summary>
         static bool IsConsoleGeometryEnabled = true;
 
-        public static bool CheckConsoleHasGeometry() {
-            try {
+        public static bool CheckConsoleHasGeometry()
+        {
+            try
+            {
                 var x = sc.WindowLeft;
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 IsConsoleGeometryEnabled = false;
                 return false;
             }
@@ -264,7 +264,7 @@ namespace OrbitalShell
             // CursorLeft and CursorTop are always good
             lock (ConsoleLock)
             {
-                if (!CheckConsoleHasGeometry()) return (x,y,1000,1000);
+                if (!CheckConsoleHasGeometry()) return (x, y, 1000, 1000);
 
                 if (x < 0) x = sc.WindowLeft + sc.WindowWidth + x;
 
@@ -334,7 +334,8 @@ namespace OrbitalShell
                 _outputWriter = sc.Out;
                 sc.SetOut(sw);
                 IsOutputRedirected = true;
-            } else
+            }
+            else
             {
                 Out.Redirect((TextWriter)null);
                 sc.SetOut(_outputWriter);
@@ -363,14 +364,15 @@ namespace OrbitalShell
 
         public static void RedirectOut(string filepath = null)
         {
-            if (filepath!=null)
+            if (filepath != null)
             {
                 _outputWriter = sc.Out;
                 _outputFileStream = new FileStream(filepath, FileMode.Append, FileAccess.Write);
                 _outputStreamWriter = new StreamWriter(_outputFileStream);
                 sc.SetOut(_outputStreamWriter);
                 Out.Redirect(_outputStreamWriter);
-            } else
+            }
+            else
             {
                 _outputStreamWriter.Flush();
                 _outputStreamWriter.Close();
@@ -438,7 +440,7 @@ namespace OrbitalShell
 
         #endregion
 
-        
+
 
     }
 }

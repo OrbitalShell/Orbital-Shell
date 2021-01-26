@@ -14,7 +14,7 @@ namespace OrbitalShell.Lib.FileSystem
             FileInfo = (FileInfo)FileSystemInfo;
         }
 
-        public override bool CheckExists(CommandEvaluationContext context,bool dumpError = true)
+        public override bool CheckExists(CommandEvaluationContext context, bool dumpError = true)
         {
             if (!FileInfo.Exists)
             {
@@ -24,7 +24,7 @@ namespace OrbitalShell.Lib.FileSystem
             return true;
         }
 
-        public bool CheckPathExists(bool dumpError = true)
+        public bool CheckPathExists(CommandEvaluationContext context, bool dumpError = true)
         {
             if (!Directory.Exists(Path.GetDirectoryName(FullName)))
             {
@@ -40,7 +40,7 @@ namespace OrbitalShell.Lib.FileSystem
             return FileInfo.FullName;
         }
 
-        public Encoding GetEncoding(Encoding defaultEncoding=null)
+        public Encoding GetEncoding(Encoding defaultEncoding = null)
         {
             if (defaultEncoding != null)
             {
@@ -48,7 +48,7 @@ namespace OrbitalShell.Lib.FileSystem
                 if (reader.Peek() >= 0)
                     reader.Read();
                 return reader.CurrentEncoding;
-            } 
+            }
             else
             {
                 using var reader = new StreamReader(FullName, true);

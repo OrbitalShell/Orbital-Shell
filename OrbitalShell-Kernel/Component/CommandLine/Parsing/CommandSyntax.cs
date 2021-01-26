@@ -22,22 +22,22 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         {
             CommandSpecification = commandSpecification;
             foreach (var kvp in commandSpecification.ParametersSpecifications)
-                _parameterSyntaxes.Add(new ParameterSyntax(commandSpecification,kvp.Value));
+                _parameterSyntaxes.Add(new ParameterSyntax(commandSpecification, kvp.Value));
         }
 
-        public (MatchingParameters matchingParameters,List<ParseError> parseErrors) 
+        public (MatchingParameters matchingParameters, List<ParseError> parseErrors)
             Match(
             CommandEvaluationContext context,
             StringComparison syntaxMatchingRule,
             //string[] segments,
             StringSegment[] segments,
-            int firstIndex=0)
+            int firstIndex = 0)
         {
             var matchingParameters = new MatchingParameters();
-            
+
             if (segments.Length < MinAttemptedSegments)
                 return (matchingParameters,
-                    new List<ParseError>{ 
+                    new List<ParseError>{
                         new ParseError(
                              $"missing parameter(s). minimum attempted is {MinAttemptedSegments}, founded {segments.Length}",
                              0,
@@ -51,7 +51,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             var index = 0;
             int position = 0;
             int posjump;
-            while (position<segments.Length)
+            while (position < segments.Length)
             {
                 StringSegment[] rightSegments;
                 if (position + 1 < segments.Length)
@@ -59,36 +59,38 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 else
                     rightSegments = new StringSegment[] { };
 
-                var (rparseErrors,parameterSyntax) = MatchSegment(
+                var (rparseErrors, parameterSyntax) = MatchSegment(
                     syntaxMatchingRule,
-                    matchingParameters, 
-                    segments[position], 
+                    matchingParameters,
+                    segments[position],
                     position,
                     index,
-                    rightSegments, 
+                    rightSegments,
                     segments);
-                
-                if (rparseErrors != null && rparseErrors.Count>0)
+
+                if (rparseErrors != null && rparseErrors.Count > 0)
                 {
                     parseErrors.AddRange(rparseErrors);
                     posjump = 1;
-                } else
+                }
+                else
                 {
                     var cps = parameterSyntax.CommandParameterSpecification;
                     var mparam = parameterSyntax.BuildMatchingParameter(cps.DefaultValue);
-                    var decp = (cps.SegmentsCount == 2) ? 1 : 0; 
+                    var decp = (cps.SegmentsCount == 2) ? 1 : 0;
                     var seg = segments[position + decp];
 
                     Action perr0 = () => parseErrors.Add(
                         new ParseError(
                             $"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
-                    
+
                     if (cps.IsOption && !cps.HasValue)
                     {
                         try
                         {
                             mparam.SetValue(true);
-                        } catch (InvalidCastException)
+                        }
+                        catch (InvalidCastException)
                         {
                             perr0();
                         }
@@ -157,7 +159,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
                             void trySetValueFromStr()
                             {
-                                var (success, strValue) = TryCastToString(context,varValue);
+                                var (success, strValue) = TryCastToString(context, varValue);
                                 if (!success)
                                     perr();
                                 else
@@ -209,11 +211,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
                 if (position > 0) index++;
                 index += segments[position].Length;
-                position+=posjump;
+                position += posjump;
             }
 
             // non given parameters must be optional
-            foreach ( var psyx in _parameterSyntaxes)
+            foreach (var psyx in _parameterSyntaxes)
             {
                 if (psyx.CommandParameterSpecification.IsOptional &&
                     !matchingParameters.Contains(psyx.CommandParameterSpecification.ParameterName))
@@ -224,7 +226,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             }
 
             // required parameters must be valued
-            foreach ( var psyx in _parameterSyntaxes)
+            foreach (var psyx in _parameterSyntaxes)
             {
                 if (!psyx.CommandParameterSpecification.IsOptional &&
                     !matchingParameters.Contains(psyx.CommandParameterSpecification.ParameterName))
@@ -232,11 +234,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     var pname = psyx.CommandParameterSpecification.ActualName;
                     var apos = psyx.CommandParameterSpecification.Index > -1 ?
                         psyx.CommandParameterSpecification.Index : 0;
-                    parseErrors.Add(new ParseError($"missing parameter: {pname}",apos,0,CommandSpecification));
+                    parseErrors.Add(new ParseError($"missing parameter: {pname}", apos, 0, CommandSpecification));
                 }
             }
 
-            return (matchingParameters,parseErrors);
+            return (matchingParameters, parseErrors);
         }
 
         public static (bool success, string strValue) TryCastToString(
@@ -256,7 +258,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     string strValue = null;
                     MethodInfo mi;
                     if ((mi = varValue.GetAsTextMethod()) != null)
-                        strValue = mi.InvokeAsText(varValue,context);
+                        strValue = mi.InvokeAsText(varValue, context);
                     else
                         strValue = varValue.ToString();
                     return (true, strValue);
@@ -274,17 +276,17 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         List<CommandParameterSpecification> AttemptedParameters(int position)
         {
             var r = new List<CommandParameterSpecification>();
-            var psyxs = _parameterSyntaxes.ToArray();  // TODO: ordered by position
+            var psyxs = _parameterSyntaxes.ToArray();  // TODO: order by position
             for (int i = 0; i < psyxs.Length; i++)
             {
             }
             return r;
-        } 
+        }
 
-        (List<ParseError> parseError,ParameterSyntax parameterSyntax) MatchSegment(
-            StringComparison syntaxMatchingRule, 
-            MatchingParameters matchingParameters, 
-            StringSegment segment, 
+        (List<ParseError> parseError, ParameterSyntax parameterSyntax) MatchSegment(
+            StringComparison syntaxMatchingRule,
+            MatchingParameters matchingParameters,
+            StringSegment segment,
             int position,
             int index,
             StringSegment[] rightSegments,
@@ -294,38 +296,38 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             var cparamSytxs = new List<ParameterSyntax>();
             for (int i = 0; i < _parameterSyntaxes.Count; i++)
             {
-                var (prsError,parameterSyntax) = _parameterSyntaxes[i]
+                var (prsError, parameterSyntax) = _parameterSyntaxes[i]
                     .MatchSegment(
-                        syntaxMatchingRule, 
+                        syntaxMatchingRule,
                         matchingParameters,
-                        segment, 
-                        position, 
-                        index, 
-                        rightSegments, 
+                        segment,
+                        position,
+                        index,
+                        rightSegments,
                         segments);
                 if (prsError == null)
                     cparamSytxs.Add(parameterSyntax);
-                if (prsError != null && prsError.Description!=null)
+                if (prsError != null && prsError.Description != null)
                 {
                     if (!matchingParameters.Contains(_parameterSyntaxes[i].CommandParameterSpecification.ParameterName))
                         parseErrors.Add(prsError);
                 }
 
             }
-            if (cparamSytxs.Count==0 && parseErrors.Count==0)
+            if (cparamSytxs.Count == 0 && parseErrors.Count == 0)
             {
                 parseErrors.Add(new ParseError($"unexpected parameter: {segment} at position {position}", position, index, CommandSpecification));
                 return (parseErrors, null);
             }
 
             if (cparamSytxs.Count == 0) return (parseErrors, null);
-            if (cparamSytxs.Count==1) return (null, cparamSytxs.First());
+            if (cparamSytxs.Count == 1) return (null, cparamSytxs.First());
             var optParamSytxs = cparamSytxs.Where(x => x.CommandParameterSpecification.IsOption).ToList();
             if (optParamSytxs.Count() == 1) return (null, optParamSytxs.First());
             var sb = new StringBuilder();
             sb.AppendLine($"command syntax is ambiguous. multiple parameters matches the segment '{segment}' at position {position},index {index}: ");
             for (int i = 0; i < cparamSytxs.Count(); i++)
-                sb.AppendLine($"{i+"",2}. {cparamSytxs[i]}");
+                sb.AppendLine($"{i + "",2}. {cparamSytxs[i]}");
             parseErrors.Add(new ParseError(sb.ToString(), position, index, CommandSpecification));
             return (parseErrors, null);
         }

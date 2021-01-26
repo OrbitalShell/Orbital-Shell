@@ -186,7 +186,7 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                     {
                         //var res = task.Result;
                         expressionEvaluationResult = task.Result;
-                        Warningln($"command canceled: {commandLine}");
+                        Out.Warningln($"command canceled: {commandLine}");
                     }
                     finally {}                
                 }

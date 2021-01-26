@@ -31,13 +31,13 @@
     "todo-tree.tree.showScanModeButton": false,
     "workbench.iconTheme": "vscode-icons",
     "editor.suggestSelection": "first",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    /*"vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "editor.formatOnPaste": false,
     "editor.formatOnSave": false,
-    "editor.formatOnType": false,
+    "editor.formatOnType": false,*/
     "window.zoomLevel": 0,
     "terminal.external.windowsExec": "C:\\Users\\franc\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe",
-    "terminal.explorerKind": "external",
+    //"terminal.explorerKind": "external",
     "terminal.integrated.shell.windows": "C:\\windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
     "terminal.integrated.copyOnSelection": true,
     "terminal.integrated.cursorBlinking": true,
@@ -46,5 +46,9 @@
     "terminal.integrated.localEchoLatencyThreshold": 0,
     "terminal.integrated.shellArgs.windows": "",
     //"terminal.integrated.rendererType": "canvas",
-    "debug.onTaskErrors": "showErrors"
+    "debug.onTaskErrors": "showErrors",
+    "csharp.semanticHighlighting.enabled": true,
+    "omnisharp.enableImportCompletion": true,
+    "editor.quickSuggestions": true,
+    "editor.suggestOnTriggerCharacters": true,
 }

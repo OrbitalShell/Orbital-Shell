@@ -1,4 +1,6 @@
-﻿using OrbitalShell.Component.CommandLine;
+﻿using System.ComponentModel.Design.Serialization;
+using System.Threading;
+using OrbitalShell.Component.CommandLine;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Data;
 using OrbitalShell.Component.CommandLine.Parsing;
@@ -536,7 +538,7 @@ namespace OrbitalShell.Shell.Commands
             if (appendToFile || readFromFile || appendFromFile || writeToFile)
             {
                 file ??= context.CommandLineProcessor.CmdsHistory.FilePath;
-                if (file.CheckPathExists())
+                if (file.CheckPathExists(context))
                 {
                     if (writeToFile)
                     {
