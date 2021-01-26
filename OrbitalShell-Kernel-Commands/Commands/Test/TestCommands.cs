@@ -65,7 +65,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("check end of line symbols of a file")]
-        public CommandResult<List<string>> Fileeol(
+        public CommandResult<List<string>> FileEol(
             CommandEvaluationContext context,
             [Parameter("file path")] FilePath file)
         {
@@ -85,7 +85,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("echo an ANSI / VT-100 sequence")]
-        public CommandVoidResult ANSISeq(
+        public CommandVoidResult AnsiSeq(
             CommandEvaluationContext context,
             [Parameter(0, "esc sequence (text behind ESC). replace character @ by ESC (\\x1b) to allow write new sequences in the string parameter")] string seq,
             [Option("c", "character to be used for ESC", true, true, (char)27)] char c
@@ -121,7 +121,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("show current colors support and current colors map using ANSI escape codes")]
-        public CommandVoidResult ANSIColorTest(
+        public CommandVoidResult AnsiColorTest(
             CommandEvaluationContext context
             )
         {

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using OrbitalShell.Lib;
@@ -8,8 +7,8 @@ using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using System.Reflection;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-using System.Reflection.Metadata;
+using OrbitalShell.Component.CommandLine.Variable;
+using System.Text;
 
 namespace OrbitalShell.Component.CommandLine.Module
 {
@@ -112,6 +111,32 @@ namespace OrbitalShell.Component.CommandLine.Module
             return string.Join(CommandLineSyntax.CommandNamespaceSeparator, segments);
         }
 
+        /// <summary>
+        /// normalize a command name according to naming conventions
+        /// </summary>
+        /// <param name="s">command name to be normalized</param>
+        /// <returns>normalized command name</returns>
+        public string NormalizeCommandName(string s)
+        {
+            var sb = new StringBuilder();
+            var t = s.ToCharArray();
+            for (int i = 0; i < t.Length; i++)
+            {
+                var c = t[i];
+                if (char.IsUpper(c) && (i == t.Length - 1 || !char.IsUpper(t[i + 1])))
+                {
+                    sb.Append(CommandLineSyntax.CommandNamespaceSeparator);
+                    sb.Append(char.ToLower(c));
+                }
+                else
+                    sb.Append(c);
+            }
+            var r = sb.ToString();
+            if (r.StartsWith(CommandLineSyntax.CommandNamespaceSeparator))
+                r = r.Length > 1 ? r.Substring(1) : "";
+            return r;
+        }
+
         public int RegisterCommandClass(
             CommandEvaluationContext context,
             Type type,
@@ -146,6 +171,8 @@ namespace OrbitalShell.Component.CommandLine.Module
                     {
                         var cmdNamespaceAttr = method.GetCustomAttribute<CommandNamespaceAttribute>();
                         var cmdNamespace = cmdNamespaceAttr == null ? dtNamespace : _CheckAndNormalizeCommandNamespace(cmdNamespaceAttr.Segments);
+
+                        #region init from method parameters attributes
 
                         var paramspecs = new List<CommandParameterSpecification>();
                         bool syntaxError = false;
@@ -227,12 +254,16 @@ namespace OrbitalShell.Component.CommandLine.Module
                             pindex++;
                         }
 
+                        #endregion
+
                         if (!syntaxError)
                         {
                             var cmdNameAttr = method.GetCustomAttribute<CommandNameAttribute>();
 
-                            var cmdName = (cmdNameAttr != null && cmdNameAttr.Name != null) ? cmdNameAttr.Name
-                                : (cmd.Name ?? method.Name.ToLower());
+                            var cmdName = NormalizeCommandName(
+                                    (cmdNameAttr != null && cmdNameAttr.Name != null) ?
+                                        cmdNameAttr.Name
+                                        : (cmd.Name ?? method.Name));
 
                             var cmdspec = new CommandSpecification(
                                 cmdNamespace,

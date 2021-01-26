@@ -5,6 +5,7 @@ using static OrbitalShell.Console.ANSI;
 using OrbitalShell.Component.Parser.ANSI;
 using System;
 using OrbitalShell.Component;
+using OrbitalShell.Component.CommandLine.Variable;
 
 namespace OrbitalShell.Commands.Dev
 {
@@ -75,7 +76,7 @@ namespace OrbitalShell.Commands.Dev
         }
 
         [Command("ansi parser test (22/1/21)")]
-        public CommandVoidResult Ansiparsetest(CommandEvaluationContext context)
+        public CommandVoidResult AnsiParseTest(CommandEvaluationContext context)
         {
             var str = ANSI.CSI + "1;2Z" + ANSI.RIS + ANSI.CHA(10) + "hello" + ANSI.CRLF + ANSI.SGRF24("50:100:150") + "WORLD(f=red) RED";
             //var str = ANSI.ESC;
@@ -94,11 +95,11 @@ namespace OrbitalShell.Commands.Dev
         }
 
         [Command("set a and b anc c variables to play with (22/1/21)")]
-        public CommandVoidResult Setabc(CommandEvaluationContext context)
+        public CommandVoidResult SetAbc(CommandEvaluationContext context)
         {
-            context.Variables.Set("a", "i am a");
-            context.Variables.Set("b", "i am b");
-            context.Variables.Set("c", "a");
+            context.Variables.Set(VariableNamespace.local, "a", "i am a");
+            context.Variables.Set(VariableNamespace.local, "b", "i am b");
+            context.Variables.Set(VariableNamespace.local, "c", "a");
             return CommandVoidResult.Instance;
         }
 

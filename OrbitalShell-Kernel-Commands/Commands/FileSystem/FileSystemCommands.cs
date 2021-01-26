@@ -189,6 +189,7 @@ namespace OrbitalShell.Commands.FileSystem
         }
 
         [Command("print informations about drives/mount points")]
+        [CommandName("DriveInfo")]
         public CommandResult<List<DriveInfo>> Driveinfo(
             CommandEvaluationContext context,
             [Parameter("drive name for which informations must be printed. if no drive specified, list all drives", true)] string drive,
