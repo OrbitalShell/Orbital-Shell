@@ -6,18 +6,22 @@ using static OrbitalShell.DotNetConsole;
 using System.Globalization;
 using OrbitalShell.Console;
 using OrbitalShell.Component.CommandLine.Processor;
-using System.ComponentModel.Design;
 using OrbitalShell.Component.CommandLine.Variable;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using System.Reflection;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace OrbitalShell.Lib.FileSystem
 {
     [CustomParameterType]
     public class FileSystemPath
     {
-        public const string UserHomePathSymbol = "~";
+        /// <summary>
+        /// strings that are alias for user home path when present at begin of a path
+        /// </summary>
+        public readonly ReadOnlyCollection<string> UserHomePathSymbols = new ReadOnlyCollection<string>(new List<string> { "¤", "@", "~" });
 
         public static string ErrorColorization = $"{Red}";
         public static string NormalDirectoryColorization = $"{Blue}";
@@ -64,7 +68,7 @@ namespace OrbitalShell.Lib.FileSystem
         public FileSystemPath(FileSystemInfo fileSystemInfo)
         {
             var originalName = GetOriginalPath(fileSystemInfo);
-            if (_CanNormalizePath(originalName))
+            if (_CanNormalizePath(originalName, out _))
             {
                 var path = _NormalizePath(originalName);
                 if (fileSystemInfo is DirectoryInfo)
@@ -92,14 +96,24 @@ namespace OrbitalShell.Lib.FileSystem
             return (string)mi.GetValue(fsi);
         }
 
-        protected bool _CanNormalizePath(string path) => path.StartsWith(UserHomePathSymbol);
+        protected bool _CanNormalizePath(string path, out string symbol)
+        {
+            foreach (var s in UserHomePathSymbols)
+                if (path.StartsWith(s))
+                {
+                    symbol = s;
+                    return true;
+                }
+            symbol = null;
+            return false;
+        }
 
         protected string _NormalizePath(string path)
         {
-            if (path.StartsWith(UserHomePathSymbol))
+            if (_CanNormalizePath(path, out var symbol))
             {
                 path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                        + path.Substring(UserHomePathSymbol.Length);
+                        + path.Substring(symbol.Length);
             }
             return path;
         }
