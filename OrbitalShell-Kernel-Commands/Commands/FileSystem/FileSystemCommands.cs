@@ -36,7 +36,7 @@ namespace OrbitalShell.Commands.FileSystem
             [Option("f", "fullname", "check pattern on fullname instead of name")] bool checkPatternOnFullName,
             [Option("c", "contains", "files that contains the string", true, true)] string contains,
             [Option("a", "attr", "print file system attributes")] bool attributes,
-            [Option("s", "short", "print short pathes")] bool shortPathes,
+            [Option("n", "short", "print short pathes")] bool shortPathes,
             [Option("l", "all", "select both files and directories")] bool all,
             [Option("d", "dir", "select only directories")] bool dirs,
             [Option("t", "top", "search in top directory only")] bool top
@@ -56,11 +56,11 @@ namespace OrbitalShell.Commands.FileSystem
             return new CommandResult<(List<FileSystemPath>, FindCounts)>((new List<FileSystemPath>(), new FindCounts()), ReturnCode.Error);
         }
 
-        [Command("list files and folders in a path. eventually recurse in sub paths")]
+        [Command("list files and folders in a path. eventually recurse in sub paths", "i am the long description of dir")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Dir(
             CommandEvaluationContext context,
-            [Parameter("path where to list files and folders. if not specified is equal to the current directory. use wildcards * and ? to filter files and folders names", true)] WildcardFilePath path,
-            [Option("s", "short", "short display: do not print file system attributes")] bool noattributes,
+            [Parameter("path where to list files and folders. if not specified is set to the current directory. use wildcards * and ? to filter files and folders names", true)] WildcardFilePath path,
+            [Option("n", "name", "names only: do not print file system attributes")] bool noattributes,
             [Option("r", "recurse", "also list files and folders in sub directories. force display files full path")] bool recurse,
             [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide
             )
