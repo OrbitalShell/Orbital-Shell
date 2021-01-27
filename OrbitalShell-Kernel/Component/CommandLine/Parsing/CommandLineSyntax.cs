@@ -37,6 +37,16 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
         public static char CommandNamespaceSeparator = '-';
 
+        /// <summary>
+        /// prefix of a command option (short name)
+        /// </summary>
+        public static string OptionPrefix = "-";
+
+        /// <summary>
+        /// prefix of a command option (long name)
+        /// </summary>
+        public static string OptionLongPrefix = "--";
+
         public static bool IsNotAnOperator(string s) =>
             !IsRedirectOutput(s) &&
             !IsRedirectInput(s) &&

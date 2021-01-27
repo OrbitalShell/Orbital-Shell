@@ -9,8 +9,6 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public class ParameterSyntax
     {
-        public static string OptionPrefix = "-";
-
         public readonly CommandSpecification CommandSpecification;
         public readonly CommandParameterSpecification CommandParameterSpecification;
 
@@ -26,8 +24,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         public (ParseError parseError, ParameterSyntax parameterSyntax) MatchSegment(
             StringComparison syntaxMatchingRule,
             MatchingParameters matchingParameters,
-            StringSegment segment, 
-            int position, 
+            StringSegment segment,
+            int position,
             int index,
             StringSegment[] rightSegments,
             StringSegment[] segments)
@@ -36,11 +34,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             var csp = CommandParameterSpecification;
             if (matchingParameters.Contains(csp.ParameterName))
             {
-                if (position>0)
+                if (position > 0)
                 {
                     var leftSegments = segments[0..(position - 1)];
                     var idx = leftSegments.ToList().IndexOf(segment);
-                    if (idx>-1)
+                    if (idx > -1)
                         return (new ParseError($"parameter at position {position} is already defined at position {idx}: {csp}", position, index, CommandSpecification), this);
                 }
                 return (new ParseError(null, position, index, CommandSpecification), this);
@@ -48,17 +46,27 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
             if (csp.OptionName != null)
             {
-                var optsyntax = $"{ParameterSyntax.OptionPrefix}{csp.OptionName}";
+                var optsyntax = $"{CommandLineSyntax.OptionPrefix}{csp.OptionName}";
+                var optlngsyntax = $"{CommandLineSyntax.OptionLongPrefix}{csp.OptionLongName}";
+
                 // option
-                if (optsyntax.Equals(segment.Text, syntaxMatchingRule))
+                var poptsyntax = optsyntax + (csp.OptionLongName != null ? $" or {optlngsyntax}" : "");
+                if (optsyntax.Equals(segment.Text, syntaxMatchingRule)
+                    || (csp.OptionLongName != null && optlngsyntax.Equals(segment.Text, syntaxMatchingRule))
+                )
                 {
-                    if ((csp.SegmentsCount == 2 || (csp.SegmentsCount==1 && csp.RequiredParameterName!=null && !cs.ParametersSpecifications[csp.RequiredParameterName].IsOptional) ) && rightSegments.Length == 0)
-                        return (new ParseError($"missing value at position {position+1} for parameter {optsyntax}", position+1, index, CommandSpecification), this);
+                    if ((csp.SegmentsCount == 2 || (csp.SegmentsCount == 1 && csp.RequiredParameterName != null && !cs.ParametersSpecifications[csp.RequiredParameterName].IsOptional)) && rightSegments.Length == 0)
+                    {
+
+                        return (new ParseError($"missing value at position {position + 1} for parameter {poptsyntax}", position + 1, index, CommandSpecification), this);
+                    }
                     else
                         return (null, this);
                 }
                 else
-                    return (new ParseError($"parameter mismatch. attempted: {optsyntax} at position {position}, found: '{segment}'", position, index, CommandSpecification), this);
+                {
+                    return (new ParseError($"parameter mismatch. attempted: {poptsyntax} at position {position}, found: '{segment.Text}'", position, index, CommandSpecification), this);
+                }
             }
             else
             {
@@ -66,14 +74,14 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 // fixed parameter
                 if (csp.Index == position)
                 {
-                    if (csp.SegmentsCount==2 && rightSegments.Length==0)
+                    if (csp.SegmentsCount == 2 && rightSegments.Length == 0)
                         return (new ParseError($"missing value at position {position + 1} for parameter {psyntax}", position + 1, index, CommandSpecification), this);
                     else
                         return (null, this);
                 }
                 else
                 {
-                    var found = csp.Index < segments.Length ? $", found: '{segments[csp.Index]}'" : "";
+                    var found = csp.Index < segments.Length ? $", found: '{segments[csp.Index].Text}'" : "";
                     return (new ParseError($"missing parameter. attempted: {csp.ParameterName} of type {psyntax} at position {csp.Index}{found}", csp.Index, index, CommandSpecification), this);
                 }
             }
@@ -87,7 +95,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             return mparam;
         }
 
-        public bool TryGetValue(object ovalue,out object convertedValue)
+        public bool TryGetValue(object ovalue, out object convertedValue)
         {
             var comspec = CommandParameterSpecification;
             var ptype = comspec.ParameterInfo.ParameterType;
@@ -102,7 +110,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 {
                     convertedValue = Activator.CreateInstance(ptype, new object[] { ovalue });
                     return true;
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     return false;
                 }
@@ -247,7 +256,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             var customAttrType = ptype.GetCustomAttribute<CustomParameterType>();
             if (customAttrType != null)
             {
-                mparam = new MatchingParameter<object>(comspec,true);
+                mparam = new MatchingParameter<object>(comspec, true);
             }
             else
             {
@@ -290,12 +299,12 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 if (ptype == typeof(DateTime))
                     mparam = new MatchingParameter<DateTime>(comspec);
 
-                if (mparam==null)
+                if (mparam == null)
                     // unknown type, not CustomParameter
                     mparam = new MatchingParameter<object>(comspec);
             }
 
-            if (mparam==null)
+            if (mparam == null)
                 throw new NotSupportedException($"command parameter type not supported: {ptype.FullName} in command specification: {CommandParameterSpecification}");
 
             return mparam;

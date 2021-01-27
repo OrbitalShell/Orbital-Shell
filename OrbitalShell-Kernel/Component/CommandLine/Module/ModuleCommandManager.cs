@@ -208,9 +208,9 @@ namespace OrbitalShell.Component.CommandLine.Module
                                         paramAttr.IsOptional,
                                         paramAttr.Index,
                                         null,
+                                        null,
                                         true,
                                         parameter.HasDefaultValue,
-
                                         paramAttr.HasDefaultValue ?
                                             paramAttr.DefaultValue
                                             : ((parameter.HasDefaultValue) ? parameter.DefaultValue : defval),
@@ -230,6 +230,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                                             optAttr.IsOptional,
                                             -1,
                                             optAttr.OptionName ?? parameter.Name,
+                                            optAttr.OptionLongName,
                                             optAttr.HasValue,
                                             parameter.HasDefaultValue,
                                             optAttr.HasDefaultValue ?

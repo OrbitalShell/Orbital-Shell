@@ -19,9 +19,9 @@ namespace OrbitalShell.Component.Commands
         [Command("print a report of current processes")]
         public CommandResult<List<Process>> Ps(
             CommandEvaluationContext context,
-            [Option("b", "if set add table borders")] bool borders,
-            [Option("sid", "filter by session id", true, true)] int fsid = -1,
-            [Option("pid", "filter by process id", true, true)] int fpid = -1
+            [Option("b", "borders", "if set add table borders")] bool borders,
+            [Option("s", "sid", "filter by session id", true, true)] int fsid = -1,
+            [Option("p", "pid", "filter by process id", true, true)] int fpid = -1
             )
         {
             var r = new List<Process>();

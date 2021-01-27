@@ -86,8 +86,8 @@ current print directives are:
         public CommandVoidResult Echo(
             CommandEvaluationContext context,
             [Parameter("text or other (value of type object) to be writen to output", true, "")] object obj,
-            [Option("n", "no line break: do not add a line break after output")] bool avoidLineBreak = false,
-            [Option("r", "raw mode - echo directives and ansi sequences are replaces by readable text")] bool raw = false
+            [Option("n", "no-break", "no line break: do not add a line break after output")] bool avoidLineBreak = false,
+            [Option("r", "raw", "raw mode - echo directives and ansi sequences are replaces by readable text")] bool raw = false
             )
         {
             lock (context.Out.Lock)
@@ -178,7 +178,7 @@ current print directives are:
             [Parameter(0, "start char index", true, 32)] int startIndex,
             [OptionRequireParameter("startIndex")]
             [Parameter( 1, "end char index",true,255)] int endIndex,
-            [Option("f", "turns output to a flat list instead of a table view")] bool flatList
+            [Option("f", "flat", "turns output to a flat list instead of a table view")] bool flatList
             )
         {
             int nbCols = 8;

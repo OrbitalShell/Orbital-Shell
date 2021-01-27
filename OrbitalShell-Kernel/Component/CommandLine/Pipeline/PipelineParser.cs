@@ -19,7 +19,7 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
             )
         {
             /* 
-             * cmdLine ::= (InputRedirect? (Cmd CmdParamOptions?) OutputRedirect* Pipe?)+
+             * cmdLine ::= ( (InputRedirect? (Cmd CmdParamOptions?) OutputRedirect* Pipe? )+
              */
             PipelineWorkUnit model = null;
             PipelineWorkUnit workUnit = null;
@@ -44,12 +44,12 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
                     else
                         // unexpected operator
                         throw new ParseErrorException(
-                            new ParseError($"unexpected operator: {s}",i,segment.X,null) );
-                } 
+                            new ParseError($"unexpected operator: {s}", i, segment.X, null));
+                }
                 else
                 {
                     nxtSeg = nextSegment();
-                    
+
                     if (IsPipeOperator(s))
                     {
                         if (nxtSeg == null)
@@ -69,18 +69,18 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
                             if (model == null) model = workUnit;
                             i++;
                         }
-                    } 
+                    }
                     else
                     {
                         if (IsNotAnOperator(s))
                         {
                             workUnit.Segments.Add(segment);
-                        } 
+                        }
                         else
                         {
                             if (IsRedirectInput(s))
                             {
-                                if (nxtSeg==null)
+                                if (nxtSeg == null)
                                     throw new ParseErrorException(
                                         new ParseError($"unexpected operator {s}", i, segment.X, null));
                                 if (IsHereScript(s))
@@ -100,12 +100,12 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
                         }
                     }
                 }
-                
+
                 i++;
             }
 
-            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.debug_pipeline,false))
-                context.Out.Echoln(Darkcyan+model);
+            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.debug_pipeline, false))
+                context.Out.Echoln(Darkcyan + model);
 
             return model;
         }
@@ -116,7 +116,7 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
             return workUnit;
         }
 
-        
+
     }
 
 }

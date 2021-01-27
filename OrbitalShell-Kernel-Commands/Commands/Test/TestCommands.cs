@@ -89,7 +89,7 @@ namespace OrbitalShell.Commands.Test
         public CommandVoidResult AnsiSeq(
             CommandEvaluationContext context,
             [Parameter(0, "esc sequence (text behind ESC). replace character @ by ESC (\\x1b) to allow write new sequences in the string parameter")] string seq,
-            [Option("c", "character to be used for ESC", true, true, (char)27)] char c
+            [Option("c", "char", "character to be used for ESC", true, true, (char)27)] char c
         )
         {
             seq = seq.Replace(/*"@"*/"" + c, ESC);

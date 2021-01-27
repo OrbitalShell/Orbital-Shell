@@ -12,7 +12,7 @@ namespace OrbitalShell.Console
 
         public Dictionary<string, object> Map;
 
-        public StringSegment(string text,int x,int y,int length)
+        public StringSegment(string text, int x, int y, int length)
         {
             Text = text;
             X = x;
@@ -25,7 +25,7 @@ namespace OrbitalShell.Console
             Text = text;
             X = x;
             Y = y;
-            Length = y-x+1;
+            Length = y - x + 1;
         }
 
         public StringSegment(string text, int x, int y, int length, Dictionary<string, object> map)
@@ -34,7 +34,7 @@ namespace OrbitalShell.Console
             X = x;
             Y = y;
             Length = length;
-            if (map!=null && map.Count>0)
+            if (map != null && map.Count > 0)
                 Map = new Dictionary<string, object> { map };
         }
 

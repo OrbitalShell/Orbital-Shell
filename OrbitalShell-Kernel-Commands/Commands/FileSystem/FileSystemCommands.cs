@@ -31,15 +31,15 @@ namespace OrbitalShell.Commands.FileSystem
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Find(
             CommandEvaluationContext context,
             [Parameter("search path")] DirectoryPath path,
-            [Option("p", "select names that matches the pattern", true, true)] string pattern,
-            [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
-            [Option("f", "check pattern on fullname instead of name")] bool checkPatternOnFullName,
-            [Option("c", "files that contains the string", true, true)] string contains,
-            [Option("a", "print file system attributes")] bool attributes,
-            [Option("s", "print short pathes")] bool shortPathes,
-            [Option("all", "select files and directories")] bool all,
-            [Option("d", "select only directories")] bool dirs,
-            [Option("t", "search in top directory only")] bool top
+            [Option("p", "pattern", "select names that matches the pattern", true, true)] string pattern,
+            [Option("i", "non-sensitive", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+            [Option("f", "fullname", "check pattern on fullname instead of name")] bool checkPatternOnFullName,
+            [Option("c", "contains", "files that contains the string", true, true)] string contains,
+            [Option("a", "attr", "print file system attributes")] bool attributes,
+            [Option("s", "short", "print short pathes")] bool shortPathes,
+            [Option("l", "all", "select both files and directories")] bool all,
+            [Option("d", "dir", "select only directories")] bool dirs,
+            [Option("t", "top", "search in top directory only")] bool top
             )
         {
             if (path.CheckExists(context))
@@ -60,9 +60,9 @@ namespace OrbitalShell.Commands.FileSystem
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Dir(
             CommandEvaluationContext context,
             [Parameter("path where to list files and folders. if not specified is equal to the current directory. use wildcards * and ? to filter files and folders names", true)] WildcardFilePath path,
-            [Option("na", "do not print file system attributes")] bool noattributes,
-            [Option("r", "also list files and folders in sub directories. force display files full path")] bool recurse,
-            [Option("w", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide
+            [Option("s", "short", "short display: do not print file system attributes")] bool noattributes,
+            [Option("r", "recurse", "also list files and folders in sub directories. force display files full path")] bool recurse,
+            [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide
             )
         {
             var r = new List<FileSystemPath>();
@@ -176,7 +176,7 @@ namespace OrbitalShell.Commands.FileSystem
         [Command("print the path of the current working directory")]
         public CommandResult<DirectoryPath> Pwd(
             CommandEvaluationContext context,
-            [Option("na", "do not print file system attributes")] bool noattributes
+            [Option("s", "short", "short display: do not print file system attributes")] bool noattributes
             )
         {
             var path = new DirectoryPath(Environment.CurrentDirectory);
@@ -194,7 +194,7 @@ namespace OrbitalShell.Commands.FileSystem
         public CommandResult<List<DriveInfo>> Driveinfo(
             CommandEvaluationContext context,
             [Parameter("drive name for which informations must be printed. if no drive specified, list all drives", true)] string drive,
-            [Option("b", "if set add table borders")] bool borders
+            [Option("b", "borders", "if set add table borders")] bool borders
             )
         {
             var drives = DriveInfo.GetDrives().AsQueryable();
@@ -252,12 +252,12 @@ namespace OrbitalShell.Commands.FileSystem
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Rm(
             CommandEvaluationContext context,
             [Parameter("file or folder path")] WildcardFilePath path,
-            [Option("r", "also remove files and folders in sub directories")] bool recurse,
-            [Option("i", "prompt before any removal")] bool interactive,
-            [Option("v", "explain what is being done")] bool verbose,
-            [Option("d", "remove empty directories")] bool rmEmptyDirs,
-            [Option("na", "do not print file system attributes when verbose")] bool noattributes,
-            [Option("s", "don't remove any file/or folder, just simulate the operation (enable verbose)")] bool simulate
+            [Option("r", "recurse", "also remove files and folders in sub directories")] bool recurse,
+            [Option("i", "interactive", "prompt before any removal")] bool interactive,
+            [Option("v", "verbose", "explain what is being done")] bool verbose,
+            [Option("e", "delete-empty", "remove empty directories")] bool rmEmptyDirs,
+            [Option("s", "short", "short display: do not print file system attributes when verbose")] bool noattributes,
+            [Option("m", "simulate", "don't remove any file/or folder, just simulate the operation (enable verbose)")] bool simulate
         )
         {
             var r = new List<FileSystemPath>();
@@ -353,8 +353,8 @@ namespace OrbitalShell.Commands.FileSystem
             CommandEvaluationContext context,
             [Parameter("source: file/directory or several corresponding to a wildcarded path")] WildcardFilePath source,
             [Parameter(1, "target: a file or a directory")] FileSystemPath dest,
-            [Option("i", "prompt before overwrite")] bool interactive,
-            [Option("v", "explain what is being done, but actually does nothing")] bool verbose
+            [Option("i", "interactive", "prompt before overwrite")] bool interactive,
+            [Option("v", "verbose", "explain what is being done, but actually does nothing")] bool verbose
             )
         {
             if (source.CheckExists(context))

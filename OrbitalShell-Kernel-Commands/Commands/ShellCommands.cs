@@ -48,17 +48,17 @@ namespace OrbitalShell.Component.Commands
 
         #region help
 
-        [Command("print help about commands,commands types and modules")]
+        [Command("print help about commands, namespaces, commands declaring types and modules")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.help)]
         public CommandVoidResult Help(
             CommandEvaluationContext context,
-            [Option("s", "set short view: decrase output details")] bool shortView,
-            [Option("v", "set verbose view: increase output details")] bool verboseView,
-            [Option("all", "list all commands")] bool all,
-            [Option("n", "filter commands list by namespace. if t is * list namespaces", true, true)] string @namespace,
-            [Option("t", "filter commands list by command declaring type. if t is * list declaring types", true, true)] string type,
-            [Option("m", "filter commands list by module name. if m is * list modules", true, true)] string module,
-            [Parameter("output help for the command with name 'commandName'", true)] string commandName
+            [Option("s", "short", "short display: decrase output details")] bool shortView,
+            [Option("v", "verbose", "set verbose view: increase output details")] bool verboseView,
+            [Option("l", "all", "list all commands")] bool all,
+            [Option("n", "namespace", "filter commands list by namespace. if t is * list namespaces", true, true)] string @namespace,
+            [Option("t", "type", "filter commands list by command declaring type. if t is * list declaring types", true, true)] string type,
+            [Option("m", "module", "filter commands list by module name. if m is * list modules", true, true)] string module,
+            [Parameter("output help for the command having the name 'commandName'", true)] string commandName
             )
         {
             var hascn = !string.IsNullOrWhiteSpace(commandName);
@@ -266,7 +266,11 @@ namespace OrbitalShell.Component.Commands
                         foreach (var p in com.ParametersSpecifications.Values)
                         {
                             var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.Name}{f}" : "";
-                            var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue != null && (!p.IsOption || p.ParameterValueTypeName != typeof(bool).Name)) ? ((ptype != "" ? ". " : "") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}") : "";
+                            var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue != null &&
+                                    (!p.IsOption || p.ParameterValueTypeName != typeof(bool).Name)) ?
+                                        ((ptype != "" ? ". " : "") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}")
+                                        : "";
+                                        
                             var supdef = $"{ptype}{pdef}";
                             // method 'Echo if has' else to string
                             context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors, false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");
@@ -314,8 +318,8 @@ namespace OrbitalShell.Component.Commands
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.module)]
         public CommandResult<List<ModuleSpecification>> Module(
             CommandEvaluationContext context,
-            [Option("l", "load a module from the given path", true, true)] FilePath loadModulePath = null,
-            [Option("u", "unload the module having the given name ", true, true)] string unloadModuleName = null
+            [Option("l", "load", "load a module from the given path", true, true)] FilePath loadModulePath = null,
+            [Option("u", "unload", "unload the module having the given name ", true, true)] string unloadModuleName = null
             )
         {
             var f = context.ShellEnv.Colors.Default.ToString();
@@ -371,9 +375,9 @@ namespace OrbitalShell.Component.Commands
         public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context,
             [Parameter(0, "variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
-            [Option("u", "unfold namespaces")] bool unfoldNamespaces = false,
-            [Option("o", "unfold values of type object")] bool unfoldObjects = false,
-            [Option("p", "echo string values in parsed mode (ansi and directives)")] bool parsed = false
+            [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
+            [Option("p", "parsed", "echo string values in parsed mode (ansi and directives). By default strings objects are represented by raw text")] bool parsed = false
             )
         {
             object obj;
@@ -420,9 +424,9 @@ namespace OrbitalShell.Component.Commands
         public CommandResult<List<IDataObject>> Vars(
             CommandEvaluationContext context,
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
-            [Option("u", "unfold namespaces")] bool unfoldNamespaces = false,
-            [Option("o", "unfold values of type object")] bool unfoldObjects = false,
-            [Option("p", "echo string values in parsed mode (ansi and directives)")] bool parsed = false
+            [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
+            [Option("p", "parse", "echo string values in parsed mode (ansi and directives). By default strings objects are represented by raw text")] bool parsed = false
             )
         {
             object obj;
@@ -469,7 +473,7 @@ namespace OrbitalShell.Component.Commands
             CommandEvaluationContext context,
             [Parameter(0, "name of the alias", true)] string name,
             [Parameter(1, "text of the alias", true)][OptionRequireParameter("name")] string text,
-            [Option("s", "save current aliases to user aliases file")] bool save
+            [Option("s", "save", "save current aliases to user aliases file")] bool save
             )
         {
             var r = new List<string>();
@@ -543,15 +547,15 @@ namespace OrbitalShell.Component.Commands
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
         public CommandVoidResult History(
             CommandEvaluationContext context,
-            [Option("i", "invoke the command at the entry number in the history list", true, true)] int num,
-            [Option("c", "clear the loaded history list")] bool clear,
-            [Option("w", "write history lines to the history file (content of the file is replaced)")]
+            [Option("i", "invoke", "invoke the command at the entry number in the history list", true, true)] int num,
+            [Option("c", "clear", "clear the loaded history list")] bool clear,
+            [Option("w", "write", "write history lines to the history file (content of the file is replaced)")]
             [OptionRequireParameter("file")]  bool writeToFile,
-            [Option("a", "append history lines to the history file")]
+            [Option("a", "append", "append history lines to the history file")]
             [OptionRequireParameter("file")]  bool appendToFile,
-            [Option("r","read the history file and append the content to the history list")]
+            [Option("r", "read", "read the history file and append the content to the history list")]
             [OptionRequireParameter("file")]  bool readFromFile,
-            [Option("n","read the history file and append the content not already in the history list to the history list")]
+            [Option("d", "read-diff", "read the history file and append the content not already in the history list to the history list")]
             [OptionRequireParameter("file")] bool appendFromFile,
             [Parameter(1, "file", true)] FilePath file
             )

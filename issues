@@ -10,8 +10,7 @@ issues
 improvements to do 👷
 ------------------
 
-26/1/21 FGZ     ✅NEXT add support fort command name with namespace
-26/1/21 FGZ     ✅NEXT add support of posix cmd line options : -short-one-letter-syntax and --long-letter-syntax
+26/1/21 FGZ     ✅NEXT add support for command invokation with name having namespace
 19/1/21 FGZ     💥 add hooks and hooks settings (kernel major action points)
 20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC (anyway avoid command line reader crashing)
 26/1/21 FGZ     accept wildcard in help -t -n -m
@@ -38,7 +37,7 @@ improvements to do 👷
 
 📂commands
 
-26/1/21 FGZ     command 'cat'
+26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
 
 procrastinated:
 ---------------
@@ -53,6 +52,7 @@ procrastinated:
 olds:
 -----
 
+26/1/21 FGZ     🆗 add support of posix cmd line options : -short-one-letter-syntax and --long-letter-syntax
 19/1/21 FGZ     🆗 changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 26/1/21 FGZ     🆗 add support for ~ in paths (cd,dir,...)
 20/1/21 FGZ     🆗 DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)

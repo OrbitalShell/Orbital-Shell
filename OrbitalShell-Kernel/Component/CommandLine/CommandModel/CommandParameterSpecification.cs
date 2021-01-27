@@ -20,6 +20,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         public readonly int Index = -1;
         public readonly string Description;
         public readonly string OptionName = null;
+        public readonly string OptionLongName = null;
         public readonly object DefaultValue = null;
         public readonly bool HasDefaultValue = false;
         public readonly bool HasValue = true;
@@ -35,6 +36,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             bool isOptional,
             int index,
             string optionName,
+            string optionLongName,
             bool hasValue,
             bool hasDefaultValue,
             object defaultValue,
@@ -51,6 +53,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             HasValue = hasValue;
             HasDefaultValue = hasDefaultValue;
             DefaultValue = defaultValue;
+            OptionLongName = optionLongName;
 
             if (HasValue && requiredParameterName != null)
                 throw new AmbiguousParameterSpecificationException($"parameter '{ParameterName}' can't both having a value and requiring a parameter (name '{requiredParameterName}')");
@@ -68,7 +71,9 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             if (IsOption)
             {
                 var optVal = (HasValue) ? $" {ParameterValueTypeName}" : "";
-                r = $"{ParameterSyntax.OptionPrefix}{OptionName}{optVal}";
+                string sepcar = grammarSymbolsVisible ? "|" : ",";
+                string longopt = OptionLongName != null ? $"{sepcar}{CommandLineSyntax.OptionLongPrefix}{OptionLongName}" : "";
+                r = $"{CommandLineSyntax.OptionPrefix}{OptionName}{longopt}{optVal}";
             }
             if (IsOptional && grammarSymbolsVisible) r = $"[{r}]";
 #if printDefaultValueInSyntax
@@ -84,7 +89,9 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             if (IsOption)
             {
                 var optVal = (HasValue) ? $" {colors.ParameterValueType}{ParameterValueTypeName}" : "";
-                r = $"{colors.OptionPrefix}{ParameterSyntax.OptionPrefix}{colors.OptionName}{OptionName}{optVal}{f}";
+                string sepcar = grammarSymbolsVisible ? $"{colors.SyntaxSymbol}|" : ",";
+                string longopt = OptionLongName != null ? $"{sepcar}{colors.OptionPrefix}{CommandLineSyntax.OptionLongPrefix}{colors.OptionName}{OptionLongName}" : "";
+                r = $"{colors.OptionPrefix}{CommandLineSyntax.OptionPrefix}{colors.OptionName}{OptionName}{longopt}{optVal}{f}";
             }
             if (IsOptional && grammarSymbolsVisible) r = $"{colors.SyntaxSymbol}[{r}{colors.SyntaxSymbol}]{f}";
 #if printDefaultValueInSyntax

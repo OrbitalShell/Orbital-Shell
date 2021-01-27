@@ -116,7 +116,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             splits = splits.Where(x => !string.IsNullOrEmpty(x.Text)).ToArray().ToList();
             return splits.ToArray();
         }
-
+ 
 #if NO
         /// <summary>
         /// split an expression to be evaluted at top level syntax level

@@ -31,7 +31,7 @@ namespace OrbitalShell.Commands.TextFile
         public CommandResult<List<TextFileInfo>> More(
             CommandEvaluationContext context,
             [Parameter("file or folder path")] WildcardFilePath path,
-            [Option("h", "hide line numbers")] bool hideLineNumbers
+            [Option("h", "hide-line-numbers", "hide line numbers")] bool hideLineNumbers
             )
         {
             if (path.CheckExists(context))
@@ -205,13 +205,13 @@ namespace OrbitalShell.Commands.TextFile
         public CommandResult<List<FilePath>> checkIntegrity(
             CommandEvaluationContext context,
             [Parameter("path of a file to be checked or path from where find files to to be checked")] FileSystemPath fileOrDir,
-            [Option("p", "select names that matches the pattern", true, true)] string pattern,
-            [Option("i", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
-            [Option("a", "print file system attributes")] bool printAttr,
-            [Option("t", "search in top directory only")] bool top,
-            [Option("q", "quiet mode: do not print error message below corrupted file name")] bool quiet,
-            [Option("r", "acceptable ratio of non printable characters", true, true)] double ratio = 30,
-            [Option("s", "minimum size of analysed part of the text", true, true)] int minSeqLength = 1024
+            [Option("p", "pattern", "select names that matches the pattern", true, true)] string pattern,
+            [Option("i", "non-sensitive", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
+            [Option("a", "attr", "print file system attributes")] bool printAttr,
+            [Option("t", "top", "search in top directory only")] bool top,
+            [Option("q", "quiet", "quiet mode: do not print error message below corrupted file name")] bool quiet,
+            [Option("r", "ratio", "acceptable ratio of non printable characters", true, true)] double ratio = 30,
+            [Option("s", "min-size", "minimum size of analysed part of the text", true, true)] int minSeqLength = 1024
             )
         {
             var r = new List<FilePath>();
