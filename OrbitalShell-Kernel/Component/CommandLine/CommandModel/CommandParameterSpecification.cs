@@ -27,8 +27,8 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
 
         public readonly string RequiredParameterName = null;
 
-        public string ActualName => OptionName ?? ParameterName;
-        public bool IsOption => OptionName != null;
+        public string ActualName => OptionName ?? OptionLongName ?? ParameterName;
+        public bool IsOption => OptionName != null || OptionLongName != null;
 
         public CommandParameterSpecification(
             string parameterName,
@@ -71,9 +71,13 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             if (IsOption)
             {
                 var optVal = (HasValue) ? $" {ParameterValueTypeName}" : "";
-                string sepcar = grammarSymbolsVisible ? "|" : ",";
-                string longopt = OptionLongName != null ? $"{sepcar}{CommandLineSyntax.OptionLongPrefix}{OptionLongName}" : "";
-                r = $"{CommandLineSyntax.OptionPrefix}{OptionName}{longopt}{optVal}";
+                string sepcar = grammarSymbolsVisible ? "|" : ", ";
+                string longopt = (OptionName != null && OptionLongName != null ? $"{sepcar}" : "")
+                                + (OptionLongName != null ? $"{CommandLineSyntax.OptionLongPrefix}{OptionLongName}" : "");
+                r = "";
+                if (OptionName != null)
+                    r += $"{CommandLineSyntax.OptionPrefix}{OptionName}";
+                r += $"{longopt}{optVal}";
             }
             if (IsOptional && grammarSymbolsVisible) r = $"[{r}]";
 #if printDefaultValueInSyntax
@@ -89,9 +93,15 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             if (IsOption)
             {
                 var optVal = (HasValue) ? $" {colors.ParameterValueType}{ParameterValueTypeName}" : "";
-                string sepcar = grammarSymbolsVisible ? $"{colors.SyntaxSymbol}|" : ",";
-                string longopt = OptionLongName != null ? $"{sepcar}{colors.OptionPrefix}{CommandLineSyntax.OptionLongPrefix}{colors.OptionName}{OptionLongName}" : "";
-                r = $"{colors.OptionPrefix}{CommandLineSyntax.OptionPrefix}{colors.OptionName}{OptionName}{longopt}{optVal}{f}";
+                string sepcar = grammarSymbolsVisible ? $"{colors.SyntaxSymbol}|" : ", ";
+                //string longopt = OptionLongName != null ? $"{sepcar}{colors.OptionPrefix}{CommandLineSyntax.OptionLongPrefix}{colors.OptionName}{OptionLongName}" : "";
+
+                string longopt = (OptionName != null && OptionLongName != null ? $"{sepcar}" : "")
+                                + (OptionLongName != null ? $"{colors.OptionPrefix}{CommandLineSyntax.OptionLongPrefix}{colors.OptionName}{OptionLongName}" : "");
+                r = "";
+                if (OptionName != null)
+                    r += $"{colors.OptionPrefix}{CommandLineSyntax.OptionPrefix}{colors.OptionName}{OptionName}";
+                r += $"{longopt}{optVal}{f}";
             }
             if (IsOptional && grammarSymbolsVisible) r = $"{colors.SyntaxSymbol}[{r}{colors.SyntaxSymbol}]{f}";
 #if printDefaultValueInSyntax

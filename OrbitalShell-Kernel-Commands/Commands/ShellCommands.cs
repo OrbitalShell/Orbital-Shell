@@ -23,7 +23,7 @@ using System.Collections.Specialized;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.Operations;
 
-namespace OrbitalShell.Component.Commands
+namespace OrbitalShell.Commands
 {
     [Commands("commands of the command line processor")]
     [CommandsNamespace(CommandNamespace.shell)]
@@ -270,7 +270,7 @@ namespace OrbitalShell.Component.Commands
                                     (!p.IsOption || p.ParameterValueTypeName != typeof(bool).Name)) ?
                                         ((ptype != "" ? ". " : "") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}")
                                         : "";
-                                        
+
                             var supdef = $"{ptype}{pdef}";
                             // method 'Echo if has' else to string
                             context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors, false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");

@@ -106,5 +106,20 @@ namespace OrbitalShell.Commands.Dev
 
         [Command("command crash test (21/1/21)")]
         public CommandVoidResult CrashTest(CommandEvaluationContext context) => throw new Exception("command crash test (throws exception)");
+
+        [Command("command with no short name option (26/1/21)")]
+
+        public CommandVoidResult ComOptNameTest(
+            CommandEvaluationContext context,
+            [Option(null, "long-name", "an option without a short name", true)] bool noShortNameOption,
+            [Option("s", null, "an option without a long name", true)] bool noLongNameOption,
+            [Option("b", "both", "an option with both", true)] bool withBothOption
+            )
+        {
+            context.Out.Echo("noShortNameOption="); context.Out.Echo(noShortNameOption, true);
+            context.Out.Echo("noLongNameOption="); context.Out.Echo(noLongNameOption, true);
+            context.Out.Echo("withBothOption="); context.Out.Echo(withBothOption, true);
+            return CommandVoidResult.Instance;
+        }
     }
 }

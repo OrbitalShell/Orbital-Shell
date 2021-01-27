@@ -559,7 +559,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             MethodInfo commandMethodInfo,
             string args,
             int outputX,
-            string postAnalysisPreExecOutput = null)
+            string postAnalysisPreExecOutput = null)    // TODO: an evel options object would be nice
         {
             var comSpec = ModuleManager.ModuleCommandManager.GetCommandSpecification(commandMethodInfo);
             if (comSpec == null)
@@ -590,7 +590,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CommandEvaluationContext context,
             string expr,
             int outputX,
-            string postAnalysisPreExecOutput = null)
+            string postAnalysisPreExecOutput = null)        // TODO: an evel options object would be nice
         {
             var pipelineParseResults = Parse(context, _syntaxAnalyzer, expr);
             bool allValid = true;

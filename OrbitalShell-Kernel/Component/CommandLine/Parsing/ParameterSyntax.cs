@@ -44,18 +44,26 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 return (new ParseError(null, position, index, CommandSpecification), this);
             }
 
-            if (csp.OptionName != null)
+            // mandatory criteria to be an option 
+            if (csp.OptionName != null || csp.OptionLongName != null)
             {
+                // option
+
                 var optsyntax = $"{CommandLineSyntax.OptionPrefix}{csp.OptionName}";
                 var optlngsyntax = $"{CommandLineSyntax.OptionLongPrefix}{csp.OptionLongName}";
 
-                // option
-                var poptsyntax = optsyntax + (csp.OptionLongName != null ? $" or {optlngsyntax}" : "");
+                // option name presentation in error message
+                var poptsyntax = ((csp.OptionName != null) ? optsyntax : "")
+                + ((csp.OptionName != null && csp.OptionLongName != null) ? " or " : "")
+                + (csp.OptionLongName != null ? $"{optlngsyntax}" : "");
+
                 if (optsyntax.Equals(segment.Text, syntaxMatchingRule)
                     || (csp.OptionLongName != null && optlngsyntax.Equals(segment.Text, syntaxMatchingRule))
                 )
                 {
-                    if ((csp.SegmentsCount == 2 || (csp.SegmentsCount == 1 && csp.RequiredParameterName != null && !cs.ParametersSpecifications[csp.RequiredParameterName].IsOptional)) && rightSegments.Length == 0)
+                    if ((csp.SegmentsCount == 2 || (csp.SegmentsCount == 1 && csp.RequiredParameterName != null
+                        && !cs.ParametersSpecifications[csp.RequiredParameterName].IsOptional))
+                        && rightSegments.Length == 0)
                     {
 
                         return (new ParseError($"missing value at position {position + 1} for parameter {poptsyntax}", position + 1, index, CommandSpecification), this);

@@ -170,6 +170,8 @@ namespace OrbitalShell.Component.CommandLine.Module
                     }
                     else
                     {
+                        // ⏺ build the command specification from the method meta-data
+
                         var cmdNamespaceAttr = method.GetCustomAttribute<CommandNamespaceAttribute>();
                         var cmdNamespace = cmdNamespaceAttr == null ? dtNamespace : CheckAndNormalizeCommandNamespace(cmdNamespaceAttr.Segments);
 
@@ -229,7 +231,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                                             optAttr.Description,
                                             optAttr.IsOptional,
                                             -1,
-                                            optAttr.OptionName ?? parameter.Name,
+                                            optAttr.OptionName /*?? parameter.Name*/,
                                             optAttr.OptionLongName,
                                             optAttr.HasValue,
                                             parameter.HasDefaultValue,

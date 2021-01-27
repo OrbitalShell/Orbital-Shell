@@ -9,7 +9,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         public readonly string Description;
 
         /// <summary>
-        /// option name is short name
+        /// option name is short name : 💥 NULL implies is parameter in ParameterSyntax syntax analyser
         /// </summary>
         public readonly string OptionName = null;
 

@@ -146,6 +146,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             var r = $"{Name}";
             var parameters = new SortedList<int, string>();
             var maxIndex = 0;
+
             foreach (var p in _parametersSpecifications.Values)
                 if (p.Index > -1)
                 {
@@ -155,6 +156,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             foreach (var p in _parametersSpecifications.Values)
                 if (p.Index == -1)
                     parameters.Add(++maxIndex, p.ToColorizedString(colorSettings));
+
             return r + ((parameters.Values.Count == 0) ? "" : (" " + string.Join(' ', parameters.Values)));
         }
     }

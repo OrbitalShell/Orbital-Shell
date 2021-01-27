@@ -36,7 +36,7 @@ namespace OrbitalShell.Commands.FileSystem
             [Option("f", "fullname", "check pattern on fullname instead of name")] bool checkPatternOnFullName,
             [Option("c", "contains", "files that contains the string", true, true)] string contains,
             [Option("a", "attr", "print file system attributes")] bool attributes,
-            [Option("n", "short", "print short pathes")] bool shortPathes,
+            [Option("s", "short", "print short pathes")] bool shortPathes,
             [Option("l", "all", "select both files and directories")] bool all,
             [Option("d", "dir", "select only directories")] bool dirs,
             [Option("t", "top", "search in top directory only")] bool top
@@ -56,13 +56,15 @@ namespace OrbitalShell.Commands.FileSystem
             return new CommandResult<(List<FileSystemPath>, FindCounts)>((new List<FileSystemPath>(), new FindCounts()), ReturnCode.Error);
         }
 
+        // TODO: --sort=... or -s= and no short name should be possible 
         [Command("list files and folders in a path. eventually recurse in sub paths", "i am the long description of dir")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Dir(
             CommandEvaluationContext context,
             [Parameter("path where to list files and folders. if not specified is set to the current directory. use wildcards * and ? to filter files and folders names", true)] WildcardFilePath path,
             [Option("n", "name", "names only: do not print file system attributes")] bool noattributes,
             [Option("r", "recurse", "also list files and folders in sub directories. force display files full path")] bool recurse,
-            [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide
+            [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide,
+            [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] string sort
             )
         {
             var r = new List<FileSystemPath>();
@@ -70,11 +72,21 @@ namespace OrbitalShell.Commands.FileSystem
             if (path.CheckExists(context))
             {
                 var counts = new FindCounts();
+
                 var items = FindItems(context, path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false, false);
+
+                // apply sorts
+
+
                 var f = DefaultForegroundCmd;
                 long totFileSize = 0;
                 var cancellationTokenSource = new CancellationTokenSource();
                 if (wide) noattributes = true;
+
+                // here we self handle the console Cancel event so we can output a partial result even if the seek phasis has been halted. print can also be halted.
+                // TODO: seems there is now a simple way to do this. Just use the context cancellation token (as in findItems) : 
+                // TODO: if (context.CommandLineProcessor.CancellationTokenSource.Token.IsCancellationRequested) // then cancel com
+
                 void postCmd(object o, EventArgs e)
                 {
                     sc.CancelKeyPress -= cancelCmd;
