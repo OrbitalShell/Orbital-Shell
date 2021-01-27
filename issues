@@ -10,7 +10,6 @@ issues
 improvements to do 👷
 ------------------
 
-19/1/21 FGZ     👷 changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 26/1/21 FGZ     ✅NEXT add support of posix cmd line options : -short-one-letter-syntax and --long-letter-syntax
 19/1/21 FGZ     💥 add hooks and hooks settings (kernel major action points)
 20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC (anyway avoid command line reader crashing)
@@ -32,7 +31,7 @@ improvements to do 👷
 
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
-22/1/21 FGZ     dir sort : alls folders before files ? default ? + options list only dirs
+22/1/21 FGZ     👷 dir sort : alls folders before files ? default ? + options list only dirs/files/sort
 26/1/21 FGZ     extra line break after command parse error to be removed
 
 📂commands
@@ -52,6 +51,7 @@ procrastinated:
 olds:
 -----
 
+19/1/21 FGZ     🆗 changes commands namespace and commands naming : to lower case, namespace separator to - , uncamelcase prefix upper case letters with -
 26/1/21 FGZ     🆗 add support for ~ in paths (cd,dir,...)
 20/1/21 FGZ     🆗 DotNetConsoleAppToolkit.Component.CommandLine.CommandsModule : separate concept of command and module (a module can contains not only commands)
 26/1/21 FGZ     🆗 set all projects to netcore3.1 (remove standard2.1 coz vscode omnisharp intellisense fail on it) - net5.0 is too slow (console output default)
