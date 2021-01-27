@@ -56,6 +56,39 @@ namespace OrbitalShell.Commands.FileSystem
             return new CommandResult<(List<FileSystemPath>, FindCounts)>((new List<FileSystemPath>(), new FindCounts()), ReturnCode.Error);
         }
 
+        public enum DirSort
+        {
+            /// <summary>
+            /// sort by name or fullname
+            /// </summary>
+            name,
+
+            /// <summary>
+            /// sort by size
+            /// </summary>
+            size,
+
+            /// <summary>
+            /// sort by extension
+            /// </summary>
+            extension,
+
+            /// <summary>
+            /// files on top
+            /// </summary>
+            file,
+
+            /// <summary>
+            /// dirs on top
+            /// </summary>
+            dir,
+
+            /// <summary>
+            /// reverse sort
+            /// </summary>
+            reverse
+        }
+
         // TODO: --sort=... or -s= and no short name should be possible 
         [Command("list files and folders in a path. eventually recurse in sub paths", "i am the long description of dir")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Dir(
@@ -64,7 +97,7 @@ namespace OrbitalShell.Commands.FileSystem
             [Option("n", "name", "names only: do not print file system attributes")] bool noattributes,
             [Option("r", "recurse", "also list files and folders in sub directories. force display files full path")] bool recurse,
             [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide,
-            [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] string sort
+            [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] DirSort sort
             )
         {
             var r = new List<FileSystemPath>();

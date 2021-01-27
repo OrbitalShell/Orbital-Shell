@@ -65,8 +65,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                         && !cs.ParametersSpecifications[csp.RequiredParameterName].IsOptional))
                         && rightSegments.Length == 0)
                     {
-
-                        return (new ParseError($"missing value at position {position + 1} for parameter {poptsyntax}", position + 1, index, CommandSpecification), this);
+                        return (new ParseError($"missing value at position {position + 1} for option {poptsyntax}", position + 1, index, CommandSpecification), this);
                     }
                     else
                         return (null, this);
