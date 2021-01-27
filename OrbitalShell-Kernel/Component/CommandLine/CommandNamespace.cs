@@ -36,6 +36,31 @@ namespace OrbitalShell.Component.CommandLine
         shell,
 
         /// <summary>
+        /// shell-var : variables
+        /// </summary>
+        var,
+
+        /// <summary>
+        /// shell-app : application
+        /// </summary>
+        app,
+
+        /// <summary>
+        /// shell-history : history
+        /// </summary>
+        history,
+
+        /// <summary>
+        /// shell-module : module
+        /// </summary>
+        module,
+
+        /// <summary>
+        /// shell-help : help
+        /// </summary>
+        help,
+
+        /// <summary>
         /// test (miscelaneous)
         /// </summary>
         test,

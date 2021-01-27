@@ -10,9 +10,11 @@ issues
 improvements to do 👷
 ------------------
 
+26/1/21 FGZ     ✅NEXT add support fort command name with namespace
 26/1/21 FGZ     ✅NEXT add support of posix cmd line options : -short-one-letter-syntax and --long-letter-syntax
 19/1/21 FGZ     💥 add hooks and hooks settings (kernel major action points)
 20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC (anyway avoid command line reader crashing)
+26/1/21 FGZ     accept wildcard in help -t -n -m
 
 📂variables
 
@@ -41,7 +43,7 @@ improvements to do 👷
 procrastinated:
 ---------------
 
-1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
+19/1/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
 20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
 20/1/21 FGZ     command 'eval' (alias .) : a=5, $b = a , echo $b = a , eval echo \$$b == 5
 21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes setArg or shift ?

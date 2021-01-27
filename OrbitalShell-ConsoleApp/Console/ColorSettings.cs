@@ -27,7 +27,6 @@ namespace OrbitalShell.Console
         public TextColor BoxError => new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
         public TextColor BoxUnknown = new TextColor(ConsoleColor.Green, ConsoleColor.DarkCyan);
         public TextColor BoxNotIdentified = new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
-
         public TextColor Information = new TextColor(ConsoleColor.DarkCyan, null);
 
         // DotNetConsoleAppToolkit-UI

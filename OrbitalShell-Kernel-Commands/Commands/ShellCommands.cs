@@ -49,6 +49,7 @@ namespace OrbitalShell.Component.Commands
         #region help
 
         [Command("print help about commands,commands types and modules")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.help)]
         public CommandVoidResult Help(
             CommandEvaluationContext context,
             [Option("s", "set short view: decrase output details")] bool shortView,
@@ -183,7 +184,7 @@ namespace OrbitalShell.Component.Commands
                             if (grouping.Count() > 0)
                             {
                                 if (g > 0) context.Out.Echoln();
-                                context.Out.Echoln($"{ANSI.SGR_Underline}{context.ShellEnv.Colors.Highlight}{grouping.Key}{ANSI.SGR_UnderlineOff}{context.ShellEnv.Colors.Default}{ANSI.CRLF}");
+                                context.Out.Echoln($"{ANSI.SGR_Underline}{context.ShellEnv.Colors.Label}{grouping.Key}{ANSI.SGR_UnderlineOff}{context.ShellEnv.Colors.Default}{ANSI.CRLF}");
                                 foreach (var item in grouping)
                                 {
                                     PrintCommandHelp(context, item, shortView, verboseView, list, maxnslength, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
@@ -310,6 +311,7 @@ namespace OrbitalShell.Component.Commands
         #region modules
 
         [Command("list modules if no option specified, else load or unload modules")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.module)]
         public CommandResult<List<ModuleSpecification>> Module(
             CommandEvaluationContext context,
             [Option("l", "load a module from the given path", true, true)] FilePath loadModulePath = null,
@@ -365,6 +367,7 @@ namespace OrbitalShell.Component.Commands
         #region variables
 
         [Command("outputs a table of environment variables and values")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<List<IDataObject>> Env(
             CommandEvaluationContext context,
             [Parameter(0, "variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
@@ -413,6 +416,7 @@ namespace OrbitalShell.Component.Commands
         }
 
         [Command("outputs a table of variables and values")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<List<IDataObject>> Vars(
             CommandEvaluationContext context,
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
@@ -487,6 +491,7 @@ namespace OrbitalShell.Component.Commands
         }
 
         [Command("set the value of a shell variable, or display the name and values of shell variables")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<IDataObject> Set(
             CommandEvaluationContext context
             )
@@ -496,6 +501,7 @@ namespace OrbitalShell.Component.Commands
         }
 
         [Command("unset the value of shell variables")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<IDataObject> Unset(
             CommandEvaluationContext context
             )
@@ -509,6 +515,7 @@ namespace OrbitalShell.Component.Commands
         #region app
 
         [Command("exit the shell")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.app)]
         public CommandResult<int> Exit(
             CommandEvaluationContext context
             )
@@ -533,6 +540,7 @@ namespace OrbitalShell.Component.Commands
         [Command("displays the commands history list or manipulate it")]
         [SuppressMessage("Style", "IDE0071WithoutSuggestion:Simplifier l’interpolation", Justification = "<En attente>")]
         [SuppressMessage("Style", "IDE0071:Simplifier l’interpolation", Justification = "<En attente>")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
         public CommandVoidResult History(
             CommandEvaluationContext context,
             [Option("i", "invoke the command at the entry number in the history list", true, true)] int num,
@@ -612,6 +620,7 @@ namespace OrbitalShell.Component.Commands
 
         [Command("repeat the previous command if there is one, else does nothing")]
         [CommandName("!!")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
         public CommandResult<string> HistoryPreviousCommand(
             CommandEvaluationContext context
             )
@@ -624,6 +633,7 @@ namespace OrbitalShell.Component.Commands
 
         [Command("repeat the command specified by absolute or relative line number in command history list")]
         [CommandName("!")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
         public CommandResult<string> HistoryPreviousCommand(
             CommandEvaluationContext context,
             [Parameter("line number in the command history list if positive, else current command minus n if negative (! -1 equivalent to !!)")] int n
