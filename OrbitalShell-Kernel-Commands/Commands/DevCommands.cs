@@ -107,7 +107,7 @@ namespace OrbitalShell.Commands.Dev
         [Command("command crash test (21/1/21)")]
         public CommandVoidResult CrashTest(CommandEvaluationContext context) => throw new Exception("command crash test (throws exception)");
 
-        [Command("command with no short name option (26/1/21)")]
+        [Command("command with several option names types (short/long/both/none) (27/1/21)")]
 
         public CommandVoidResult ComOptNameTest(
             CommandEvaluationContext context,
@@ -119,6 +119,30 @@ namespace OrbitalShell.Commands.Dev
             context.Out.Echo("noShortNameOption="); context.Out.Echo(noShortNameOption, true);
             context.Out.Echo("noLongNameOption="); context.Out.Echo(noLongNameOption, true);
             context.Out.Echo("withBothOption="); context.Out.Echo(withBothOption, true);
+            return CommandVoidResult.Instance;
+        }
+
+        [Command("command with several option names types (short/long/both/none) and values (27/1/21)")]
+        public CommandVoidResult ComOptNameWithValueTest(
+            CommandEvaluationContext context,
+            [Option(null, "long-name", "an option without a short name and a value", true, true)] int noShortNameOption = -32,
+            [Option("s", null, "an option without a long name and a value", true, true)] object noLongNameOption = null,
+            [Option("b", "both", "an option with both and a value", true, true)] string withBothOption = "a string"
+            )
+        {
+            context.Out.Echo("noShortNameOption="); context.Out.Echo(noShortNameOption, true);
+            context.Out.Echo("noLongNameOption="); context.Out.Echo(noLongNameOption, true);
+            context.Out.Echo("withBothOption="); context.Out.Echo(withBothOption, true);
+            return CommandVoidResult.Instance;
+        }
+
+        [Command("command with parameters type and value (27/1/21)")]
+        public CommandVoidResult ComParamWithValueTest(
+            CommandEvaluationContext context,
+            [Parameter(0, "a parameter with a value", true)] object param
+            )
+        {
+            context.Out.Echo("noShortNameOption="); context.Out.Echo(param, true);
             return CommandVoidResult.Instance;
         }
     }
