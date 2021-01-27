@@ -20,6 +20,7 @@ using cons = OrbitalShell.DotNetConsole;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component;
+using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Commands.TextEditor
 {

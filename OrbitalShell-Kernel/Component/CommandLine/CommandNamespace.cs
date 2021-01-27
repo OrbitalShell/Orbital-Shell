@@ -1,4 +1,4 @@
-namespace OrbitalShell.Component
+namespace OrbitalShell.Component.CommandLine
 {
     /// <summary>
     /// kernel commands namespaces
@@ -18,7 +18,7 @@ namespace OrbitalShell.Component
         /// <summary>
         /// text file
         /// </summary>
-        tfx,
+        tf,
 
         /// <summary>
         /// text

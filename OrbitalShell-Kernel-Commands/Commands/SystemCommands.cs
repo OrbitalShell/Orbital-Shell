@@ -8,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using static OrbitalShell.Console.EchoPrimitives;
 using static OrbitalShell.Lib.Str;
+using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Component.Commands
 {

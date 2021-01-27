@@ -6,6 +6,7 @@ using OrbitalShell.Component.Parser.ANSI;
 using System;
 using OrbitalShell.Component;
 using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Commands.Dev
 {

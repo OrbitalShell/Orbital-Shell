@@ -19,11 +19,12 @@ using OrbitalShell.Lib.FileSystem;
 using OrbitalShell.Lib.Data;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component;
+using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Commands.TextFile
 {
     [Commands("commands related to text files")]
-    [CommandsNamespace(CommandNamespace.tfx)]
+    [CommandsNamespace(CommandNamespace.tf)]
     public class TextFileCommands : ICommandsDeclaringType
     {
         [Command("output the content of one or several text files")]

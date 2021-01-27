@@ -100,7 +100,7 @@ namespace OrbitalShell.Component.CommandLine.Module
 
         public int RegisterCommandClass(CommandEvaluationContext context, Type type) => RegisterCommandClass(context, type, true);
 
-        string _CheckAndNormalizeCommandNamespace(string[] segments)
+        public string CheckAndNormalizeCommandNamespace(string[] segments)
         {
             for (int i = 0; i < segments.Length; i++)
             {
@@ -147,7 +147,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                 throw new Exception($"the type '{type.FullName}' must implements interface '{typeof(ICommandsDeclaringType).FullName}' to be registered as a command class");
 
             var dtNamespaceAttr = type.GetCustomAttribute<CommandsNamespaceAttribute>();
-            var dtNamespace = (dtNamespaceAttr == null) ? "" : _CheckAndNormalizeCommandNamespace(dtNamespaceAttr.Segments);
+            var dtNamespace = (dtNamespaceAttr == null) ? "" : CheckAndNormalizeCommandNamespace(dtNamespaceAttr.Segments);
 
             var comsCount = 0;
             object instance = Activator.CreateInstance(type, new object[] { });
@@ -170,7 +170,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                     else
                     {
                         var cmdNamespaceAttr = method.GetCustomAttribute<CommandNamespaceAttribute>();
-                        var cmdNamespace = cmdNamespaceAttr == null ? dtNamespace : _CheckAndNormalizeCommandNamespace(cmdNamespaceAttr.Segments);
+                        var cmdNamespace = cmdNamespaceAttr == null ? dtNamespace : CheckAndNormalizeCommandNamespace(cmdNamespaceAttr.Segments);
 
                         #region init from method parameters attributes
 
