@@ -1,8 +1,8 @@
----------------------------------------------------------
-💭 Orbital Shell project fast backlog (developers notes) 
----------------------------------------------------------
+-----------------------------------------------------------------------
+ 💭 Orbital Shell project fast backlog (developers notes) 🆗🚩👷💥✅
+-----------------------------------------------------------------------
 
-issues 🆗🚩
+issues 
 ------
 
 1/19/21 FGZ     💥🚩 prompt: crash (backspace,..) in compatibility mode (vscode terminal problem!) - try to degrade gracefully ?
@@ -33,6 +33,7 @@ improvements to do 👷
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
 22/1/21 FGZ     dir sort : alls folders before files ? default ? + options list only dirs
+26/1/21 FGZ     extra line break after command parse error to be removed
 
 📂commands
 
@@ -44,7 +45,7 @@ procrastinated:
 1/19/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
 20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
 20/1/21 FGZ     command 'eval' (alias .) : a=5, $b = a , echo $b = a , eval echo \$$b == 5
-21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes set setArg
+21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes setArg or shift ?
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
 23/1/21 FGZ     help echo very slow, any particular reason ?
 

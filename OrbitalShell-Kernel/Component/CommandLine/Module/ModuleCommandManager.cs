@@ -116,8 +116,9 @@ namespace OrbitalShell.Component.CommandLine.Module
         /// </summary>
         /// <param name="s">command name to be normalized</param>
         /// <returns>normalized command name</returns>
-        public string NormalizeCommandName(string s)
+        public string CheckAndNormalizeCommandName(string s)
         {
+            if (string.IsNullOrWhiteSpace(s)) throw new Exception("command name can't be empty");
             var sb = new StringBuilder();
             var t = s.ToCharArray();
             for (int i = 0; i < t.Length; i++)
@@ -260,7 +261,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                         {
                             var cmdNameAttr = method.GetCustomAttribute<CommandNameAttribute>();
 
-                            var cmdName = NormalizeCommandName(
+                            var cmdName = CheckAndNormalizeCommandName(
                                     (cmdNameAttr != null && cmdNameAttr.Name != null) ?
                                         cmdNameAttr.Name
                                         : (cmd.Name ?? method.Name));
