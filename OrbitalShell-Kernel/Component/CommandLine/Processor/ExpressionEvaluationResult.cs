@@ -3,6 +3,9 @@ using System;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
+    /// <summary>
+    /// data returned by the analysis and the evaluation of an expression (analysis error or commmand returns or command error)
+    /// </summary>
     public class ExpressionEvaluationResult
     {
         /// <summary>
@@ -53,8 +56,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public ExpressionEvaluationResult(
             string com,
             string syntaxError,
-            ParseResultType parseResult, 
-            object result, 
+            ParseResultType parseResult,
+            object result,
             int evalResultCode,
             Exception evalError = null,
             string evalErrorText = null)

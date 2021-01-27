@@ -326,5 +326,8 @@ namespace OrbitalShell.Component.CommandLine.Module
             }
             return comsCount;
         }
+
+        public CommandSpecification GetCommandSpecification(MethodInfo commandMethodInfo)
+            => AllCommands.Where(x => x.MethodInfo == commandMethodInfo).FirstOrDefault();
     }
 }

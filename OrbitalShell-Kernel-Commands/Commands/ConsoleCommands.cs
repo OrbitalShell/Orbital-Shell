@@ -213,7 +213,7 @@ current print directives are:
         {
             context.Out.ClearScreen();
             if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
-                context.CommandLineProcessor.Eval(context, "enableconsolecompatibilitymode", 0);
+                context.CommandLineProcessor.Eval(context, GetType().GetMethod(nameof(EnableConsoleCompatibilityMode)), "", 0);
             return CommandVoidResult.Instance;
         }
 

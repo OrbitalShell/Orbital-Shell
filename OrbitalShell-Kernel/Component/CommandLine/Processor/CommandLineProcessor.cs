@@ -536,19 +536,56 @@ namespace OrbitalShell.Component.CommandLine.Processor
         #region commands operations
 
         /// <summary>
-        /// 1. parse command line
-        /// error or:
-        /// 2. execute command
-        ///     A. internal command (modules) or alias
-        ///     B. underlying shell command (found in scan paths)
-        //      file: 
-        ///         C. file (batch)
-        ///         D. non executable file
-        ///     not a file:
-        ///         E. unknown command
+        /// parse and evaluate a command line<br/>
+        /// 1. parse command line<br/>
+        /// error or:<br/>
+        /// 2. execute command<br/>
+        ///     A. internal command (modules) or alias<br/>
+        ///     B. underlying shell command (found in scan paths)<br/>
+        ///      file: <br/>
+        ///         C. file (batch)<br/>
+        ///         D. non executable file<br/>
+        ///     not a file:<br/>
+        ///         E. unknown command<br/>
         /// </summary>
+        /// <param name="context">command evaluation context</param>
+        /// <param name="commandMethodInfo">method info of the invoked command</param>
+        /// <param name="args">args are added to the command name to build the command line</param>
+        /// <param name="outputX">begin x location of the command line expression in the console if applyable</param>
+        /// <param name="postAnalysisPreExecOutput">text to be outputed before any analysis output</param>
+        /// <returns>data returned by the analysis and the evaluation of an expression (analysis error or commmand returns or command error)</returns>
+        public ExpressionEvaluationResult Eval(
+            CommandEvaluationContext context,
+            MethodInfo commandMethodInfo,
+            string args,
+            int outputX,
+            string postAnalysisPreExecOutput = null)
+        {
+            var comSpec = ModuleManager.ModuleCommandManager.GetCommandSpecification(commandMethodInfo);
+            if (comSpec == null)
+                throw new Exception($"command method info not found: dt={commandMethodInfo.DeclaringType.FullName} method name={commandMethodInfo.Name}");
+            var expr = comSpec.Name + (!string.IsNullOrWhiteSpace(args) ? (" " + args) : "");
+            return Eval(context, expr, outputX, postAnalysisPreExecOutput);
+        }
+
+        /// <summary>
+        /// parse and evaluate a command line<br/>
+        /// 1. parse command line<br/>
+        /// error or:<br/>
+        /// 2. execute command<br/>
+        ///     A. internal command (modules) or alias<br/>
+        ///     B. underlying shell command (found in scan paths)<br/>
+        ///      file: <br/>
+        ///         C. file (batch)<br/>
+        ///         D. non executable file<br/>
+        ///     not a file:<br/>
+        ///         E. unknown command<br/>
+        /// </summary>
+        /// <param name="context">command evaluation context</param>
         /// <param name="expr">expression to be evaluated</param>
-        /// <returns>data of the evaluation of the expression (error analysis or command returns)</returns>
+        /// <param name="outputX">begin x location of the command line expression in the console if applyable</param>
+        /// <param name="postAnalysisPreExecOutput">text to be outputed before any analysis output</param>
+        /// <returns>data returned by the analysis and the evaluation of an expression (analysis error or commmand returns or command error)</returns>
         public ExpressionEvaluationResult Eval(
             CommandEvaluationContext context,
             string expr,
