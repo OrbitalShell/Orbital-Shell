@@ -30,7 +30,6 @@ improvements to do 👷
 
 📂various
 
-27/1/21 FGZ     🆗 extend echo directives to console text writter Echo method - super! Out.Echo is wired with output decorators.
 28/1/21 FGZ     fix help: add returns type + display syntax even if no parameters
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
@@ -54,6 +53,8 @@ procrastinated:
 olds:
 -----
 
+27/1/21 FGZ     🆗 implemented support of command parameter type Enum - related help updated
+27/1/21 FGZ     🆗 extend echo directives to console text writter Echo method - super! Out.Echo is wired with output decorators.
 27/1/21 FGZ     🆗 add dev commands for cmd opt/param test
 27/1/21 FGZ     🆗 add support for option with only long name, only short name but not both null
 26/1/21 FGZ     🆗 add support of posix cmd line options : -short-one-letter-syntax and --long-letter-syntax

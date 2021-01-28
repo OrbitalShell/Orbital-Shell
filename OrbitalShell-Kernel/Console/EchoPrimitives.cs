@@ -378,7 +378,6 @@ namespace OrbitalShell.Console
             this object obj,
             EchoEvaluationContext ctx)
         {
-            bool b;
             var (@out, context, options) = ctx;
             // mandatory for having both :
             // 1. static extension methods to nicely write Echo calls from the code (eg. DataTable.Echo , object.Echo ...)

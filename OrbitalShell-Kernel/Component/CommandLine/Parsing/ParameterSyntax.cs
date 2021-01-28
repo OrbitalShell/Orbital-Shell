@@ -1,6 +1,7 @@
 ﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Console;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
@@ -102,16 +103,31 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             return mparam;
         }
 
-        public bool TryGetValue(object ovalue, out object convertedValue)
+        public bool TryGetValue(object ovalue, out object convertedValue, out List<object> possibleValues)
         {
             var comspec = CommandParameterSpecification;
             var ptype = comspec.ParameterInfo.ParameterType;
             convertedValue = null;
             bool result = false;
             bool found = false;
+            possibleValues = null;
 
             var customAttrType = ptype.GetCustomAttribute<CustomParameterType>();
-            if (customAttrType != null)
+
+            if (ptype.IsEnum && ovalue is string str)
+            {
+                // support for any Enum type
+                if (Enum.TryParse(ptype, str, false, out convertedValue))
+                {
+                    return true;
+                }
+                else
+                {
+                    possibleValues = Enum.GetNames(ptype).ToList<object>();
+                    return false;
+                }
+            }
+            else if (customAttrType != null)
             {
                 try
                 {

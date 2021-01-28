@@ -80,12 +80,19 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     var decp = (cps.SegmentsCount == 2) ? 1 : 0;
                     var seg = segments[position + decp];
 
-                    Action perr0 = () => parseErrors.Add(
-                        new ParseError(
-                            $"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                    void perr0(List<object> possibleValues = null)
+                    {
+                        parseErrors.Add(
+                            new ParseError(
+                                $"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' "
+                                + (possibleValues == null ? "" : $"possible values are: " + string.Join(",", possibleValues))
+                                ,
+                                position + decp, index, CommandSpecification, cps));
+                    }
 
                     if (cps.IsOption && !cps.HasValue)
                     {
+                        // default option with no value specified is: false
                         try
                         {
                             mparam.SetValue(true);
@@ -144,7 +151,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                             bool trySetValueFromConvertedStr(string txt)
                             {
                                 // value converted from string input
-                                if (parameterSyntax.TryGetValue(txt, out var cvalue))
+                                if (parameterSyntax.TryGetValue(txt, out var cvalue, out var possibleValues))
                                 {
                                     mparam.SetValue(cvalue);
                                     return true;
@@ -176,7 +183,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                                 }
                             }
 
-                            if (parameterSyntax.TryGetValue(/*objValue*/varValue, out var cvalue))
+                            if (parameterSyntax.TryGetValue(/*objValue*/varValue, out var cvalue, out var possibleValues))
                             {
                                 try
                                 {
@@ -195,11 +202,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                         else
                         {
                             // value converted from string input
-                            if (parameterSyntax.TryGetValue(seg.Text, out var cvalue))
+                            if (parameterSyntax.TryGetValue(seg.Text, out var cvalue, out var possibleValues))
                                 mparam.SetValue(cvalue);
                             else
                                 //parseErrors.Add(new ParseError($"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
-                                perr0();
+                                perr0(possibleValues);
                         }
                     }
                     matchingParameters.Add(
