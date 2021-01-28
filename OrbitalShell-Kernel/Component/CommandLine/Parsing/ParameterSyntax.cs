@@ -103,7 +103,22 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             return mparam;
         }
 
-        public bool TryGetValue(object ovalue, out object convertedValue, out List<object> possibleValues)
+        public bool TryGetValue(
+            object ovalue,
+            out object convertedValue,
+            out List<object> possibleValues
+        ) => ValueTextParser.ToTypedValue(
+                ovalue,
+                CommandParameterSpecification.ParameterInfo.ParameterType,
+                out convertedValue,
+                out possibleValues);
+
+#if no
+        public bool TryGetValue(
+            object ovalue,
+            out object convertedValue,
+            out List<object> possibleValues
+            )
         {
             var comspec = CommandParameterSpecification;
             var ptype = comspec.ParameterInfo.ParameterType;
@@ -269,7 +284,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
             return result;
         }
-
+#endif
         public IMatchingParameter BuildMatchingParameter()
         {
             IMatchingParameter mparam = null;

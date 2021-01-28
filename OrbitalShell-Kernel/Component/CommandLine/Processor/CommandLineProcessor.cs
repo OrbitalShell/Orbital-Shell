@@ -117,7 +117,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         /// <summary>
-        ///  set a typed variable from a string value
+        /// set a typed variable from a string value<br/>
+        /// don't set the value if conversion has failed
         /// </summary>
         /// <param name="name">name including namespace</param>
         /// <param name="value">value that must be converted to var type an assigned to the var</param>
@@ -127,8 +128,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
             var t = new ArraySegment<string>(tn);
             if (context.ShellEnv.Get(t, out var o) && o is DataValue val)
             {
-                var v = ValueTextParser.ToTypedValue(value, val.ValueType);
-                val.SetValue(v);
+                if (ValueTextParser.ToTypedValue(value, val.ValueType, out var v, out _))
+                    val.SetValue(v);
             }
             else
                 Error($"variable not found: {Variables.Nsp(VariableNamespace.env, context.ShellEnv.Name, name)}", true);

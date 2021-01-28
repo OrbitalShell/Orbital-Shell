@@ -23,9 +23,10 @@ namespace OrbitalShell.Component.CommandLine.Data
         public DataObject Parent { get; set; }
 
         object _value;
-        public object Value { 
-            get { return _value; } 
-            private set { _value = value; HasValue = true; } 
+        public object Value
+        {
+            get { return _value; }
+            private set { _value = value; HasValue = true; }
         }
         public Type ValueType { get; private set; }
 
@@ -73,10 +74,10 @@ namespace OrbitalShell.Component.CommandLine.Data
             return new List<IDataObject>() { };
         }
 
-        public bool Get(ArraySegment<string> path,out object data)
-            => Get(Value, path,out data);
+        public bool Get(ArraySegment<string> path, out object data)
+            => Get(Value, path, out data);
 
-        bool Get(object target, ArraySegment<string> path,out object data)
+        bool Get(object target, ArraySegment<string> path, out object data)
         {
             data = null;
             if (target == null) return false;
@@ -104,10 +105,11 @@ namespace OrbitalShell.Component.CommandLine.Data
             return Get(target, path.Slice(1), out data);
         }
 
-        public bool GetPathOwner(ArraySegment<string> path,out object data)
-            => GetPathOwner(Value, path,out data);
+        public bool GetPathOwner(ArraySegment<string> path, out object data)
+            => GetPathOwner(Value, path, out data);
 
-        bool GetPathOwner(object target, ArraySegment<string> path,out object data) {
+        bool GetPathOwner(object target, ArraySegment<string> path, out object data)
+        {
             data = null;
             if (path.Count == 0) return false;
             var attrname = path[0];
@@ -119,13 +121,13 @@ namespace OrbitalShell.Component.CommandLine.Data
                     data = fieldInfo.GetValue(target);
                     return true;
                 }
-                return GetPathOwner(target,path.Slice(1),out data);
+                return GetPathOwner(target, path.Slice(1), out data);
             }
             return false;
         }
 
-        public bool Has(ArraySegment<string> path,out object data)
-            => Has(Value, path,out data);
+        public bool Has(ArraySegment<string> path, out object data)
+            => Has(Value, path, out data);
 
         bool Has(object target, ArraySegment<string> path, out object data)
             => GetPathOwner(target, path, out data);
@@ -168,25 +170,29 @@ namespace OrbitalShell.Component.CommandLine.Data
             return $"{Name}{(IsReadOnly ? " (r) " : "")} [{ValueType.Name}] {(HasValue ? ("= " + DumpAsText(Value,false)) : "")}";
         }*/
 
-        public void SetValue(object value) {
+        public void SetValue(object value)
+        {
             if (IsReadOnly) throw new Exception($"{_valueId} is readonly");
-            if (value!=null) {
-                if (ValueType!=null)
+            if (value != null)
+            {
+                if (ValueType != null)
                 {
                     var objType = value.GetType();
-                    if (objType!=ValueType && (!objType.InheritsFrom(ValueType))) throw new Exception($"{_valueId} type mismatch: excepted type: {ValueType.FullName}, provided type: {value.GetType().FullName}");
+                    if (objType != ValueType && (!objType.InheritsFrom(ValueType))) throw new Exception($"{_valueId} type mismatch: excepted type: {ValueType.FullName}, provided type: {value.GetType().FullName}");
                 }
             }
             this.Value = value;
         }
 
         /// <summary>
-        ///  set a typed variable from a string value
+        ///  set a typed variable from a string value<br/>
+        ///  don't set the value if conversion has failed
         /// </summary>
         /// <param name="value">a string value that must be converted to var type an assigned to the var</param>
-        public void SetValue(string value) {
-            var v = ValueTextParser.ToTypedValue(value,ValueType);
-            SetValue((object)v);
+        public void SetValue(string value)
+        {
+            if (ValueTextParser.ToTypedValue(value, ValueType, out var v, out _))
+                SetValue((object)v);
         }
 
         string _valueId => $"DataValue '{Name}'";
