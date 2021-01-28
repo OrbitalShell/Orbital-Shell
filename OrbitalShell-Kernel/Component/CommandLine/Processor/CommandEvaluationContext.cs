@@ -23,17 +23,17 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <summary>
         /// context output stream
         /// </summary>
-        public readonly ConsoleTextWriterWrapper Out;
+        public ConsoleTextWriterWrapper Out { get; protected set; }
 
         /// <summary>
         /// context error stream
         /// </summary>
-        public readonly TextWriterWrapper Err;
+        public TextWriterWrapper Err { get; protected set; }
 
         /// <summary>
         /// context input steam
         /// </summary>
-        public readonly TextReader In;
+        public TextReader In { get; protected set; }
 
         /// <summary>
         /// input data to begin the context with
@@ -84,9 +84,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
 
             CommandLineProcessor = commandLineProcessor;
-            Out = @out;
-            In = @in;
-            Err = err;
+            SetStreams(@out, @in, err);
             InputData = inputData;
 
             SetupShellEnvVar();
@@ -97,6 +95,17 @@ namespace OrbitalShell.Component.CommandLine.Processor
             ParentContext = parentContext;
 
             @out.ColorSettings = ShellEnv.Colors;
+        }
+
+        public void SetStreams(
+            ConsoleTextWriterWrapper @out,
+            TextReader @in,
+            TextWriterWrapper err
+        )
+        {
+            Out = @out;
+            In = @in;
+            Err = err;
         }
 
         void SetupShellEnvVar()

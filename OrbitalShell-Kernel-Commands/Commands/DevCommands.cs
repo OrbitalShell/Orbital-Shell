@@ -130,9 +130,12 @@ namespace OrbitalShell.Commands.Dev
             [Option("b", "both", "an option with both and a value", true, true)] string withBothOption = "a string"
             )
         {
-            context.Out.Echo("noShortNameOption="); context.Out.Echo(noShortNameOption, true);
-            context.Out.Echo("noLongNameOption="); context.Out.Echo(noLongNameOption, true);
-            context.Out.Echo("withBothOption="); context.Out.Echo(withBothOption, true);
+            context.Out.Echo("noShortNameOption=");
+            context.Out.Echo(noShortNameOption, true);
+            context.Out.Echo("noLongNameOption=");
+            context.Out.Echo(noLongNameOption, true);
+            context.Out.Echo("withBothOption=");
+            context.Out.Echo(withBothOption, true);
             return CommandVoidResult.Instance;
         }
 

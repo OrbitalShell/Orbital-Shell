@@ -153,7 +153,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         /// <summary>
-        /// shell init actions sequence
+        /// shell init actions sequence<br/>
+        /// use system in,out,err TODO: plugable to any stream - just add parameters
         /// </summary>
         /// <param name="args">orbsh args</param>
         /// <param name="settings">(launch) settings object</param>
@@ -168,12 +169,16 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
             context ??= new CommandEvaluationContext(
                 this,
+                /*settings.Out,
+                settings.In,
+                settings.Err,*/
                 Out,
-                cons.In,
+                In,
                 Err,
                 null
             );
             CommandEvaluationContext = context;
+            Settings.Initialize(context);
 
             // pre console init
             if (DefaultForeground != null) cons.ForegroundColor = DefaultForeground.Value;
@@ -377,6 +382,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
             if (_isInitialized) return;
 
             ShellInit(_args, _settings, _commandEvaluationContext);
+
+            // late init of settings from the context
+            _settings.Initialize(CommandEvaluationContext);
 
             // run user profile
             try

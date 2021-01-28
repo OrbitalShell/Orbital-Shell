@@ -28,7 +28,7 @@ namespace OrbitalShell.Console
             options = Options;
         }
 
-        public void Echo(object o)
+        /*public void Echo(object o)
         {
             if (o==null)
             {
@@ -37,6 +37,6 @@ namespace OrbitalShell.Console
             {
                 o.Echo(this);
             }
-        }
+        }*/
     }
 }

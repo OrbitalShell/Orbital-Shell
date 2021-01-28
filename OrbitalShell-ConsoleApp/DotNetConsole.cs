@@ -30,8 +30,9 @@ namespace OrbitalShell
 
         #region streams : entry points to DotNetConsole output operations
 
-        public static readonly ConsoleTextWriterWrapper Out = new ConsoleTextWriterWrapper(sc.Out);
-        public static readonly TextWriterWrapper Err = new /*Console*/TextWriterWrapper(sc.Error);
+        public static ConsoleTextWriterWrapper Out = new ConsoleTextWriterWrapper(sc.Out);
+        public static TextWriterWrapper Err = new TextWriterWrapper(sc.Error);
+        public static TextReader In = System.Console.In;
 
         #endregion
 
@@ -240,7 +241,7 @@ namespace OrbitalShell
         /// <summary>
         /// true until the contrary is detected (exception in GetCoords : sc.WindowLeft)
         /// </summary>
-        static bool IsConsoleGeometryEnabled = true;
+        public static bool IsConsoleGeometryEnabled = true;
 
         public static bool CheckConsoleHasGeometry()
         {

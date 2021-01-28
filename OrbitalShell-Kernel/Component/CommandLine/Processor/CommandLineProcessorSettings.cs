@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using OrbitalShell.Console;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -10,13 +11,66 @@ namespace OrbitalShell.Component.CommandLine.Processor
     /// </summary>
     public class CommandLineProcessorSettings
     {
+        public CommandLineProcessorSettings()
+        {
+        }
+
+        /// <summary>
+        /// initialize contextual attributes and setup the context streams
+        /// </summary>
+        /// <param name="commandEvaluationContext">context</param>
+        public void Initialize(CommandEvaluationContext commandEvaluationContext)
+        {
+            this.CommandEvaluationContext = commandEvaluationContext;
+
+            // TODO: activate after DotNetConsole is no more static - see remarks below
+            /*
+            Out = new ConsoleTextWriterWrapper(System.Console.Out);   
+            Err = new TextWriterWrapper(System.Console.Error);
+            In = System.Console.In;
+            */
+
+            //Out = DotNetConsole.Out;
+            Out = new ShellConsoleTextWriterWrapper(
+                commandEvaluationContext,
+                System.Console.Out
+            );
+
+            /*  
+                it can exists only one wrapper for out,
+                between the command evaluation context and dot net console
+            */
+            DotNetConsole.Out = Out;
+
+            Err = DotNetConsole.Err;
+            In = DotNetConsole.In;
+
+            commandEvaluationContext.SetStreams(Out, In, Err);
+        }
+
+        public CommandEvaluationContext CommandEvaluationContext { get; protected set; }
+
+        #region streams
+
+        public ConsoleTextWriterWrapper Out { get; protected set; }
+
+        public TextWriterWrapper Err;
+
+        public TextReader In;
+
+        #endregion
+
+        #region product info
+
         public string AppName = "CommandLineProcessor";
         public string AppLongName = "DotNetConsoleAppToolkit Component CommandLineProcessor";
         public string AppEditor = "DotNetConsoleAppToolkit-Shell";
         public string AppVersion = "AppVersion";
         public string AppLicense = "MIT";
 
-        public string AppDataFolderName = "DotNetConsoleAppToolkit-Shell";
+        #endregion
+
+        #region official files names
 
         public string UserProfileFileName = ".profile";
         public string LogFileName = "log";
@@ -24,6 +78,14 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public string CommandsAliasFileName = ".aliases";
         public string DefaultsFolderName = "Defaults";
 
+        #endregion
+
+        #region official paths
+
+        /// <summary>
+        /// shell app data folder name (application settings)
+        /// </summary>
+        public string AppDataFolderName = "DotNetConsoleAppToolkit-Shell";
         public string AppDataFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDataFolderName);
         public string UserProfileFilePath => Path.Combine(AppDataFolderPath, UserProfileFileName);
         public string LogFilePath => Path.Combine(AppDataFolderPath, LogFileName);
@@ -45,9 +107,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
         }
 
-        public string ShellEnvironmentVariableName = nameof(CommandLineProcessorSettings).ToString().Split('.').First();
+        #endregion
+
+        #region settings    TODO: check real useless
 
         public bool LogAppendAllLinesErrorIsEnabled = true;
+
         public bool PrintInfo = true;
 
         public char ErrorPositionMarker = '^';
@@ -56,5 +121,6 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public string KernelCommandsRootNamespace = "Commands";
 
+        #endregion
     }
 }

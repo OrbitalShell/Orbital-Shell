@@ -19,7 +19,7 @@ namespace OrbitalShell.Lib
         {
             var (@out, context, _) = ctx;
             
-            @out.Echo(context.ShellEnv.Colors.Default);
+            //@out.Echo(context.ShellEnv.Colors.Default);           // ???? FGZ 28/1
             if (echoMethodInfo.GetParameters().Length == 1)
             {
                 echoMethodInfo.Invoke(obj, new object[] { ctx });

@@ -30,6 +30,8 @@ improvements to do 👷
 
 📂various
 
+27/1/21 FGZ     🆗 extend echo directives to console text writter Echo method - super! Out.Echo is wired with output decorators.
+28/1/21 FGZ     fix help: add returns type + display syntax even if no parameters
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
 22/1/21 FGZ     👷 dir sort : alls folders before files ? default ? + options list only dirs/files/sort

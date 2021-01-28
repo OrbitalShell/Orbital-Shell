@@ -12,8 +12,11 @@ namespace OrbitalShell
         {
             Out.Echo(ANSI.RIS);
             Out.ClearScreen();
-            var commandLineProcessor = new CommandLineProcessor(args, new OrbitalShellCommandLineProcessorSettings());
-            var commandLineReader = new CommandLineReader(commandLineProcessor);
+            var commandLineProcessor = new CommandLineProcessor(
+                args,
+                new OrbitalShellCommandLineProcessorSettings());
+            var commandLineReader = new CommandLineReader(
+                commandLineProcessor);
             commandLineProcessor.Initialize();
             var returnCode = commandLineReader.ReadCommandLine();
             Environment.Exit(returnCode);

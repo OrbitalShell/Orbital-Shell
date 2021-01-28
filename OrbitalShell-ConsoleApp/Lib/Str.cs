@@ -41,16 +41,19 @@ namespace OrbitalShell.Lib
             return o.ToString();
         }
 
+        /// <summary>
+        /// null output fallback
+        /// </summary>
         public static string DumpNullStringAsText = "{null}";
 
-        public static string DumpAsText(object o,bool quoteStrings=true)
+        public static string DumpAsText(object o, bool quoteStrings = true)
         {
             if (o == null) return DumpNullStringAsText ?? null;
             if (o is string s && quoteStrings) return $"\"{s}\"";
             return o.ToString();
         }
 
-        public static string TimeSpanDescription(TimeSpan ts,string prefix="",string postfix="")
+        public static string TimeSpanDescription(TimeSpan ts, string prefix = "", string postfix = "")
         {
             var d = ts.Days;
             var h = ts.Hours;
@@ -66,7 +69,7 @@ namespace OrbitalShell.Lib
             return string.Join(' ', lst);
         }
 
-        public static string Plur(string s, int n,string postfix="") => $"{n}{postfix} {s}"+((n > 1) ? "s" : "");
+        public static string Plur(string s, int n, string postfix = "") => $"{n}{postfix} {s}" + ((n > 1) ? "s" : "");
 
         public static string Dump(object[] t)
         {
@@ -133,7 +136,7 @@ namespace OrbitalShell.Lib
             return false;
         }
 
-        public static string HumanFormatOfSize(long bytes, int digits = 1, string sep = " ", string prefix="", string postfix="", string bigPostFix = "")
+        public static string HumanFormatOfSize(long bytes, int digits = 1, string sep = " ", string prefix = "", string postfix = "", string bigPostFix = "")
         {
             var byteChar = 'b';
             long absB = bytes == long.MinValue ? long.MaxValue : Math.Abs(bytes);

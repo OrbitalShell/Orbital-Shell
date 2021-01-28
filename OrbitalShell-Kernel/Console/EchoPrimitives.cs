@@ -264,6 +264,8 @@ namespace OrbitalShell.Console
         // TODO: from config
         public static string NullText = "{null}";
 
+        public static string DumpNull(CommandEvaluationContext context) => DumpAsText(context, null);
+
         public static string DumpAsText(CommandEvaluationContext context, object o, bool quoteStrings = true)
         {
             if (o == null)
@@ -376,6 +378,7 @@ namespace OrbitalShell.Console
             this object obj,
             EchoEvaluationContext ctx)
         {
+            bool b;
             var (@out, context, options) = ctx;
             // mandatory for having both :
             // 1. static extension methods to nicely write Echo calls from the code (eg. DataTable.Echo , object.Echo ...)
@@ -602,7 +605,7 @@ namespace OrbitalShell.Console
                             && o != null && (mi = o.GetEchoMethod()) != null)
                     {
                         // value dump via Echo primitive
-                        @out.Echo(context.ShellEnv.Colors.Default);
+                        @out.Echo(""+context.ShellEnv.Colors.Default);
                         mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, options));
                         @out.Echo(colsep);
                     }
@@ -611,7 +614,7 @@ namespace OrbitalShell.Console
                         // value dump by ToString
                         var l = @out.GetPrint(fvalue).Length;
                         var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
-                        @out.Echo(context.ShellEnv.Colors.Default);
+                        @out.Echo(""+context.ShellEnv.Colors.Default);
                         @out.Echo(fvalue);
                         @out.Echo(spc + colsep);
                     }

@@ -1104,7 +1104,7 @@ namespace OrbitalShell.Console
         /// <summary>
         /// output to stream
         /// </summary>
-        /// <param name="s">text to output</param>
+        /// <param name="o">object to output - is transform to string with ToText</param>
         /// <param name="lineBreak">if true, append a line break to output (call LineBreak()), default is false</param>
         /// <param name="preserveColors">TODO: remove this parameter</param>
         /// <param name="parseCommands">if true, echo directives are parsed and evaluated, default is true</param>
@@ -1112,8 +1112,8 @@ namespace OrbitalShell.Console
         /// <param name="printSequences">to store echo sequence objects when collected</param>
         /// <param name="avoidANSISequencesAndNonPrintableCharacters">if true and parseCommands=false, replace ansiseq and non printable chars by readable data</param>
         /// <param name="getNonPrintablesASCIICodesAsLabel">if true and parseCommands=false, replace ascii non printables chars by labels</param>
-        public void Echo(
-            object s,
+        public virtual void Echo(
+            object o,
             bool lineBreak = false,
             bool preserveColors = false,        // TODO: remove this parameter + SaveColors property
             bool parseCommands = true,
@@ -1125,7 +1125,7 @@ namespace OrbitalShell.Console
         {
             lock (Lock)
             {
-                if (s == null)
+                if (o == null)
                 {
                     if (DumpNullStringAsText != null)
                         ConsolePrint(DumpNullStringAsText, false);
@@ -1134,10 +1134,15 @@ namespace OrbitalShell.Console
                 {
                     if (parseCommands)
                         // call the EchoDirective component
-                        EchoDirectiveProcessor.ParseTextAndApplyCommands(s.ToString(), false, "", doNotEvalutatePrintDirectives, printSequences);
+                        EchoDirectiveProcessor.ParseTextAndApplyCommands(
+                            o.ToString(),
+                            false,
+                            "",
+                            doNotEvalutatePrintDirectives,
+                            printSequences);
                     else
                     {
-                        var txt = s.ToString();
+                        var txt = o.ToString();
                         if (getNonPrintablesASCIICodesAsLabel) txt = ASCII.GetNonPrintablesCodesAsLabel(txt, false /* true: show all symbols */ );
                         if (avoidANSISequencesAndNonPrintableCharacters) txt = ANSI.AvoidANSISequencesAndNonPrintableCharacters(txt);
                         ConsolePrint(txt, false);

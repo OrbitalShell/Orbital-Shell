@@ -110,7 +110,7 @@ current print directives are:
                                 context,
                                 new FormattingOptions(!avoidLineBreak, raw)
                             ));
-                        if (!avoidLineBreak) context.Out.Echo("", true);
+                        if (!avoidLineBreak) context.Out.Echo("", true);    // TODO: formatting option not implemented ?
                     }
                 }
                 return CommandVoidResult.Instance;
