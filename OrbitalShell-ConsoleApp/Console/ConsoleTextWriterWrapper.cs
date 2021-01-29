@@ -1086,11 +1086,12 @@ namespace OrbitalShell.Console
                 base.Write(s);
         }
 
-        public void Echoln(IEnumerable<string> ls, bool ignorePrintDirectives = false) { foreach (var s in ls) Echoln(s, ignorePrintDirectives); }
+        //public void Echoln(IEnumerable<string> ls, bool ignorePrintDirectives = false) { foreach (var s in ls) Echoln(s, ignorePrintDirectives); }
 
-        public void Echo(IEnumerable<string> ls, bool lineBreak = false, bool ignorePrintDirectives = false) { foreach (var s in ls) Echo(s, lineBreak, ignorePrintDirectives); }
+        //public void Echo(IEnumerable<string> ls, bool lineBreak = false, bool ignorePrintDirectives = false) { foreach (var s in ls) Echo(s, lineBreak, ignorePrintDirectives); }
 
         public void Echoln(string s = "", bool ignorePrintDirectives = false) => Echo(s, true, false, !ignorePrintDirectives);
+        public void Echoln(object s, bool ignorePrintDirectives = false) => Echo(s, true, false, !ignorePrintDirectives);
 
         public void Echo(
             string s = "",

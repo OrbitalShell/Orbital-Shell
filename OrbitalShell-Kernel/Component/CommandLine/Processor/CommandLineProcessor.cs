@@ -128,7 +128,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             var t = new ArraySegment<string>(tn);
             if (context.ShellEnv.Get(t, out var o) && o is DataValue val)
             {
-                if (ValueTextParser.ToTypedValue(value, val.ValueType, out var v, out _))
+                if (ValueTextParser.ToTypedValue(value, val.ValueType, null, out var v, out _))
                     val.SetValue(v);
             }
             else

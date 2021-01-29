@@ -38,6 +38,7 @@ improvements to do 👷
 
 📂commands
 
+29/1/21 FGZ     👷 add support of enum flags for command parameter type (eg. flag1+flag2+...+flagn with flag of type enum Flag)
 28/1/21 FGZ     implements support of alias + add defnition on aliases in command meta-attributes
 26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
 

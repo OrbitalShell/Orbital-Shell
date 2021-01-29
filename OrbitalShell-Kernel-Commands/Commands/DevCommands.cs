@@ -161,8 +161,17 @@ namespace OrbitalShell.Commands.Dev
             [Parameter(2, "y", true)] List<FileSystemCommands.DirSort> C
             )
         {
+            int i = 0;
+            var v = Enum.GetValues(typeof(FileSystemCommands.DirSort));
+            foreach (var s in Enum.GetNames(typeof(FileSystemCommands.DirSort)))
+            {
+                context.Out.Echo($"s={s} n={(int)v.GetValue(i)}",true);
+                i++;
+            }
+
             context.Out.Echo("A="); context.Out.Echo(A, true);
-            context.Out.Echo("b="); context.Out.Echo(b, true);
+            context.Out.Echo("b=");
+            context.Out.Echo(b, true);
             context.Out.Echo("c="); context.Out.Echo(c, true);
             context.Out.Echo("B="); context.Out.Echo(B, true);
             context.Out.Echo("C="); context.Out.Echo(C, true);

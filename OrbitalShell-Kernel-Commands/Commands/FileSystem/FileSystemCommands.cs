@@ -56,37 +56,43 @@ namespace OrbitalShell.Commands.FileSystem
             return new CommandResult<(List<FileSystemPath>, FindCounts)>((new List<FileSystemPath>(), new FindCounts()), ReturnCode.Error);
         }
 
+        [Flags]
         public enum DirSort
         {
             /// <summary>
+            /// sort not specified
+            /// </summary>
+            not_specified = 0,
+
+            /// <summary>
             /// sort by name or fullname
             /// </summary>
-            name,
+            name = 1,
 
             /// <summary>
             /// sort by size
             /// </summary>
-            size,
+            size = 2,
 
             /// <summary>
             /// sort by extension
             /// </summary>
-            extension,
+            extension = 4,
 
             /// <summary>
             /// files on top
             /// </summary>
-            file,
+            file = 8,
 
             /// <summary>
             /// dirs on top
             /// </summary>
-            dir,
+            dir = 16,
 
             /// <summary>
             /// reverse sort
             /// </summary>
-            reverse
+            reverse = 32
         }
 
         // TODO: --sort=... or -s= and no short name should be possible 
@@ -97,7 +103,7 @@ namespace OrbitalShell.Commands.FileSystem
             [Option("n", "name", "names only: do not print file system attributes")] bool noattributes,
             [Option("r", "recurse", "also list files and folders in sub directories. force display files full path")] bool recurse,
             [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide,
-            [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] List<DirSort> sort
+            [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] DirSort sort = DirSort.name
             )
         {
             var r = new List<FileSystemPath>();
@@ -108,8 +114,8 @@ namespace OrbitalShell.Commands.FileSystem
 
                 var items = FindItems(context, path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false, false);
 
-                // apply sorts
-
+                // apply sorts - default (.net) is name (==DirSort.default==0)
+                context.Out.Echoln(sort);
 
                 var f = DefaultForegroundCmd;
                 long totFileSize = 0;

@@ -151,7 +151,8 @@ namespace OrbitalShell
             if (ForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
             var ls = (s + "").Split(_crlf, StringSplitOptions.None)
                 .Select(x => Colors.Log + x);
-            Out.Echoln(ls);
+            //Out.Echoln(ls);
+            foreach (var l in ls) Out.Echoln(l);
         }
 
         #endregion

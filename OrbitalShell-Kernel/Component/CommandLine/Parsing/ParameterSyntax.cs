@@ -111,6 +111,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         ) => ValueTextParser.ToTypedValue(
                 ovalue,
                 CommandParameterSpecification.ParameterInfo.ParameterType,
+                CommandParameterSpecification.ParameterInfo.DefaultValue,
                 out convertedValue,
                 out possibleValues);
 
@@ -167,7 +168,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     mparam = new MatchingParameter<DateTime>(comspec);
 
                 if (mparam == null)
-                    // unknown type, not CustomParameter
+                    // unknown type, not a CustomParameter
                     mparam = new MatchingParameter<object>(comspec);
             }
 

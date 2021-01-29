@@ -191,7 +191,7 @@ namespace OrbitalShell.Component.CommandLine.Data
         /// <param name="value">a string value that must be converted to var type an assigned to the var</param>
         public void SetValue(string value)
         {
-            if (ValueTextParser.ToTypedValue(value, ValueType, out var v, out _))
+            if (ValueTextParser.ToTypedValue(value, ValueType,null, out var v, out _))
                 SetValue((object)v);
         }
 

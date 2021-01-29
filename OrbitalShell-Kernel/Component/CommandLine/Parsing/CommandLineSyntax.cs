@@ -52,6 +52,21 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         /// </summary>
         public static char ParameterTypeListValuesSeparator = ',';
 
+        /// <summary>
+        /// add a flag value (value prefix) in parameter of type enum flag
+        /// </summary>
+        public static char ParameterTypeFlagEnumValuePrefixEnabled = '+';
+
+        /// <summary>
+        /// remove a flag value (value prefix) in parameter of type enum flag
+        /// </summary>
+        public static char ParameterTypeFlagEnumValuePrefixDisabled = '-';
+
+        /// <summary>
+        /// any prefix for flag value (value prefix) in parameter of type enum flag
+        /// </summary>
+        public static List<char> ParameterTypeFlagEnumValuePrefixs = new List<char> { ParameterTypeFlagEnumValuePrefixEnabled, ParameterTypeFlagEnumValuePrefixDisabled };
+
         public static bool IsNotAnOperator(string s) =>
             !IsRedirectOutput(s) &&
             !IsRedirectInput(s) &&

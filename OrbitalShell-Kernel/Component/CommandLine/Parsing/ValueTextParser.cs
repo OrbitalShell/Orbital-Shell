@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using System.Collections;
 using OrbitalShell.Lib;
+using System.Runtime;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {
@@ -13,12 +14,16 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         /// <summary>
         /// try to convert a text representation to a typed valued according to a type specification
         /// </summary>
-        /// <param name="ovalue"></param>
-        /// <param name="toType"></param>
-        /// <returns></returns>
+        /// <param name="ovalue">object (null,string) to translate to object real type</param>
+        /// <param name="ptype">real type expected</param>
+        /// <param name="defaultValue">default value used on type value instantiation default value. not used if null</param>
+        /// <param name="convertedValue">value converted to real type expected</param>
+        /// <param name="possibleValues">in case of fail, message indicating possible values for the expected type</param>
+        /// <returns>true if success, false otherwise</returns>
         public static bool ToTypedValue(
             object ovalue,
             Type ptype,
+            object defaultValue,
             out object convertedValue,
             out List<object> possibleValues
             )
@@ -47,7 +52,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 var values = s.SplitNotUnslashed(CommandLineSyntax.ParameterTypeListValuesSeparator);
                 foreach (var val in values)
                 {
-                    if (ToTypedValue(val, argType, out var convertedVal, out var valPossibleValues))
+                    if (ToTypedValue(val, argType, null, out var convertedVal, out var valPossibleValues))
                     {
                         met.Invoke(lst, new object[] { convertedVal });
                     }
@@ -64,15 +69,47 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             }
             else if (ptype.IsEnum && ovalue is string str)
             {
-                // support for any Enum type
-                if (Enum.TryParse(ptype, str, false, out convertedValue))
+                if (ptype.GetCustomAttribute<FlagsAttribute>() != null && str.Contains(CommandLineSyntax.ParameterTypeFlagEnumValuePrefixs))
                 {
+                    // flag enum Name
+                    var fvalues = str.SplitByPrefixsNotUnslashed(CommandLineSyntax.ParameterTypeFlagEnumValuePrefixs);
+                    object flag = (defaultValue == null) ? Activator.CreateInstance(ptype) : defaultValue;
+
+                    foreach (var fval in fvalues)
+                    {
+                        var val = fval.Substring(1);
+                        var flagEnabling = fval[0] == CommandLineSyntax.ParameterTypeFlagEnumValuePrefixEnabled;
+                        if (ToTypedValue(val, ptype, null, out var convertedVal, out var valPossibleValues))
+                        {
+                            if (flagEnabling)
+                                flag = (int)flag + (int)convertedVal;
+                            else
+                                flag = (int)flag & ~((int)convertedVal);
+                        }
+                        else
+                        {
+                            possibleValues = valPossibleValues;
+                            return false;
+                        }
+                    }
+
+                    convertedValue = flag;
                     return true;
                 }
                 else
                 {
-                    possibleValues = Enum.GetNames(ptype).ToList<object>();
-                    return false;
+                    // support for any Enum type (expr = single val)
+                    // support for flag Enum type and expr = val1,...,valn (result is: Enum val1 | .. | valn) - test with: val.HasFlag(flagval)
+                    // support for Enum type and expr = val1,...,valn (result is: int val1 + .. + valn) - test with: val.HasFlag(flagval)
+                    if (Enum.TryParse(ptype, str, false, out convertedValue))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        possibleValues = Enum.GetNames(ptype).ToList<object>();
+                        return false;
+                    }
                 }
             }
             else if (customAttrType != null)
