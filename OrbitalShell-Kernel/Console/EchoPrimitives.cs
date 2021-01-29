@@ -303,7 +303,14 @@ namespace OrbitalShell.Console
         {
             var (@out, context, _) = ctx;
             if (context.EchoMap.MappedCall(obj, ctx)) return;
-            @out.Echo(ctx.CommandEvaluationContext.ShellEnv.Colors.ExceptionText + obj.ToString() + ANSI.RSTXTA);
+
+            var m = obj.ToString();
+            var i = m.IndexOf(':');
+            var textCol = ctx.CommandEvaluationContext.ShellEnv.Colors.ExceptionText;
+            var pfxCol = ctx.CommandEvaluationContext.ShellEnv.Colors.ExceptionName;
+            m = (i > -1) ? pfxCol + m.Substring(0, i + 1) + ANSI.RSTXTA + " " + textCol + ANSI.SGR_Underline + m.Substring(i + 2).Replace(ANSI.CRLF, ANSI.CRLF + ANSI.SGR_UnderlineOff + textCol) : textCol + m;
+
+            @out.Echo(m + ANSI.RSTXTA);
         }
 
         #endregion
@@ -604,7 +611,7 @@ namespace OrbitalShell.Console
                             && o != null && (mi = o.GetEchoMethod()) != null)
                     {
                         // value dump via Echo primitive
-                        @out.Echo(""+context.ShellEnv.Colors.Default);
+                        @out.Echo("" + context.ShellEnv.Colors.Default);
                         mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, options));
                         @out.Echo(colsep);
                     }
@@ -613,7 +620,7 @@ namespace OrbitalShell.Console
                         // value dump by ToString
                         var l = @out.GetPrint(fvalue).Length;
                         var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
-                        @out.Echo(""+context.ShellEnv.Colors.Default);
+                        @out.Echo("" + context.ShellEnv.Colors.Default);
                         @out.Echo(fvalue);
                         @out.Echo(spc + colsep);
                     }

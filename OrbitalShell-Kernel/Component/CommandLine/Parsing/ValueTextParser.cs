@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 using OrbitalShell.Component.CommandLine.CommandModel;
+using System.Collections;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {
@@ -23,13 +25,44 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         {
             convertedValue = null;
             possibleValues = null;
+            if (ovalue == null) return false;
+
             bool result = false;
             bool found = false;
             possibleValues = null;
-            if (ovalue == null) return false;
             var customAttrType = ptype.GetCustomAttribute<CustomParameterType>();
+            var interfaces = ptype.GetInterfaces();
 
-            if (ptype.IsEnum && ovalue is string str)
+            var h = ptype.GetInheritanceChain();
+
+            if (ptype.HasInterface(typeof(ICollection)) && ovalue is string s)
+            {
+                var genArgs = ptype.GenericTypeArguments;
+                if (genArgs.Length > 1) throw new Exception("generic type with more then 1 type argument is not supported: " + ptype.UnmangledName());
+                var argType = genArgs[0];
+                var lst = Activator.CreateInstance(ptype);
+                var met = ptype.GetMethod("Add");
+                if (met == null) throw new Exception($"the type {ptype.UnmangledName()} has no method 'Add' that would allow to use it as a collection parameter type");
+
+                var values = s.SplitNotUnslashed(CommandLineSyntax.ParameterTypeListValuesSeparator);
+                foreach (var val in values)
+                {
+                    if (ToTypedValue(val, argType, out var convertedVal, out var valPossibleValues))
+                    {
+                        met.Invoke(lst, new object[] { convertedVal });
+                    }
+                    else
+                    {
+                        possibleValues = valPossibleValues;
+                        return false;
+                    }
+                }
+
+                convertedValue = lst;
+                return true;
+
+            }
+            else if (ptype.IsEnum && ovalue is string str)
             {
                 // support for any Enum type
                 if (Enum.TryParse(ptype, str, false, out convertedValue))

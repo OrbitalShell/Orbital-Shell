@@ -84,7 +84,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     {
                         parseErrors.Add(
                             new ParseError(
-                                $"value: '{seg.Text}' doesn't match parameter type: '{cps.ParameterInfo.ParameterType.Name}' "
+                                $"value: '{seg.Text}' doesn't match parameter type: {cps.ParameterInfo.ParameterType.UnmangledName()} "
                                 + (possibleValues == null ? "" : $"possible values are: " + string.Join(",", possibleValues))
                                 ,
                                 position + decp, index, CommandSpecification, cps));
@@ -117,7 +117,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                             // 1. try to convert from real value type
                             Action perr = () => parseErrors.Add(
                                 new ParseError(
-                                    $"failed to convert value of variable {seg.Text}, the value='{varValue?.ToString()}' of type: '{varValue?.GetType().Name}' can't be converted to the attempted parameter type: '{cps.ParameterInfo.ParameterType.Name}' ", position + decp, index, CommandSpecification, cps));
+                                    $"failed to convert value of variable {seg.Text}, the value '{varValue?.ToString()}' of type: {varValue?.GetType().UnmangledName()} can't be converted to the attempted parameter type: {cps.ParameterInfo.ParameterType.UnmangledName()} ", position + decp, index, CommandSpecification, cps));
 
 #if obsolete
                             /*(bool success, string strValue) tryCastToString()

@@ -43,7 +43,8 @@ namespace OrbitalShell.Console
 
         // system library types
 
-        public TextColor ExceptionText = new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
+        public TextColor ExceptionText = new TextColor(ConsoleColor.Red, null);
+        public TextColor ExceptionName = new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
 
         // DotNetConsoleAppToolkit-Shell
 

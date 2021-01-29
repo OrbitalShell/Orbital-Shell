@@ -97,7 +97,7 @@ namespace OrbitalShell.Commands.FileSystem
             [Option("n", "name", "names only: do not print file system attributes")] bool noattributes,
             [Option("r", "recurse", "also list files and folders in sub directories. force display files full path")] bool recurse,
             [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide,
-            [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] DirSort sort
+            [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] List<DirSort> sort
             )
         {
             var r = new List<FileSystemPath>();

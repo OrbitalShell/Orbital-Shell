@@ -265,7 +265,7 @@ namespace OrbitalShell.Commands
                         var mpl = com.ParametersSpecifications.Values.Select(x => x.Dump(false).Length).Max() + cons.TabLength;
                         foreach (var p in com.ParametersSpecifications.Values)
                         {
-                            var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.Name}{f}" : "";
+                            var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.UnmangledName()}{f}" : "";
                             var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue != null &&
                                     (!p.IsOption || p.ParameterValueTypeName != typeof(bool).Name)) ?
                                         ((ptype != "" ? ". " : "") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}")

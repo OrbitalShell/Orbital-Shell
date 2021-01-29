@@ -47,6 +47,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         /// </summary>
         public static string OptionLongPrefix = "--";
 
+        /// <summary>
+        /// values separarator in parameter of type list/collection
+        /// </summary>
+        public static char ParameterTypeListValuesSeparator = ',';
+
         public static bool IsNotAnOperator(string s) =>
             !IsRedirectOutput(s) &&
             !IsRedirectInput(s) &&

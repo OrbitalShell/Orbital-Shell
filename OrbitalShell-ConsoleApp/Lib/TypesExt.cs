@@ -11,9 +11,14 @@ namespace OrbitalShell.Lib
     {
         // type ext
 
-        public static bool InheritsFrom(this Type type,Type ancestorType)
+        public static string UnmangledName(this Type type, bool fullName = false)
         {
-            while (type!=null)
+            return TypesManglingExt.FriendlyName(type); //"MN=" + type.Name;
+        }
+
+        public static bool InheritsFrom(this Type type, Type ancestorType)
+        {
+            while (type != null)
             {
                 if (type.BaseType == ancestorType) return true;
                 type = type.BaseType;
@@ -21,14 +26,15 @@ namespace OrbitalShell.Lib
             return false;
         }
 
-        public static List<Type> GetInheritanceChain(this Type type,bool includeRoot=true) {
+        public static List<Type> GetInheritanceChain(this Type type, bool includeRoot = true)
+        {
             var r = new List<Type>();
             if (includeRoot) r.Add(type);
             type = type.BaseType;
             // walk inheritance chain
-            while (type!=null)
+            while (type != null)
             {
-                if (type!=typeof(object))
+                if (type != typeof(object))
                     r.Add(type);
                 type = type.BaseType;
             }
@@ -49,11 +55,11 @@ namespace OrbitalShell.Lib
             foreach (var p in t.GetProperties())
             {
                 r.Add(p);
-            }            
+            }
             return r;
         }
 
-        public static object GetMemberValue(this MemberInfo mi,object obj,bool throwException=true)
+        public static object GetMemberValue(this MemberInfo mi, object obj, bool throwException = true)
         {
             if (mi is FieldInfo f) return f.GetValue(obj);
             if (mi is PropertyInfo p)
@@ -73,13 +79,13 @@ namespace OrbitalShell.Lib
         public static List<(string name, object value, MemberInfo memberInfo)> GetMemberValues(this object o)
         {
             var t = o.GetType();
-            var r = new List<(string, object,MemberInfo)>();
-            foreach ( var f in t.GetFields() )
+            var r = new List<(string, object, MemberInfo)>();
+            foreach (var f in t.GetFields())
             {
                 //r.Add((f.Name, f.GetValue(o),f));
-                r.Add((f.Name, f.GetMemberValue(o),f));
+                r.Add((f.Name, f.GetMemberValue(o), f));
             }
-            foreach ( var p in t.GetProperties() )
+            foreach (var p in t.GetProperties())
             {
                 /*if (p.GetGetMethod().GetParameters().Length==0)
                     r.Add((p.Name, p.GetValue(o),p));
@@ -96,8 +102,8 @@ namespace OrbitalShell.Lib
                     r.Add((p.Name, "indexed property", p));
                 }
             }
-            r.Sort(new Comparison<(string, object,MemberInfo)>(
-                (a, b) => a.Item1.CompareTo(b.Item1) )) ;
+            r.Sort(new Comparison<(string, object, MemberInfo)>(
+                (a, b) => a.Item1.CompareTo(b.Item1)));
             return r;
         }
 

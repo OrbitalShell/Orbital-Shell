@@ -599,37 +599,48 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CommandEvaluationContext context,
             string expr,
             int outputX,
-            string postAnalysisPreExecOutput = null)        // TODO: an evel options object would be nice
+            string postAnalysisPreExecOutput = null)        // TODO: an eval options object would be nice
         {
-            var pipelineParseResults = Parse(context, _syntaxAnalyzer, expr);
-            bool allValid = true;
-            var evalParses = new List<ExpressionEvaluationResult>();
-
-            // check pipeline syntax analysis
-            foreach (var pipelineParseResult in pipelineParseResults)
+            try
             {
-                allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
-                var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
-                evalParses.Add(evalParse);
+                var pipelineParseResults = Parse(context, _syntaxAnalyzer, expr);
+                bool allValid = true;
+                var evalParses = new List<ExpressionEvaluationResult>();
+
+                // check pipeline syntax analysis
+                foreach (var pipelineParseResult in pipelineParseResults)
+                {
+                    allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
+                    var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
+                    evalParses.Add(evalParse);
+                }
+
+                // eventually output the post analysis pre exec content
+                if (!string.IsNullOrEmpty(postAnalysisPreExecOutput)) context.Out.Echo(postAnalysisPreExecOutput);
+
+                if (!allValid)
+                {
+                    // syntax error in pipeline - break exec
+                    var err = evalParses.FirstOrDefault();
+                    context.ShellEnv.UpdateVarLastCommandReturn(expr, null, err == null ? ReturnCode.OK : GetReturnCode(err), err?.SyntaxError);
+                    return err;
+                }
+
+                // run pipeline
+                var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
+
+                // update shell env
+                context.ShellEnv.UpdateVarLastCommandReturn(expr, evalRes.Result, GetReturnCode(evalRes), evalRes.EvalErrorText, evalRes.EvalError);
+                return evalRes;
             }
-
-            // eventually output the post analysis pre exec content
-            if (!string.IsNullOrEmpty(postAnalysisPreExecOutput)) context.Out.Echo(postAnalysisPreExecOutput);
-
-            if (!allValid)
+            catch (Exception pipelineException)
             {
-                // syntax error in pipeline - break exec
-                var err = evalParses.FirstOrDefault();
-                context.ShellEnv.UpdateVarLastCommandReturn(expr, null, err == null ? ReturnCode.OK : GetReturnCode(err), err?.SyntaxError);
-                return err;
+                // code pipeline parse or execution error
+                // update shell env
+                context.ShellEnv.UpdateVarLastCommandReturn(expr, ReturnCode.Error, ReturnCode.Unknown, pipelineException.Message, pipelineException);
+                context.Errorln(pipelineException.Message);
+                return new ExpressionEvaluationResult(expr, null, ParseResultType.NotIdentified, null, (int)ReturnCode.Error, pipelineException, pipelineException.Message);
             }
-
-            // run pipeline
-            var evalRes = PipelineProcessor.RunPipeline(context, pipelineParseResults.FirstOrDefault());
-
-            // update shell env
-            context.ShellEnv.UpdateVarLastCommandReturn(expr, evalRes.Result, GetReturnCode(evalRes), evalRes.EvalErrorText, evalRes.EvalError);
-            return evalRes;
         }
 
         ReturnCode GetReturnCode(ExpressionEvaluationResult expr)

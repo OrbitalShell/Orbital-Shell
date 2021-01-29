@@ -9,6 +9,7 @@ using static OrbitalShell.Lib.Str;
 #endif
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.CommandLine.CommandModel
 {
@@ -70,7 +71,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             var r = $"{ParameterName}";
             if (IsOption)
             {
-                var optVal = (HasValue) ? $" {ParameterValueTypeName}" : "";
+                var optVal = (HasValue) ? $" {ParameterInfo.ParameterType.UnmangledName()}" : "";
                 string sepcar = grammarSymbolsVisible ? "|" : ", ";
                 string longopt = (OptionName != null && OptionLongName != null ? $"{sepcar}" : "")
                                 + (OptionLongName != null ? $"{CommandLineSyntax.OptionLongPrefix}{OptionLongName}" : "");
@@ -92,7 +93,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             var r = $"{colors.ParameterName}{ParameterName}{f}";
             if (IsOption)
             {
-                var optVal = (HasValue) ? $" {colors.ParameterValueType}{ParameterValueTypeName}" : "";
+                var optVal = (HasValue) ? $" {colors.ParameterValueType}{ParameterInfo.ParameterType.UnmangledName()}" : "";
                 string sepcar = grammarSymbolsVisible ? $"{colors.SyntaxSymbol}|" : ", ";
                 //string longopt = OptionLongName != null ? $"{sepcar}{colors.OptionPrefix}{CommandLineSyntax.OptionLongPrefix}{colors.OptionName}{OptionLongName}" : "";
 

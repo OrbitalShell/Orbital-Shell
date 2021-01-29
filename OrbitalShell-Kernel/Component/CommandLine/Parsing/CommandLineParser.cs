@@ -17,7 +17,7 @@ using static OrbitalShell.DotNetConsole;
 namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public static class CommandLineParser
-    {        
+    {
         public static StringComparison SyntaxMatchingRule = StringComparison.InvariantCultureIgnoreCase;
 
         /// <summary>
@@ -58,41 +58,41 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 {
                     if (isStringSeparator)
                     {
-                        prevStr = ((i-1) >= beginCurStrIndex) ? new string(t[beginCurStrIndex..i]) : "";
+                        prevStr = ((i - 1) >= beginCurStrIndex) ? new string(t[beginCurStrIndex..i]) : "";
                         inSingleQuoteString = isSingleQuoteStringSeparator;
                         inDoubleQuoteString = isDoubleQuoteStringSeparator;
                         inString = true;
                         beginCurStrIndex = i + 1;
                     }
-                   
-                    if (isSeparator && (i - 1)>=beginCurStrIndex)
+
+                    if (isSeparator && (i - 1) >= beginCurStrIndex)
                     {
-                        if ((i-1) >= beginCurStrIndex) splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..i]),beginCurStrIndex,i-1));
+                        if ((i - 1) >= beginCurStrIndex) splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..i]), beginCurStrIndex, i - 1));
                         prevStr = "";
                         beginCurStrIndex = i + 1;
                     }
-                } 
+                }
                 else
                 {
                     if ((inSingleQuoteString && isSingleQuoteStringSeparator)
-                        ||(inDoubleQuoteString && isDoubleQuoteStringSeparator))
+                        || (inDoubleQuoteString && isDoubleQuoteStringSeparator))
                     {
-                        if (i==t.Length-1)
+                        if (i == t.Length - 1)
                         {
-                            splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..i]),beginCurStrIndex,i-1));
+                            splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..i]), beginCurStrIndex, i - 1));
                             prevStr = "";
                             beginCurStrIndex = t.Length;
-                        } 
+                        }
                         else
                         {
-                            var t2 = t[0..(beginCurStrIndex-1)].ToList();
+                            var t2 = t[0..(beginCurStrIndex - 1)].ToList();
                             t2.AddRange(t[beginCurStrIndex..i].ToList());
                             if (i < t.Length - 1)
-                                t2.AddRange( t[(i + 1)..t.Length].ToList() );
+                                t2.AddRange(t[(i + 1)..t.Length].ToList());
                             t = t2.ToArray();
                             k = t.Length;
                             beginCurStrIndex--;
-                            i-=2;
+                            i -= 2;
                         }
                         inSingleQuoteString = inDoubleQuoteString = false;
                         inString = false;
@@ -104,7 +104,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
             if ((t.Length - 1) >= beginCurStrIndex)
             {
-                splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..(t.Length)]),beginCurStrIndex,i-1));
+                splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..(t.Length)]), beginCurStrIndex, i - 1));
                 prevStr = "";
             }
 #if debugParser
@@ -116,7 +116,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             splits = splits.Where(x => !string.IsNullOrEmpty(x.Text)).ToArray().ToList();
             return splits.ToArray();
         }
- 
+
 #if NO
         /// <summary>
         /// split an expression to be evaluted at top level syntax level
@@ -177,10 +177,10 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             int position,
             string expr)
         {
-            var splits = SplitExpr(context,expr);
+            var splits = SplitExpr(context, expr);
             var n = 0;
-            for (int i = 0; i <= position && i<splits.Length; i++)
-                n += splits[i].Length + ((i>0)?1:0);
+            for (int i = 0; i <= position && i < splits.Length; i++)
+                n += splits[i].Length + ((i > 0) ? 1 : 0);
             return n;
         }
 
@@ -212,7 +212,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         /// <param name="context"></param>
         /// <param name="expr"></param>
         /// <returns></returns>
-        public static (string expr,Dictionary<string,object> references) SubstituteVariables(
+        public static (string expr, Dictionary<string, object> references) SubstituteVariables(
             CommandEvaluationContext context,
             string expr
             )
@@ -230,19 +230,20 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             var t = expr.ToCharArray();
             var i = 0;
             var vars = new List<StringSegment>();
-            
-            while (i<t.Length)
+
+            while (i < t.Length)
             {
                 var c = t[i];
-                if (c== CommandLineSyntax.VariablePrefix && (i==0 || t[i-1]!='\\' ))
+                if (c == CommandLineSyntax.VariablePrefix && (i == 0 || t[i - 1] != '\\'))
                 {
-                    var j = VariableSyntax.FindEndOfVariableName(t, i+1);
-                    var varName = expr.Substring(i+1, j - i);
-                    
+                    var j = VariableSyntax.FindEndOfVariableName(t, i + 1);
+                    var varName = expr.Substring(i + 1, j - i);
+
                     // accept terminator symbol (if any) as var name if var name is empty
-                    if (varName=="" && (j+1)<t.Length) {
+                    if (varName == "" && (j + 1) < t.Length)
+                    {
                         j++;
-                        varName = t[j]+"";
+                        varName = t[j] + "";
                     }
 
                     vars.Add(new StringSegment(varName, i, j, j - i + 1));
@@ -255,14 +256,14 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             {
                 var nexpr = new StringBuilder();
                 int x = 0;
-                StringSegment lastvr = null; 
+                StringSegment lastvr = null;
                 foreach (var vr in vars)
                 {
                     lastvr = vr;
-                    nexpr.Append(expr.Substring(x, vr.X-x));
+                    nexpr.Append(expr.Substring(x, vr.X - x));
                     try
                     {
-                        context.Variables.Get(vr.Text,out var value);
+                        context.Variables.Get(vr.Text, out var value);
 
                         // here: value is transformed by his ToString method
                         // (var is substituted by its text)
@@ -283,7 +284,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                                 nexpr.Append(o);
                             else
                             {
-                                var (success, strValue) = CommandSyntax.TryCastToString(context,o);
+                                var (success, strValue) = CommandSyntax.TryCastToString(context, o);
                                 nexpr.Append(strValue);
                             }
                         }
@@ -292,18 +293,18 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     {
                         context.Errorln(ex.Message);
                         // keep bad var name in place (? can be option of the shell. Bash let it blank)
-                        nexpr.Append( CommandLineSyntax.VariablePrefix + vr.Text);
+                        nexpr.Append(CommandLineSyntax.VariablePrefix + vr.Text);
                     }
                     x = vr.Y + 1;
                 }
-                if (lastvr!=null)
+                if (lastvr != null)
                 {
                     nexpr.Append(expr.Substring(x));
                 }
                 expr = nexpr.ToString();
             }
 
-            return (expr,references);
+            return (expr, references);
         }
 
         public static List<PipelineParseResult> Parse(
@@ -334,7 +335,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                         foreach (var kv in refs) references.AddOrReplace(kv.Key, kv.Value);
                         splits.Add(new StringSegment(argExpr2, split.X, split.Y, refs));
                     }
-                                        
+
                     parseResults.Add(
                         new PipelineParseResult(
                             expr,
@@ -346,7 +347,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                                 splits)));
 
                     workUnit = workUnit.NextUnit;
-                }                
+                }
             }
             catch (ParseErrorException parseErrorEx)
             {
@@ -361,12 +362,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                                 new CommandSyntaxParsingResult(null,null,new List<ParseError>{ parseErrorEx.ParseError })
                             })));
             }
-            catch (Exception)
-            {
-                throw;
-            }
             PipelineParseResult ppr = null;
-            foreach ( var pr in parseResults )
+            foreach (var pr in parseResults)
             {
                 if (ppr != null)
                     ppr.Next = pr;
@@ -380,7 +377,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             SyntaxAnalyser syntaxAnalyzer,
             string expr,
             List<StringSegment> splits)
-        { 
+        {
             var segments = splits.Skip(1).ToArray();
             var token = splits.First().Text;
 
@@ -401,7 +398,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
                 foreach (var syntax in ctokens)
                 {
-                    var (matchingParameters, parseErrors) = 
+                    var (matchingParameters, parseErrors) =
                         syntax.Match(
                             context,
                             SyntaxMatchingRule,
@@ -451,7 +448,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
                 throw new InvalidOperationException();
             }
-            
+
             return null;
         }
     }

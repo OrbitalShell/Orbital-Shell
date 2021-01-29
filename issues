@@ -35,7 +35,6 @@ improvements to do 👷
 20/1/21 FGZ     please add sort in env table
 22/1/21 FGZ     👷 dir sort : alls folders before files ? default ? + options list only dirs/files/sort
 26/1/21 FGZ     extra line break after command parse error to be removed
-27/1/21 FGZ     👷 add support of list<T> as command parameter value 
 
 📂commands
 
@@ -55,6 +54,7 @@ procrastinated:
 olds:
 -----
 
+28/1/21 FGZ     🆗 add support of list<T> for command parameter type
 27/1/21 FGZ     🆗 unified txt to type value method
 27/1/21 FGZ     🆗 implemented support of command parameter type Enum - related help updated
 27/1/21 FGZ     🆗 extend echo directives to console text writter Echo method - super! Out.Echo is wired with output decorators.

@@ -7,6 +7,8 @@ using System;
 using OrbitalShell.Component;
 using OrbitalShell.Component.CommandLine.Variable;
 using OrbitalShell.Component.CommandLine;
+using OrbitalShell.Commands.FileSystem;
+using System.Collections.Generic;
 
 namespace OrbitalShell.Commands.Dev
 {
@@ -146,6 +148,24 @@ namespace OrbitalShell.Commands.Dev
             )
         {
             context.Out.Echo("noShortNameOption="); context.Out.Echo(param, true);
+            return CommandVoidResult.Instance;
+        }
+
+        [Command("command with collection parameters types (29/1/21)")]
+        public CommandVoidResult ComParamColTest(
+            CommandEvaluationContext context,
+            [Option("A", "optiona", "option a", true, true)] FileSystemCommands.DirSort A,
+            [Option("b", "b", "option b", true, true)] List<string> b,
+            [Option("c", "c", "option c", true, true)] List<int> c,
+            [Parameter(1, "x", true)] FileSystemCommands.DirSort B,
+            [Parameter(2, "y", true)] List<FileSystemCommands.DirSort> C
+            )
+        {
+            context.Out.Echo("A="); context.Out.Echo(A, true);
+            context.Out.Echo("b="); context.Out.Echo(b, true);
+            context.Out.Echo("c="); context.Out.Echo(c, true);
+            context.Out.Echo("B="); context.Out.Echo(B, true);
+            context.Out.Echo("C="); context.Out.Echo(C, true);
             return CommandVoidResult.Instance;
         }
     }
