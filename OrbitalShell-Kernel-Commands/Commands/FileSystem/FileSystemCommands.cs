@@ -20,6 +20,8 @@ using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component;
 using OrbitalShell.Component.CommandLine;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace OrbitalShell.Commands.FileSystem
 {
@@ -77,7 +79,7 @@ namespace OrbitalShell.Commands.FileSystem
             /// <summary>
             /// sort by extension
             /// </summary>
-            extension = 4,
+            ext = 4,
 
             /// <summary>
             /// files on top
@@ -92,10 +94,10 @@ namespace OrbitalShell.Commands.FileSystem
             /// <summary>
             /// reverse sort
             /// </summary>
-            reverse = 32
+            rev = 32
         }
 
-        // TODO: --sort=... or -s= and no short name should be possible 
+        // TODO: --sort=... or -s= and no short name should be possible (symbol =)
         [Command("list files and folders in a path. eventually recurse in sub paths", "i am the long description of dir")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Dir(
             CommandEvaluationContext context,
@@ -103,6 +105,8 @@ namespace OrbitalShell.Commands.FileSystem
             [Option("n", "name", "names only: do not print file system attributes")] bool noattributes,
             [Option("r", "recurse", "also list files and folders in sub directories. force display files full path")] bool recurse,
             [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide,
+            [Option("f", "file", "filter list on files (exclude directories). avoid -d")] bool filesOnly,
+            [Option("d", "dir", "filter list on directories (exclude files)")] bool dirsOnly,
             [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] DirSort sort = DirSort.name
             )
         {
@@ -114,15 +118,47 @@ namespace OrbitalShell.Commands.FileSystem
 
                 var items = FindItems(context, path.FullName, path.WildCardFileName ?? "*", !recurse, true, false, !noattributes, !recurse, null, false, counts, false, false);
 
-                // apply sorts - default (.net) is name (==DirSort.default==0)
-                context.Out.Echoln(sort);
+                if (filesOnly) dirsOnly = false;
+                if (filesOnly) items = items.Where(x => x.IsFile).ToList();
+                if (dirsOnly) items = items.Where(x => x.IsDirectory).ToList();
+
+                // apply sorts - default (.net) is name (==DirSort.name==1) - possible DirSort.not_specified==0 == default sort by name
+                if (sort != DirSort.not_specified && sort != DirSort.name)
+                {
+                    IEnumerable<IGrouping<string, FileSystemPath>> grp = null;
+
+                    if (sort.HasFlag(DirSort.ext))
+                        grp = items.GroupBy((x) => Path.GetExtension(x.FullName));
+                    else if (sort.HasFlag(DirSort.file))
+                        grp = items.GroupBy((x) => x.IsDirectory + "");
+                    else if (sort.HasFlag(DirSort.dir))
+                        grp = items.GroupBy((x) => x.IsFile + "");
+                    else if (sort.HasFlag(DirSort.size))
+                        grp = items.GroupBy((x) => !x.IsFile + "");
+
+                    var lst = grp.ToList();
+                    lst.Sort((x, y) => x.Key.CompareTo(y.Key)); // sort alpha
+                    if (!sort.HasFlag(DirSort.file) && !sort.HasFlag(DirSort.dir) && !sort.HasFlag(DirSort.size) && sort.HasFlag(DirSort.rev)) lst.Reverse();
+
+                    items.Clear();
+                    foreach (var g in lst)
+                    {
+                        var glst = g.ToList();
+                        if (!sort.HasFlag(DirSort.size))
+                            glst.Sort((x, y) => x.FullName.CompareTo(y.FullName));    // sort alpha
+                        else
+                            glst.Sort((x, y) => x.Length.CompareTo(y.Length));    // sort size
+                        if (sort.HasFlag(DirSort.rev)) glst.Reverse();
+                        items.AddRange(glst);
+                    }
+                }
 
                 var f = DefaultForegroundCmd;
                 long totFileSize = 0;
                 var cancellationTokenSource = new CancellationTokenSource();
                 if (wide) noattributes = true;
 
-                // here we self handle the console Cancel event so we can output a partial result even if the seek phasis has been halted. print can also be halted.
+                // here we self handle the console Cancel event so we can output a partial result even if the seek phasis has been broke. print can also be broke.
                 // TODO: seems there is now a simple way to do this. Just use the context cancellation token (as in findItems) : 
                 // TODO: if (context.CommandLineProcessor.CancellationTokenSource.Token.IsCancellationRequested) // then cancel com
 

@@ -9,6 +9,8 @@ namespace OrbitalShell.Lib.FileSystem
     {
         public readonly FileInfo FileInfo;
 
+        public override long Length => FileInfo.Length;
+
         public FilePath(string path) : base(new FileInfo(path))
         {
             FileInfo = (FileInfo)FileSystemInfo;

@@ -21,7 +21,7 @@ namespace OrbitalShell.Lib.FileSystem
         /// <summary>
         /// strings that are alias for user home path when present at begin of a path
         /// </summary>
-        public readonly ReadOnlyCollection<string> UserHomePathSymbols = new ReadOnlyCollection<string>(new List<string> { "¤", "@", "~" });
+        public static readonly List<string> UserHomePathSymbols = new List<string> { "¤", "@", "~" };
 
         public static string ErrorColorization = $"{Red}";
         public static string NormalDirectoryColorization = $"{Blue}";
@@ -127,6 +127,8 @@ namespace OrbitalShell.Lib.FileSystem
             }
             return true;
         }
+
+        public virtual long Length => 0;
 
         public bool IsDirectory => FileSystemInfo.Attributes.HasFlag(FileAttributes.Directory);
         public bool IsFile => !IsDirectory;

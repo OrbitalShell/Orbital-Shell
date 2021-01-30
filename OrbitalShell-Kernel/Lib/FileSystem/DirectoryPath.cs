@@ -25,14 +25,16 @@ namespace OrbitalShell.Lib.FileSystem
     {
         public DirectoryInfo DirectoryInfo { get; protected set; }
 
+        public override long Length => 0;
+
         public DirectoryPath(string path) : base(new DirectoryInfo(path))
         {
             DirectoryInfo = (DirectoryInfo)FileSystemInfo;
         }
 
-        public bool IsEmpty => DirectoryInfo.EnumerateFileSystemInfos().Count() == 0;        
+        public bool IsEmpty => DirectoryInfo.EnumerateFileSystemInfos().Count() == 0;
 
-        public override bool CheckExists(CommandEvaluationContext context,bool dumpError = true)
+        public override bool CheckExists(CommandEvaluationContext context, bool dumpError = true)
         {
             if (!DirectoryInfo.Exists)
             {

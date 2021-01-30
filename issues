@@ -30,15 +30,14 @@ improvements to do 👷
 
 📂various
 
+28/1/21 FGZ     👷 fix help: add enum parameters types values doc
 28/1/21 FGZ     fix help: add returns type + display syntax even if no parameters
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
-22/1/21 FGZ     👷 dir sort : alls folders before files ? default ? + options list only dirs/files/sort
 26/1/21 FGZ     extra line break after command parse error to be removed
 
 📂commands
 
-29/1/21 FGZ     👷 add support of enum flags for command parameter type (eg. flag1+flag2+...+flagn with flag of type enum Flag)
 28/1/21 FGZ     implements support of alias + add defnition on aliases in command meta-attributes
 26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
 
@@ -55,6 +54,8 @@ procrastinated:
 olds:
 -----
 
+22/1/21 FGZ     🆗 dir sort : alls folders before files ? default name + options list only dirs/files/sort
+29/1/21 FGZ     🆗 add support of enum flags for command parameter type (eg. flag1+flag2+...+flagn with flag of type enum Flag)
 28/1/21 FGZ     🆗 add support of list<T> for command parameter type
 27/1/21 FGZ     🆗 unified txt to type value method
 27/1/21 FGZ     🆗 implemented support of command parameter type Enum - related help updated
