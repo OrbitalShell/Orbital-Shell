@@ -19,9 +19,7 @@ using System.Reflection.Metadata;
 using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
-using System.Collections.Specialized;
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis.Operations;
 
 namespace OrbitalShell.Commands
 {
@@ -172,7 +170,7 @@ namespace OrbitalShell.Commands
 
                     if (list) shortView = !verboseView;
 
-                    var groupByNs = list; //&& shortView;
+                    var groupByNs = list;
                     if (groupByNs)
                     {
                         // get all fs
@@ -245,14 +243,14 @@ namespace OrbitalShell.Commands
                 if (singleout)
                 {
                     context.Out.Echoln(com.Description);
-                    if (com.ParametersCount > 0) context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}{(!shortView ? Br : "")}");
-                    context.Out.Echoln(GetPrintableDocText(com.LongDescription, list, shortView, 0));
+                    context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}{(!shortView ? Br : "")}");
+                    if (!string.IsNullOrWhiteSpace(com.LongDescription)) context.Out.Echoln(GetPrintableDocText(com.LongDescription, list, shortView, 0));
                 }
                 else
                 {
                     context.Out.Echoln($"{com.Name.PadRight(maxcnamelength, ' ')}{com.Description}");
-                    if (com.ParametersCount > 0) context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}{(!shortView ? Br : "")}");
-                    context.Out.Echo(GetPrintableDocText(com.LongDescription, list, shortView, maxcnamelength));
+                    context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}{(!shortView ? Br : "")}");
+                    if (!string.IsNullOrWhiteSpace(com.LongDescription)) context.Out.Echo(GetPrintableDocText(com.LongDescription, list, shortView, maxcnamelength));
                 }
             }
 
@@ -262,7 +260,7 @@ namespace OrbitalShell.Commands
                 {
                     if (!shortView)
                     {
-                        var mpl = com.ParametersSpecifications.Values.Select(x => x.Dump(false).Length).Max() + cons.TabLength;
+                        var mpl = (com.ParametersCount > 0 ? com.ParametersSpecifications.Values.Select(x => x.Dump(false).Length).Max() : 0) + cons.TabLength;
                         foreach (var p in com.ParametersSpecifications.Values)
                         {
                             var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.UnmangledName()}{f}" : "";
@@ -271,9 +269,15 @@ namespace OrbitalShell.Commands
                                         ((ptype != "" ? ". " : "") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}")
                                         : "";
 
+                            var pleftCol = "".PadRight(mpl - p.Dump(false).Length, ' ');
+                            var leftCol = "".PadRight(mpl, ' ');
+
+                            if (p.ParameterInfo.ParameterType.IsEnum)
+                                pdef += $"(br){col}{Tab}{leftCol}possibles values: {Darkyellow}{string.Join(CommandLineSyntax.ParameterTypeListValuesSeparator, Enum.GetNames(p.ParameterInfo.ParameterType))}(rdc)";
+
                             var supdef = $"{ptype}{pdef}";
                             // method 'Echo if has' else to string
-                            context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors, false)}{"".PadRight(mpl - p.Dump(false).Length, ' ')}{p.Description}");
+                            context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors, false)}{pleftCol}{p.Description}");
                             if (!string.IsNullOrWhiteSpace(supdef)) context.Out.Echoln($"{col}{Tab}{" ".PadRight(mpl)}{supdef}");
                         }
 

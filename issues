@@ -10,9 +10,9 @@ issues
 improvements to do 👷
 ------------------
 
-26/1/21 FGZ     ✅NEXT add support for command invokation with name having namespace
+26/1/21 FGZ     add support for command invokation with name having namespace
 19/1/21 FGZ     💥 add hooks and hooks settings (kernel major action points)
-20/1/21 FGZ     🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC (anyway avoid command line reader crashing)
+20/1/21 FGZ     ✅NEXT 🚩🚩🚩🚩🚩 add search command name as executable or script file in PATH and SUB SHELL EXEC (anyway avoid command line reader crashing)
 26/1/21 FGZ     accept wildcard in help -t -n -m
 
 📂variables
@@ -30,15 +30,14 @@ improvements to do 👷
 
 📂various
 
-28/1/21 FGZ     👷 fix help: add enum parameters types values doc
-28/1/21 FGZ     fix help: add returns type + display syntax even if no parameters
+28/1/21 FGZ     👷 fix help: add returns type + display syntax even if no parameters
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
 26/1/21 FGZ     extra line break after command parse error to be removed
 
 📂commands
 
-28/1/21 FGZ     implements support of alias + add defnition on aliases in command meta-attributes
+28/1/21 FGZ     ✅NEXT 🚩 implements support of alias + add defnition on aliases in command meta-attributes
 26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
 
 procrastinated:
@@ -54,6 +53,7 @@ procrastinated:
 olds:
 -----
 
+28/1/21 FGZ     🆗 fix help: add enum parameters types values doc
 30/1/21 FGZ     🆗 restore command edit : degraded since echo wired to output decorators (TextColor decorator replace the color directive)
 22/1/21 FGZ     🆗 dir sort : alls folders before files ? default name + options list only dirs/files/sort
 29/1/21 FGZ     🆗 add support of enum flags for command parameter type (eg. flag1+flag2+...+flagn with flag of type enum Flag)

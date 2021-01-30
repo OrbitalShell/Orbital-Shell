@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {
-    internal class CommandLineSyntax
+    public class CommandLineSyntax
     {
         // -- top level parser
 
