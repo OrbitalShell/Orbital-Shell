@@ -54,6 +54,7 @@ procrastinated:
 olds:
 -----
 
+30/1/21 FGZ     🆗 restore command edit : degraded since echo wired to output decorators (TextColor decorator replace the color directive)
 22/1/21 FGZ     🆗 dir sort : alls folders before files ? default name + options list only dirs/files/sort
 29/1/21 FGZ     🆗 add support of enum flags for command parameter type (eg. flag1+flag2+...+flagn with flag of type enum Flag)
 28/1/21 FGZ     🆗 add support of list<T> for command parameter type

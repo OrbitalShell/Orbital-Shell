@@ -938,10 +938,8 @@ namespace OrbitalShell.Commands.TextEditor
         {
             if (!_barVisible) return;
             Context.Out.SetCursorPos(0, _barY);
-            //Context.Out.FillFromCursorRight();
             Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
             Context.Out.SetCursorPos(0, _barY + 1);
-            //Context.Out.FillFromCursorRight();
             Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
         }
 
@@ -954,16 +952,13 @@ namespace OrbitalShell.Commands.TextEditor
                 // /!\ cursor visible leads to erase some characters (blank) in inverted mode and force ignore Tdoff !!
                 // conclusion: invert mode switched is system bugged on windows -- avoid it
                 Context.Out.SetCursorPos(0, _barY);
-                //Context.Out.EnableInvert();
-                //Context.Out.FillFromCursorRight();
 
-                Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
                 Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
 
                 Context.Out.SetCursorPos(0, _barY + 1);
-                //Context.Out.FillFromCursorRight();
 
-                Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
                 Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
 
                 Context.Out.SetCursorPos(0, _barY + 1);
@@ -983,9 +978,8 @@ namespace OrbitalShell.Commands.TextEditor
                 if (!onlyCursorInfo)
                 {
                     Context.Out.SetCursorPos(0, _barY);
-                    //Context.Out.EnableInvert();
 
-                    Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                    Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
 
                     if (_statusText == null)
                     {
@@ -996,28 +990,26 @@ namespace OrbitalShell.Commands.TextEditor
                     {
                         EmptyInfoBar();
                         Context.Out.SetCursorPos(1, _barY);
-                        //Context.Out.EnableInvert();
-                        Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                        Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
                         Context.Out.Echo(_statusText);
                     }
 
                     if (_cmdInput)
                     {
                         Context.Out.SetCursorPos(0, _barY + 1);
-                        Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                        Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
                         var cmdinf = GetCmdsInfo();
                         Context.Out.Echo(cmdinf);
                     }
                 }
 
-                Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+                Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
 
                 if (!_cmdInput) PrintCursorInfo();
 
                 Context.Out.CropX = -1;
 
                 Context.Out.SetCursorPos(0, _barY);
-                //Context.Out.DisableTextDecoration();
 
                 Context.Out.Echo(ANSI.RSTXTA);
 
@@ -1028,7 +1020,6 @@ namespace OrbitalShell.Commands.TextEditor
         void PrintCursorInfo()
         {
             Context.Out.SetCursorPos(1, _barY + 1);
-            //Context.Out.EnableInvert();
             Context.Out.Echo($"{GetPositionInfo()} | {_splitedLineIndex} | {GetCursorInfo()} | {GetLastKeyInfo()}               ");
         }
 
