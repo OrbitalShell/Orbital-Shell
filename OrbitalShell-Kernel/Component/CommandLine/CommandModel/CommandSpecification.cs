@@ -1,4 +1,7 @@
-﻿using OrbitalShell.Console;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Console;
+using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,8 +20,9 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         public readonly string LongDescription;
         public readonly string Documentation;
         public readonly string Name;
-
         public readonly string Namespace;
+        public Type ReturnType;
+        public string ReturnTypeName(bool fullName = false) => ReturnType.UnmangledName(fullName);
 
         readonly Dictionary<string, CommandParameterSpecification> _parametersSpecifications = new Dictionary<string, CommandParameterSpecification>();
 
@@ -43,6 +47,15 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             MethodInfo = methodInfo;
             if (commandParameterSpecifications != null)
                 commandParameterSpecifications.ToList().ForEach(x => _parametersSpecifications.Add(x.ActualName, x));
+            var t = methodInfo.ReturnType;
+            if (t.HasInterface(typeof(ICommandResult)))
+            {
+                var ga = t.GetGenericArguments();
+                if (ga.Length > 0)
+                    ReturnType = t.GetGenericArguments()[0];
+            }
+            else
+                throw new Exception($"wrong command return type: {t.UnmangledName()} - expected type is {typeof(ICommandResult).UnmangledName()}. ");
         }
 
         public string ModuleName => Path.GetFileNameWithoutExtension(MethodInfo.DeclaringType.Assembly.Location);

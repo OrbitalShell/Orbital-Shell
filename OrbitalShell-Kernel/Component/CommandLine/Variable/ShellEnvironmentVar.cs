@@ -324,6 +324,16 @@
         /// </summary>
         userProfile = 25,
 
+        /// <summary>
+        /// path from system path
+        /// </summary>
+        path = 11000,
+
+        /// <summary>
+        /// path ext from system path
+        /// </summary>
+        pathExt = 11001,
+
         // traditional bash variables
 
         /// <summary>

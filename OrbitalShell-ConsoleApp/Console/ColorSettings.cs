@@ -90,6 +90,8 @@ namespace OrbitalShell.Console
         public TextColor ParameterValueType = new TextColor(ConsoleColor.DarkYellow, null);
         public TextColor OptionPrefix = new TextColor(ConsoleColor.Yellow, null);
         public TextColor OptionName = new TextColor(ConsoleColor.Yellow, null);
+        public TextColor TypeName = new TextColor(ConsoleColor.DarkYellow, null);
+        public TextColor OptionValue = new TextColor(ConsoleColor.DarkYellow, null);
         public TextColor SyntaxSymbol = new TextColor(ConsoleColor.Cyan, null);
     }
 }

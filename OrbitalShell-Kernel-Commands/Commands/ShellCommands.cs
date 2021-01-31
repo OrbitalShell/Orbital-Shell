@@ -240,17 +240,22 @@ namespace OrbitalShell.Commands
             }
             else
             {
+                bool hasrtt = com.ReturnType != null;
                 if (singleout)
                 {
                     context.Out.Echoln(com.Description);
-                    context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}{(!shortView ? Br : "")}");
+                    context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}", hasrtt);
+                    if (hasrtt) context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}returns: {context.ShellEnv.Colors.TypeName}{com.ReturnType.UnmangledName()}");
+                    context.Out.Echo(!shortView ? Br : "");
                     if (!string.IsNullOrWhiteSpace(com.LongDescription)) context.Out.Echoln(GetPrintableDocText(com.LongDescription, list, shortView, 0));
                 }
                 else
                 {
                     context.Out.Echoln($"{com.Name.PadRight(maxcnamelength, ' ')}{com.Description}");
-                    context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}{(!shortView ? Br : "")}");
-                    if (!string.IsNullOrWhiteSpace(com.LongDescription)) context.Out.Echo(GetPrintableDocText(com.LongDescription, list, shortView, maxcnamelength));
+                    context.Out.Echoln($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}");
+                    if (hasrtt) context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}returns: {context.ShellEnv.Colors.TypeName}{com.ReturnType.UnmangledName()}");
+                    context.Out.Echo(!shortView ? Br : "");
+                    if (!string.IsNullOrWhiteSpace(com.LongDescription)) context.Out.Echo(GetPrintableDocText(com.LongDescription + "(br)", list, shortView, maxcnamelength));
                 }
             }
 
@@ -263,17 +268,17 @@ namespace OrbitalShell.Commands
                         var mpl = (com.ParametersCount > 0 ? com.ParametersSpecifications.Values.Select(x => x.Dump(false).Length).Max() : 0) + cons.TabLength;
                         foreach (var p in com.ParametersSpecifications.Values)
                         {
-                            var ptype = (!p.IsOption && p.HasValue) ? $"of type: {Darkyellow}{p.ParameterInfo.ParameterType.UnmangledName()}{f}" : "";
+                            var ptype = (!p.IsOption && p.HasValue) ? $"of type: {context.ShellEnv.Colors.TypeName}{p.ParameterInfo.ParameterType.UnmangledName()}{f}" : "";
                             var pdef = (p.HasValue && p.IsOptional && p.HasDefaultValue && p.DefaultValue != null &&
                                     (!p.IsOption || p.ParameterValueTypeName != typeof(bool).Name)) ?
-                                        ((ptype != "" ? ". " : "") + $"default value: {Darkyellow}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}")
+                                        ((ptype != "" ? ". " : "") + $"default value: {context.ShellEnv.Colors.OptionValue}{EchoPrimitives.DumpAsText(context, p.DefaultValue)}{f}")
                                         : "";
 
                             var pleftCol = "".PadRight(mpl - p.Dump(false).Length, ' ');
                             var leftCol = "".PadRight(mpl, ' ');
 
                             if (p.ParameterInfo.ParameterType.IsEnum)
-                                pdef += $"(br){col}{Tab}{leftCol}possibles values: {Darkyellow}{string.Join(CommandLineSyntax.ParameterTypeListValuesSeparator, Enum.GetNames(p.ParameterInfo.ParameterType))}(rdc)";
+                                pdef += $"(br){col}{Tab}{leftCol}possibles values: {context.ShellEnv.Colors.OptionValue}{string.Join(CommandLineSyntax.ParameterTypeListValuesSeparator, Enum.GetNames(p.ParameterInfo.ParameterType))}(rdc)";
 
                             var supdef = $"{ptype}{pdef}";
                             // method 'Echo if has' else to string
@@ -281,17 +286,20 @@ namespace OrbitalShell.Commands
                             if (!string.IsNullOrWhiteSpace(supdef)) context.Out.Echoln($"{col}{Tab}{" ".PadRight(mpl)}{supdef}");
                         }
 
-                        if (string.IsNullOrWhiteSpace(com.Documentation)) context.Out.Echoln();
-                        context.Out.Echo(GetPrintableDocText(com.Documentation, list, shortView, singleout ? 0 : maxcnamelength));
+                        //if (string.IsNullOrWhiteSpace(com.Documentation)) context.Out.Echoln();
+                        if (!string.IsNullOrWhiteSpace(com.Documentation))
+                            context.Out.Echo(GetPrintableDocText("(br)" + com.Documentation, list, shortView, singleout ? 0 : maxcnamelength));
 
                     }
                     else
                     {
-                        context.Out.Echoln(GetPrintableDocText(com.Documentation, list, shortView, singleout ? 0 : maxcnamelength));
+                        if (!string.IsNullOrWhiteSpace(com.Documentation))
+                            context.Out.Echoln(GetPrintableDocText("(br)" + com.Documentation, list, shortView, singleout ? 0 : maxcnamelength));
                     }
                 }
                 if (verboseView)
                 {
+                    if (com.ParametersCount > 0) context.Out.Echoln("");
                     context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}namespace       : {context.ShellEnv.Colors.HalfDarkLabel}{com.Namespace}");
                     context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}declaring type  : {context.ShellEnv.Colors.HalfDarkLabel}{com.DeclaringTypeShortName}");
                     context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}module          : {context.ShellEnv.Colors.HalfDarkLabel}{com.ModuleName}{context.ShellEnv.Colors.Default}");
@@ -311,7 +319,7 @@ namespace OrbitalShell.Commands
             var lst = docText.Split(prfx0).AsQueryable();
             if (string.IsNullOrWhiteSpace(lst.FirstOrDefault())) lst = lst.Skip(1);
             lst = lst.Select(x => "".PadRight(leftMarginSize, ' ') + x + Br);
-            return Br + string.Join("", lst).Replace(prfx1, "");
+            return /*Br +*/ string.Join("", lst).Replace(prfx1, "");
         }
 
         #endregion

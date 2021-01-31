@@ -106,7 +106,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             }
             if (IsOptional && grammarSymbolsVisible) r = $"{colors.SyntaxSymbol}[{r}{colors.SyntaxSymbol}]{f}";
 #if printDefaultValueInSyntax
-            if (HasDefaultValue && grammarSymbolsVisible) r += $"{Cyan}{{={($"{Darkyellow}{DumpAsText(DefaultValue)}{Cyan}}}{f}")}";
+            if (HasDefaultValue && grammarSymbolsVisible) r += $"{Cyan}{{={($"{colors.Value}{DumpAsText(DefaultValue)}{Cyan}}}{f}")}";
 #endif
             return r;
         }

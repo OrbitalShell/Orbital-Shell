@@ -11,9 +11,10 @@ namespace OrbitalShell.Lib
     {
         // type ext
 
+        // TODO: implements parameter fullName
         public static string UnmangledName(this Type type, bool fullName = false)
         {
-            return TypesManglingExt.FriendlyName(type); //"MN=" + type.Name;
+            return TypesManglingExt.FriendlyName(type);
         }
 
         public static bool InheritsFrom(this Type type, Type ancestorType)

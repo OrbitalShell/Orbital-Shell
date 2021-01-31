@@ -55,11 +55,11 @@ namespace OrbitalShell.Console
                 var attrs = GetMemberConstraintsText(context, inf);
                 if (value == null)
                 {
-                    table.Rows.Add(tab + prfx + name + attrs + Rdc, inf.GetMemberValueType().Name, DumpAsText(context, null));
+                    table.Rows.Add(tab + prfx + name + attrs + Rdc, inf.GetMemberValueType().UnmangledName(), DumpAsText(context, null));
                 }
                 else
                 {
-                    table.Rows.Add(tab + prfx + name + attrs + Rdc, inf.GetMemberValueType().Name, value);
+                    table.Rows.Add(tab + prfx + name + attrs + Rdc, inf.GetMemberValueType().UnmangledName(), value);
                 }
             }
         }
@@ -126,7 +126,7 @@ namespace OrbitalShell.Console
             {
                 var tab = "".PadLeft((level * 4), ' ');
                 var dv = value as DataValue;
-                var valueType = (dv != null) ? dv.ValueType?.Name : value?.GetType().Name;
+                var valueType = (dv != null) ? dv.ValueType?.UnmangledName() : value?.GetType().UnmangledName();
                 var val = dv?.Value;
                 var foldSymbol = options.UnfoldCategories ? "[-]" : "[+]";
                 var valnprefix = (dv == null) ? (context.ShellEnv.Colors.Highlight + foldSymbol + " ") : "";

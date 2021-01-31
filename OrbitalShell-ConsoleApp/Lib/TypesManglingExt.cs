@@ -41,6 +41,7 @@ namespace OrbitalShell.Lib
             return result;
         }
 
+        // TODO: implements parameter short or fullName
         public static string FriendlyName(this Type type, bool useKeywords = true, bool showGenericArguments = true, bool showDeclaringType = true, bool compactNullable = true)
         {
             if (type == null) return string.Empty;

@@ -9,6 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using static OrbitalShell.Lib.Str;
+using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+using System.Data;
 
 namespace OrbitalShell.Component.CommandLine.Variable
 {
@@ -17,6 +20,9 @@ namespace OrbitalShell.Component.CommandLine.Variable
     /// </summary>
     public class ShellEnvironment : DataObject
     {
+
+        public const string SystemPathSeparator = ";";
+
         public Variables Vars { get; protected set; }
         public ColorSettings Colors { get; protected set; }
 
@@ -63,6 +69,20 @@ namespace OrbitalShell.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true);
             AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), true);
             AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataFolderPath), true);
+            var path = GetSystemPath();
+            var pathExt = GetSystemPathExt();
+            var pl = new List<DirectoryPath>();
+            var plx = new List<string>();
+            if (path != null)
+            {
+                pl.AddRange(path.Split(SystemPathSeparator).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => new DirectoryPath(x)));
+            }
+            if (pathExt != null)
+            {
+                plx.AddRange(pathExt.Split(SystemPathSeparator));
+            }
+            AddValue(ShellEnvironmentVar.path, pl);
+            AddValue(ShellEnvironmentVar.pathExt, plx);
 
             // shell settings (defaults)
 
@@ -80,7 +100,7 @@ namespace OrbitalShell.Component.CommandLine.Variable
                     context.CommandLineProcessor.Settings.KernelCommandsRootNamespace,
                     nameof(CommandLineProcessor),
                     "banner-4.txt"));
-            AddValue(ShellEnvironmentVar.settings_console_banner_isEnabled,true);
+            AddValue(ShellEnvironmentVar.settings_console_banner_isEnabled, true);
             AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex, 202);// 167);
             AddValue(ShellEnvironmentVar.settings_console_banner_colorIndexStep, 1);// 167);
 
@@ -89,6 +109,31 @@ namespace OrbitalShell.Component.CommandLine.Variable
             InitializeArgsVars(context.CommandLineProcessor.Args);
 
             // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
+        }
+
+        string GetSystemPath()
+        {
+            string s;
+            object r = null;
+            var t = Environment.GetEnvironmentVariables();
+            if (t.Contains(s = "Path")) r = t[s];
+            if (t.Contains(s = "path")) r = t[s];
+            if (t.Contains(s = "PATH")) r = t[s];
+            return (string)r;
+        }
+
+        string GetSystemPathExt()
+        {
+            string s;
+            object r = null;
+            var t = Environment.GetEnvironmentVariables();
+            if (t.Contains(s = "PathExt")) r = t[s];
+            if (t.Contains(s = "pathExt")) r = t[s];
+            if (t.Contains(s = "path_ext")) r = t[s];
+            if (t.Contains(s = "Path_Ext")) r = t[s];
+            if (t.Contains(s = "PATH_EXT")) r = t[s];
+            if (t.Contains(s = "PATHEXT")) r = t[s];
+            return (string)r;
         }
 
         /// <summary>
