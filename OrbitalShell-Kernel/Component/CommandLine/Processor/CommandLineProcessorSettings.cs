@@ -109,7 +109,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         #endregion
 
-        #region settings    TODO: check real useless
+        #region settings    TODO: check real useless / move to good location
+
+        public string PathExtInit = "sh;init;";
+
+        public string ShellExecBatchExt = ".sh";
 
         public bool LogAppendAllLinesErrorIsEnabled = true;
 

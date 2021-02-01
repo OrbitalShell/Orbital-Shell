@@ -26,7 +26,7 @@ namespace OrbitalShell.Console
         /// Echo method
         /// </summary>
         /// <param name="context"></param>
-        public void Echo( EchoEvaluationContext context ) => EchoObj(this, context);
+        public void Echo(EchoEvaluationContext context) => EchoObj(this, context);
 
         /// <summary>
         /// Echo method for any object
@@ -55,8 +55,8 @@ namespace OrbitalShell.Console
                 var value = m.Item2;
                 if (value != null && (mi = value.GetEchoMethod()) != null)
                 {
-                    mi.InvokeEcho(value,new EchoEvaluationContext(@out, context, null));
-                    @out.Echo(context.ShellEnv.Colors.Default);
+                    mi.InvokeEcho(value, new EchoEvaluationContext(@out, context, null));
+                    @out.Echo(context.ShellEnv.Colors.Default + "");
                 }
                 else
                 {
@@ -97,7 +97,7 @@ namespace OrbitalShell.Console
             foreach (var m in this.GetMemberValues())
             {
                 if (!firstElement) sb.Append(','); else firstElement = false;
-                sb.Append($"{m.Item1}={Str.DumpAsText( m.Item2 )}");
+                sb.Append($"{m.Item1}={Str.DumpAsText(m.Item2)}");
             }
             sb.Append('}');
             return sb.ToString();

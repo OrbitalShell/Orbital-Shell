@@ -7,17 +7,14 @@ using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Pipeline;
 using OrbitalShell.Component.CommandLine.Variable;
 using OrbitalShell.Component.CommandLine.Module;
-using OrbitalShell.Console;
-using OrbitalShell.Lib;
 using lib = OrbitalShell.Lib;
+using OrbitalShell.Lib;
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -26,8 +23,10 @@ using static OrbitalShell.DotNetConsole;
 using cmdlr = OrbitalShell.Component.CommandLine.CommandLineReader;
 using cons = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using OrbitalShell.Lib.FileSystem;
+using System.Text;
+using OrbitalShell.Lib.Process;
+using OrbitalShell.Console;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -65,6 +64,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         CommandLineProcessorSettings _settings;
 
         CommandEvaluationContext _commandEvaluationContext = null;
+
+        public readonly CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension;
 
         public readonly ModuleManager ModuleManager;
 
@@ -145,6 +146,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CommandEvaluationContext commandEvaluationContext = null
             )
         {
+            CommandLineProcessorExternalParserExtension = new CommandLineProcessorExternalParserExtension(this);
             ModuleManager = new ModuleManager(_syntaxAnalyzer);
             _args = args;
             _commandEvaluationContext = commandEvaluationContext;
@@ -189,7 +191,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             SetArgs(args, CommandEvaluationContext, appliedSettings);
 
             // init from settings
-            ShellInitFromSettings();
+            ShellInitFromSettings(settings);
 
             ConsoleInit(CommandEvaluationContext);
 
@@ -233,12 +235,24 @@ namespace OrbitalShell.Component.CommandLine.Processor
             Out.Echoln();
         }
 
-        void ShellInitFromSettings()
+        void ShellInitFromSettings(CommandLineProcessorSettings settings)
         {
             var ctx = CommandEvaluationContext;
             Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor);
             var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_prompt);
             CommandLineReader.SetDefaultPrompt(prompt);
+
+            var pathexts = ctx.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.pathExt);
+            var pathextinit = ctx.ShellEnv.GetDataValue(ShellEnvironmentVar.pathExtInit);
+            var pathextinittext = (string)pathextinit.Value;
+            if (!string.IsNullOrWhiteSpace(pathextinittext)) pathextinittext += ShellEnvironment.SystemPathSeparator;
+            pathextinittext += settings.PathExtInit.Replace(";", ShellEnvironment.SystemPathSeparator);
+            pathextinit.SetValue(pathextinittext);
+            var exts = pathextinittext.Split(ShellEnvironment.SystemPathSeparator);
+            foreach (var ext in exts)
+                pathexts.AddUnique(ext);
+
+            ctx.ShellEnv.SetValue(ShellEnvironmentVar.settings_clp_shellExecBatchExt, settings.ShellExecBatchExt);
         }
 
         /// <summary>
@@ -568,7 +582,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             MethodInfo commandMethodInfo,
             string args,
             int outputX,
-            string postAnalysisPreExecOutput = null)    // TODO: an evel options object would be nice
+            string postAnalysisPreExecOutput = null)    // TODO: an Eval options object could be nice
         {
             var comSpec = ModuleManager.ModuleCommandManager.GetCommandSpecification(commandMethodInfo);
             if (comSpec == null)
@@ -603,7 +617,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         {
             try
             {
-                var pipelineParseResults = Parse(context, _syntaxAnalyzer, expr);
+                var pipelineParseResults = Parse(context, _syntaxAnalyzer, expr, CommandLineProcessorExternalParserExtension);
                 bool allValid = true;
                 var evalParses = new List<ExpressionEvaluationResult>();
 
@@ -611,7 +625,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 foreach (var pipelineParseResult in pipelineParseResults)
                 {
                     allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
-                    var evalParse = EvalParse(context, expr, outputX, pipelineParseResult.ParseResult);
+                    var evalParse = AnalysisPipelineParseResult(context, pipelineParseResult, expr, outputX, pipelineParseResult.ParseResult);
+
                     evalParses.Add(evalParse);
                 }
 
@@ -620,7 +635,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
                 if (!allValid)
                 {
-                    // syntax error in pipeline - break exec
+                    // 💥syntax error in pipeline - break exec
                     var err = evalParses.FirstOrDefault();
                     context.ShellEnv.UpdateVarLastCommandReturn(expr, null, err == null ? ReturnCode.OK : GetReturnCode(err), err?.SyntaxError);
                     return err;
@@ -655,15 +670,113 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         /// <summary>
-        /// react after parse within a parse unit result
+        /// search a file having a name that would be located in shell scan path and having a shell scan path ext
+        /// </summary>
+        /// <param name="context">command evaluation context</param>
+        /// <param name="cmdName">command name</param>
+        /// <param name="filePath">matching file path</param>
+        /// <returns>the first matching file according to search paths order</returns>
+        public bool ExistsInPath(
+            CommandEvaluationContext context,
+            string cmdName,
+            out string filePath)
+        {
+            var paths = context.ShellEnv.GetValue<List<DirectoryPath>>(ShellEnvironmentVar.path).Clone();
+            paths.Insert(0, new DirectoryPath(Environment.CurrentDirectory));
+            var pathExts = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.pathExt);
+            var searchedPaths = new List<string>();
+            int i = 0;
+            foreach (var path in paths)
+            {
+                if (!searchedPaths.Contains(path.FullName))
+                {
+                    //context.Out.Echoln(path);
+                    searchedPaths.Add(path.FullName);
+
+                    foreach (var pathExt in pathExts)
+                    {
+                        var px = string.IsNullOrWhiteSpace(pathExt) ? pathExt : ((pathExt.StartsWith('.')) ? pathExt : "." + pathExt);
+                        var filename = Path.Combine(path.FullName, cmdName + px);
+                        //context.Out.Echoln(filename);
+                        if (File.Exists(filename))  // accorded to system case sensitive file name setting
+                        {
+                            //context.Out.Echoln($"(b=red,f=yellow)FOUND: {filename}(rdc)");
+                            filePath = filename;
+                            return true;
+                        }
+
+                    }
+                }
+                i++;
+            }
+            filePath = null;
+            return false;
+        }
+
+        public int ShellExec(
+            CommandEvaluationContext context,
+            string comPath,
+            string args)
+        {
+            var processStartInfo = new ProcessStartInfo()
+            {
+                UseShellExecute = false,
+                //StandardOutputEncoding = Encoding.UTF8,   // keep system default
+                //StandardErrorEncoding = Encoding.UTF8,    // keep system default
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                LoadUserProfile = true,
+                CreateNoWindow = true,
+                FileName = comPath,
+                Arguments = args,
+                WindowStyle = ProcessWindowStyle.Normal,
+                WorkingDirectory = Environment.CurrentDirectory
+            };
+
+            // batch shell exec ?
+            if (Path.GetExtension(comPath) == context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clp_shellExecBatchExt))
+            {
+                var batchMethod = typeof(CommandLineProcessorCommands).GetMethod(nameof(CommandLineProcessorCommands.Batch));
+                return Eval(context, batchMethod, "\"" + comPath + " " + args + "\"", 0).EvalResultCode;
+            }
+
+            var pw = ProcessWrapper.ThreadRun(
+                processStartInfo,
+                null,
+                (outStr) =>
+                {
+                    context.Out.Echoln(outStr);
+                },
+                (errStr) =>
+                {
+                    context.Errorln(errStr);
+                }
+            );
+
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessStart)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' [{pw.Process.Id}] started(rdc)");
+
+            pw.Process.WaitForExit();
+            var retCode = pw.Process.ExitCode;
+            pw.StdOutCallBackThread.Join();
+            pw.StdErrCallBackThread.Join();
+
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' exited with code: {retCode}(rdc)");
+
+            return retCode;
+        }
+
+        /// <summary>
+        /// react after parse within a parse work unit result
         /// </summary>
         /// <param name="context"></param>
         /// <param name="expr"></param>
         /// <param name="outputX"></param>
         /// <param name="parseResult"></param>
         /// <returns></returns>
-        ExpressionEvaluationResult EvalParse(
+        ExpressionEvaluationResult AnalysisPipelineParseResult(
             CommandEvaluationContext context,
+            PipelineParseResult pipelineParseResult,
             string expr,
             int outputX,
             ParseResult parseResult
@@ -677,6 +790,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
             switch (parseResult.ParseResultType)
             {
+#if no
                 /*
                     case ParseResultType.Valid:
                     var syntaxParsingResult = parseResult.SyntaxParsingResults.First();
@@ -693,6 +807,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     }
                     break;
                 */
+#endif
 
                 case ParseResultType.Empty:
                     r = new ExpressionEvaluationResult(expr, null, parseResult.ParseResultType, null, (int)ReturnCode.OK, null);
@@ -754,6 +869,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     break;
 
                 case ParseResultType.NotIdentified:
+
                     t = new string[expr.Length + 2];
                     for (int j = 0; j < t.Length; j++) t[j] = " ";
                     var err = parseResult.SyntaxParsingResults.First().ParseErrors.First();

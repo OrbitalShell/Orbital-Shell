@@ -27,23 +27,6 @@ namespace OrbitalShell.Commands
     [CommandsNamespace(CommandNamespace.shell)]
     public class ShellCommands : ICommandsDeclaringType
     {
-        #region shell exec
-
-        [Command("runs a batch file [Experimental]")]
-        public CommandVoidResult Batch(
-            CommandEvaluationContext context,
-            [Parameter(0, "path of the batch file (attempt a text file, starting or not by #orbsh!)")] FilePath path
-            )
-        {
-            if (path.CheckExists(context))
-            {
-                context.CommandLineProcessor.CommandBatchProcessor.RunBatch(context, path.FileSystemInfo.FullName);
-            }
-            return CommandVoidResult.Instance;
-        }
-
-        #endregion
-
         #region help
 
         [Command("print help about commands, namespaces, commands declaring types and modules")]

@@ -75,7 +75,10 @@ namespace OrbitalShell.Component.CommandLine.Variable
             var plx = new List<string>();
             if (path != null)
             {
-                pl.AddRange(path.Split(SystemPathSeparator).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => new DirectoryPath(x)));
+                var paths = path.Split(SystemPathSeparator).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => Environment.ExpandEnvironmentVariables(x));
+                var dps = paths.Select(x => new DirectoryPath(x)).ToList();
+                dps.Add(new DirectoryPath(Path.Combine(GetValue<DirectoryPath>(ShellEnvironmentVar.shell).FullName, "scripts")));
+                pl.AddRange(dps);
             }
             if (pathExt != null)
             {
@@ -83,6 +86,7 @@ namespace OrbitalShell.Component.CommandLine.Variable
             }
             AddValue(ShellEnvironmentVar.path, pl);
             AddValue(ShellEnvironmentVar.pathExt, plx);
+            AddValue(ShellEnvironmentVar.pathExtInit, "");
 
             // shell settings (defaults)
 
@@ -94,6 +98,9 @@ namespace OrbitalShell.Component.CommandLine.Variable
             AddValue(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput, ANSI.CRLF);
             AddValue(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput, ANSI.CRLF);
             AddValue(ShellEnvironmentVar.settings_clr_comPostExecOutput, "");
+            AddValue(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessStart, false);
+            AddValue(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd, false);
+            AddValue(ShellEnvironmentVar.settings_clp_shellExecBatchExt, ".sh");
             AddValue(ShellEnvironmentVar.settings_console_banner_path,
                 Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
@@ -359,7 +366,7 @@ namespace OrbitalShell.Component.CommandLine.Variable
         static string ToNsp(ShellEnvironmentVar @var) => ToNsp(ToStr(@var));
 
         /// <summary>
-        /// 💥 constraint: postfix (here __) same in ShellEnvironmentVar
+        /// 💥constraint: postfix (here __) same in ShellEnvironmentVar
         /// </summary>
         public const string SPECIAL_VAR_DECL_PREFIX = "sp__";
         public const string SPECIAL_VAR_IMPL_PREFIX = "sp_";

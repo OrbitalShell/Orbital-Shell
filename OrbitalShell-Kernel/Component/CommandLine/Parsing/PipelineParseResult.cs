@@ -9,28 +9,34 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         public PipelineParseResult Next;
         public string Expr;
 
-        public PipelineParseResult(string expr,PipelineWorkUnit workUnit, ParseResult parseResult)
+        public PipelineParseResults PipelineParseResults;
+
+        public PipelineParseResult(string expr, PipelineParseResults pipelineParseResults, PipelineWorkUnit workUnit, ParseResult parseResult)
         {
             ParseResult = parseResult;
+            PipelineParseResults = pipelineParseResults;
             WorkUnit = workUnit;
             Expr = expr;
         }
 
-        public PipelineParseResult(string expr,ParseResult parseResult)
+        public PipelineParseResult(string expr, PipelineParseResults pipelineParseResults, ParseResult parseResult)
         {
             ParseResult = parseResult;
+            PipelineParseResults = pipelineParseResults;
             Expr = expr;
         }
 
-        public PipelineParseResult(string expr,PipelineWorkUnit workUnit)
+        public PipelineParseResult(string expr, PipelineParseResults pipelineParseResults, PipelineWorkUnit workUnit)
         {
             ParseResult = new ParseResult(ParseResultType.Empty, null);
+            PipelineParseResults = pipelineParseResults;
             WorkUnit = workUnit;
             Expr = expr;
         }
 
-        public PipelineParseResult()
+        public PipelineParseResult(PipelineParseResults pipelineParseResults)
         {
+            PipelineParseResults = pipelineParseResults;
             ParseResult = new ParseResult(ParseResultType.Empty, null);
         }
     }

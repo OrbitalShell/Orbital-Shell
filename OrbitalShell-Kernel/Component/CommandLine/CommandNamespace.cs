@@ -6,6 +6,11 @@ namespace OrbitalShell.Component.CommandLine
     public enum CommandNamespace
     {
         /// <summary>
+        /// shell kernel
+        /// </summary>
+        kernel,
+
+        /// <summary>
         /// system
         /// </summary>
         sys,

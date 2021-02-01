@@ -1,12 +1,14 @@
 ﻿//#define debugParser
 
 using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Component.CommandLine.Pipeline;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.CommandLine.Variable;
 using OrbitalShell.Console;
 using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
@@ -307,18 +309,21 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             return (expr, references);
         }
 
-        public static List<PipelineParseResult> Parse(
+        public static PipelineParseResults Parse(
             CommandEvaluationContext context,
             SyntaxAnalyser syntaxAnalyzer,
-            string expr)
+            string expr,
+            ICommandLineParserExtension commandLineParserExtension
+            )
         {
-            if (expr == null) return new List<PipelineParseResult> { new PipelineParseResult() };
+            var parseResults = new PipelineParseResults();
+
+            if (expr == null) return new PipelineParseResults(new PipelineParseResult(parseResults));
 
             expr = expr.Trim();
-            if (string.IsNullOrWhiteSpace(expr)) return new List<PipelineParseResult> { new PipelineParseResult() };
+            if (string.IsNullOrWhiteSpace(expr)) return new PipelineParseResults(new PipelineParseResult(parseResults));
 
             var splits0 = SplitExpr(context, expr);
-            var parseResults = new List<PipelineParseResult>();
 
             try
             {
@@ -339,11 +344,14 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     parseResults.Add(
                         new PipelineParseResult(
                             expr,
+                            parseResults,
                             workUnit,
-                            ParseCmdSplits(
+                            ParseCmdSplits(             // parse the command line unit : /!\ May change the segments
                                 context,
                                 syntaxAnalyzer,
+                                commandLineParserExtension,
                                 expr,
+                                workUnit,
                                 splits)));
 
                     workUnit = workUnit.NextUnit;
@@ -355,6 +363,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 parseResults.Add(
                     new PipelineParseResult(
                         expr,
+                        parseResults,
                         new ParseResult(
                             ParseResultType.SyntaxError,
                             new List<CommandSyntaxParsingResult>
@@ -372,10 +381,20 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             return parseResults;
         }
 
+        /// <summary>
+        /// parse a command line unit (find syntax from token)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="syntaxAnalyzer"></param>
+        /// <param name="expr"></param>
+        /// <param name="splits"></param>
+        /// <returns></returns>
         public static ParseResult ParseCmdSplits(
             CommandEvaluationContext context,
             SyntaxAnalyser syntaxAnalyzer,
+            ICommandLineParserExtension commandLineParserExtension,
             string expr,
+            PipelineWorkUnit workUnit,
             List<StringSegment> splits)
         {
             var segments = splits.Skip(1).ToArray();
@@ -386,7 +405,66 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
             if (ctokens.Count == 0)
             {
-                var cmdnotfound = new CommandSyntaxParsingResult(null, null, new List<ParseError> { new ParseError($"unknown command: {token}", 0, 0, null) });
+                // TODO : check aliases HERE
+                // ... 
+
+                // check cmdspec from external token
+                if (commandLineParserExtension != null &&
+                    commandLineParserExtension
+                        .TryGetCommandSpecificationFromExternalToken(
+                            new ExternalParserExtensionContext(
+                                context,
+                                token,
+                                segments.Select(x => x.Text).ToArray(),
+                                expr),
+                            out var externalCommand,
+                            out var commandPath
+                            ))
+                {
+                    if (externalCommand == null) throw new Exception($"external parser extension returns a null command specificaiton for external token: {token}");
+
+                    var extValidSyntaxParsingResults = new List<CommandSyntaxParsingResult>();
+                    var extCmdTokenSyntax = syntaxAnalyzer.FindSyntaxesFromToken(externalCommand.Name, false, SyntaxMatchingRule).FirstOrDefault();
+                    if (extCmdTokenSyntax == null) throw new Exception($"missing kernel command: {externalCommand.Name}");
+
+                    var args = string.Join(" ", segments.Select(x => /*"\"" +*/ x.Text /*+ "\""*/));
+                    var map = new Dictionary<string, object>();
+                    foreach (var mp in segments.Select(x => x.Map))
+                        if (mp != null) map.Merge(mp);
+
+                    var newSegments = new StringSegment[]
+                    {
+                        new StringSegment(commandPath,0,commandPath.Length-1,commandPath.Length),
+                        new StringSegment(args,commandPath.Length+1,commandPath.Length+1+args.Length-1,args.Length,map)
+                    };
+                    splits.Clear();
+                    splits.AddRange(newSegments);
+                    workUnit.Segments = splits;
+
+                    var (extMatchingParameters, extParseErrors) =
+                        extCmdTokenSyntax.Match(
+                            context,
+                            SyntaxMatchingRule,
+                            newSegments,
+                            token.Length + 1);
+                    var cspr = new CommandSyntaxParsingResult(
+                        extCmdTokenSyntax,
+                        extMatchingParameters,
+                        extParseErrors
+                    );
+                    extValidSyntaxParsingResults.Add(cspr);
+                    return new ParseResult(ParseResultType.Valid, extValidSyntaxParsingResults);
+                }
+
+                var cmdnotfound = new CommandSyntaxParsingResult(
+                    null,
+                    null,
+                    new List<ParseError> {
+                        new ParseError(
+                            $"unknown command: {token}",
+                            0,
+                            0,
+                            null) });
                 return new ParseResult(ParseResultType.NotIdentified, new List<CommandSyntaxParsingResult> { cmdnotfound });
             }
 

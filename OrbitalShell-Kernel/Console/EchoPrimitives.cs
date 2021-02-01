@@ -10,6 +10,7 @@ using System.Reflection;
 using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
+using System.Collections;
 
 namespace OrbitalShell.Console
 {
@@ -279,7 +280,48 @@ namespace OrbitalShell.Console
 
         #endregion
 
-        #region compounded types
+        #region compounded & collection types
+
+        public static void Echo(
+            this ICollection obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+
+            var i = 1;
+            var nb = obj.Count;
+            foreach (var o in obj)
+            {
+                Echo(o, ctx);
+                if (i < nb)
+                {
+                    if (!ctx.Options.LineBreak)
+                        @out.Echo(ShellEnvironment.SystemPathSeparator, true /*TODO: currently no way to support option change from any context (see: shell meta-options + output filters )*/ );
+                    else
+                        @out.Echoln();
+                }
+                i++;
+            }
+        }
+
+        public static void Echo(
+            this List<object> obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+
+            var i = 1;
+            var nb = obj.Count;
+            foreach (var o in obj)
+            {
+                Echo(o, ctx);
+                if (!ctx.Options.LineBreak && i < nb)
+                    @out.Echo(ShellEnvironment.SystemPathSeparator);
+                i++;
+            }
+        }
 
         public static void Echo(
             this KeyValuePair<string, object> obj,
@@ -290,7 +332,7 @@ namespace OrbitalShell.Console
 
             @out.Echo($"{obj.Key}{context.ShellEnv.Colors.HighlightSymbol}={context.ShellEnv.Colors.Value}");
             Echo(obj.Value, ctx);
-            @out.Echo(Rdc);
+            @out.Echo(Rdc);     // TODO: check this
         }
 
         #endregion
@@ -390,6 +432,13 @@ namespace OrbitalShell.Console
             // 1. static extension methods to nicely write Echo calls from the code (eg. DataTable.Echo , object.Echo ...)
             // 2. Echo calls that can be remapped to others methods than the class one's (extension or owned method)
             if (context.EchoMap.MappedCall(obj, ctx)) return;
+
+            // handle interfaces types : TODO: should be handlable throught EchoMap
+            if (obj is ICollection)
+            {
+                ((ICollection)obj).Echo(ctx);
+                return;
+            }
 
             MethodInfo mi;
             if ((mi = obj.GetEchoMethod()) != null)

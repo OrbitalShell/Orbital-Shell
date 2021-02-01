@@ -8,6 +8,7 @@ using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.Str;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Component.CommandLine.Variable;
 
 namespace OrbitalShell.Lib.FileSystem
 {
@@ -27,9 +28,11 @@ namespace OrbitalShell.Lib.FileSystem
             FindCounts counts,
             bool print,
             bool alwaysSelectDirs = false,
-            bool ignoreCase = false)
+            bool ignoreCase = false,
+            bool printMatches = false)
         {
-            var dinf = new DirectoryInfo(path);
+            bool isFile = File.Exists(path);
+            var dinf = isFile ? null : new DirectoryInfo(path);
             List<FileSystemPath> items = new List<FileSystemPath>();
             bool hasPattern = !string.IsNullOrWhiteSpace(pattern);
             bool hasContains = !string.IsNullOrWhiteSpace(contains);
@@ -39,8 +42,9 @@ namespace OrbitalShell.Lib.FileSystem
 
             try
             {
-                counts.ScannedFoldersCount++;
-                var scan = dinf.GetFileSystemInfos();
+                if (!isFile) counts.ScannedFoldersCount++;
+                var scan = isFile ? new FileSystemInfo[] { new FileInfo(path) }
+                    : dinf.GetFileSystemInfos();
 
                 foreach (var fsinf in scan)
                 {
@@ -58,20 +62,39 @@ namespace OrbitalShell.Lib.FileSystem
                             sitem = null;
 
                         if (!top)
-                            items.AddRange(FindItems(context, fsinf.FullName, pattern, top, all, dirs, attributes, shortPathes, contains, checkPatternOnFullName, counts, print, alwaysSelectDirs, ignoreCase));
+                            items.AddRange(FindItems(context, fsinf.FullName, pattern, top, all, dirs, attributes, shortPathes, contains, checkPatternOnFullName, counts, print, alwaysSelectDirs, ignoreCase, printMatches));
                     }
                     else
                     {
                         counts.ScannedFilesCount++;
                         if (!dirs && (!hasPattern || MatchWildcard(pattern, checkPatternOnFullName ? sitem.FileSystemInfo.FullName : sitem.FileSystemInfo.Name, ignoreCase)))
                         {
+                            var matches = new List<string>();
                             if (hasContains)
                             {
                                 try
                                 {
-                                    var str = File.ReadAllText(sitem.FileSystemInfo.FullName);
+                                    var (lines, platform, eol) = TextFileReader.ReadAllLines(sitem.FileSystemInfo.FullName);
+                                    bool match = false;
+                                    for (int i = 0; i < lines.Length; i++)
+                                    {
+                                        if (lines[i].Contains(contains))
+                                        {
+                                            match |= true;
+                                            if (printMatches)
+                                            {
+                                                int j = lines[i].IndexOf(contains);
+                                                var loc = $"\t{context.ShellEnv.Colors.MarginText} {$"line {i},col {j}".PadRight(24)} ";
+                                                var txt = lines[i].Replace(contains, context.ShellEnv.Colors.TextExtractSelectionBlock + contains + Rdc + context.ShellEnv.Colors.TextExtract);
+                                                matches.Add(loc + context.ShellEnv.Colors.TextExtract + txt + Rdc);
+                                            }
+                                        }
+                                    }
+                                    if (!match) sitem = null;
+
+                                    /*var str = File.ReadAllText(sitem.FileSystemInfo.FullName);
                                     if (!str.Contains(contains))
-                                        sitem = null;
+                                        sitem = null;*/
                                 }
                                 catch (Exception ex)
                                 {
@@ -82,8 +105,10 @@ namespace OrbitalShell.Lib.FileSystem
                             {
                                 counts.FilesCount++;
                                 items.Add(sitem);
+                                if (print && context.Out.IsModified && matches.Count > 0) context.Out.Echoln("");
                                 if (print) sitem.Echo(new EchoEvaluationContext(context.Out, context, new FileSystemPathFormattingOptions(attributes, shortPathes, "", Br)));
                             }
+                            if (matches.Count > 0) matches.ForEach(x => context.Out.Echoln(x)); matches.Clear();
                         }
                         else
                             sitem = null;

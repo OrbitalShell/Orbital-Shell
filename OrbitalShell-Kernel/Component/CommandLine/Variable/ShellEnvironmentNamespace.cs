@@ -19,7 +19,7 @@
         /// CommandSettings
         /// </summary>        
         commandsSettings,
-        
+
         /// <summary>
         /// debug settings
         /// </summary>
@@ -30,9 +30,5 @@
         /// </summary>
         display,
 
-        /// <summary>
-        /// ???
-        /// </summary>
-        display_Colors,
     }
 }

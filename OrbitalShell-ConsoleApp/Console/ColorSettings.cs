@@ -28,6 +28,10 @@ namespace OrbitalShell.Console
         public TextColor BoxUnknown = new TextColor(ConsoleColor.Green, ConsoleColor.DarkCyan);
         public TextColor BoxNotIdentified = new TextColor(ConsoleColor.Yellow, ConsoleColor.Red);
         public TextColor Information = new TextColor(ConsoleColor.DarkCyan, null);
+        public TextColor TextExtract = new TextColor(ConsoleColor.Green, null);
+        public TextColor TextExtractSelectionBlock = new TextColor(ConsoleColor.Yellow, ConsoleColor.Green);
+
+        public TextColor TaskInformation = new TextColor(ConsoleColor.Blue, null);
 
         // DotNetConsoleAppToolkit-UI
 
@@ -71,6 +75,8 @@ namespace OrbitalShell.Console
         public TextColor DarkLabel = new TextColor(ConsoleColor.DarkBlue, null);
         public TextColor MediumDarkLabel = new TextColor(ConsoleColor.Blue, null);
         public TextColor HighlightIdentifier = new TextColor(ConsoleColor.Green, null);
+
+        public TextColor MarginText = new TextColor(ConsoleColor.DarkGray, null);
 
         //      colors by effect
 

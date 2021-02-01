@@ -300,6 +300,21 @@
         settings_clr_comPostExecOutModifiedOutput = 10102,
 
         /// <summary>
+        /// trace shell exec process start
+        /// </summary>
+        settings_clp_enableShellExecTraceProcessStart = 10103,
+
+        /// <summary>
+        /// trace shell exec process end
+        /// </summary>
+        settings_clp_enableShellExecTraceProcessEnd = 10104,
+
+        /// <summary>
+        /// bash ext for the shell exec batch command exec handling
+        /// </summary>
+        settings_clp_shellExecBatchExt = 10105,
+
+        /// <summary>
         /// if enabled, trace information about pipelines analysis
         /// </summary>
         debug_pipeline = 21,
@@ -333,6 +348,11 @@
         /// path ext from system path
         /// </summary>
         pathExt = 11001,
+
+        /// <summary>
+        /// path ext to be added to system path
+        /// </summary>
+        pathExtInit = 11002,
 
         // traditional bash variables
 

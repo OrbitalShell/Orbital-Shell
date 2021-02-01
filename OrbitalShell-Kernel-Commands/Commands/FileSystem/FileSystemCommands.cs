@@ -29,10 +29,10 @@ namespace OrbitalShell.Commands.FileSystem
     [CommandsNamespace(CommandNamespace.fs)]
     public class FileSystemCommands : ICommandsDeclaringType
     {
-        [Command("search for files and/or folders")]
+        [Command("search files, folders and text file content depending on search criteria")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Find(
             CommandEvaluationContext context,
-            [Parameter("search path")] DirectoryPath path,
+            [Parameter("search target: can be a folder or a file. If target is a file, the command must have a -c|--contains parameter (search in file)")] FileSystemPath path,
             [Option("p", "pattern", "select names that matches the pattern", true, true)] string pattern,
             [Option("i", "non-sensitive", "if set and p is set, perform a non case sensisitive search")] bool ignoreCase,
             [Option("f", "fullname", "check pattern on fullname instead of name")] bool checkPatternOnFullName,
@@ -41,14 +41,15 @@ namespace OrbitalShell.Commands.FileSystem
             [Option("s", "short", "print short pathes")] bool shortPathes,
             [Option("l", "all", "select both files and directories")] bool all,
             [Option("d", "dir", "select only directories")] bool dirs,
-            [Option("t", "top", "search in top directory only")] bool top
+            [Option("t", "top", "search in top directory only")] bool top,
+            [Option("m", "matches", "print matches lines if c|--contains")] bool matches
             )
         {
             if (path.CheckExists(context))
             {
                 var sp = string.IsNullOrWhiteSpace(pattern) ? "*" : pattern;
                 var counts = new FindCounts();
-                var items = FindItems(context, path.FullName, sp, top, all, dirs, attributes, shortPathes, contains, checkPatternOnFullName, counts, true, false, ignoreCase);
+                var items = FindItems(context, path.FullName, sp, top, all, dirs, attributes, shortPathes, contains, checkPatternOnFullName, counts, true, false, ignoreCase, matches);
                 var f = DefaultForegroundCmd;
                 counts.Elapsed = DateTime.Now - counts.BeginDateTime;
                 if (items.Count > 0) context.Out.Echoln();
@@ -107,7 +108,7 @@ namespace OrbitalShell.Commands.FileSystem
             [Option("w", "wide", "displays file names on several columns so output fills console width (only if not recurse mode). disable print of attributes")] bool wide,
             [Option("f", "file", "filter list on files (exclude directories). avoid -d")] bool filesOnly,
             [Option("d", "dir", "filter list on directories (exclude files)")] bool dirsOnly,
-            [Option("s", "sort", "sort list of files and folders. defaults is alphabetic, mixing files and folders", true, true)] DirSort sort = DirSort.name
+            [Option("s", "sort", "sort list of files and folders. default is alphabetic, mixing files and folders", true, true)] DirSort sort = DirSort.dir | DirSort.name
             )
         {
             var r = new List<FileSystemPath>();
@@ -439,7 +440,7 @@ namespace OrbitalShell.Commands.FileSystem
         public CommandResult<(List<(FileSystemPath source, FileSystemPath target)> items, FindCounts counts)> Mv(
             CommandEvaluationContext context,
             [Parameter("source: file/directory or several corresponding to a wildcarded path")] WildcardFilePath source,
-            [Parameter(1, "target: a file or a directory")] FileSystemPath dest,
+            [Parameter(1, "target: a file or a directory")] FileSystemPath target,
             [Option("i", "interactive", "prompt before overwrite")] bool interactive,
             [Option("v", "verbose", "explain what is being done, but actually does nothing")] bool verbose
             )
@@ -452,13 +453,13 @@ namespace OrbitalShell.Commands.FileSystem
                 List<(FileSystemPath src, FileSystemPath tgt)> r = new List<(FileSystemPath src, FileSystemPath tgt)>();
                 if (sourceCount > 1)
                 {
-                    if (dest.CheckExists(context))
+                    if (target.CheckExists(context))
                     {
-                        if (!dest.IsDirectory)
+                        if (!target.IsDirectory)
                         {
                             context.Errorln("target must be a directory");
                             return new CommandResult<(List<(FileSystemPath, FileSystemPath)> items, FindCounts counts)>(
-                                 (new List<(FileSystemPath, FileSystemPath)> { (source, dest) }, counts), ReturnCode.Error
+                                 (new List<(FileSystemPath, FileSystemPath)> { (source, target) }, counts), ReturnCode.Error
                                 );
                         }
                         else
@@ -466,18 +467,18 @@ namespace OrbitalShell.Commands.FileSystem
                             // move multiple source to dest
                             foreach (var item in items)
                             {
-                                var msg = $"move {item.GetPrintableName()} to {dest.GetPrintableName()}";
+                                var msg = $"move {item.GetPrintableName()} to {target.GetPrintableName()}";
                                 if (!interactive || Confirm("mv: " + msg))
                                 {
                                     if (source.IsFile)
                                     {
-                                        var newdest = Path.Combine(dest.FullName, item.Name);
+                                        var newdest = Path.Combine(target.FullName, item.Name);
                                         r.Add((item, new FileSystemPath(newdest)));
                                         File.Move(item.FullName, newdest);
                                     }
                                     else
                                     {
-                                        var newdest = Path.Combine(dest.FullName, item.Name);
+                                        var newdest = Path.Combine(target.FullName, item.Name);
                                         Directory.Move(item.FullName, newdest);
                                         r.Add((item, new DirectoryPath(newdest)));
                                     }
@@ -489,23 +490,23 @@ namespace OrbitalShell.Commands.FileSystem
                 }
                 else
                 {
-                    if (dest.CheckExists(context))
+                    if (target.CheckExists(context))
                     {
-                        if (dest.IsDirectory)
+                        if (target.IsDirectory)
                         {
                             // move one source to dest
-                            var msg = $"move {source.GetPrintableNameWithWlidCard()} to {dest.GetPrintableName()}";
+                            var msg = $"move {source.GetPrintableNameWithWlidCard()} to {target.GetPrintableName()}";
                             if (!interactive || Confirm("mv: " + msg))
                             {
                                 if (source.IsFile)
                                 {
-                                    var newdest = Path.Combine(dest.FullName, source.NameWithWildcard);
+                                    var newdest = Path.Combine(target.FullName, source.NameWithWildcard);
                                     File.Move(source.FullNameWithWildcard, newdest);
                                     r.Add((new FilePath(source.FullNameWithWildcard), new FilePath(newdest)));
                                 }
                                 else
                                 {
-                                    var newdest = Path.Combine(dest.FullName, source.NameWithWildcard);
+                                    var newdest = Path.Combine(target.FullName, source.NameWithWildcard);
                                     Directory.Move(source.FullName, newdest);
                                     r.Add((source, new DirectoryPath(newdest)));
                                 }
@@ -515,12 +516,12 @@ namespace OrbitalShell.Commands.FileSystem
                         else
                         {
                             // rename source (file) to dest (overwrite dest)
-                            var msg = $"rename {source.GetPrintableNameWithWlidCard()} to {dest.GetPrintableName()}";
+                            var msg = $"rename {source.GetPrintableNameWithWlidCard()} to {target.GetPrintableName()}";
                             if (!interactive || Confirm("mv: " + msg))
                             {
-                                dest.FileSystemInfo.Delete();
-                                File.Move(source.FullNameWithWildcard, dest.FullName);
-                                r.Add((new FilePath(source.FullNameWithWildcard), dest));
+                                target.FileSystemInfo.Delete();
+                                File.Move(source.FullNameWithWildcard, target.FullName);
+                                r.Add((new FilePath(source.FullNameWithWildcard), target));
                                 if (verbose) context.Out.Echoln(msg.Replace("rename ", "renamed "));
                             }
                         }
@@ -528,18 +529,18 @@ namespace OrbitalShell.Commands.FileSystem
                     else
                     {
                         // rename source to dest
-                        var msg = $"rename {source.GetPrintableNameWithWlidCard()} to {dest.GetPrintableName()}";
+                        var msg = $"rename {source.GetPrintableNameWithWlidCard()} to {target.GetPrintableName()}";
                         if (!interactive || Confirm("mv: " + msg))
                         {
                             if (source.IsFile)
                             {
-                                File.Move(source.FullNameWithWildcard, dest.FullName);
-                                r.Add((new FilePath(source.FullNameWithWildcard), dest));
+                                File.Move(source.FullNameWithWildcard, target.FullName);
+                                r.Add((new FilePath(source.FullNameWithWildcard), target));
                             }
                             else
                             {
-                                Directory.Move(source.FullName, dest.FullName);
-                                r.Add((source, dest));
+                                Directory.Move(source.FullName, target.FullName);
+                                r.Add((source, target));
                             }
                             if (verbose) context.Out.Echoln(msg.Replace("rename ", "renamed "));
                         }

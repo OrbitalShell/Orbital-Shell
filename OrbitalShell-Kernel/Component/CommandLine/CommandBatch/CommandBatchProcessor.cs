@@ -2,32 +2,38 @@
 using OrbitalShell.Lib;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 using System;
+using System.Net.Http.Headers;
 
 namespace OrbitalShell.Component.CommandLine.CommandBatch
 {
     public class CommandBatchProcessor
     {
-        public void RunBatch(CommandEvaluationContext context,string path)
+        public int RunBatch(CommandEvaluationContext context, string path)
         {
             var (lines, eol, separator) = TextFileReader.ReadAllLines(path);
-            RunBatch(context,lines);
+            return RunBatch(context, lines);
         }
 
-        public void RunBatchText(CommandEvaluationContext context, string batch)
+        public int RunBatchText(CommandEvaluationContext context, string batch)
         {
-            if (string.IsNullOrWhiteSpace(batch)) return;
+            if (string.IsNullOrWhiteSpace(batch)) return (int)ReturnCode.OK;
             var lines = batch.Split(Environment.NewLine);
-            RunBatch(context,lines);
+            return RunBatch(context, lines);
         }
 
-        void RunBatch(CommandEvaluationContext context, string[] batchLines)
+        int RunBatch(CommandEvaluationContext context, string[] batchLines)
         {
-            foreach ( var line in batchLines )
+            var ret = (int)ReturnCode.OK;
+            foreach (var line in batchLines)
             {
                 var s = line.Trim();
                 if (!s.StartsWith(BatchCommentBegin) && !string.IsNullOrEmpty(s))
-                    context.CommandLineProcessor.Eval(context, s, 0);
+                {
+                    var r = context.CommandLineProcessor.Eval(context, s, 0);
+                    if (r.EvalResultCode != (int)ReturnCode.OK) ret = (int)ReturnCode.Error;
+                }
             }
+            return ret;
         }
     }
 }

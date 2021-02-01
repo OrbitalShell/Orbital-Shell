@@ -1,15 +1,30 @@
-﻿using OrbitalShell.Console;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 
 namespace OrbitalShell.Lib
 {
+    /// <summary>
+    /// 'types extension methods
+    /// </summary>
     public static partial class TypesExt
     {
-        // type ext
+        #region type Type extensions
+
+        public static T Clone<T>(this T obj) where T : new()
+        {
+            var cloneObj = new T();
+            foreach (var member in typeof(T).GetMembers())
+            {
+                if (member is FieldInfo field && !field.IsInitOnly)
+                    field.SetValue(cloneObj, field.GetValue(obj));
+                if (member is PropertyInfo prop && prop.CanWrite)
+                    prop.SetValue(cloneObj, prop.GetValue(obj));
+            }
+            return cloneObj;
+        }
 
         // TODO: implements parameter fullName
         public static string UnmangledName(this Type type, bool fullName = false)
@@ -130,7 +145,23 @@ namespace OrbitalShell.Lib
             return null;
         }*/
 
-        // collections ext
+        #endregion
+
+        #region collections ext
+
+        public static List<T> Clone<T>(this List<T> o)
+        {
+            var r = new List<T>();
+            r.AddRange(o);
+            return r;
+        }
+
+        public static bool AddUnique<T>(this List<T> o, T value)
+        {
+            var r = o.Contains(value);
+            if (!r) o.Add(value);
+            return r;
+        }
 
         public static void Merge<K, V>(this Dictionary<K, V> dic, Dictionary<K, V> mergeTo)
         {
@@ -177,18 +208,21 @@ namespace OrbitalShell.Lib
             }
         }
 
+        #endregion
+
         // echo
+        /* OBSOLETE?
+                public static void Echo(this string x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
+                public static void Echo(this int x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
+                public static void Echo(this double x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
+                public static void Echo(this float x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
+                public static void Echo(this bool x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
 
-        public static void Echo(this string x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-        public static void Echo(this int x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-        public static void Echo(this double x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-        public static void Echo(this float x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-        public static void Echo(this bool x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-
-        public static void Echoln(this string x, ConsoleTextWriterWrapper @out) => @out.Echoln(x);
-        public static void Echoln(this int x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
-        public static void Echoln(this double x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
-        public static void Echoln(this float x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
-        public static void Echoln(this bool x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
+                public static void Echoln(this string x, ConsoleTextWriterWrapper @out) => @out.Echoln(x);
+                public static void Echoln(this int x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
+                public static void Echoln(this double x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
+                public static void Echoln(this float x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
+                public static void Echoln(this bool x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
+        */
     }
 }

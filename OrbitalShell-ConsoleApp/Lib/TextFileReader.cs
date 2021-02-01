@@ -8,7 +8,7 @@ namespace OrbitalShell.Lib
     public static class TextFileReader
     {
         public static ((int count, string separator, OSPlatform eol) detectedEOL,
-            List<(int count,string separator,OSPlatform eol)> eolCounts,
+            List<(int count, string separator, OSPlatform eol)> eolCounts,
             string[] lines) GetEOLCounts(string txt)
         {
             string[] r = null;
@@ -82,7 +82,7 @@ namespace OrbitalShell.Lib
                 matchEOL = (0, null, OSPlatform.Create("?"));
                 r = new string[] { txt };
             }
-            return (matchEOL.Value,counts,r);
+            return (matchEOL.Value, counts, r);
         }
 
         /// <summary>
@@ -91,11 +91,11 @@ namespace OrbitalShell.Lib
         /// </summary>
         /// <param name="path"></param>
         /// <returns>(text of the file splited into lines,eol symbol plateform style name,detected eol symbol</returns>
-        public static (string[] lines,OSPlatform eol,string separator) ReadAllLines(string path)
+        public static (string[] lines, OSPlatform eol, string separator) ReadAllLines(string path)
         {
             var txt = File.ReadAllText(path);
-            var (detectedEOL,_, lines) = GetEOLCounts(txt);
-            return (lines, detectedEOL.eol,detectedEOL.separator);
+            var (detectedEOL, _, lines) = GetEOLCounts(txt);
+            return (lines, detectedEOL.eol, detectedEOL.separator);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading;
-using sys=System.Diagnostics;
+using sys = System.Diagnostics;
 
 namespace OrbitalShell.Lib.Process
 {
@@ -19,7 +19,10 @@ namespace OrbitalShell.Lib.Process
         public Action<string> StdErrCallBack = null;
         readonly StringBuilder Out = new StringBuilder();
         readonly StringBuilder Err = new StringBuilder();
-        public int EndOfStreams { get; protected set; }= 0;
+        public int EndOfStreams { get; protected set; } = 0;
+        public Thread StdOutCallBackThread;
+        public Thread StdErrCallBackThread;
+
         protected ProcessWrapper() { }
 
         public static int RunCommand(
@@ -189,9 +192,9 @@ namespace OrbitalShell.Lib.Process
             sw.StdErrCallBack = stdErrCallBack;
             sw.Process = sys.Process.Start(psi);
             if (stdOutCallBack != null)
-                new Thread(() => { sw.ReadStdOut(); }).Start();
+                (sw.StdOutCallBackThread = new Thread(() => { sw.ReadStdOut(); })).Start();
             if (stdErrCallBack != null)
-                new Thread(() => { sw.ReadStdErr(); }).Start();
+                (sw.StdErrCallBackThread = new Thread(() => { sw.ReadStdErr(); })).Start();
             Action lcallBack = null;
             if (pc != null)
                 lcallBack = pc.Decrease;
@@ -199,6 +202,39 @@ namespace OrbitalShell.Lib.Process
             sw.ThreadRunner = new Thread(() => { sw.WaitForExit(lcallBack); });
             sw.ThreadRunner.Start();
             sw.ThreadRunner.Join();     // FGZ 19/5/2018 - découpler pour rétro compat
+            return sw;
+        }
+
+        /// <summary>
+        /// build a process wrapper that wraps a process runned within the provided process start infos in a separated thread that wait the process end and then call the callback function if not null
+        /// </summary>
+        /// <param name="psi"></param>
+        /// <returns></returns>
+        public static ProcessWrapper ThreadRun(
+            sys.ProcessStartInfo psi,
+            ProcessCounter pc = null,
+            Action<string> stdOutCallBack = null,
+            Action<string> stdErrCallBack = null)
+        {
+            var sw = new ProcessWrapper
+            {
+                EndOfStreams = 0,
+                PC = pc
+            };
+            if (pc != null)
+                pc.Increase();
+            InitPSI(psi);
+            sw.StdOutCallBack = stdOutCallBack;
+            sw.StdErrCallBack = stdErrCallBack;
+            sw.Process = sys.Process.Start(psi);
+            if (stdOutCallBack != null)
+                (sw.StdOutCallBackThread = new Thread(() => { sw.ReadStdOut(); })).Start();
+            if (stdErrCallBack != null)
+                (sw.StdErrCallBackThread = new Thread(() => { sw.ReadStdErr(); })).Start();
+            Action lcallBack = null;
+            if (pc != null)
+                lcallBack = pc.Decrease;
+
             return sw;
         }
 
@@ -222,9 +258,9 @@ namespace OrbitalShell.Lib.Process
             sw.StdErrCallBack = stdErrCallBack;
             sw.Process = sys.Process.Start(psi);
             if (stdOutCallBack != null)
-                new Thread(() => { sw.ReadStdOut(); }).Start();
+                (sw.StdOutCallBackThread = new Thread(() => { sw.ReadStdOut(); })).Start();
             if (stdErrCallBack != null)
-                new Thread(() => { sw.ReadStdErr(); }).Start();
+                (sw.StdErrCallBackThread = new Thread(() => { sw.ReadStdErr(); })).Start();
             Action lcallBack = null;
             if (pc != null)
                 lcallBack = pc.Decrease;
@@ -240,7 +276,12 @@ namespace OrbitalShell.Lib.Process
         /// </summary>
         /// <param name="psi"></param>
         /// <returns></returns>
-        public static ProcessWrapper ThreadRunGetExitCode(sys.ProcessStartInfo psi, ProcessCounter pc = null, Action<int> callBack = null, Action<string> stdOutCallBack = null, Action<string> stdErrCallBack = null)
+        public static ProcessWrapper ThreadRunGetExitCode(
+            sys.ProcessStartInfo psi,
+            ProcessCounter pc = null,
+            Action<int> callBack = null,
+            Action<string> stdOutCallBack = null,
+            Action<string> stdErrCallBack = null)
         {
             var sw = new ProcessWrapper
             {
@@ -254,9 +295,9 @@ namespace OrbitalShell.Lib.Process
             sw.StdErrCallBack = stdErrCallBack;
             sw.Process = sys.Process.Start(psi);
             if (stdOutCallBack != null)
-                new Thread(() => { sw.ReadStdOut(); }).Start();
+                (sw.StdOutCallBackThread = new Thread(() => { sw.ReadStdOut(); })).Start();
             if (stdErrCallBack != null)
-                new Thread(() => { sw.ReadStdErr(); }).Start();
+                (sw.StdErrCallBackThread = new Thread(() => { sw.ReadStdErr(); })).Start();
             Action lcallBack = null;
             if (pc != null)
                 lcallBack = pc.Decrease;
@@ -270,10 +311,8 @@ namespace OrbitalShell.Lib.Process
         /// </summary>
         protected static void InitPSI(sys.ProcessStartInfo psi)
         {
-            if (psi.StandardErrorEncoding == null)
-                psi.StandardErrorEncoding = Encoding.UTF8;
-            if (psi.StandardOutputEncoding == null)
-                psi.StandardOutputEncoding = Encoding.UTF8;
+            //psi.StandardErrorEncoding ??= Encoding.UTF8;
+            //psi.StandardOutputEncoding ??= Encoding.UTF8;
             psi.UseShellExecute = false;
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardError = true;
