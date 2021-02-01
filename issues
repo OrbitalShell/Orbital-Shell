@@ -35,7 +35,6 @@ improvements to do 👷
 
 📂commands
 
-28/1/21 FGZ     ✅NEXT 🚩 implements support of alias + add defnition on aliases in command meta-attributes
 26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
 
 procrastinated:
@@ -51,6 +50,8 @@ procrastinated:
 olds:
 -----
 
+28/1/21 FGZ     👷 add defnition on aliases in command meta-attributes
+28/1/21 FGZ     🆗 implements support of alias
 20/1/21 FGZ     🆗 add search command name as executable or script file in PATH and SUB SHELL EXEC
 28/1/21 FGZ     🆗 fix help: add returns type + display syntax even if no parameters
 28/1/21 FGZ     🆗 fix help: add enum parameters types values doc

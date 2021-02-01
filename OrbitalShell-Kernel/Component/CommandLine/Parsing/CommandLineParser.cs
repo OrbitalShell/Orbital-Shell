@@ -8,6 +8,7 @@ using OrbitalShell.Console;
 using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -331,6 +332,21 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 var workUnit = pipeline;
                 var splits = new List<StringSegment>();
                 var references = new Dictionary<string, object>();
+
+                var token = workUnit.Segments.First()?.Text;
+                if (token != null && context
+                        .CommandLineProcessor
+                        .CommandsAlias
+                        .Aliases
+                        .TryGetValue(token, out var alias)
+                        && workUnit.Segments.Count == 1)
+                {
+                    expr = alias;
+                    splits0 = SplitExpr(context, expr);
+                    pipeline = GetPipeline(context, splits0);
+                    workUnit = pipeline;
+                }
+
                 while (workUnit != null)
                 {
                     splits.Clear();
@@ -405,9 +421,6 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
             if (ctokens.Count == 0)
             {
-                // TODO : check aliases HERE
-                // ... 
-
                 // check cmdspec from external token
                 if (commandLineParserExtension != null &&
                     commandLineParserExtension
