@@ -174,8 +174,8 @@ namespace OrbitalShell.Component.CommandLine.Module
 
                         var cmdNamespaceAttr = method.GetCustomAttribute<CommandNamespaceAttribute>();
                         var cmdNamespace = cmdNamespaceAttr == null ? dtNamespace : CheckAndNormalizeCommandNamespace(cmdNamespaceAttr.Segments);
-                        var cmdAliasesAttr = method.GetCustomAttribute<CommandAliasesAttribute>();
-                        var cmdAliases = cmdAliasesAttr?.Aliases;
+                        var cmdAliasesAttrLst = method.GetCustomAttributes<CommandAliasAttribute>();
+                        var cmdAliases = cmdAliasesAttrLst?.Select(x => (x.AliasName, x.AliasText)).ToList();
 
                         #region init from method parameters attributes
 
@@ -279,7 +279,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                                 cmd.Documentation,
                                 method,
                                 instance,
-                                cmdAliases?.ToList(),
+                                cmdAliases,
                                 paramspecs);
 
                             bool registered = true;
@@ -308,8 +308,8 @@ namespace OrbitalShell.Component.CommandLine.Module
                                     foreach (var alias in cmdspec.Aliases)
                                         context.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(
                                             context,
-                                            alias,
-                                            cmdspec.Name
+                                            alias.name,
+                                            alias.text
                                             );
                             }
                         }

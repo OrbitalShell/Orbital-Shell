@@ -13,6 +13,12 @@ namespace OrbitalShell.Lib
     {
         #region type Type extensions
 
+        /// <summary>
+        /// surface clone
+        /// </summary>
+        /// <typeparam name="T">object type</typeparam>
+        /// <param name="obj">object to clone</param>
+        /// <returns>the clone</returns>
         public static T Clone<T>(this T obj) where T : new()
         {
             var cloneObj = new T();

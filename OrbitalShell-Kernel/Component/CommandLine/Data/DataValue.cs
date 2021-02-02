@@ -50,8 +50,9 @@ namespace OrbitalShell.Component.CommandLine.Data
             ValueType = valueType ?? value?.GetType();
             ValueType = ValueType ?? throw new ArgumentNullException(nameof(ValueType));
             IsReadOnly = isReadOnly;
-            Value = value;
-            HasValue = true;
+            /*Value = value;
+            HasValue = true;*/
+            SetValue(value);
         }
 
         public DataValue(
@@ -137,10 +138,27 @@ namespace OrbitalShell.Component.CommandLine.Data
         bool Has(object target, ArraySegment<string> path, out object data)
             => GetPathOwner(target, path, out data);
 
-        public IDataObject Set(ArraySegment<string> path, object value)
-            => Set(this, path, value);
+        /// <summary>
+        /// set - isReadOnly and type are currently ignored (no usage)
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="value"></param>
+        /// <param name="isReadOnly">not implemented</param>
+        /// <param name="type">not implemented</param>
+        /// <returns></returns>
+        public IDataObject Set(ArraySegment<string> path, object value, bool isReadOnly = false, Type type = null)
+            => Set(this, path, value, isReadOnly, type);
 
-        IDataObject Set(object target, ArraySegment<string> path, object value)
+        /// <summary>
+        /// set - isReadOnly and type are currently ignored (no usage)
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="path"></param>
+        /// <param name="value"></param>
+        /// <param name="isReadOnly">not implemented</param>
+        /// <param name="type">not implemeted</param>
+        /// <returns></returns>
+        IDataObject Set(object target, ArraySegment<string> path, object value, bool isReadOnly = false, Type type = null)
         {
             IDataObject r = Parent;
             if (IsReadOnly) throw new DataObjectReadOnlyException(this);
@@ -175,7 +193,7 @@ namespace OrbitalShell.Component.CommandLine.Data
             return $"{Name}{(IsReadOnly ? " (r) " : "")} [{ValueType.Name}] {(HasValue ? ("= " + DumpAsText(Value,false)) : "")}";
         }*/
 
-        public void SetValue(object value)
+        public void SetValue(object value)      // TODO return DataValue here , and propagates returns to callers and interfaces
         {
             if (IsReadOnly) throw new Exception($"{_valueId} is readonly");
             if (value != null)
@@ -183,15 +201,26 @@ namespace OrbitalShell.Component.CommandLine.Data
                 if (ValueType != null)
                 {
                     var objType = value.GetType();
-                    if (objType != ValueType && (!objType.InheritsFrom(ValueType))) throw new Exception($"{_valueId} type mismatch: excepted type: {ValueType.FullName}, provided type: {value.GetType().FullName}");
+                    if (objType != ValueType
+                        && (!objType.InheritsFrom(ValueType)))
+                    {
+                        if (ValueTextParser.ToTypedValue(value, ValueType, null, out var v, out _))
+                        {
+                            this.Value = v;
+                            return;
+                        }
+                        else
+                            throw new Exception($"value can't be converted to type: {ValueType.FullName} from type {value.GetType().FullName}");
+                    }
                 }
             }
             this.Value = value;
+            this.HasValue = true;
         }
 
         /// <summary>
         ///  set a typed variable from a string value<br/>
-        ///  don't set the value if conversion has failed
+        ///  don't set the value if conversion has failed - no exception
         /// </summary>
         /// <param name="value">a string value that must be converted to var type an assigned to the var</param>
         public void SetValue(string value)

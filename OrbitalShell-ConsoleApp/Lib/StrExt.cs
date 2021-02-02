@@ -63,5 +63,30 @@ namespace OrbitalShell.Lib
                 if (s.Contains(c)) return true;
             return false;
         }
+
+        public static bool IsUpperCase(this string s)
+        {
+            foreach (var c in s) if (!char.IsUpper(c)) return false;
+            return true;
+        }
+
+        public static bool EndsWith(this string s, List<string> postfixs)
+        {
+            foreach (var p in postfixs) if (s.EndsWith(p)) return true;
+            return false;
+        }
+
+        public static bool ContainsDigit(this string s)
+        {
+            foreach (var c in s) if (char.IsDigit(c)) return true;
+            return false;
+        }
+
+        public static string RemoveDigits(this string s)
+        {
+            var sb = new StringBuilder();
+            foreach (var c in s) if (!char.IsDigit(c)) sb.Append(c);
+            return sb.ToString();
+        }
     }
 }

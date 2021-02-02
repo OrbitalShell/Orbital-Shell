@@ -2,7 +2,6 @@
 using OrbitalShell.Lib;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 using System;
-using System.Net.Http.Headers;
 
 namespace OrbitalShell.Component.CommandLine.CommandBatch
 {

@@ -11,10 +11,10 @@ namespace OrbitalShell.Component.CommandLine.Data
         bool HasAttributes { get; }
 
         List<IDataObject> GetAttributes();
-        bool Get(ArraySegment<string> path,out object data );
-        bool GetPathOwner(ArraySegment<string> path,out object data);
-        bool Has(ArraySegment<string> path,out object data);
-        IDataObject Set(ArraySegment<string> path, object value);
+        bool Get(ArraySegment<string> path, out object data);
+        bool GetPathOwner(ArraySegment<string> path, out object data);
+        bool Has(ArraySegment<string> path, out object data);
+        IDataObject Set(ArraySegment<string> path, object value, bool isReadOnly = false, Type type = null);
         void Unset(ArraySegment<string> path);
     }
 }

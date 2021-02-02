@@ -100,6 +100,10 @@ namespace OrbitalShell.Commands.FileSystem
 
         // TODO --sort=... or -s= and no short name should be possible (symbol =) ?
         [Command("list files and folders in a path. eventually recurse in sub paths")]
+        [CommandAlias("ls", "dir -s size,rev")]
+        [CommandAlias("lf", "dir -f -s size,rev")]
+        [CommandAlias("ld", "dir -d")]
+        [CommandAlias("ll", "dir")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Dir(
             CommandEvaluationContext context,
             [Parameter("path where to list files and folders. if not specified is set to the current directory. use wildcards * and ? to filter files and folders names", true)] WildcardFilePath path,

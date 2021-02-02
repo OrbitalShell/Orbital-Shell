@@ -375,7 +375,15 @@ namespace OrbitalShell.Component.CommandLine.Variable
         {
             var v = var + "";
             var isSpec = IsSpecialVar(v);
-            return (isSpec ? $"{SPECIAL_VAR_DECL_PREFIX}{(char)var}" : v);
+            if (isSpec)
+            {
+                var nst = v.Replace(SPECIAL_VAR_DECL_PREFIX, "").Replace(SPECIAL_VAR_IMPL_PREFIX, "").Split("_").ToList();
+                if (nst.Count > 0) nst.RemoveAt(nst.Count - 1);
+                var nspfx = string.Join("_", nst);
+                if (!string.IsNullOrEmpty(nspfx)) nspfx += "_";
+                return $"{SPECIAL_VAR_DECL_PREFIX}{nspfx}{(char)var}";
+            }
+            return v;
         }
 
         static bool IsSpecialVar(string s) => s.StartsWith(SPECIAL_VAR_IMPL_PREFIX) || s.StartsWith(SPECIAL_VAR_DECL_PREFIX);
@@ -392,7 +400,7 @@ namespace OrbitalShell.Component.CommandLine.Variable
         {
             var isSpecialVar = IsSpecialVar(@namespace);
             return Variables.Nsp(
-                ("" + (isSpecialVar ? VariableNamespace.local : VariableNamespace.env)),
+                ("" + (isSpecialVar ? VariableNamespace._ : VariableNamespace.env)),
                 isSpecialVar ? @namespace.Substring(SPECIAL_VAR_IMPL_PREFIX.Length) : @namespace
                 );
         }

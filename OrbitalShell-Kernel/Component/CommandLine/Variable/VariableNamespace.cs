@@ -3,18 +3,23 @@
     public enum VariableNamespace
     {
         /// <summary>
-        /// environment
+        /// environment (shell variables)
         /// </summary>
         env,
 
         /// <summary>
-        /// local to the command context
+        /// local to the command context (user variables)
         /// </summary>
         local,
 
         /// <summary>
-        /// global
+        /// global (shell variables)
         /// </summary>
-        global
+        global,
+
+        /// <summary>
+        /// empty name space (shell contextual variables)
+        /// </summary>
+        _
     }
 }

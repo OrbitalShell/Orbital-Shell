@@ -25,7 +25,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             Type ptype,
             object defaultValue,
             out object convertedValue,
-            out List<object> possibleValues
+            out List<object> possibleValues,
+            bool defaultReturnIdentityOk = false
             )
         {
             convertedValue = null;
@@ -52,7 +53,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 var values = s.SplitNotUnslashed(CommandLineSyntax.ParameterTypeListValuesSeparator);
                 foreach (var val in values)
                 {
-                    if (ToTypedValue(val, argType, null, out var convertedVal, out var valPossibleValues))
+                    if (ToTypedValue(val, argType, null, out var convertedVal, out var valPossibleValues, defaultReturnIdentityOk))
                     {
                         met.Invoke(lst, new object[] { convertedVal });
                     }
@@ -79,7 +80,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     {
                         var val = fval.Substring(1);
                         var flagEnabling = fval[0] == CommandLineSyntax.ParameterTypeFlagEnumValuePrefixEnabled;
-                        if (ToTypedValue(val, ptype, null, out var convertedVal, out var valPossibleValues))
+                        if (ToTypedValue(val, ptype, null, out var convertedVal, out var valPossibleValues, defaultReturnIdentityOk))
                         {
                             if (flagEnabling)
                                 flag = (int)flag + (int)convertedVal;
@@ -247,8 +248,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 // unknown type, not CustomParameter: converted value = original value
                 if (!found)
                 {
-                    result = true;
-                    convertedValue = ovalue;
+                    result = defaultReturnIdentityOk;
+                    if (defaultReturnIdentityOk) convertedValue = ovalue;
+                    /*result = true;
+                    convertedValue = ovalue;*/
+                    //result = false;
                 }
             }
 

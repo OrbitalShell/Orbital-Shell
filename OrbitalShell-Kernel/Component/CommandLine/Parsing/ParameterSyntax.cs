@@ -113,7 +113,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 CommandParameterSpecification.ParameterInfo.ParameterType,
                 CommandParameterSpecification.ParameterInfo.DefaultValue,
                 out convertedValue,
-                out possibleValues);
+                out possibleValues,
+                true);
 
         public IMatchingParameter BuildMatchingParameter()
         {

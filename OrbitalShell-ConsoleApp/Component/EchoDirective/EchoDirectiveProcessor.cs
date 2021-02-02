@@ -12,18 +12,19 @@ namespace OrbitalShell.Component.EchoDirective
     public class EchoDirectiveProcessor
     {
         public delegate object Command1pIntDelegate(int n = 1);
-        public delegate object Command2pIntDelegate(int x = 1,int y = 1);
-        public delegate object Command2pDelegate(object parameter,object argument);
+        public delegate object Command2pIntDelegate(int x = 1, int y = 1);
+        public delegate object Command2pDelegate(object parameter, object argument);
         public delegate object CommandDelegate(object x);
         public delegate void SimpleCommandDelegate();
         public readonly ConsoleTextWriterWrapper Writer;
         public readonly CommandMap CommandMap;
- 
+
 
         public EchoDirectiveProcessor(
             ConsoleTextWriterWrapper writer,
             CommandMap commandMap
-        ) {
+        )
+        {
             Writer = writer;
             this.CommandMap = commandMap;
         }
@@ -39,12 +40,13 @@ namespace OrbitalShell.Component.EchoDirective
             lock (Writer.Lock)
             {
                 int i = 0;
-                KeyValuePair<string, (SimpleCommandDelegate simpleCommand,CommandDelegate command,object parameter)>? cmd = null;
+                KeyValuePair<string, (SimpleCommandDelegate simpleCommand, CommandDelegate command, object parameter)>? cmd = null;
                 int n = s.Length;
                 bool isAssignation = false;
                 int cmdindex = -1;
                 while (cmd == null && i < n)
                 {
+                    // TODO echo directive parser too slow : first check the presence of a directive block starts: '(' (directive map is huge!)
                     foreach (var ccmd in CommandMap.Map)
                     {
                         if (s.IndexOf(CommandBlockBeginChar + ccmd.Key, i) == i)
@@ -146,40 +148,53 @@ namespace OrbitalShell.Component.EchoDirective
                     {
                         var t = cmdtxt.Split(CommandValueAssignationChar);
                         value = t[1];
-                    } 
+                    }
 
                     // ❎ --> exec echo directive command : with ASSIGNATION
-                    if (!doNotEvalutatePrintDirectives) {
-                        if (cmd.Value.Value.command!=null) {
-                            if (cmd.Value.Value.parameter==null)
+                    if (!doNotEvalutatePrintDirectives)
+                    {
+                        if (cmd.Value.Value.command != null)
+                        {
+                            if (cmd.Value.Value.parameter == null)
                             {
-                                try {
+                                try
+                                {
                                     result = cmd.Value.Value.command(value);    // CommandDelegate
-                                } catch (Exception ex) {
+                                }
+                                catch (Exception ex)
+                                {
                                     if (TraceCommandErrors) Error(ex.Message);
                                 }
-                            } else {
-                                try {
-                                    result=cmd.Value.Value.command((cmd.Value.Value.parameter,value));
-                                } catch (Exception ex) {
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    result = cmd.Value.Value.command((cmd.Value.Value.parameter, value));
+                                }
+                                catch (Exception ex)
+                                {
                                     if (TraceCommandErrors) Error(ex.Message);
                                 }
                             }
                         }
                         else
-                            if (cmd.Value.Value.simpleCommand!=null) 
-                            { 
-                                try {
-                                    cmd.Value.Value.simpleCommand();
-                                } catch (Exception ex) {
-                                    if (TraceCommandErrors) Error(ex.Message);
-                                } 
-                                result=null; 
+                            if (cmd.Value.Value.simpleCommand != null)
+                        {
+                            try
+                            {
+                                cmd.Value.Value.simpleCommand();
                             }
-                            // else: no command: do nothing
+                            catch (Exception ex)
+                            {
+                                if (TraceCommandErrors) Error(ex.Message);
+                            }
+                            result = null;
+                        }
+                        // else: no command: do nothing
                     }
                     // <--
-                    
+
                     if (Writer.FileEchoDebugEnabled && Writer.FileEchoDebugCommands)
                         Writer.EchoDebug(CommandBlockBeginChar + cmd.Value.Key + value + CommandBlockEndChar);
 
@@ -188,32 +203,41 @@ namespace OrbitalShell.Component.EchoDirective
                 else
                 {
                     // ❎ --> exec echo directive command : NO ASSIGNATION
-                    if (!doNotEvalutatePrintDirectives) {
-                        if (cmd.Value.Value.command!=null) {
-                            try {
+                    if (!doNotEvalutatePrintDirectives)
+                    {
+                        if (cmd.Value.Value.command != null)
+                        {
+                            try
+                            {
                                 result = cmd.Value.Value.command(cmd.Value.Value.parameter);
-                            } catch (Exception ex) {
+                            }
+                            catch (Exception ex)
+                            {
                                 if (TraceCommandErrors) Error(ex.Message);
                             }
                         }
                         else
                         {
-                            if (cmd.Value.Value.simpleCommand!=null) { 
-                                try {
-                                    cmd.Value.Value.simpleCommand(); 
-                                } catch (Exception ex) {
+                            if (cmd.Value.Value.simpleCommand != null)
+                            {
+                                try
+                                {
+                                    cmd.Value.Value.simpleCommand();
+                                }
+                                catch (Exception ex)
+                                {
                                     if (TraceCommandErrors) Error(ex.Message);
                                 }
-                                result=null; 
+                                result = null;
                             }
                             // else: no command: do nothing
                         }
                     }
                     // <--
-                    
+
                     if (Writer.FileEchoDebugEnabled && Writer.FileEchoDebugCommands)
                         Writer.EchoDebug(CommandBlockBeginChar + cmd.Value.Key + CommandBlockEndChar);
-                    
+
                     printSequences?.Add(new EchoSequence(cmd.Value.Key, i, j, value, null, startIndex));
                 }
                 if (result != null)

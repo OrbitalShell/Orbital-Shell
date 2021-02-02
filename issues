@@ -5,10 +5,11 @@
 issues 
 ------
 
-1/19/21 FGZ     🚩 prompt: crash when output in reader that is not inputed by keyboard, once a key is pressed
-2/2/21 FGZ      🚩 echo $£
+1/19/21 FGZ     💥 prompt: crash when output in reader that is not inputed by keyboard, once a key is pressed
+2/2/21 FGZ      💥 echo $£
                 failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
                 for syntax: echo [obj] [-n|--no-break] [-r|--raw]
+2/2/2021 FGZ    🚩 echo directive parser too slow : first check the presence of a directive block starts: '(' (directive map is huge!)
 
 improvements to do 👷
 ------------------
@@ -18,8 +19,8 @@ improvements to do 👷
 
 📂variables
 
-21/1/21 FGZ     ✅ NEXT implements var-set
 21/1/21 FGZ     implements var-info
+2/2/21 FGZ      fix var-unset
 20/1/21 FGZ     variable defined as a reference to another but having its own path/name
 20/1/21 FGZ     variable value provided by a programmatic way
 21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
@@ -54,6 +55,7 @@ procrastinated:
 olds:
 -----
 
+21/1/21 FGZ     🆗 implements var-set
 26/1/21 FGZ     🆗 add support for command invokation with name having namespace
 1/19/21 FGZ     🆗 prompt: crash (backspace,..) in compatibility mode (vscode terminal problem!) - try to degrade gracefully ?
 28/1/21 FGZ     🆗 add defnition on aliases in command meta-attributes + update help output

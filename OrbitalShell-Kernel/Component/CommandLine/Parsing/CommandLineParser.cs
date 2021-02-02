@@ -310,7 +310,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             return (expr, references);
         }
 
-        public static PipelineParseResults Parse(
+        public static PipelineParseResults ParseCommandLine(
             CommandEvaluationContext context,
             SyntaxAnalyser syntaxAnalyzer,
             string expr,

@@ -20,6 +20,7 @@ using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using System.Collections.Immutable;
+using OrbitalShell.Lib.Sys;
 
 namespace OrbitalShell.Commands
 {
@@ -314,7 +315,7 @@ namespace OrbitalShell.Commands
 
         [Command("list modules if no option specified, else load or unload modules")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.module)]
-        [CommandAliases("mod", "md")]
+        [CommandAlias("mod", "module")]
         public CommandResult<List<ModuleSpecification>> Module(
             CommandEvaluationContext context,
             [Option("l", "load", "load a module from the given path", true, true)] FilePath loadModulePath = null,
@@ -420,6 +421,9 @@ namespace OrbitalShell.Commands
 
         [Command("outputs a table of variables and values")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
+        [CommandAlias("loc", "vars local")]
+        [CommandAlias("glob", "vars global")]
+        [CommandAlias("settings", "env settings")]
         public CommandResult<List<IDataObject>> Vars(
             CommandEvaluationContext context,
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
@@ -468,7 +472,7 @@ namespace OrbitalShell.Commands
         }
 
         [Command("set a command alias if a name and a value is provided. If only the name is provided, clear the alias definition. it no parameters is specified, list all alias")]
-        [CommandAliases("al")]
+        [CommandAlias("al", "alias")]
         public CommandResult<List<string>> Alias(
             CommandEvaluationContext context,
             [Parameter(0, "name of the alias", true)] string name,
@@ -496,22 +500,47 @@ namespace OrbitalShell.Commands
 
         [Command("set the value of a shell variable, or display the name and values of shell variables")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<IDataObject> Set(
-            CommandEvaluationContext context
+        public CommandResult<object> Set(
+            CommandEvaluationContext context,
+            [Parameter(0, "variable name with or without namespace prefix", false)] string name,
+            [Parameter(1, "value that must be assigned to the variable", false)] object value,
+            [Parameter(2, "name of the object type to be used in order to convert the provided value (on first assign, will assign a type to the variable. After type is assigned, the value can't be assigned from another type). default type is object", true)] string typeLabel = null,
+            [Option("r", "read-only", "for a new variable, set it read only")] bool readOnly = false
             )
         {
-            var vars = context.Variables.GetDataValues();
-            return new CommandResult<IDataObject>();
+            if (!VariableSyntax.HasValidRootNamespace(name))
+                name = Variables.Nsp(VariableNamespace.local, name);
+
+            Type type = null;
+            if (!string.IsNullOrWhiteSpace(typeLabel))
+            {
+                type = TypeBuilder.GetType(typeLabel);
+
+                if (type == null)
+                    throw new Exception(
+                        $"type label not found: '{typeLabel}'. possible values are: {string.Join(",", TypeBuilder.GetTypeLabels().Keys)}{ANSI.CRLF}or any actual .net type fullname case sensitive");
+            }
+
+            context.Variables.Set(name, value, readOnly, type);
+            context.Variables.Get(name, out var @var, false);
+
+            return new CommandResult<object>(@var);
         }
 
-        [Command("unset the value of shell variables")]
+        [Command("unset the value of shell variables. can not unset namespace, only variables")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<IDataObject> Unset(
-            CommandEvaluationContext context
+        public CommandResult<object> Unset(
+            CommandEvaluationContext context,
+            [Parameter(0, "variable name with or without namespace prefix", false)] string name
             )
         {
-            var vars = context.Variables.GetDataValues();
-            return new CommandResult<IDataObject>();
+            context.Variables.Get(name, out var @var, true);
+            if (@var is IDataObject)
+                context.Variables.Unset(name);
+            else
+                throw new Exception($"path '{name}' refers a variable member, not a variable");
+
+            return new CommandResult<object>(@var);
         }
 
         #endregion

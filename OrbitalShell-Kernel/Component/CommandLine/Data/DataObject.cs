@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace OrbitalShell.Component.CommandLine.Data
 {
@@ -8,7 +9,8 @@ namespace OrbitalShell.Component.CommandLine.Data
     {
         public DataObjectReadOnlyException(IDataObject dataObject) : base(
             $"{dataObject?.GetType().Name} name='{dataObject.Name}' is read only"
-            ) { }
+            )
+        { }
     }
 
     public class DataObject : IDataObject
@@ -33,12 +35,12 @@ namespace OrbitalShell.Component.CommandLine.Data
         public List<IDataObject> GetAttributes()
         {
             var r = new List<IDataObject>();
-            foreach ( var attrkv in _attributes )
+            foreach (var attrkv in _attributes)
                 r.Add(attrkv.Value);
             return r;
         }
 
-        public IDataObject Set(ArraySegment<string> path, object value)
+        public IDataObject Set(ArraySegment<string> path, object value, bool isReadOnly = false, Type type = null)
         {
             IDataObject r = null;
             if (IsReadOnly) throw new DataObjectReadOnlyException(this);
@@ -48,18 +50,23 @@ namespace OrbitalShell.Component.CommandLine.Data
             {
                 if (path.Count == 1)
                 {
-                    r = (value is IDataObject) ? (IDataObject)value : new DataValue(attrname, value);
-                    r.Parent = this;
-                    _attributes[attrname] = r;
+                    if (value is DataObject) throw new Exception($"bad value type: '({nameof(IDataObject)})'");
+                    // ⏺ update value                    
+                    ((DataValue)attr).SetValue(value);
+                    //r.Parent = this;
+                    //_attributes[attrname] = r;
                 }
                 else
-                    r = attr.Set(path.Slice(1), value);
+                    r = attr.Set(path.Slice(1), value, isReadOnly, type);
             }
             else
             {
                 if (path.Count == 1)
                 {
-                    r = (value is IDataObject) ? (IDataObject)value : new DataValue(attrname, value);
+                    // ⏺ new value
+                    r = (value is IDataObject) ? (IDataObject)value
+                        : new DataValue(attrname, value, type, isReadOnly);
+
                     r.Parent = this;
                     _attributes.Add(attrname, r);
                 }
@@ -68,7 +75,7 @@ namespace OrbitalShell.Component.CommandLine.Data
                     var node = new DataObject(attrname);
                     _attributes[attrname] = node;
                     node.Parent = this;
-                    r = node.Set(path.Slice(1), value);
+                    r = node.Set(path.Slice(1), value, isReadOnly, type);
                 }
             }
             return r;
@@ -90,14 +97,14 @@ namespace OrbitalShell.Component.CommandLine.Data
             }
         }
 
-        public bool Get(ArraySegment<string> path,out object data)
+        public bool Get(ArraySegment<string> path, out object data)
         {
             data = null;
             if (path.Count == 0) return false;
             var attrname = path[0];
             if (_attributes.TryGetValue(attrname, out var attr))
             {
-                if (path.Count == 1) { data=attr; return true; }
+                if (path.Count == 1) { data = attr; return true; }
                 if (attr.Get(path.Slice(1), out var sdata))
                 {
                     data = sdata;
@@ -107,10 +114,10 @@ namespace OrbitalShell.Component.CommandLine.Data
             return false;
         }
 
-        public bool Has(ArraySegment<string> path,out object data)
-            => GetPathOwner(path,out data);
+        public bool Has(ArraySegment<string> path, out object data)
+            => GetPathOwner(path, out data);
 
-        public bool GetPathOwner(ArraySegment<string> path,out object data)
+        public bool GetPathOwner(ArraySegment<string> path, out object data)
         {
             data = null;
             if (path.Count == 0) return false;
@@ -122,7 +129,7 @@ namespace OrbitalShell.Component.CommandLine.Data
                     data = this;
                     return true;
                 }
-                return GetPathOwner(path.Slice(1),out data);
+                return GetPathOwner(path.Slice(1), out data);
             }
             return false;
         }

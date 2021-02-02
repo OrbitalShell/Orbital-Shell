@@ -2,9 +2,7 @@
 using OrbitalShell.Console;
 using System.Collections.Generic;
 using System.Linq;
-using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
 
 namespace OrbitalShell.Component.CommandLine.Pipeline
 {
@@ -24,8 +22,8 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
         public StringSegment InputRedirectSource = null;
         public StringSegment OutputRedirectTarget = null;
         public List<object> RedirectUnions = new List<object>();
-        public bool IsInputRedirected => InputRedirectSource != null || HereScript!=null;
-        public bool IsOutputRedirected => OutputRedirectTarget != null || HereScript!=null;
+        public bool IsInputRedirected => InputRedirectSource != null || HereScript != null;
+        public bool IsOutputRedirected => OutputRedirectTarget != null || HereScript != null;
 
         public PipelineWorkUnit() { }
 
@@ -46,11 +44,11 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
                 OutputRedirectTarget!=null?">":null,
                 redirectUnions
             };
-            var attrs = string.Join(' ', attributes.Where(x=>x!=null)).Trim();
+            var attrs = string.Join(' ', attributes.Where(x => x != null)).Trim();
             if (!string.IsNullOrWhiteSpace(attrs)) attrs = $" ({attrs})";
             return $"{Darkgreen}{StartIndex}-{EndIndex}: {string.Join(' ', Segments.Select(x => x.Text))}"
                 + attrs
-                + ((NextUnit == null) ? "" : " " + (NextUnit==null?"":Br) + NextUnit.ToString());
+                + ((NextUnit == null) ? "" : " " + (NextUnit == null ? "" : Br) + NextUnit.ToString());
         }
 
 

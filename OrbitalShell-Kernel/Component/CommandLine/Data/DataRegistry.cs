@@ -1,4 +1,5 @@
 ﻿using OrbitalShell.Lib;
+using System;
 using System.Collections.Generic;
 using static OrbitalShell.Component.CommandLine.Variable.VariableSyntax;
 
@@ -13,12 +14,12 @@ namespace OrbitalShell.Component.CommandLine.Data
 
         public List<IDataObject> GetDataValues() => RootObject.GetAttributes();
 
-        public void Set(string path,object value=null)
+        public void Set(string path, object value = null, bool isReadOnly = false, Type type = null)
         {
             var p = SplitPath(path);
-            var valueObj = RootObject.Set(p, value);
-            if (RootObject.Get(p,out _) && !_objects.ContainsKey(path))
-                _objects.AddOrReplace(path, valueObj);            
+            var valueObj = RootObject.Set(p, value, isReadOnly, type);
+            if (RootObject.Get(p, out _) && !_objects.ContainsKey(path))
+                _objects.AddOrReplace(path, valueObj);
         }
 
         public void Unset(string path)
@@ -28,14 +29,14 @@ namespace OrbitalShell.Component.CommandLine.Data
                 _objects.Remove(path);
         }
 
-        public bool Get(string path,out object data)
+        public bool Get(string path, out object data)
         {
             if (_objects.TryGetValue(path, out var value))
             {
                 data = value;
                 return true;
             }
-            if (RootObject.Get(SplitPath(path),out var sdata))
+            if (RootObject.Get(SplitPath(path), out var sdata))
             {
                 _objects.AddOrReplace(path, sdata);
                 data = sdata;
@@ -45,8 +46,8 @@ namespace OrbitalShell.Component.CommandLine.Data
             return false;
         }
 
-        public bool GetPathOwner(string path,out object data)
-            => RootObject.GetPathOwner(SplitPath(path),out data);
-               
+        public bool GetPathOwner(string path, out object data)
+            => RootObject.GetPathOwner(SplitPath(path), out data);
+
     }
 }

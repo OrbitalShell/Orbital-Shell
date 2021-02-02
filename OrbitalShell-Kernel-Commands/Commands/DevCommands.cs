@@ -107,7 +107,7 @@ namespace OrbitalShell.Commands.Dev
         }
 
         [Command("command crash test (21/1/21)")]
-        [CommandAliases("crash")]
+        [CommandAlias("crash", "crash-test")]
         public CommandVoidResult CrashTest(CommandEvaluationContext context) => throw new Exception("command crash test (throws exception)");
 
         [Command("command with several option names types (short/long/both/none) (27/1/21)")]

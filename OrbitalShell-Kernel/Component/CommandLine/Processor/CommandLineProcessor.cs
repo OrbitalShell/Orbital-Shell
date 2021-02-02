@@ -616,7 +616,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         {
             try
             {
-                var pipelineParseResults = Parse(context, _syntaxAnalyzer, expr, CommandLineProcessorExternalParserExtension);
+                var pipelineParseResults = ParseCommandLine(context, _syntaxAnalyzer, expr, CommandLineProcessorExternalParserExtension);
                 bool allValid = true;
                 var evalParses = new List<ExpressionEvaluationResult>();
 
