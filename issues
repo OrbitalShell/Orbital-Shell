@@ -6,12 +6,14 @@ issues
 ------
 
 1/19/21 FGZ     🚩 prompt: crash when output in reader that is not inputed by keyboard, once a key is pressed
+2/2/21 FGZ      🚩 echo $£
+                failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
+                for syntax: echo [obj] [-n|--no-break] [-r|--raw]
 
 improvements to do 👷
 ------------------
 
-26/1/21 FGZ     ✅ NEXT add support for command invokation with name having namespace
-19/1/21 FGZ     💥 add hooks and hooks settings (kernel major action points)
+19/1/21 FGZ     ✅ NEXT 💥 add hooks and hooks settings (kernel major action points)
 26/1/21 FGZ     accept wildcard in help -t -n -m
 
 📂variables
@@ -36,6 +38,8 @@ improvements to do 👷
 📂commands
 
 26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
+2/2/21 FGZ      fix ansi missing in shell exec
+2/2/21 FGZ      shell exec for .sh : check contains #!orbsh at first line before accept to execute it
 
 procrastinated:
 ---------------
@@ -50,6 +54,7 @@ procrastinated:
 olds:
 -----
 
+26/1/21 FGZ     🆗 add support for command invokation with name having namespace
 1/19/21 FGZ     🆗 prompt: crash (backspace,..) in compatibility mode (vscode terminal problem!) - try to degrade gracefully ?
 28/1/21 FGZ     🆗 add defnition on aliases in command meta-attributes + update help output
 28/1/21 FGZ     🆗 implements support of alias

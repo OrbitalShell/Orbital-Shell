@@ -36,14 +36,27 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
         public List<CommandSyntax> FindSyntaxesFromToken(
             string token,
-            bool partialTokenMatch=false,
+            bool partialTokenMatch = false,
             StringComparison comparisonType = StringComparison.CurrentCulture
             )
         {
             var r = new List<CommandSyntax>();
-            foreach (var ctoken in _syntaxes.Keys)
-                if ((partialTokenMatch && ctoken.StartsWith(token, comparisonType)) || ctoken.Equals(token, comparisonType))
+            foreach (var ctokenkv in _syntaxes)
+            {
+                var ctoken = ctokenkv.Key;
+
+                if ((partialTokenMatch && ctoken.StartsWith(token, comparisonType))
+                    || ctoken.Equals(token, comparisonType))
                     r.AddRange(_syntaxes[ctoken]);
+
+                foreach (var sn in ctokenkv.Value)
+                {
+                    var fullname = sn.CommandSpecification.FullName;
+                    if ((partialTokenMatch && fullname.StartsWith(token, comparisonType))
+                    || fullname.Equals(token, comparisonType))
+                        r.AddRange(_syntaxes[ctoken]);
+                }
+            }
             return r;
         }
     }

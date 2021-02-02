@@ -333,6 +333,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 var splits = new List<StringSegment>();
                 var references = new Dictionary<string, object>();
 
+                // check and substitute alias
                 var token = workUnit.Segments.First()?.Text;
                 if (token != null && context
                         .CommandLineProcessor

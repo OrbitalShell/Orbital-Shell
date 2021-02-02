@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Console;
 using OrbitalShell.Lib;
@@ -21,6 +22,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         public readonly string Documentation;
         public readonly string Name;
         public readonly string Namespace;
+        public string FullName => Namespace + CommandLineSyntax.CommandNamespaceSeparator + Name;
         public Type ReturnType;
         public List<string> Aliases;
         public string ReturnTypeName(bool fullName = false) => ReturnType.UnmangledName(fullName);
