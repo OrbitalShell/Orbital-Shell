@@ -5,19 +5,19 @@
 issues 
 ------
 
-1/19/21 FGZ     💥🚩 prompt: crash (backspace,..) in compatibility mode (vscode terminal problem!) - try to degrade gracefully ?
+1/19/21 FGZ     🚩 prompt: crash when output in reader that is not inputed by keyboard, once a key is pressed
 
 improvements to do 👷
 ------------------
 
-26/1/21 FGZ     ✅NEXT add support for command invokation with name having namespace
+26/1/21 FGZ     ✅ NEXT add support for command invokation with name having namespace
 19/1/21 FGZ     💥 add hooks and hooks settings (kernel major action points)
 26/1/21 FGZ     accept wildcard in help -t -n -m
 
 📂variables
 
+21/1/21 FGZ     ✅ NEXT implements var-set
 21/1/21 FGZ     implements var-info
-21/1/21 FGZ     implements var-set
 20/1/21 FGZ     variable defined as a reference to another but having its own path/name
 20/1/21 FGZ     variable value provided by a programmatic way
 21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
@@ -50,6 +50,7 @@ procrastinated:
 olds:
 -----
 
+1/19/21 FGZ     🆗 prompt: crash (backspace,..) in compatibility mode (vscode terminal problem!) - try to degrade gracefully ?
 28/1/21 FGZ     🆗 add defnition on aliases in command meta-attributes + update help output
 28/1/21 FGZ     🆗 implements support of alias
 20/1/21 FGZ     🆗 add search command name as executable or script file in PATH and SUB SHELL EXEC
