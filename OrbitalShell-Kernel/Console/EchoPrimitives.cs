@@ -242,7 +242,7 @@ namespace OrbitalShell.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Decimal}");
-            @out.Echo(obj);
+            @out.Echo(obj.ToString());
             @out.Echo(Rdc);
         }
 

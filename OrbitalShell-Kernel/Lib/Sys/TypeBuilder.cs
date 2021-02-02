@@ -63,6 +63,7 @@ namespace OrbitalShell.Lib.Sys
             Add("string", typeof(string));
             Add("timespan", typeof(TimeSpan));
             Add("datetime", typeof(DateTime));
+            Add("decimal", typeof(Decimal));
 
 #if all_system_types_filtered_activated
             // any not primitive and accessible and related

@@ -534,11 +534,14 @@ namespace OrbitalShell.Commands
             [Parameter(0, "variable name with or without namespace prefix", false)] string name
             )
         {
+            if (!VariableSyntax.HasValidRootNamespace(name))
+                name = Variables.Nsp(VariableNamespace.local, name);
+                
             context.Variables.Get(name, out var @var, true);
             if (@var is IDataObject)
                 context.Variables.Unset(name);
             else
-                throw new Exception($"path '{name}' refers a variable member, not a variable");
+                throw new Exception($"can't unset a variable member: '{name}'");
 
             return new CommandResult<object>(@var);
         }

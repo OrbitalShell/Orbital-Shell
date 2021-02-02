@@ -19,11 +19,8 @@ improvements to do 👷
 
 📂variables
 
-21/1/21 FGZ     implements var-info
-2/2/21 FGZ      fix var-unset
-20/1/21 FGZ     variable defined as a reference to another but having its own path/name
-20/1/21 FGZ     variable value provided by a programmatic way
 21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
+21/1/21 FGZ     👷 implements var-info
 
 📂settings
 
@@ -35,6 +32,8 @@ improvements to do 👷
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
 26/1/21 FGZ     extra line break after command parse error to be removed
+20/1/21 FGZ     variable defined as a reference to another but having its own path/name
+20/1/21 FGZ     variable value provided by a programmatic way
 
 📂commands
 
@@ -55,6 +54,7 @@ procrastinated:
 olds:
 -----
 
+2/2/21 FGZ      🆗 fix var-unset / var-set
 21/1/21 FGZ     🆗 implements var-set
 26/1/21 FGZ     🆗 add support for command invokation with name having namespace
 1/19/21 FGZ     🆗 prompt: crash (backspace,..) in compatibility mode (vscode terminal problem!) - try to degrade gracefully ?
