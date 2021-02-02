@@ -107,6 +107,7 @@ namespace OrbitalShell.Commands.Dev
         }
 
         [Command("command crash test (21/1/21)")]
+        [CommandAliases("crash")]
         public CommandVoidResult CrashTest(CommandEvaluationContext context) => throw new Exception("command crash test (throws exception)");
 
         [Command("command with several option names types (short/long/both/none) (27/1/21)")]
@@ -165,7 +166,7 @@ namespace OrbitalShell.Commands.Dev
             var v = Enum.GetValues(typeof(FileSystemCommands.DirSort));
             foreach (var s in Enum.GetNames(typeof(FileSystemCommands.DirSort)))
             {
-                context.Out.Echo($"s={s} n={(int)v.GetValue(i)}",true);
+                context.Out.Echo($"s={s} n={(int)v.GetValue(i)}", true);
                 i++;
             }
 

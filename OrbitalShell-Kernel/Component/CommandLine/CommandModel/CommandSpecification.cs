@@ -22,6 +22,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         public readonly string Name;
         public readonly string Namespace;
         public Type ReturnType;
+        public List<string> Aliases;
         public string ReturnTypeName(bool fullName = false) => ReturnType.UnmangledName(fullName);
 
         readonly Dictionary<string, CommandParameterSpecification> _parametersSpecifications = new Dictionary<string, CommandParameterSpecification>();
@@ -36,8 +37,10 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             string documentation,
             MethodInfo methodInfo,
             object methodOwner,
+            List<string> aliases,
             IList<CommandParameterSpecification> commandParameterSpecifications = null)
         {
+            Aliases = aliases;
             Namespace = @namespace;
             Name = name;
             Description = description;

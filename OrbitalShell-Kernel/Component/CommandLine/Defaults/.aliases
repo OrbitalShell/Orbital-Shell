@@ -1,3 +1,4 @@
 ﻿#!orbsh
 # this file contains the user aliases definitions commands
 alias ls "dir -s size,rev"
+alias up "cd $userProfile"

@@ -174,6 +174,8 @@ namespace OrbitalShell.Component.CommandLine.Module
 
                         var cmdNamespaceAttr = method.GetCustomAttribute<CommandNamespaceAttribute>();
                         var cmdNamespace = cmdNamespaceAttr == null ? dtNamespace : CheckAndNormalizeCommandNamespace(cmdNamespaceAttr.Segments);
+                        var cmdAliasesAttr = method.GetCustomAttribute<CommandAliasesAttribute>();
+                        var cmdAliases = cmdAliasesAttr?.Aliases;
 
                         #region init from method parameters attributes
 
@@ -277,6 +279,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                                 cmd.Documentation,
                                 method,
                                 instance,
+                                cmdAliases?.ToList(),
                                 paramspecs);
 
                             bool registered = true;
@@ -288,15 +291,26 @@ namespace OrbitalShell.Component.CommandLine.Module
                                     registered = false;
                                 }
                                 else
+                                {
                                     cmdlst.Add(cmdspec);
+                                }
                             }
                             else
                                 _commands.Add(cmdspec.Name, new List<CommandSpecification> { cmdspec });
+
 
                             if (registered)
                             {
                                 _syntaxAnalyzer.Add(cmdspec);
                                 comsCount++;
+                                // register command Aliases
+                                if (cmdspec.Aliases != null)
+                                    foreach (var alias in cmdspec.Aliases)
+                                        context.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(
+                                            context,
+                                            alias,
+                                            cmdspec.Name
+                                            );
                             }
                         }
                     }

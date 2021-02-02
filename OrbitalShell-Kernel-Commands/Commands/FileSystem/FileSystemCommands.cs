@@ -98,7 +98,7 @@ namespace OrbitalShell.Commands.FileSystem
             rev = 32
         }
 
-        // TODO: --sort=... or -s= and no short name should be possible (symbol =)
+        // TODO --sort=... or -s= and no short name should be possible (symbol =) ?
         [Command("list files and folders in a path. eventually recurse in sub paths")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Dir(
             CommandEvaluationContext context,

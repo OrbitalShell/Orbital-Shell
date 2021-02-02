@@ -53,7 +53,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public CommandsHistory CmdsHistory { get; protected set; }
 
-        public CommandsAlias CommandsAlias { get; protected set; }
+        public CommandsAlias CommandsAlias { get; protected set; } = new CommandsAlias();
 
         public cmdlr.CommandLineReader CommandLineReader { get; set; }
 
@@ -283,7 +283,6 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public bool CreateRestoreUserAliasesFile(bool lbr)
         {
             // create/restore user aliases
-            CommandsAlias = new CommandsAlias();
             var createNewCommandsAliasFile = !File.Exists(Settings.CommandsAliasFilePath);
             if (createNewCommandsAliasFile)
                 Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ", false);
@@ -390,7 +389,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         /// <summary>
-        /// run init scripts
+        /// perform kernel inits and run init scripts
         /// </summary>
         public void Initialize()
         {

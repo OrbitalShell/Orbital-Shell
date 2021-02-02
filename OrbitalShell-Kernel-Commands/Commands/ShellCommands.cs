@@ -224,11 +224,13 @@ namespace OrbitalShell.Commands
             else
             {
                 bool hasrtt = com.ReturnType != null;
+                bool hasalias = com.Aliases != null;
                 if (singleout)
                 {
                     context.Out.Echoln(com.Description);
-                    context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}", hasrtt);
+                    context.Out.Echo($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}", hasrtt | hasalias);
                     if (hasrtt) context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}returns: {context.ShellEnv.Colors.TypeName}{com.ReturnType.UnmangledName()}");
+                    if (hasalias) context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}aliases: {context.ShellEnv.Colors.TypeName}{string.Join(",", com.Aliases)}");
                     context.Out.Echo(!shortView ? Br : "");
                     if (!string.IsNullOrWhiteSpace(com.LongDescription)) context.Out.Echoln(GetPrintableDocText(com.LongDescription, list, shortView, 0));
                 }
@@ -237,6 +239,7 @@ namespace OrbitalShell.Commands
                     context.Out.Echoln($"{com.Name.PadRight(maxcnamelength, ' ')}{com.Description}");
                     context.Out.Echoln($"{Br}{col}{context.ShellEnv.Colors.Label}syntax: {f}{com.ToColorizedString(context.ShellEnv.Colors)}");
                     if (hasrtt) context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}returns: {context.ShellEnv.Colors.TypeName}{com.ReturnType.UnmangledName()}");
+                    if (hasalias) context.Out.Echoln($"{col}{context.ShellEnv.Colors.Label}aliases: {context.ShellEnv.Colors.TypeName}{string.Join(",", com.Aliases)}");
                     context.Out.Echo(!shortView ? Br : "");
                     if (!string.IsNullOrWhiteSpace(com.LongDescription)) context.Out.Echo(GetPrintableDocText(com.LongDescription + "(br)", list, shortView, maxcnamelength));
                 }
@@ -311,6 +314,7 @@ namespace OrbitalShell.Commands
 
         [Command("list modules if no option specified, else load or unload modules")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.module)]
+        [CommandAliases("mod", "md")]
         public CommandResult<List<ModuleSpecification>> Module(
             CommandEvaluationContext context,
             [Option("l", "load", "load a module from the given path", true, true)] FilePath loadModulePath = null,
@@ -464,6 +468,7 @@ namespace OrbitalShell.Commands
         }
 
         [Command("set a command alias if a name and a value is provided. If only the name is provided, clear the alias definition. it no parameters is specified, list all alias")]
+        [CommandAliases("al")]
         public CommandResult<List<string>> Alias(
             CommandEvaluationContext context,
             [Parameter(0, "name of the alias", true)] string name,
