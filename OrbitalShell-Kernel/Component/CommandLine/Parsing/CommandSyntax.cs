@@ -183,7 +183,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                                 }
                             }
 
-                            if (parameterSyntax.TryGetValue(/*objValue*/varValue, out var cvalue, out var possibleValues))
+                            if (varValue == null)
+                            {
+                                mparam.SetValue(varValue);
+                            }
+                            else if (parameterSyntax.TryGetValue(/*objValue*/varValue, out var cvalue, out var possibleValues))
                             {
                                 try
                                 {

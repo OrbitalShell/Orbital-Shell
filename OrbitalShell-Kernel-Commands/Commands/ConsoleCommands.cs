@@ -85,19 +85,13 @@ current print directives are:
         [Command("write text to the output stream followed by a line break", null, _printDocText)]
         public CommandVoidResult Echo(
             CommandEvaluationContext context,
-            [Parameter("text or other (value of type object) to be writen to output", true, "")] object obj,
+            [Parameter("text or other (value of type object) to be writen to output", true, "")] object obj = null,
             [Option("n", "no-break", "no line break: do not add a line break after output")] bool avoidLineBreak = false,
             [Option("r", "raw", "raw mode - echo directives and ansi sequences are replaces by readable text")] bool raw = false
             )
         {
             lock (context.Out.Lock)
             {
-                /* // sample: capture the echo output
-                context.Out.EchoOn();
-                context.Out.Echo(obj,!avoidLineBreak);
-                var str = context.Out.EchoOff();
-                return new CommandResult<string>(str);*/
-
                 if (obj != null)
                 {
                     if (obj is string s)

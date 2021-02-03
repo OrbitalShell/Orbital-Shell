@@ -5,10 +5,6 @@
 issues 
 ------
 
-2/2/21 FGZ      💥 echo $£
-                failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
-                for syntax: echo [obj] [-n|--no-break] [-r|--raw]
-
 improvements to do 👷
 ------------------
 
@@ -51,6 +47,9 @@ procrastinated:
 olds:
 -----
 
+2/2/21 FGZ      🆗 echo $£
+                failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
+                for syntax: echo [obj] [-n|--no-break] [-r|--raw]
 1/19/21 FGZ     🆗 prompt: crash when output in reader that is not inputed by keyboard, once a key is pressed (reproduce: shell exec with no wait)
 2/2/2021 FGZ    🆗 echo directive parser too slow : first check the presence of a directive block starts: '(' (directive map is huge!) 
                 (exponential cost growing with echo diretives count) - high speed resut!
