@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Console;
 using System;
+using System.Text;
 
 namespace OrbitalShell.Component.EchoDirective
 {
@@ -44,37 +45,51 @@ namespace OrbitalShell.Component.EchoDirective
                 int n = s.Length;
                 bool isAssignation = false;
                 int cmdindex = -1;
+                var tmpsb = new StringBuilder(tmps, s.Length * 2);
+
                 while (cmd == null && i < n)
                 {
-                    // TODO echo directive parser too slow : first check the presence of a directive block starts: '(' (directive map is huge!)
-                    foreach (var ccmd in CommandMap.Map)
+                    if (s[i] == CommandBlockBeginChar)
                     {
-                        if (s.IndexOf(CommandBlockBeginChar + ccmd.Key, i) == i)
+                        foreach (var ccmd in CommandMap.Map)
                         {
-                            cmd = ccmd;
-                            cmdindex = i;
-                            isAssignation = ccmd.Key.EndsWith("=");
+                            if (s.IndexOf(CommandBlockBeginChar + ccmd.Key, i) == i)
+                            {
+                                cmd = ccmd;
+                                cmdindex = i;
+                                isAssignation = ccmd.Key.EndsWith("=");
+                            }
                         }
+                        if (cmd == null)
+                            //tmps += s[i];
+                            tmpsb.Append(s[i]);
                     }
-                    if (cmd == null)
-                        tmps += s.Substring(i, 1);
+                    else
+                        //tmps += s[i];
+                        tmpsb.Append(s[i]);
                     i++;
                 }
+
+                var stmps = tmpsb.ToString();
+
                 if (cmd == null)
                 {
-                    Writer.ConsolePrint(tmps, false);
+                    Writer.ConsolePrint(/*tmps*/stmps, false);
 
-                    printSequences?.Add(new EchoSequence((string)null, 0, i - 1, null, tmps, startIndex));
+                    printSequences?.Add(new EchoSequence((string)null, 0, i - 1, null, /*tmps*/stmps, startIndex));
                     return;
                 }
                 else i = cmdindex;
 
-                if (!string.IsNullOrEmpty(tmps))
+                if (!string.IsNullOrEmpty(/*tmps*/stmps))
                 {
-                    Writer.ConsolePrint(tmps);
+                    Writer.ConsolePrint(/*tmps*/stmps);
 
-                    printSequences?.Add(new EchoSequence((string)null, 0, i - 1, null, tmps, startIndex));
+                    printSequences?.Add(new EchoSequence((string)null, 0, i - 1, null, /*tmps*/stmps, startIndex));
                 }
+
+                tmpsb.Clear();
+                tmpsb = null;
 
                 int firstCommandEndIndex = 0;
                 int k = -1;

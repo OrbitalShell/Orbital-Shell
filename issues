@@ -9,7 +9,6 @@ issues
 2/2/21 FGZ      💥 echo $£
                 failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
                 for syntax: echo [obj] [-n|--no-break] [-r|--raw]
-2/2/2021 FGZ    🚩 echo directive parser too slow : first check the presence of a directive block starts: '(' (directive map is huge!)
 
 improvements to do 👷
 ------------------
@@ -46,13 +45,13 @@ procrastinated:
 19/1/21 FGZ     add attribute [DeveloperTip] to allow developers to push up good advices and good practices directly from code methods header
 20/1/21 FGZ     compatibility mode : push cursor at col 0 before each prompt ? (try)
 20/1/21 FGZ     command 'eval' (alias .) : a=5, $b = a , echo $b = a , eval echo \$$b == 5
-21/1/21 FGZ     command set should allow to define args --> no we change this. bash set command becomes setArg or shift ?
 21/1/21 FGZ     separate echo extension methods and echo simple methods (EchoPrimitives.cs)
-23/1/21 FGZ     help echo very slow, any particular reason ? YES !! found : echo directive parser (exponential cost growing with echo diretives count)
 
 olds:
 -----
 
+2/2/2021 FGZ    🆗 echo directive parser too slow : first check the presence of a directive block starts: '(' (directive map is huge!) 
+                (exponential cost growing with echo diretives count) - high speed resut!
 21/1/21 FGZ     🆗 implements var-info
 2/2/21 FGZ      🆗 fix var-unset / var-set
 21/1/21 FGZ     🆗 implements var-set
