@@ -1,5 +1,5 @@
-# Dot Net Console App Toolkit
-<b>Dot Net Console App Toolkit</b> helps build fastly nice multi-plateforms (windows, linux, macos) console applications using C# and .NET Core 3.1 and .NET Standard 2.1
+# Orbital Shell - ConsoleApp
+<b>Orbital Shell ConsoleApp library</b> (previously "Dot Net Console App Toolkit") helps build fastly nice multi-plateform (windows, osx, arm) console applications using C# and .NET Core 3.1 and .NET Standard 2.1
 
 [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license.md) This project is licensed under the terms of the MIT license: [LICENSE.md](LICENSE.md)  
 

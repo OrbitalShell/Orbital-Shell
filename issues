@@ -5,7 +5,7 @@
 issues 
 ------
 
-1/19/21 FGZ     💥 prompt: crash when output in reader that is not inputed by keyboard, once a key is pressed
+1/19/21 FGZ     👷 prompt: crash when output in reader that is not inputed by keyboard, once a key is pressed (reproduce: shell exec with no wait)
 2/2/21 FGZ      💥 echo $£
                 failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
                 for syntax: echo [obj] [-n|--no-break] [-r|--raw]
@@ -15,6 +15,8 @@ improvements to do 👷
 
 19/1/21 FGZ     ✅ NEXT 💥 add hooks and hooks settings (kernel major action points)
 26/1/21 FGZ     accept wildcard in help -t -n -m
+3/2/21  FGZ     ✅ NEXT fix alias replacement that is currently only at pipeline begin + add commands shortcuts 
+                (not aliases, that are names synonyms that can substitute to original command name and that preserve the rest of the command line)
 
 📂variables
 
