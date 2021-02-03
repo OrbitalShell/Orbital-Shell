@@ -73,6 +73,16 @@ namespace OrbitalShell.Component.CommandLine
         /// <summary>
         /// development usefull (miscelaneous)
         /// </summary>
-        dev
+        dev,
+
+        /// <summary>
+        /// place for typed data tools (eg. csv)
+        /// </summary>
+        data,
+
+        /// <summary>
+        /// might be possible to find games
+        /// </summary>
+        games
     }
 }
