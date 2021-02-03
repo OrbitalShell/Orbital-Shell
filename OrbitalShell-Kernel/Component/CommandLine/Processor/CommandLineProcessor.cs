@@ -758,7 +758,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
             int retCode = 0;
 
-            if (false && waitForExit)
+            if (waitForExit)
             {
                 pw.Process.WaitForExit();
                 retCode = pw.Process.ExitCode;
