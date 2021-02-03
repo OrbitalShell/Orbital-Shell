@@ -715,7 +715,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public int ShellExec(
             CommandEvaluationContext context,
             string comPath,
-            string args)
+            string args,
+            bool waitForExit = true)
         {
             var processStartInfo = new ProcessStartInfo()
             {
@@ -755,10 +756,15 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
             if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessStart)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' [{pw.Process.Id}] started(rdc)");
 
-            pw.Process.WaitForExit();
-            var retCode = pw.Process.ExitCode;
-            pw.StdOutCallBackThread.Join();
-            pw.StdErrCallBackThread.Join();
+            int retCode = 0;
+
+            if (false && waitForExit)
+            {
+                pw.Process.WaitForExit();
+                retCode = pw.Process.ExitCode;
+                pw.StdOutCallBackThread.Join();
+                pw.StdErrCallBackThread.Join();
+            }
 
             if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' exited with code: {retCode}(rdc)");
 

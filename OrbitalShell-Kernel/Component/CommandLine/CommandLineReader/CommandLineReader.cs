@@ -265,6 +265,8 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
             prompt ??= _defaultPrompt;
             _prompt = prompt;
             bool noWorkArea = !InWorkArea;
+            Point? lastInputPos = null;
+
             _inputReaderThread = new Thread(() =>
             {
                 try
@@ -282,9 +284,10 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                                 var _beginPromptPos = Out.CursorPos;
                                 Out.Echo(prompt);
                                 _beginOfLineCurPos = Out.CursorPos;
+                                lastInputPos = _beginOfLineCurPos;
                                 Out.ConsoleCursorPosBackup();
 
-#if FIX_LOW_ANSI
+#if FIX_LOW_ANSI    // TODO only if compatibility mode is enabled OR never (check the best)
                                 Thread.Sleep(25);
                                 Out.ConsoleCursorPosRestore();
 #endif
@@ -292,286 +295,307 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                             }
                         }
                         var eol = false;
-                        while (!eol)
+
+                        try
                         {
-                            ConsoleKeyInfo c;
-                            var printed = false;
-                            string printedStr = "";
-                            var (id, left, top, right, bottom) = ActualWorkArea();
 
-                            if (sc.IsInputRedirected)
+                            while (!eol)
                             {
-                                _sentInput = sc.In.ReadToEnd();
-                                isRunning = false;
-                            }
+                                ConsoleKeyInfo c;
+                                var printed = false;
+                                string printedStr = "";
+                                var (id, left, top, right, bottom) = ActualWorkArea();
 
-                            if (_sentInput == null)
-                            {
-                                c = sc.ReadKey(true);
+                                if (sc.IsInputRedirected)
+                                {
+                                    _sentInput = sc.In.ReadToEnd();
+                                    isRunning = false;
+                                }
+
+                                if (_sentInput == null)
+                                {
+                                    c = sc.ReadKey(true);
 #if dbg
                                 System.Diagnostics.Debug.WriteLine($"{c.KeyChar}={c.Key}");
 #endif
-                                #region handle special keys - edition mode, movement
+                                    #region handle special keys - edition mode, movement
 
-                                if (!_ignoreNextKey)
-                                {
-                                    (id, left, top, right, bottom) = ActualWorkArea();
-
-                                    switch (c.Key)
+                                    if (!_ignoreNextKey)
                                     {
-                                        /// <summary>
-                                        /// CR: default end of input
-                                        /// </summary>
-                                        case ConsoleKey.Enter:
-                                            eol = true;
-                                            break;
+                                        // normally the cursor has moved of 1 character right or left
+                                        var cPos = Out.CursorPos;
+                                        if (lastInputPos.HasValue
+                                            && lastInputPos.Value != cPos)
+                                        {
+                                            int dx = Math.Abs(cPos.X - lastInputPos.Value.X);
+                                            int dy = Math.Abs(cPos.Y - lastInputPos.Value.Y);
+                                        }
 
-                                        /// <summary>
-                                        /// ESC : clean-up input and set cursor at begin of line (after prompt)
-                                        /// </summary>
-                                        case ConsoleKey.Escape:
-                                            //Out.HideCur();
-                                            CleanUpReadln();
-                                            //Out.ShowCur();
-                                            break;
+                                        lastInputPos = Out.CursorPos;
 
-                                        /// <summary>
-                                        /// HOME : set cursor position at begin of input (just after prompt) 
-                                        /// </summary>
-                                        case ConsoleKey.Home:
-                                            lock (ConsoleLock)
-                                            {
-                                                Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
-                                            }
-                                            break;
+                                        (id, left, top, right, bottom) = ActualWorkArea();
 
-                                        /// <summary>
-                                        /// END : set cursor position at end of input
-                                        /// </summary>
-                                        case ConsoleKey.End:
-                                            lock (ConsoleLock)
-                                            {
-                                                var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos);
-                                                var sline = slines.Splits.Last();
-                                                Out.SetCursorPosConstraintedInWorkArea(sline.X + sline.Length, sline.Y);
-                                            }
-                                            break;
+                                        switch (c.Key)
+                                        {
+                                            /// <summary>
+                                            /// CR: default end of input
+                                            /// </summary>
+                                            case ConsoleKey.Enter:
+                                                eol = true;
+                                                break;
 
-                                        case ConsoleKey.Tab:
-                                            lock (ConsoleLock)
-                                            {
-                                                printedStr = "".PadLeft(TabLength, ' ');
-                                                printed = true;
-                                            }
-                                            break;
+                                            /// <summary>
+                                            /// ESC : clean-up input and set cursor at begin of line (after prompt)
+                                            /// </summary>
+                                            case ConsoleKey.Escape:
+                                                //Out.HideCur();
+                                                CleanUpReadln();
+                                                //Out.ShowCur();
+                                                break;
 
-                                        case ConsoleKey.LeftArrow:
-                                            lock (ConsoleLock)
-                                            {
-                                                var p = Out.CursorPos;
-                                                if (p.Y == _beginOfLineCurPos.Y)
+                                            /// <summary>
+                                            /// HOME : set cursor position at begin of input (just after prompt) 
+                                            /// </summary>
+                                            case ConsoleKey.Home:
+                                                lock (ConsoleLock)
                                                 {
-                                                    if (p.X > _beginOfLineCurPos.X)
-                                                        Out.CursorLeft = p.X - 1;
+                                                    Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
                                                 }
-                                                else
+                                                break;
+
+                                            /// <summary>
+                                            /// END : set cursor position at end of input
+                                            /// </summary>
+                                            case ConsoleKey.End:
+                                                lock (ConsoleLock)
                                                 {
-                                                    var x = p.X - 1;
-                                                    if (x < left)
-                                                        Out.SetCursorPosConstraintedInWorkArea(right - 1, p.Y - 1);
+                                                    var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos);
+                                                    var sline = slines.Splits.Last();
+                                                    Out.SetCursorPosConstraintedInWorkArea(sline.X + sline.Length, sline.Y);
+                                                }
+                                                break;
+
+                                            case ConsoleKey.Tab:
+                                                lock (ConsoleLock)
+                                                {
+                                                    printedStr = "".PadLeft(TabLength, ' ');
+                                                    printed = true;
+                                                }
+                                                break;
+
+                                            case ConsoleKey.LeftArrow:
+                                                lock (ConsoleLock)
+                                                {
+                                                    var p = Out.CursorPos;
+                                                    if (p.Y == _beginOfLineCurPos.Y)
+                                                    {
+                                                        if (p.X > _beginOfLineCurPos.X)
+                                                            Out.CursorLeft = p.X - 1;
+                                                    }
                                                     else
-                                                        Out.CursorLeft = x;
-                                                }
-                                            }
-                                            break;
-
-                                        case ConsoleKey.RightArrow:
-                                            lock (ConsoleLock)
-                                            {
-                                                var txt = _inputReaderStringBuilder.ToString();
-                                                var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos);
-                                                if (index < txt.Length)
-                                                    Out.SetCursorPosConstraintedInWorkArea(Out.CursorLeft + 1, Out.CursorTop);
-                                            }
-                                            break;
-
-                                        case ConsoleKey.Backspace:
-                                            lock (ConsoleLock)
-                                            {
-                                                var txt = _inputReaderStringBuilder.ToString();
-                                                var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos) - 1;
-                                                var x = Out.CursorLeft - 1;
-                                                var y = Out.CursorTop;
-                                                if (index >= 0)
-                                                {
-                                                    _inputReaderStringBuilder.Remove(index, 1);
-                                                    _inputReaderStringBuilder.Append(" ");
-                                                    Out.HideCur();
-                                                    Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
-                                                    var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
-                                                    var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
-                                                    EnableConstraintConsolePrintInsideWorkArea = false;
-                                                    foreach (var sline in slines)
-                                                        if (sline.Y >= top && sline.Y <= bottom)
-                                                        {
-                                                            Out.SetCursorPos(sline.X, sline.Y);
-                                                            Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
-                                                            Out.SetCursorPos(sline.X, sline.Y);
-                                                            Out.ConsolePrint(sline.Text);
-                                                        }
-                                                    _inputReaderStringBuilder.Remove(_inputReaderStringBuilder.Length - 1, 1);
-                                                    EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
-                                                    Out.SetCursorPos(x, y);
-                                                    Out.ShowCur();
-                                                }
-                                            }
-                                            break;
-
-                                        case ConsoleKey.Delete:
-                                            lock (ConsoleLock)
-                                            {
-                                                var txt = _inputReaderStringBuilder.ToString();
-                                                var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos);
-                                                var x = Out.CursorLeft;
-                                                var y = Out.CursorTop;
-                                                if (index >= 0 && index < txt.Length)
-                                                {
-                                                    _inputReaderStringBuilder.Remove(index, 1);
-                                                    _inputReaderStringBuilder.Append(" ");
-                                                    Out.HideCur();
-                                                    Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
-                                                    var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
-                                                    var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
-                                                    EnableConstraintConsolePrintInsideWorkArea = false;
-                                                    foreach (var sline in slines)
-                                                        if (sline.Y >= top && sline.Y <= bottom)
-                                                        {
-                                                            Out.SetCursorPos(sline.X, sline.Y);
-                                                            Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
-                                                            Out.SetCursorPos(sline.X, sline.Y);
-                                                            Out.ConsolePrint(sline.Text);
-                                                        }
-                                                    _inputReaderStringBuilder.Remove(_inputReaderStringBuilder.Length - 1, 1);
-                                                    EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
-                                                    Out.SetCursorPos(x, y);
-                                                    Out.ShowCur();
-                                                }
-                                            }
-                                            break;
-
-                                        case ConsoleKey.UpArrow:
-                                            lock (ConsoleLock)
-                                            {
-                                                if (Out.CursorTop == _beginOfLineCurPos.Y)
-                                                {
-                                                    var h = CommandLineProcessor.CmdsHistory.GetBackwardHistory();
-                                                    if (h != null)
                                                     {
+                                                        var x = p.X - 1;
+                                                        if (x < left)
+                                                            Out.SetCursorPosConstraintedInWorkArea(right - 1, p.Y - 1);
+                                                        else
+                                                            Out.CursorLeft = x;
+                                                    }
+                                                }
+                                                break;
+
+                                            case ConsoleKey.RightArrow:
+                                                lock (ConsoleLock)
+                                                {
+                                                    var txt = _inputReaderStringBuilder.ToString();
+                                                    var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos);
+                                                    if (index < txt.Length)
+                                                        Out.SetCursorPosConstraintedInWorkArea(Out.CursorLeft + 1, Out.CursorTop);
+                                                }
+                                                break;
+
+                                            case ConsoleKey.Backspace:
+                                                lock (ConsoleLock)
+                                                {
+                                                    var txt = _inputReaderStringBuilder.ToString();
+                                                    var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos) - 1;
+                                                    var x = Out.CursorLeft - 1;
+                                                    var y = Out.CursorTop;
+                                                    if (index >= 0)
+                                                    {
+                                                        _inputReaderStringBuilder.Remove(index, 1);
+                                                        _inputReaderStringBuilder.Append(" ");
                                                         Out.HideCur();
-                                                        CleanUpReadln();
-                                                        _inputReaderStringBuilder.Append(h);
-                                                        Out.ConsolePrint(h);
+                                                        Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
+                                                        var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
+                                                        var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
+                                                        EnableConstraintConsolePrintInsideWorkArea = false;
+                                                        foreach (var sline in slines)
+                                                            if (sline.Y >= top && sline.Y <= bottom)
+                                                            {
+                                                                Out.SetCursorPos(sline.X, sline.Y);
+                                                                Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
+                                                                Out.SetCursorPos(sline.X, sline.Y);
+                                                                Out.ConsolePrint(sline.Text);
+                                                            }
+                                                        _inputReaderStringBuilder.Remove(_inputReaderStringBuilder.Length - 1, 1);
+                                                        EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
+                                                        Out.SetCursorPos(x, y);
                                                         Out.ShowCur();
                                                     }
                                                 }
-                                                else
-                                                {
-                                                    Out.SetCursorPosConstraintedInWorkArea(
-                                                        (Out.CursorTop - 1) == _beginOfLineCurPos.Y ?
-                                                            Math.Max(_beginOfLineCurPos.X, Out.CursorLeft) : Out.CursorLeft,
-                                                        Out.CursorTop - 1);
-                                                }
-                                            }
-                                            break;
+                                                break;
 
-                                        case ConsoleKey.DownArrow:
-                                            lock (ConsoleLock)
-                                            {
-                                                var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
-                                                if (Out.CursorTop == slines.Max(o => o.Y))
+                                            case ConsoleKey.Delete:
+                                                lock (ConsoleLock)
                                                 {
-                                                    var fh = CommandLineProcessor.CmdsHistory.GetForwardHistory();
-                                                    if (fh != null)
+                                                    var txt = _inputReaderStringBuilder.ToString();
+                                                    var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos);
+                                                    var x = Out.CursorLeft;
+                                                    var y = Out.CursorTop;
+                                                    if (index >= 0 && index < txt.Length)
                                                     {
+                                                        _inputReaderStringBuilder.Remove(index, 1);
+                                                        _inputReaderStringBuilder.Append(" ");
                                                         Out.HideCur();
-                                                        CleanUpReadln();
-                                                        _inputReaderStringBuilder.Append(fh);
-                                                        Out.ConsolePrint(fh);
+                                                        Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
+                                                        var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
+                                                        var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
+                                                        EnableConstraintConsolePrintInsideWorkArea = false;
+                                                        foreach (var sline in slines)
+                                                            if (sline.Y >= top && sline.Y <= bottom)
+                                                            {
+                                                                Out.SetCursorPos(sline.X, sline.Y);
+                                                                Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
+                                                                Out.SetCursorPos(sline.X, sline.Y);
+                                                                Out.ConsolePrint(sline.Text);
+                                                            }
+                                                        _inputReaderStringBuilder.Remove(_inputReaderStringBuilder.Length - 1, 1);
+                                                        EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
+                                                        Out.SetCursorPos(x, y);
                                                         Out.ShowCur();
                                                     }
                                                 }
-                                                else
-                                                {
-                                                    var sline = slines.Where(o => o.Y == Out.CursorTop + 1).FirstOrDefault();
-                                                    // BUG: ici sline est null
-                                                    if (sline.Text != null)
-                                                        Out.SetCursorPosConstraintedInWorkArea(Math.Min(Out.CursorLeft, sline.X + sline.Length), Out.CursorTop + 1);
-                                                }
-                                            }
-                                            break;
+                                                break;
 
-                                        default:
-                                            printedStr = c.KeyChar + "";
-                                            printed = true;
-                                            break;
+                                            case ConsoleKey.UpArrow:
+                                                lock (ConsoleLock)
+                                                {
+                                                    if (Out.CursorTop == _beginOfLineCurPos.Y)
+                                                    {
+                                                        var h = CommandLineProcessor.CmdsHistory.GetBackwardHistory();
+                                                        if (h != null)
+                                                        {
+                                                            Out.HideCur();
+                                                            CleanUpReadln();
+                                                            _inputReaderStringBuilder.Append(h);
+                                                            Out.ConsolePrint(h);
+                                                            Out.ShowCur();
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        Out.SetCursorPosConstraintedInWorkArea(
+                                                            (Out.CursorTop - 1) == _beginOfLineCurPos.Y ?
+                                                                Math.Max(_beginOfLineCurPos.X, Out.CursorLeft) : Out.CursorLeft,
+                                                            Out.CursorTop - 1);
+                                                    }
+                                                }
+                                                break;
+
+                                            case ConsoleKey.DownArrow:
+                                                lock (ConsoleLock)
+                                                {
+                                                    var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
+                                                    if (Out.CursorTop == slines.Max(o => o.Y))
+                                                    {
+                                                        var fh = CommandLineProcessor.CmdsHistory.GetForwardHistory();
+                                                        if (fh != null)
+                                                        {
+                                                            Out.HideCur();
+                                                            CleanUpReadln();
+                                                            _inputReaderStringBuilder.Append(fh);
+                                                            Out.ConsolePrint(fh);
+                                                            Out.ShowCur();
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        var sline = slines.Where(o => o.Y == Out.CursorTop + 1).FirstOrDefault();
+                                                        // BUG: ici sline est null
+                                                        if (sline.Text != null)
+                                                            Out.SetCursorPosConstraintedInWorkArea(Math.Min(Out.CursorLeft, sline.X + sline.Length), Out.CursorTop + 1);
+                                                    }
+                                                }
+                                                break;
+
+                                            default:
+                                                printedStr = c.KeyChar + "";
+                                                printed = true;
+                                                break;
+                                        }
                                     }
+                                    else
+                                        _ignoreNextKey = false;
+
+                                    #endregion
                                 }
                                 else
-                                    _ignoreNextKey = false;
-
-                                #endregion
-                            }
-                            else
-                            {
-                                printedStr = _sentInput;
-                                _sentInput = null;
-                                printed = true;
-                                eol = printedStr.EndsWith(Environment.NewLine);
-                                if (eol) printedStr = printedStr.Trim();
-                            }
-
-                            if (printed)
-                            {
-                                var index = 0;
-                                var insert = false;
-                                lock (ConsoleLock)
                                 {
-                                    var x0 = Out.CursorLeft;
-                                    var y0 = Out.CursorTop;
-                                    var txt = _inputReaderStringBuilder.ToString();
-                                    index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, x0, y0);
-                                    insert = index - txt.Length < 0;
+                                    printedStr = _sentInput;
+                                    _sentInput = null;
+                                    printed = true;
+                                    eol = printedStr.EndsWith(Environment.NewLine);
+                                    if (eol) printedStr = printedStr.Trim();
+                                }
 
-                                    if (insert)
+                                if (printed)
+                                {
+                                    var index = 0;
+                                    var insert = false;
+                                    lock (ConsoleLock)
                                     {
-                                        Out.HideCur();
-                                        var x = x0;
-                                        var y = y0;
-                                        Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
-                                        _inputReaderStringBuilder.Insert(index, printedStr);
-                                        var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
-                                        var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
-                                        EnableConstraintConsolePrintInsideWorkArea = false;
-                                        foreach (var sline in slines)
-                                            if (sline.Y >= top && sline.Y <= bottom)
-                                            {
-                                                Out.SetCursorPos(sline.X, sline.Y);
-                                                Out.ConsolePrint(sline.Text);
-                                            }
-                                        EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
-                                        x += printedStr.Length;
-                                        Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
-                                        Out.ShowCur();
-                                    }
-                                    if (!insert)
-                                    {
-                                        _inputReaderStringBuilder.Append(printedStr);
-                                        Out.ConsolePrint(printedStr, false);
+                                        var x0 = Out.CursorLeft;
+                                        var y0 = Out.CursorTop;
+                                        var txt = _inputReaderStringBuilder.ToString();
+                                        index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, x0, y0);
+                                        insert = index - txt.Length < 0;
+
+                                        if (insert)
+                                        {
+                                            Out.HideCur();
+                                            var x = x0;
+                                            var y = y0;
+                                            Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
+                                            _inputReaderStringBuilder.Insert(index, printedStr);
+                                            var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
+                                            var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
+                                            EnableConstraintConsolePrintInsideWorkArea = false;
+                                            foreach (var sline in slines)
+                                                if (sline.Y >= top && sline.Y <= bottom)
+                                                {
+                                                    Out.SetCursorPos(sline.X, sline.Y);
+                                                    Out.ConsolePrint(sline.Text);
+                                                }
+                                            EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
+                                            x += printedStr.Length;
+                                            Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
+                                            Out.ShowCur();
+                                        }
+                                        if (!insert)
+                                        {
+                                            _inputReaderStringBuilder.Append(printedStr);
+                                            Out.ConsolePrint(printedStr, false);
+                                        }
                                     }
                                 }
+
+                                if (eol) break;
                             }
 
-                            if (eol) break;
+                        }
+                        catch /*(Exception inputProcessingException)*/
+                        {
+                            // input processing crashed : re-engage prompt, mute error
                         }
 
                         // process input
@@ -612,10 +636,11 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                 }
                 catch (ThreadInterruptedException)
                 {
+                    // normal end
                 }
-                catch (Exception ex)
+                catch (Exception inputStreamReaderThreadException)
                 {
-                    LogException(ex, "input stream reader crashed");
+                    LogException(inputStreamReaderThreadException, "input stream reader crashed");
                 }
             })
             {
