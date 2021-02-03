@@ -176,6 +176,7 @@ namespace OrbitalShell.Component.CommandLine.Module
                         var cmdNamespace = cmdNamespaceAttr == null ? dtNamespace : CheckAndNormalizeCommandNamespace(cmdNamespaceAttr.Segments);
                         var cmdAliasesAttrLst = method.GetCustomAttributes<CommandAliasAttribute>();
                         var cmdAliases = cmdAliasesAttrLst?.Select(x => (x.AliasName, x.AliasText)).ToList();
+                        if (cmdAliases.Count == 0) cmdAliases = null; // convention
 
                         #region init from method parameters attributes
 
