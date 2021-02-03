@@ -675,28 +675,13 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
             {
                 lock (ConsoleLock)
                 {
-                    /*var (id,left, top, right, bottom) = ActualWorkArea();
-                    Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
-                    var txt = _inputReaderStringBuilder.ToString();
-                    var slines = Out.GetWorkAreaStringSplits(txt, _beginOfLineCurPos).Splits;
-                    var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
-                    EnableConstraintConsolePrintInsideWorkArea = false;
-                    foreach (var sline in slines)
-                        if (sline.Y>=top && sline.Y<= bottom)
-                        {
-                            Out.SetCursorPos(sline.X, sline.Y);
-                            Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
-                        }
-                    EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
-                    Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);*/
-
-
                     //Out.ConsoleCursorPosRestore();    // both works
                     Out.CursorPos = _beginOfLineCurPos;
-                    /* 💥 */ // ED p0 clean up screen in ConPty
-                    Out.Write(ANSI.EL(ANSI.ELParameter.p0));    // minimum compatible
-
-                    //Out.Write(ANSI.ED(ANSI.EDParameter.p0));  // not in compatibility mode ( TODO: check)
+                    if (CommandLineProcessor.CommandEvaluationContext.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
+                        /* 💥 */ // ED p0 clean up screen in ConPty
+                        Out.Write(ANSI.EL(ANSI.ELParameter.p0));    // minimum compatible
+                    else
+                        Out.Write(ANSI.ED(ANSI.EDParameter.p0));  // not in compatibility mode ( TODO: check)
                     _inputReaderStringBuilder.Clear();
                 }
             }
