@@ -40,6 +40,23 @@ namespace OrbitalShell.Component.CommandLine.Data
         public bool IsReadOnly { get; private set; }
         public bool HasAttributes => false;
 
+        public string ObjectPath
+        {
+            get
+            {
+                if (Parent == null)
+                    return "";
+                else
+                {
+                    var r = Parent.ObjectPath;
+                    if (!string.IsNullOrWhiteSpace(r))
+                        r += CommandLineSyntax.VariableNamePathSeparator;
+                    r += Parent.Name;
+                    return r;
+                }
+            }
+        }
+
         public DataValue(
             string name,
             object value,

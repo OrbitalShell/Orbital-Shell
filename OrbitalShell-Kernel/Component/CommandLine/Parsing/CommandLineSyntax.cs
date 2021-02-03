@@ -1,7 +1,5 @@
 ﻿using OrbitalShell.Component.CommandLine.Pipeline;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {

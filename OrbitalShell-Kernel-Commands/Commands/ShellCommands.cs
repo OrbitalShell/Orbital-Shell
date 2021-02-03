@@ -21,6 +21,7 @@ using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using System.Collections.Immutable;
 using OrbitalShell.Lib.Sys;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace OrbitalShell.Commands
 {
@@ -498,6 +499,63 @@ namespace OrbitalShell.Commands
             return new CommandResult<List<string>>(r);
         }
 
+        [Command("outputs informations about a variable")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
+        public CommandResult<IDataObject> Inf(
+                    CommandEvaluationContext context,
+                    [Parameter(0, "variable namespace of a value")] string varPath
+               )
+        {
+            context.Variables.GetObject(varPath, out var obj);
+
+            var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
+            {
+                UnfoldCategories = false,
+                UnfoldItems = false,
+                IsRawModeEnabled = true
+            };
+            var props = new Dictionary<string, object>();
+
+            if (obj is DataObject o)
+            {
+                props.Add("name", o.Name);
+                props.Add("is read only", o.IsReadOnly);
+                props.Add("namespace", o.ObjectPath);
+                props.Add("has attributes", o.HasAttributes);
+            }
+            else
+            if (obj is DataValue v)
+            {
+                props.Add("name", v.Name);
+                props.Add("type", v.ValueType?.UnmangledName(false));
+                props.Add("is read only", v.IsReadOnly);
+                props.Add("has attributes", v.HasAttributes);
+                props.Add("has value", v.HasValue);
+                props.Add("namespace", v.ObjectPath);
+                props.Add("value", v.Value);
+            }
+            else
+                throw new Exception($"can't get information for a variable member");
+
+            Table dt = new Table();
+            dt.AddColumns("property", "value");
+            dt.Columns[0].DataType = typeof(string);
+            dt.Columns[1].DataType = typeof(object);
+            dt.SetFormat("property", $"{context.ShellEnv.Colors.Label}{{0}}{Rdc}");
+
+            foreach (var kv in props)
+            {
+                var row = dt.NewRow();
+                row["property"] = kv.Key;
+                row["value"] = kv.Value;
+                dt.Rows.Add(row);
+            }
+
+            dt.Echo(new EchoEvaluationContext(context.Out, context, options));
+
+            return new CommandResult<IDataObject>(obj as IDataObject);
+        }
+
         [Command("set the value of a shell variable, or display the name and values of shell variables")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<object> Set(
@@ -536,7 +594,7 @@ namespace OrbitalShell.Commands
         {
             if (!VariableSyntax.HasValidRootNamespace(name))
                 name = Variables.Nsp(VariableNamespace.local, name);
-                
+
             context.Variables.Get(name, out var @var, true);
             if (@var is IDataObject)
                 context.Variables.Unset(name);

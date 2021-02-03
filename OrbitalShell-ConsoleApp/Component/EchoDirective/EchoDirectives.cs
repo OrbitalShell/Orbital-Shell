@@ -224,7 +224,7 @@
         /// backup cursor position
         /// </summary>
         DECSC,
-        
+
         /// <summary>
         /// restore cursor position
         /// </summary>
@@ -429,7 +429,7 @@
         /// <summary>
         /// backup foreground in the shell backup memory
         /// </summary>
-        bkf,        
+        bkf,
 
         /// <summary>
         /// backup background in the shell backup memory
@@ -494,9 +494,9 @@
         db,
 
         #endregion
-        
+
         #region flow control
-                        
+
         /// <summary>
         /// line break - @Uses ConsoleTextWrapper.LineBreak
         /// </summary>
@@ -530,12 +530,12 @@
         #endregion
 
         #region process control & information
- 
+
         /// <summary>
         /// infos about console
         /// </summary>
         inf,
-        
+
         /// <summary>
         /// exit the current process
         /// </summary>
@@ -547,7 +547,7 @@
         exec,
 
         #endregion
-        
+
         #region cursor management
 
         /// <summary>
@@ -580,7 +580,7 @@
         /// </summary>
         cry,
 
-/// <summary>
+        /// <summary>
         /// cursor up - @[1A
         /// </summary>
         cup,
@@ -626,7 +626,7 @@
         chome,
 
         #endregion
-        
+
         #region text decoration
 
         /// <summary>
@@ -659,8 +659,8 @@
         /// </summary>
         tdoff,
 
-        #endregion        
-    
+        #endregion
+
         #region unicode characters
 
         Lire,
@@ -669,13 +669,13 @@
         ARet,
         Demi,
         Quar,
-        ThreeQuar,        
-        DoubleExclam,     
+        ThreeQuar,
+        DoubleExclam,
         Exp1,
         Exp2,
         Exp3,
-        ExpRelease,       
-        Copyright,        
+        ExpRelease,
+        Copyright,
         AE,
         AESmall,
         Bull,
@@ -688,13 +688,13 @@
         ArrowDown,
         ArrowLeftRight,
         ArrowUpDown,
-        ArrowUpDownUnderline,    
+        ArrowUpDownUnderline,
         MoreOrLess,
-        CornerBottomLeft,        
-        BarSmallDottedVertical,  
+        CornerBottomLeft,
+        BarSmallDottedVertical,
         LeftChevron,
         RightChevron,
-        EdgeFlatTopRight,        
+        EdgeFlatTopRight,
         BarHorizontal,
         BarVertical,
         EdgeTopLeft,
@@ -707,17 +707,17 @@
         EdgeColBottom,
         EdgeRowColCross,
         BarDoubleThickHorizontal,
-        BarDoubleHorizontal,     
-        BarDoubleVertical,       
-        EdgeDoubleTopLeft,       
-        EdgeDoubleTopRight,      
-        EdgeDoubleBottomLeft,    
-        EdgeDoubleBottomRight,   
-        EdgeDoubleRowLeft,       
-        EdgeDoubleRowRight,      
-        EdgeDoubleColTop,        
-        EdgeDoubleColBottom,     
-        EdgeDoubleRowColCross,   
+        BarDoubleHorizontal,
+        BarDoubleVertical,
+        EdgeDoubleTopLeft,
+        EdgeDoubleTopRight,
+        EdgeDoubleBottomLeft,
+        EdgeDoubleBottomRight,
+        EdgeDoubleRowLeft,
+        EdgeDoubleRowRight,
+        EdgeDoubleColTop,
+        EdgeDoubleColBottom,
+        EdgeDoubleRowColCross,
         BoxHalfBottom,
         BoxHalfTop,
         Box,
@@ -727,7 +727,7 @@
         CardPic,
         CardTrefl,
         CardArt,
-        CardCarro,        
+        CardCarro,
 
         #endregion
     }

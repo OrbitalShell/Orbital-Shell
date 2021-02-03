@@ -10,7 +10,6 @@ using System.Linq;
 using System.Reflection;
 using static OrbitalShell.Lib.Str;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Data;
 
 namespace OrbitalShell.Component.CommandLine.Variable

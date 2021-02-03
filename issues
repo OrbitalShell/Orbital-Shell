@@ -20,7 +20,6 @@ improvements to do 👷
 📂variables
 
 21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
-21/1/21 FGZ     👷 implements var-info
 
 📂settings
 
@@ -54,6 +53,7 @@ procrastinated:
 olds:
 -----
 
+21/1/21 FGZ     🆗 implements var-info
 2/2/21 FGZ      🆗 fix var-unset / var-set
 21/1/21 FGZ     🆗 implements var-set
 26/1/21 FGZ     🆗 add support for command invokation with name having namespace

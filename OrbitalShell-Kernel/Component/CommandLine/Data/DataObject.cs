@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Variable;
 
 namespace OrbitalShell.Component.CommandLine.Data
 {
@@ -25,6 +28,24 @@ namespace OrbitalShell.Component.CommandLine.Data
         public bool IsReadOnly { get; private set; }
 
         public bool HasAttributes => _attributes.Count > 0;
+
+        public string ObjectPath
+        {
+            get
+            {
+                var ns = new List<string>();
+                var o = Parent;
+                while (o != null)
+                {
+                    ns.Add(o.Name);
+                    o = o.Parent;
+                }
+                if (ns.Count > 0)
+                    ns.RemoveAt(ns.Count - 1);
+                ns.Reverse();
+                return string.Join(CommandLineSyntax.VariableNamePathSeparator, ns);
+            }
+        }
 
         public DataObject(string name, bool isReadOnly = false)
         {
