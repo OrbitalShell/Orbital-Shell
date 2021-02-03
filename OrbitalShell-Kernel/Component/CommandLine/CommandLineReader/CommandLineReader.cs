@@ -316,7 +316,7 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                                 {
                                     c = sc.ReadKey(true);
 #if dbg
-                                System.Diagnostics.Debug.WriteLine($"{c.KeyChar}={c.Key}");
+                                    System.Diagnostics.Debug.WriteLine($"{c.KeyChar}={c.Key}");
 #endif
                                     #region handle special keys - edition mode, movement
 
@@ -329,6 +329,14 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                                         {
                                             int dx = Math.Abs(cPos.X - lastInputPos.Value.X);
                                             int dy = Math.Abs(cPos.Y - lastInputPos.Value.Y);
+                                            if (dx > 1 || dy > 1)
+                                            {
+                                                // restore the good position
+                                                Out.CursorPos =
+                                                new Point(
+                                                    lastInputPos.Value.X + 1,
+                                                    lastInputPos.Value.Y);
+                                            }
                                         }
 
                                         lastInputPos = Out.CursorPos;
@@ -350,6 +358,7 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                                             case ConsoleKey.Escape:
                                                 //Out.HideCur();
                                                 CleanUpReadln();
+                                                lastInputPos = _beginOfLineCurPos;
                                                 //Out.ShowCur();
                                                 break;
 
@@ -360,6 +369,7 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                                                 lock (ConsoleLock)
                                                 {
                                                     Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
+                                                    lastInputPos = _beginOfLineCurPos;
                                                 }
                                                 break;
 
@@ -372,6 +382,7 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                                                     var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos);
                                                     var sline = slines.Splits.Last();
                                                     Out.SetCursorPosConstraintedInWorkArea(sline.X + sline.Length, sline.Y);
+                                                    lastInputPos = Out.CursorPos;
                                                 }
                                                 break;
 
@@ -489,6 +500,7 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                                                             CleanUpReadln();
                                                             _inputReaderStringBuilder.Append(h);
                                                             Out.ConsolePrint(h);
+                                                            lastInputPos = Out.CursorPos;
                                                             Out.ShowCur();
                                                         }
                                                     }
@@ -515,6 +527,7 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                                                             CleanUpReadln();
                                                             _inputReaderStringBuilder.Append(fh);
                                                             Out.ConsolePrint(fh);
+                                                            lastInputPos = Out.CursorPos;
                                                             Out.ShowCur();
                                                         }
                                                     }
@@ -676,8 +689,14 @@ namespace OrbitalShell.Component.CommandLine.CommandLineReader
                         }
                     EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
                     Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);*/
-                    Out.ConsoleCursorPosRestore();
-                    Out.Write(ANSI.ED(ANSI.EDParameter.p0));
+
+
+                    //Out.ConsoleCursorPosRestore();    // both works
+                    Out.CursorPos = _beginOfLineCurPos;
+                    /* 💥 */ // ED p0 clean up screen in ConPty
+                    Out.Write(ANSI.EL(ANSI.ELParameter.p0));    // minimum compatible
+
+                    //Out.Write(ANSI.ED(ANSI.EDParameter.p0));  // not in compatibility mode ( TODO: check)
                     _inputReaderStringBuilder.Clear();
                 }
             }
