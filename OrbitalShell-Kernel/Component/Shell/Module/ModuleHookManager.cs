@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Shell.Hook;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Shell.Module
 {
@@ -11,7 +13,7 @@ namespace OrbitalShell.Component.Shell.Module
     {
         readonly ModuleSet _modules;
 
-        Dictionary<string, List<MethodInfo>> _hooks = new Dictionary<string, List<MethodInfo>>();
+        Dictionary<string, List<HookSpecification>> _hooks = new Dictionary<string, List<HookSpecification>>();
 
         public ModuleHookManager(ModuleSet modules)
         {
@@ -25,10 +27,12 @@ namespace OrbitalShell.Component.Shell.Module
         /// <param name="mi">hook method info</param>
         public void RegisterHook(
             CommandEvaluationContext context,
-            MethodInfo mi,
-            object caller)
+            string name,
+            object owner,
+            MethodInfo mi)
         {
-            
+            var hs = new HookSpecification(name, owner, mi);
+            _hooks.AddOrReplace(name, hs);
         }
     }
 }

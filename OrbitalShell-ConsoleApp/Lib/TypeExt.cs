@@ -197,6 +197,14 @@ namespace OrbitalShell.Lib
                 dic.Add(key, value);
         }
 
+        public static void AddOrReplace<TK, TV>(this Dictionary<TK, List<TV>> dic, TK key, TV value)
+        {
+            if (dic.ContainsKey(key))
+                dic[key].AddUnique(value);
+            else
+                dic.Add(key, new List<TV> { value });
+        }
+
         public static void Merge<T>(this List<T> mergeInto, List<T> merged)
         {
             foreach (var o in merged)

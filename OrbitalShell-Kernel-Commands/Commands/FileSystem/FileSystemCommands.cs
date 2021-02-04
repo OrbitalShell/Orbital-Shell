@@ -13,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static OrbitalShell.Component.CommandLine.CommandLineReader.Interaction;
+using static OrbitalShell.Component.CommandLine.Reader.Interaction;
 using static OrbitalShell.Lib.FileSystem.FileSystem;
 using static OrbitalShell.Lib.Str;
 using sc = System.Console;

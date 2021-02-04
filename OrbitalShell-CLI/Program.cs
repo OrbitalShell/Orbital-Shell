@@ -1,4 +1,4 @@
-﻿using OrbitalShell.Component.CommandLine.CommandLineReader;
+﻿using OrbitalShell.Component.CommandLine.Reader;
 using System;
 using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.CommandLine.Processor;

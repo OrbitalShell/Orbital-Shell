@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using static OrbitalShell.DotNetConsole;
 using sc = System.Console;
 
-namespace OrbitalShell.Component.CommandLine.CommandLineReader
+namespace OrbitalShell.Component.CommandLine.Reader
 {
     public static class Interaction
     {

@@ -6,7 +6,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using static OrbitalShell.Component.CommandLine.CommandLineReader.Interaction;
+using static OrbitalShell.Component.CommandLine.Reader.Interaction;
 using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.TextFileReader;
 using static OrbitalShell.Lib.Str;

@@ -1,6 +1,6 @@
 ﻿//#define enable_test_commands
 
-using OrbitalShell.Component.CommandLine.CommandBatch;
+using OrbitalShell.Component.CommandLine.Batch;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.Shell;
@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineParser;
 using static OrbitalShell.DotNetConsole;
-using cmdlr = OrbitalShell.Component.CommandLine.CommandLineReader;
+using cmdlr = OrbitalShell.Component.CommandLine.Reader;
 using cons = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Lib.FileSystem;

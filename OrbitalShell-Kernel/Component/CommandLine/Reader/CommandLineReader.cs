@@ -14,7 +14,8 @@ using sc = System.Console;
 using OrbitalShell.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.Shell.Variable;
-namespace OrbitalShell.Component.CommandLine.CommandLineReader
+
+namespace OrbitalShell.Component.CommandLine.Reader
 {
     public class CommandLineReader
     {

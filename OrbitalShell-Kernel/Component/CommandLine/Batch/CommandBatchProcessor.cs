@@ -3,7 +3,7 @@ using OrbitalShell.Lib;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 using System;
 
-namespace OrbitalShell.Component.CommandLine.CommandBatch
+namespace OrbitalShell.Component.CommandLine.Batch
 {
     public class CommandBatchProcessor
     {
