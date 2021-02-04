@@ -9,7 +9,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
 	  <IsPackable>true</IsPackable>
     <Authors>Orbital Shell team</Authors>
-    <Company>franck.gaspoz@gmail.com, zepzic@gmail.com</Company>
+    <Company>franck.gaspoz@gmail.com</Company>
     <Product>Orbital Shell - Kernel commands module</Product>
     <Description>Orbital Shell kernel commands module</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>

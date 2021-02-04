@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>OrbitalShell.Module.PromptGitInfo</RootNamespace>
+    <AssemblyName>OrbitalShell-Module-PromptGitInfo</AssemblyName>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <IsPackable>true</IsPackable>
+    <Authors>Orbital Shell team</Authors>
+    <Company>franck.gaspoz@gmail.com</Company>
+    <Product>Orbital Shell - Module - Prompt Git Info</Product>
+    <Description>Prompt git info adds infos about git repository on the orbital shell command line prompt</Description>
+    <Copyright>(c) 2020 Licence MIT</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
+    <ProjectReference Include="..\..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />
+  </ItemGroup>
+
+</Project>

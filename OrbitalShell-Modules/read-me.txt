@@ -8,6 +8,10 @@ deployment on NuGet:
 
     OrbitalShell-Module-{moduleName}-{moduleVersion}
 
+namespace :
+
+    OrbitalShell.Module.{ModuleName}
+
 deployment on Orbital Shell modules repository:
 
     https://github.com/franck-gaspoz/orbital-shell-modules.git

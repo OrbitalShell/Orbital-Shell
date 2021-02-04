@@ -9,7 +9,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <IsPackable>true</IsPackable>
     <Authors>Orbital Shell team</Authors>
-    <Company>franck.gaspoz@gmail.com, zepzic@gmail.com</Company>
+    <Company>franck.gaspoz@gmail.com</Company>
     <Product>Orbital Shell - ConsoleApp</Product>
     <Description>Orbital Shell console application library</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>

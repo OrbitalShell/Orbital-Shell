@@ -20,6 +20,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel-Command
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-CLI", "OrbitalShell-CLI\OrbitalShell-CLI.csproj", "{C2920F91-71BE-4B0F-8742-4C52F4A75D56}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrbitalShell-Modules", "OrbitalShell-Modules", "{D2950EDA-0381-4B44-9520-9EC9EC652072}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Module-PromptGitInfo", "OrbitalShell-Modules\OrbitalShell-Module-PromptGitInfo\OrbitalShell-Module-PromptGitInfo.csproj", "{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,9 +46,16 @@ Global
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8} = {D2950EDA-0381-4B44-9520-9EC9EC652072}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE827123-7F20-471E-B1BF-3E12AE9FFDC8}
