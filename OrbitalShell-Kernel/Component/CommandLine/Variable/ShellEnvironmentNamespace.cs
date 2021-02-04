@@ -30,10 +30,5 @@
         /// </summary>
         display,
 
-        /// <summary>
-        /// it may be possible to find games
-        /// </summary>
-        games
-
     }
 }

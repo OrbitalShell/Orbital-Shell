@@ -96,7 +96,7 @@ namespace OrbitalShell.Commands.Shell
                     var mods = context.CommandLineProcessor.ModuleManager.Modules;
                     var modnames = mods.Values.Where(x => module.Match(x.Name)).Select(x => x.Name).ToList();
                     modnames.Sort();
-                    shortView = !verboseView;h
+                    shortView = !verboseView;
 
                     if (!listFilter)
                         cmds = cmds.Where(x => module.Match(x.ModuleName, ignoreCase));
