@@ -28,12 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Component\CommandLine\Defaults\.profile" />
+    <None Remove="Component\Shell\Defaults\.profile" />
     <None Remove="LICENSE.md" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Component\CommandLine\Defaults\.profile">
+    <Content Include="Component\Shell\Defaults\.profile">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

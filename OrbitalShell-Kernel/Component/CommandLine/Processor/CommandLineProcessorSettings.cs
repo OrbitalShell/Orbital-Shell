@@ -98,7 +98,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         {
             get
             {
-                var segs = this.GetType().FullName.Split('.');
+                var segs = this.GetType().FullName.Replace("CommandLine", "Shell").Split('.');
                 var splits = segs.AsSpan(1, segs.Count() - 3);
                 var path = BinFolderPath;
                 foreach (var split in splits)
