@@ -7,8 +7,6 @@ namespace OrbitalShell.Component.CommandLine.Processor
     [CommandsNamespace(CommandNamespace.kernel)]
     public class CommandLineProcessorCommands : ICommandsDeclaringType
     {
-        #region shell exec
-
         [Command("runs a batch file [Experimental]")]
         public CommandResult<int> Batch(
             CommandEvaluationContext context,
@@ -22,8 +20,6 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
             return new CommandResult<int>(r);
         }
-
-        #endregion
 
         [Command("os (sub-shell) exec")]
         public CommandResult<int> Exec(

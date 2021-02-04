@@ -4,6 +4,7 @@ using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Console;
 using OrbitalShell.Lib;
+using OrbitalShell.Lib.Data;
 using System;
 using System.Data;
 using System.IO;
@@ -28,10 +29,11 @@ namespace OrbitalShell.Commands.Shell
             CommandEvaluationContext context,
             [Option("s", "short", "short display: decrase output details")] bool shortView,
             [Option("v", "verbose", "set verbose view: increase output details")] bool verboseView,
-            [Option("l", "all", "list all commands")] bool all,
-            [Option("n", "namespace", "filter commands list by namespace. if t is * list namespaces", true, true)] string @namespace,
-            [Option("t", "type", "filter commands list by command declaring type. if t is * list declaring types", true, true)] string type,
-            [Option("m", "module", "filter commands list by module name. if m is * list modules", true, true)] string module,
+            [Option("a", "all", "list all commands")] bool all,
+            [Option("n", "namespace", "filter commands list by namespace value or wildcard or regex (wildcard have ?,* , regex starts with \\)", true, true)] PatternString @namespace,
+            [Option("t", "type", "filter commands list on command declaring type name value or wildcard or regex", true, true)] PatternString type,
+            [Option("m", "module", "filter commands list by module name value or wildcard or regex ", true, true)] PatternString module,
+            [Option("l", "list", "if one of -n|-t|-m is set, output list of filtered values")] bool listFilter,
             [Parameter("output help for the command having the name 'commandName'", true)] string commandName
             )
         {
@@ -40,6 +42,7 @@ namespace OrbitalShell.Commands.Shell
             var cmds = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.AllCommands.AsQueryable();
             var namespaces = cmds.Select(x => x.Namespace).Distinct().ToList();
             namespaces.Sort();
+            bool ignoreCase = true;
 
             if (hascn)
                 cmds = cmds.Where(x => x.Name.Equals(commandName, CommandLineParser.SyntaxMatchingRule));
@@ -47,24 +50,21 @@ namespace OrbitalShell.Commands.Shell
             if (cmds.Count() > 0)
             {
                 #region filter on declaring type
+
                 if (!string.IsNullOrWhiteSpace(type))
                 {
-                    if (type != "*" && !context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringShortTypesNames.Contains(type))
-                    {
-                        context.Errorln($"unknown command declaring type: '{type}'");
-                        return new CommandVoidResult(ReturnCode.Error);
-                    }
-
+                    var typenames = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringTypesAssemblyQualifiedNames.ToList();
+                    var typelst = typenames
+                        .Select(x => Type.GetType(x))
+                        .Where(x => type.Match(x.Name))
+                        .ToList();
+                    typelst.Sort((x, y) => x.Name.CompareTo(y.Name));
                     shortView = !verboseView;
 
-                    if (type != "*")
-                        cmds = cmds.Where(x => x.DeclaringTypeShortName == type);
+                    if (!listFilter)
+                        cmds = cmds.Where(x => type.Match(x.DeclaringTypeShortName, ignoreCase));
                     else
                     {
-                        var typenames = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringTypesNames.ToList();
-                        var typelst = typenames.Select(x => Type.GetType(x)).ToList();
-                        typelst.Sort((x, y) => x.Name.CompareTo(y.Name));
-
                         var sfx = "Commands";
                         string TypeName(Type type)
                         {
@@ -73,64 +73,64 @@ namespace OrbitalShell.Commands.Shell
                                 s = s.Substring(0, s.Length - sfx.Length);
                             return s;
                         }
-                        var maxtl = typelst.Select(x => TypeName(x).Length).Max();
-
-                        foreach (var typ in typelst)
+                        if (typelst.Count > 0)
                         {
-                            var cmdattr = typ.GetCustomAttribute<CommandsAttribute>();
-                            context.Out.Echoln(Darkcyan + TypeName(typ).PadRight(maxtl) + Tab + DefaultForegroundCmd + cmdattr.Description);
+                            var maxtl = typelst.Select(x => TypeName(x).Length).Max();
+
+                            foreach (var typ in typelst)
+                            {
+                                var cmdattr = typ.GetCustomAttribute<CommandsAttribute>();
+                                context.Out.Echoln(Darkcyan + TypeName(typ).PadRight(maxtl) + Tab + DefaultForegroundCmd + cmdattr.Description);
+                            }
                         }
                         return new CommandVoidResult();
                     }
                 }
+
                 #endregion
 
                 #region filter on module
+
                 if (cmds.Count() > 0 && !string.IsNullOrWhiteSpace(module))
                 {
-                    if (module != "*" && !context.CommandLineProcessor.ModuleManager.Modules.Values.Select(x => x.Name).Contains(module))
-                    {
-                        context.Errorln($"unknown command module: '{module}'");
-                        return new CommandVoidResult(ReturnCode.Error);
-                    }
+                    var mods = context.CommandLineProcessor.ModuleManager.Modules;
+                    var modnames = mods.Values.Where(x => module.Match(x.Name)).Select(x => x.Name).ToList();
+                    modnames.Sort();
+                    shortView = !verboseView;h
 
-                    shortView = !verboseView;
-
-                    if (module != "*")
-                        cmds = cmds.Where(x => x.ModuleName == module);
+                    if (!listFilter)
+                        cmds = cmds.Where(x => module.Match(x.ModuleName, ignoreCase));
                     else
                     {
-                        var mods = context.CommandLineProcessor.ModuleManager.Modules;
-                        var modnames = mods.Values.Select(x => x.Name).ToList();
-                        modnames.Sort();
-                        var maxml = modnames.Select(x => x.Length).Max();
-                        foreach (var modname in modnames)
-                            context.Out.Echoln(Darkcyan + modname.PadRight(maxml) + Tab + DefaultForegroundCmd + mods[modname].Description);
+                        if (modnames.Count > 0)
+                        {
+                            var maxml = modnames.Select(x => x.Length).Max();
+                            foreach (var modname in modnames)
+                                context.Out.Echoln(Darkcyan + modname.PadRight(maxml) + Tab + DefaultForegroundCmd + mods[modname].Description);
+                        }
                         return new CommandVoidResult();
                     }
                 }
+
                 #endregion
 
                 #region filter on namespace
+
                 if (cmds.Count() > 0 && !string.IsNullOrWhiteSpace(@namespace))
                 {
-                    if (@namespace != "*" && !namespaces.Contains(@namespace))
-                    {
-                        context.Errorln($"unknown command namespace: '{@namespace}'");
-                        return new CommandVoidResult(ReturnCode.Error);
-                    }
-
+                    var nslst = namespaces.Where(x => @namespace.Match(x));
                     shortView = !verboseView;
 
-                    if (@namespace != "*")
-                        cmds = cmds.Where(x => x.Namespace == @namespace);
+                    if (!listFilter)
+                        cmds = cmds.Where(x => @namespace.Match(x.Namespace, ignoreCase));
                     else
                     {
-                        foreach (var ns in namespaces)
+                        foreach (var ns in nslst)
                             context.Out.Echoln(Darkcyan + ns);
                         return new CommandVoidResult();
                     }
                 }
+
                 #endregion
 
                 var ncmds = cmds.ToList();

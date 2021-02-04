@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using OrbitalShell.Component.CommandLine.Parsing;
+﻿using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Console;
 using OrbitalShell.Lib;
@@ -9,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 
 namespace OrbitalShell.Component.CommandLine.CommandModel
 {
@@ -78,6 +76,8 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         }
 
         public string DeclaringTypeFullName => MethodInfo.DeclaringType.FullName;
+
+        public string DecralingTypeAssemblyQualifiedName => MethodInfo.DeclaringType.AssemblyQualifiedName;
 
         public int ParametersCount => _parametersSpecifications.Count;
 

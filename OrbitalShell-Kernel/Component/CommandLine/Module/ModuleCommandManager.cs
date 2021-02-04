@@ -22,6 +22,7 @@ namespace OrbitalShell.Component.CommandLine.Module
         public IEnumerable<string> CommandDeclaringShortTypesNames => AllCommands.Select(x => x.DeclaringTypeShortName).Distinct();
 
         public IEnumerable<string> CommandDeclaringTypesNames => AllCommands.Select(x => x.DeclaringTypeFullName).Distinct();
+        public IEnumerable<string> CommandDeclaringTypesAssemblyQualifiedNames => AllCommands.Select(x => x.DecralingTypeAssemblyQualifiedName).Distinct();
 
         readonly Dictionary<string, List<CommandSpecification>> _commands = new Dictionary<string, List<CommandSpecification>>();
 

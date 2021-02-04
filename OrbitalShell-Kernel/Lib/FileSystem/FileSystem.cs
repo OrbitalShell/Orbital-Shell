@@ -4,11 +4,8 @@ using OrbitalShell.Lib.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.Str;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
-using OrbitalShell.Component.CommandLine.Variable;
 
 namespace OrbitalShell.Lib.FileSystem
 {

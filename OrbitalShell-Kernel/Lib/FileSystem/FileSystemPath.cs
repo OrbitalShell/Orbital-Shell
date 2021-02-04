@@ -11,7 +11,6 @@ using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using System.Reflection;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace OrbitalShell.Lib.FileSystem
 {

@@ -1,9 +1,11 @@
 ﻿using System.IO;
-using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell.Lib.FileSystem
 {
+    /// <summary>
+    /// normal path or directoy path with wildcard filename
+    /// </summary>
     public class WildcardFilePath : DirectoryPath
     {
         public readonly string WildCardFileName;
@@ -14,7 +16,7 @@ namespace OrbitalShell.Lib.FileSystem
             //OriginalPath = path;
             OriginalPath = GetOriginalPath(FileSystemInfo);
 
-            if (_CanNormalizePath(path,out _))
+            if (_CanNormalizePath(path, out _))
             {
                 path = _NormalizePath(path);
             }

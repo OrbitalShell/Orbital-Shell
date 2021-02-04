@@ -76,7 +76,19 @@ namespace OrbitalShell.Lib
             return string.Join(',', t.Select(x => DumpAsText(x)));
         }
 
-        public static bool MatchWildcard(String pattern, String input, bool ignoreCase)
+        /// <summary>
+        /// indicates if a string match one with wildcards<br/>
+        /// author: PrzemekBenz https://www.codeproject.com/script/Membership/View.aspx?mid=629898<br/>
+        /// from: https://www.codeproject.com/tips/57304/use-wildcard-characters-and-to-compare-strings<br/> 
+        /// licence: CPOL 27/7/2017<br/>
+        /// </summary>        
+        /// <param name="pattern">wildcard pattern string</param>
+        /// <param name="input">string to check if match</param>
+        /// <param name="ignoreCase">ignore case if true</param>
+        /// <returns>true if string match, false otherwise</returns>
+        public static bool MatchWildcard(
+            String pattern,
+            String input, bool ignoreCase)
         {
             if (String.Compare(pattern, input, ignoreCase) == 0)
             {

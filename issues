@@ -9,9 +9,8 @@ improvements to do 👷
 ------------------
 
 19/1/21 FGZ     ✅ NEXT 💥 add hooks and hooks settings (kernel major action points)
-26/1/21 FGZ     accept wildcard in help -t -n -m
 3/2/21  FGZ     ✅ NEXT fix alias replacement that is currently only at pipeline begin + add commands shortcuts 
-                (not aliases, that are names synonyms that can substitute to original command name and that preserve the rest of the command line)
+                    (not aliases, that are names synonyms that can substitute to original command name and that preserve the rest of the command line)
 
 📂variables
 
@@ -47,12 +46,13 @@ procrastinated:
 olds:
 -----
 
+26/1/21 FGZ     🆗 accept wildcard in help -t -n -m : think regex in wildcard parameters
 2/2/21 FGZ      🆗 echo $£
-                failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
-                for syntax: echo [obj] [-n|--no-break] [-r|--raw]
+                    failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
+                    for syntax: echo [obj] [-n|--no-break] [-r|--raw]
 1/19/21 FGZ     🆗 prompt: crash when output in reader that is not inputed by keyboard, once a key is pressed (reproduce: shell exec with no wait)
 2/2/2021 FGZ    🆗 echo directive parser too slow : first check the presence of a directive block starts: '(' (directive map is huge!) 
-                (exponential cost growing with echo diretives count) - high speed resut!
+                    (exponential cost growing with echo diretives count) - high speed resut!
 21/1/21 FGZ     🆗 implements var-info
 2/2/21 FGZ      🆗 fix var-unset / var-set
 21/1/21 FGZ     🆗 implements var-set
@@ -106,4 +106,3 @@ olds:
 18/1/21 FGZ     🆗 env & var prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
 18/1/21 FGZ     🆗 replace -env: by --env: in shell init (posix)
 18/1/21 FGZ     🆗 prompt: fill line from cursor. should do from end of line
-
