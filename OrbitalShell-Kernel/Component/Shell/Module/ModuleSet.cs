@@ -9,7 +9,7 @@ using OrbitalShell.Lib;
 using System.IO;
 using OrbitalShell.Component.CommandLine.Parsing;
 
-namespace OrbitalShell.Component.CommandLine.Module
+namespace OrbitalShell.Component.Shell.Module
 {
     public class ModuleSet : Dictionary<string, ModuleSpecification>
     {

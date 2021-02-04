@@ -7,10 +7,10 @@ using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using System.Reflection;
 using System.Collections.ObjectModel;
-using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.Shell.Variable;
 using System.Text;
 
-namespace OrbitalShell.Component.CommandLine.Module
+namespace OrbitalShell.Component.Shell.Module
 {
     /// <summary>
     /// module command manager

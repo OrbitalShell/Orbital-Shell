@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Shell.Module;
+using OrbitalShell.Component.Shell.Hook;
 using System.Reflection;
 using OrbitalShell.Lib;
 using System.IO;
 using OrbitalShell.Component.CommandLine.Parsing;
 
-namespace OrbitalShell.Component.CommandLine.Module
+namespace OrbitalShell.Component.Shell.Module
 {
     /// <summary>
     /// manage the shell modules
@@ -36,6 +38,7 @@ namespace OrbitalShell.Component.CommandLine.Module
         {
             _syntaxAnalyzer = syntaxAnalyser;
             ModuleCommandManager = new ModuleCommandManager(_syntaxAnalyzer, _modules);
+            ModuleHookManager = new ModuleHookManager(_modules);
         }
 
         #endregion
@@ -85,15 +88,35 @@ namespace OrbitalShell.Component.CommandLine.Module
 
             if (_modules.ContainsKey(modKey))
             {
-                context.Errorln($"commands module already registered: {modKey} (path={assembly.FullName})");
+                context.Errorln($"module already registered: {modKey} (path={assembly.FullName})");
                 return ModuleSpecification.ModuleSpecificationNotDefined;
             }
 
             var typesCount = 0;
             var comTotCount = 0;
+            var hooksCount = 0;
 
             foreach (var type in assembly.GetTypes())
             {
+                // register hooks
+
+                var hookAttr = type.GetCustomAttribute<HooksAttribute>();
+                if (hookAttr != null)
+                {
+                    // module,class owns hooks
+                    foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+                    {
+                        var hook = mi.GetCustomAttribute<HookAttribute>();
+                        if (hook != null)
+                        {
+                            ModuleHookManager.RegisterHook(context, mi, null);
+                            hooksCount++;
+                        }
+                    }
+                }
+
+                // register commands
+
                 var comsAttr = type.GetCustomAttribute<CommandsAttribute>();
 
                 var comCount = 0;
@@ -102,7 +125,10 @@ namespace OrbitalShell.Component.CommandLine.Module
                 if (comCount > 0)
                     typesCount++;
                 comTotCount += comCount;
+
             }
+
+            // register module
 
             var descAttr = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
             var description = (descAttr != null) ? descAttr.Description : "";
@@ -115,7 +141,8 @@ namespace OrbitalShell.Component.CommandLine.Module
                     assembly,
                     new ModuleInfo(
                         typesCount,
-                        comTotCount
+                        comTotCount,
+                        hooksCount
                     )
                 ));
             return moduleSpecification;

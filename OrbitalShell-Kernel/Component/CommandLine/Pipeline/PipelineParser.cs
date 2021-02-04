@@ -1,6 +1,6 @@
 ﻿using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Console;
 using System;
 using System.Collections.Generic;

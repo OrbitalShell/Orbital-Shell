@@ -5,9 +5,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using OrbitalShell.Lib;
-using static OrbitalShell.DotNetConsole;
 
-namespace OrbitalShell.Component.CommandLine
+namespace OrbitalShell.Component.Shell
 {
     public class CommandsAlias
     {
@@ -16,14 +15,14 @@ namespace OrbitalShell.Component.CommandLine
         public FilePath FilePath => new FilePath(Path.Combine(Folder, FileName));
 
         SortedDictionary<string, string> _aliases = new SortedDictionary<string, string>();
-        public IReadOnlyDictionary<string, string> Aliases => new ReadOnlyDictionary<string,string>(_aliases);
+        public IReadOnlyDictionary<string, string> Aliases => new ReadOnlyDictionary<string, string>(_aliases);
         public IReadOnlyCollection<string> AliasNames => _aliases.Keys;
 
         public CommandsAlias()
         {
         }
 
-        public void Init(CommandEvaluationContext context,string folderPath, string fileName)
+        public void Init(CommandEvaluationContext context, string folderPath, string fileName)
         {
             Folder = folderPath;
             FileName = fileName;
@@ -42,12 +41,12 @@ namespace OrbitalShell.Component.CommandLine
             File.WriteAllLines(context.CommandLineProcessor.Settings.CommandsAliasFilePath, lines);
         }
 
-        public void AddOrReplaceAlias(CommandEvaluationContext context,string name,string text)
+        public void AddOrReplaceAlias(CommandEvaluationContext context, string name, string text)
         {
             _aliases.AddOrReplace(name, text);
         }
 
-        public void UnsetAlias(CommandEvaluationContext context,string name)
+        public void UnsetAlias(CommandEvaluationContext context, string name)
         {
             if (_aliases.ContainsKey(name)) _aliases.Remove(name);
             else context.Errorln($"can't unset alias '{name}' because it is not defined");
@@ -58,7 +57,7 @@ namespace OrbitalShell.Component.CommandLine
             return _aliases.TryGetValue(name, out var text) ? text : null;
         }
 
-        public static string BuildAliasCommand(string name,string text)
+        public static string BuildAliasCommand(string name, string text)
         {
             return $"alias {name} {Str.AssureIsQuoted(text)}";
         }

@@ -1,9 +1,9 @@
 ﻿//#define debugParser
 
-using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.CommandLine.Pipeline;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Console;
 using OrbitalShell.Lib;
 using System;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 using static OrbitalShell.Component.CommandLine.Pipeline.PipelineParser;
-using static OrbitalShell.Component.CommandLine.Variable.Variables;
+using static OrbitalShell.Component.Shell.Variable.Variables;
 using static OrbitalShell.DotNetConsole;
 
 namespace OrbitalShell.Component.CommandLine.Parsing

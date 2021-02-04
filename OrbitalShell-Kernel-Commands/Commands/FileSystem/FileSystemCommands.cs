@@ -1,7 +1,7 @@
 ﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Console;
 using OrbitalShell.Lib;
 using OrbitalShell.Lib.Data;
@@ -22,6 +22,7 @@ using OrbitalShell.Component;
 using OrbitalShell.Component.CommandLine;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Commands.FileSystem
 {

@@ -9,7 +9,7 @@ using static OrbitalShell.Console.ANSI;
 using static OrbitalShell.Lib.TextFileReader;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component;
+using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Commands.Test

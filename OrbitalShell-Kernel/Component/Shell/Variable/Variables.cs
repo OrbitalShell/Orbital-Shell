@@ -1,13 +1,13 @@
-﻿using OrbitalShell.Component.CommandLine.Data;
+﻿using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using static OrbitalShell.Component.CommandLine.Variable.VariableSyntax;
+using static OrbitalShell.Component.Shell.Variable.VariableSyntax;
 
-namespace OrbitalShell.Component.CommandLine.Variable
+namespace OrbitalShell.Component.Shell.Variable
 {
     /// <summary>
     /// variables data store

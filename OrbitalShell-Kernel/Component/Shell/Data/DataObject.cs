@@ -4,9 +4,9 @@ using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
 using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.Shell.Variable;
 
-namespace OrbitalShell.Component.CommandLine.Data
+namespace OrbitalShell.Component.Shell.Data
 {
     public sealed class DataObjectReadOnlyException : Exception
     {

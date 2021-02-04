@@ -6,7 +6,7 @@ using static OrbitalShell.DotNetConsole;
 using System.Globalization;
 using OrbitalShell.Console;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.Shell.Variable;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using System.Reflection;

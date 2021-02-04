@@ -8,7 +8,7 @@ issues
 improvements to do 👷
 ------------------
 
-19/1/21 FGZ     👷 NEXT 💥 add hooks and hooks settings (kernel major action points)
+19/1/21 FGZ     👷 NEXT 💥 add hooks and hooks settings (kernel major action points) + sample module
 3/2/21  FGZ     ✅ NEXT fix alias replacement that is currently only at pipeline begin + add commands shortcuts 
                     (not aliases, that are names synonyms that can substitute to original command name and that preserve the rest of the command line)
 

@@ -1,4 +1,4 @@
-﻿namespace OrbitalShell.Component.CommandLine.Variable
+﻿namespace OrbitalShell.Component.Shell.Variable
 {
     /// <summary>
     /// standard shell environment namespaces

@@ -1,4 +1,4 @@
-using OrbitalShell.Component.CommandLine.Module;
+using OrbitalShell.Component.Shell.Module;
 
 /// <summary>
 /// declare a shell module

@@ -14,7 +14,7 @@ using System.Reflection.Metadata;
 using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
-using System.Collections.Immutable;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Commands.Shell
 {

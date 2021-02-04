@@ -4,14 +4,14 @@ using System.Data;
 using static OrbitalShell.Console.EchoPrimitives;
 using OrbitalShell.Component.CommandLine.Processor;
 
-namespace OrbitalShell.Component.CommandLine.Data
+namespace OrbitalShell.Component.Shell.Data
 {
     public class Table : DataTable
     {
         public Table() : base() { }
         public Table(string tableName) : base(tableName) { }
-        public Table(string tableName,string tableNamespace) : base(tableName,tableNamespace) { }
-        public Table(SerializationInfo serializationInfo,StreamingContext context) : base(serializationInfo, context) { }
+        public Table(string tableName, string tableNamespace) : base(tableName, tableNamespace) { }
+        public Table(SerializationInfo serializationInfo, StreamingContext context) : base(serializationInfo, context) { }
 
         Dictionary<string, string> _columnHeadersTextFormats;
         public IReadOnlyDictionary<string, string> ColumnsHeadersTextFormats
@@ -29,8 +29,10 @@ namespace OrbitalShell.Component.CommandLine.Data
         }
 
         Dictionary<string, string> _columnsTextFormats;
-        public IReadOnlyDictionary<string,string> ColumnsTextFormats {
-            get {
+        public IReadOnlyDictionary<string, string> ColumnsTextFormats
+        {
+            get
+            {
                 if (_columnsTextFormats == null)
                 {
                     _columnsTextFormats = new Dictionary<string, string>();
@@ -53,13 +55,13 @@ namespace OrbitalShell.Component.CommandLine.Data
             _columnHeadersTextFormats[columnName] = format;
         }
 
-        public string GetFormatedValue(CommandEvaluationContext context,string columnName,object value)
+        public string GetFormatedValue(CommandEvaluationContext context, string columnName, object value)
         {
             var textFormat = ColumnsTextFormats[columnName];
             return
                 (textFormat == null) ?
-                    DumpAsText(context,value, false)
-                    : string.Format( textFormat, DumpAsText(context,value, false) );
+                    DumpAsText(context, value, false)
+                    : string.Format(textFormat, DumpAsText(context, value, false));
         }
 
         public string GetFormatedHeader(string columnName)

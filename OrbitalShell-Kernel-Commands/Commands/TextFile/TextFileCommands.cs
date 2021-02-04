@@ -18,7 +18,7 @@ using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib.FileSystem;
 using OrbitalShell.Lib.Data;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component;
+using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Commands.TextFile

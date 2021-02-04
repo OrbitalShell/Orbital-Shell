@@ -16,15 +16,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Component\CommandLine\Defaults\.aliases" />
-    <None Remove="Component\CommandLine\Defaults\.profile" />
+    <None Remove="Component\Shell\Defaults\.aliases" />
+    <None Remove="Component\Shell\Defaults\.profile" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Component\CommandLine\Defaults\.aliases">
+    <Content Include="Component\Shell\Defaults\.aliases">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Component\CommandLine\Defaults\.profile">
+    <Content Include="Component\Shell\Defaults\.profile">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>    
   </ItemGroup>
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Component\CommandLine\Data\Table.cs">
+    <Compile Update="Component\Shell\Data\Table.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>

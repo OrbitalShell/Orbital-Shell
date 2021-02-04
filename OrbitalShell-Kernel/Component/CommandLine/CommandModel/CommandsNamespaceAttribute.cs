@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Component.CommandLine.CommandModel
 {
@@ -15,6 +18,13 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         public CommandsNamespaceAttribute(CommandNamespace @namespace)
         {
             Segments = new string[] { "" + @namespace };
+        }
+
+        public CommandsNamespaceAttribute(CommandNamespace @namespace, params string[] segments)
+        {
+            var s = new List<string> { "" + @namespace };
+            s.AddRange(segments);
+            Segments = s.ToArray();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
-using static OrbitalShell.Component.CommandLine.Variable.VariableSyntax;
+using static OrbitalShell.Component.Shell.Variable.VariableSyntax;
 
-namespace OrbitalShell.Component.CommandLine.Data
+namespace OrbitalShell.Component.Shell.Data
 {
     public class DataRegistry
     {

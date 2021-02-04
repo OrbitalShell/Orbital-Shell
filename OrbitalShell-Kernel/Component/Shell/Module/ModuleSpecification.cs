@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace OrbitalShell.Component.CommandLine.Module
+namespace OrbitalShell.Component.Shell.Module
 {
     /// <summary>
     /// module specification

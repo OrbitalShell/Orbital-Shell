@@ -1,6 +1,6 @@
 using OrbitalShell.Component.CommandLine.Processor;
 
-namespace OrbitalShell.Component.CommandLine.Module
+namespace OrbitalShell.Component.Shell.Module
 {
     /// <summary>
     /// infos about what inside the module

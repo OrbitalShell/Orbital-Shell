@@ -1,6 +1,6 @@
 using System;
 
-namespace OrbitalShell.Component.CommandLine.Module
+namespace OrbitalShell.Component.Shell.Module
 {
     /// <summary>
     /// module utilitary methods

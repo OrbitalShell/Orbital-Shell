@@ -1,6 +1,6 @@
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Lib.FileSystem;
-
+using OrbitalShell.Component.Shell;
 namespace OrbitalShell.Component.CommandLine.Processor
 {
     [Commands("commands of the shell command line processor (clp)")]

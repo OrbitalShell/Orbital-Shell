@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Component.CommandLine.CommandModel
 {

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Commands.Shell
 {

@@ -2,11 +2,12 @@
 
 using OrbitalShell.Component.CommandLine.CommandBatch;
 using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Data;
+using OrbitalShell.Component.Shell.Data;
+using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Pipeline;
-using OrbitalShell.Component.CommandLine.Variable;
-using OrbitalShell.Component.CommandLine.Module;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Component.Shell.Module;
 using lib = OrbitalShell.Lib;
 using OrbitalShell.Lib;
 using Microsoft.CodeAnalysis;

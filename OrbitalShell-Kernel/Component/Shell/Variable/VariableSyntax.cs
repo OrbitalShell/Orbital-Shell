@@ -3,7 +3,7 @@ using System.Linq;
 using OrbitalShell.Component.CommandLine.Parsing;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 
-namespace OrbitalShell.Component.CommandLine.Variable
+namespace OrbitalShell.Component.Shell.Variable
 {
     public static class VariableSyntax
     {

@@ -1,4 +1,4 @@
-﻿using OrbitalShell.Component.CommandLine.Data;
+﻿using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Console;
@@ -12,7 +12,7 @@ using static OrbitalShell.Lib.Str;
 using System.Collections.Generic;
 using System.Data;
 
-namespace OrbitalShell.Component.CommandLine.Variable
+namespace OrbitalShell.Component.Shell.Variable
 {
     /// <summary>
     /// variables of the shell

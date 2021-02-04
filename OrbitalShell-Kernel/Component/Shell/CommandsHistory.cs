@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using static OrbitalShell.DotNetConsole;
 
-namespace OrbitalShell.Component.CommandLine
+namespace OrbitalShell.Component.Shell
 {
     public class CommandsHistory
     {

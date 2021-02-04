@@ -1,6 +1,6 @@
-﻿using OrbitalShell.Component.CommandLine.Data;
+﻿using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.CommandLine.Variable;
+using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Lib;
 using OrbitalShell.Lib.Sys;
 using System;

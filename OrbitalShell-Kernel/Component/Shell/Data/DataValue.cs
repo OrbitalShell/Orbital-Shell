@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using static OrbitalShell.Lib.Str;
 using OrbitalShell.Component.CommandLine.Parsing;
 
-namespace OrbitalShell.Component.CommandLine.Data
+namespace OrbitalShell.Component.Shell.Data
 {
     public sealed class DataValueReadOnlyException : Exception
     {

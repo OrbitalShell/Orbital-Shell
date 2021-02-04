@@ -1,4 +1,5 @@
 ﻿using OrbitalShell.Component.CommandLine;
+using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
 using cons = OrbitalShell.DotNetConsole;

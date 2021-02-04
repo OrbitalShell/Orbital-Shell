@@ -1,4 +1,4 @@
-namespace OrbitalShell.Component.CommandLine
+namespace OrbitalShell.Component.Shell
 {
     /// <summary>
     /// kernel commands namespaces
@@ -83,6 +83,11 @@ namespace OrbitalShell.Component.CommandLine
         /// <summary>
         /// might be possible to find games
         /// </summary>
-        games
+        games,
+
+        /// <summary>
+        /// tools (a typically modules root namespace)
+        /// </summary>
+        tools
     }
 }
