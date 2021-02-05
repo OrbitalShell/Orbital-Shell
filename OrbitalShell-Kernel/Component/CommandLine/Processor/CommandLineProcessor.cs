@@ -28,6 +28,8 @@ using OrbitalShell.Lib.FileSystem;
 using System.Text;
 using OrbitalShell.Lib.Process;
 using OrbitalShell.Component.Console;
+using System.Collections;
+using System.Reflection.Metadata;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -675,7 +677,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         /// <summary>
-        /// search a file having a name that would be located in shell scan path and having a shell scan path ext
+        /// search a file having a name that would be located in shell scan path and having a shell scan path ext<br/>
+        /// if no path is provided, the os will search for the filename in os PathExt
         /// </summary>
         /// <param name="context">command evaluation context</param>
         /// <param name="cmdName">command name</param>
@@ -716,6 +719,46 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
             filePath = null;
             return false;
+        }
+
+        public bool FindInPath(
+                    CommandEvaluationContext context,
+                    string cmdName,
+                    out List<FilePath> filePath,
+                    bool filterExtOnPathExt = false,
+                    StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
+        {
+            var paths = context.ShellEnv.GetValue<List<DirectoryPath>>(ShellEnvironmentVar.path).Clone();
+            paths.Insert(0, new DirectoryPath(Environment.CurrentDirectory));
+            var pathExts = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.pathExt);
+            var searchedPaths = new List<string>();
+            int i = 0;
+            filePath = new List<FilePath>();
+            foreach (var path in paths)
+            {
+                if (!searchedPaths.Contains(path.FullName, stringComparison))
+                {
+                    searchedPaths.Add(path.FullName);
+
+                    if (filterExtOnPathExt)
+                    {
+                        foreach (var pathExt in pathExts)
+                        {
+                            var px = string.IsNullOrWhiteSpace(pathExt) ? pathExt : ((pathExt.StartsWith('.')) ? pathExt : "." + pathExt);
+                            var filename = Path.Combine(path.FullName, cmdName + px);
+                            if (File.Exists(filename))  // accorded to system case sensitive file name setting
+                                filePath.Add(new FilePath(filename));
+                        }
+                    }
+                    else
+                    {
+                        var matchingFiles = path.DirectoryInfo.GetFiles().Where(x => Path.GetFileNameWithoutExtension(x.FullName).Equals(cmdName, stringComparison)).Select(x => new FilePath(x.FullName));
+                        filePath.AddRange(matchingFiles);
+                    }
+                }
+                i++;
+            }
+            return filePath.Count > 0;
         }
 
         public const int MaxWaitTime = 2000;    // 2 sec

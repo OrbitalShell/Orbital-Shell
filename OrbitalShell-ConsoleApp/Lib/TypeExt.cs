@@ -167,6 +167,13 @@ namespace OrbitalShell.Lib
 
         #region collections ext
 
+        public static bool Contains(this List<string> lst, string str, StringComparison stringComparison)
+        {
+            foreach (var s in lst)
+                if (s != null && s.Equals(str, stringComparison)) return true;
+            return false;
+        }
+
         public static List<T> Clone<T>(this List<T> o)
         {
             var r = new List<T>();
