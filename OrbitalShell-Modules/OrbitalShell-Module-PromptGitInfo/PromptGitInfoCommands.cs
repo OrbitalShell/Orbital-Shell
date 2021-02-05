@@ -50,11 +50,11 @@ namespace OrbitalShell.Module.PromptGitInfo
             context.ShellEnv.AddValue(
                 _namespace,
                 VarTextTemplate,
-                $"%bgColor%(f=white) %branch% {branchSymbol} %errorMessage%(b=darkblue)+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% %isBehindSymbol%(rdc) ", false);
+                $"%bgColor%(f=white) %branch% {branchSymbol} %errorMessage%{ANSI.SGR_SetBackgroundColor8bits(100)}+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% %isBehindSymbol%(rdc) ", false);
             context.ShellEnv.AddValue(
                 _namespace,
                 VarTextTemplateNoRepository,
-                $"(b=darkblue)(f=white) no-repo {branchSymbol} %errorMessage%(rdc) ", false);
+                $"(b=darkblue)(f=white) {branchSymbol} %errorMessage%(rdc) ", false);
             context.ShellEnv.AddValue(_namespace, VarBehindBackgroundColor, "(b=darkred)", false);
             context.ShellEnv.AddValue(_namespace, VarUpToDateBackgroundColor, "(b=darkgreen)", false);
             context.ShellEnv.AddValue(_namespace, VarAheadBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(172), false);
@@ -66,7 +66,7 @@ namespace OrbitalShell.Module.PromptGitInfo
         #region Commands
 
         /// <summary>
-        /// enable or disable prompt git info
+        /// enable or disable prompt git info TODO: fix do not works the first time (datavalue cloned ?)
         /// </summary>
         [Command("setup prompt git infos")]
         public CommandVoidResult PromptInfo(
@@ -189,13 +189,13 @@ namespace OrbitalShell.Module.PromptGitInfo
                 Untracked = X['?'];
                 RepoStatus = RepoStatus.UpToDate;
                 if (LocalChanges > 0 && RemoteChanges == 0) RepoStatus = RepoStatus.Ahead;
-                if (LocalChanges > 0 && RemoteChanges > 0) RepoStatus = RepoStatus.Behind;
+                if (LocalChanges >= 0 && RemoteChanges > 0) RepoStatus = RepoStatus.Behind;
             }
 
             public void Inc(char lName, char rName)
             {
-                if (!X.ContainsKey(lName)) X[lName] = 0; /*local; else X[lName]++;*/
-                if (!Y.ContainsKey(rName)) Y[rName] = 0; /*remote; else Y[rName]++;*/
+                if (!X.ContainsKey(lName)) X[lName] = 0;
+                if (!Y.ContainsKey(rName)) Y[rName] = 0;
 
                 // untracked
                 if (lName == '?' && rName == '?') X[lName]++;
