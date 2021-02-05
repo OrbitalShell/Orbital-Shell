@@ -30,6 +30,7 @@ namespace OrbitalShell.Module.PromptGitInfo
         public const string VarAheadBackgroundColor = "aheadBackgroundColor";
         public const string VarUnknownBackgroundColor = "unknownBackgroundColor";
         public const string VarTextTemplate = "template";
+        public const string VarTextTemplateNoData = "templateNoData";
         public const string VarTextTemplateNoRepository = "templateNoRepository";
         public const string GitFolder = ".git";
         string _namespace => Variables.Nsp(ShellEnvironmentNamespace.com + "", ToolNamespace, ToolVarSettingsName);
@@ -51,6 +52,10 @@ namespace OrbitalShell.Module.PromptGitInfo
                 _namespace,
                 VarTextTemplate,
                 $"%bgColor%(f=white) %branch% {branchSymbol} %errorMessage%{ANSI.SGR_SetBackgroundColor8bits(100)}+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% %isBehindSymbol%(rdc) ", false);
+            context.ShellEnv.AddValue(
+            _namespace,
+                VarTextTemplateNoData,
+                $"%bgColor%(f=white) %branch% {branchSymbol} %errorMessage%", false);
             context.ShellEnv.AddValue(
                 _namespace,
                 VarTextTemplateNoRepository,
@@ -89,14 +94,15 @@ namespace OrbitalShell.Module.PromptGitInfo
             if (context.ShellEnv.IsOptionSetted(_namespace, VarIsEnabled))
             {
                 var repoPath = _RepoPathExists(Environment.CurrentDirectory);
+                var repo = _GetRepoStatus(context, repoPath);
+
                 string text =
                      context.ShellEnv.GetValue<string>(
                          _namespace,
                          repoPath != null ?
-                            VarTextTemplate : VarTextTemplateNoRepository
+                            ((repo.IsModified) ? VarTextTemplate : VarTextTemplateNoData)
+                            : VarTextTemplateNoRepository
                      );
-
-                var repo = _RepoStatus(context, repoPath);
 
                 var bgColor = "";
                 switch (repo.RepoStatus)
@@ -172,6 +178,7 @@ namespace OrbitalShell.Module.PromptGitInfo
             public static List<char> Names = new List<char> { 'M', 'A', 'D', 'R', 'C', 'U', ' ', '?', '!' };
 
             public int LocalChanges, RemoteChanges, LocalAdded, LocalDeleted, RemoteAdded, RemoteDeleted, Untracked;
+            public bool IsModified => (LocalChanges + RemoteChanges + LocalAdded + LocalDeleted + RemoteAdded + RemoteDeleted + Untracked) > 0;
 
             public RepoInfo()
             {
@@ -228,7 +235,7 @@ namespace OrbitalShell.Module.PromptGitInfo
             }
         }
 
-        RepoInfo _RepoStatus(
+        RepoInfo _GetRepoStatus(
             CommandEvaluationContext context,
             string repoPath)
         {
