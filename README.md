@@ -22,6 +22,7 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 *notice:*
 
 > The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **CLOSED** because it has been integrated in the **orbital-shell** project repository, so it is still under development but code has been moved to this repository
+
 > ![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
 > ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 > ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)   
