@@ -9,10 +9,12 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <IsPackable>true</IsPackable>
     <Authors>Orbital Shell team</Authors>
-    <Company>franck.gaspoz@gmail.com</Company>
+    <Company>Orbital Shell</Company>
     <Product>Orbital Shell - ConsoleApp</Product>
     <Description>Orbital Shell console application library</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
+    <Version>0.0.0.1</Version>
+    <InformationalVersion>1.0.0-beta-preview</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

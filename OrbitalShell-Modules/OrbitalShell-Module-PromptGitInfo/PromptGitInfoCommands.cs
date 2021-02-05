@@ -52,7 +52,7 @@ namespace OrbitalShell.Module.PromptGitInfo
             context.ShellEnv.AddValue(
                 _namespace,
                 VarTextTemplate,
-                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% {sepSymbol} %errorMessage%{ANSI.SGR_SetBackgroundColor8bits(100)} +%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% %isBehindSymbol%(rdc) ", false);
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% {sepSymbol} %errorMessage%{ANSI.SGR_SetBackgroundColor8bits(100)} +%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% ?%untracked% %isBehindSymbol%(rdc) ", false);
             context.ShellEnv.AddValue(
             _namespace,
                 VarTextTemplateNoData,
@@ -85,6 +85,8 @@ namespace OrbitalShell.Module.PromptGitInfo
         }
 
         #endregion
+
+        #region prompt hook
 
         /// <summary>
         /// prompt begin hook
@@ -136,7 +138,7 @@ namespace OrbitalShell.Module.PromptGitInfo
                     { "remoteAdded" , repo.RemoteAdded+"" },
                     { "remoteDeleted" , repo.RemoteDeleted+"" },
                     { "untracked" , repo.Untracked+"" },
-                    { "isBehindSymbol" , repo.RepoStatus==RepoStatus.Behind?"!":""},
+                    { "isBehindSymbol" , "" }, //repo.RepoStatus==RepoStatus.Behind?"!":""},
                     { "repoName" , repoName }
                 };
                 text = _SetVars(context, text, vars);
@@ -144,6 +146,8 @@ namespace OrbitalShell.Module.PromptGitInfo
                 context.Out.Echo(text, false);
             }
         }
+
+        #endregion
 
         #region utils
 

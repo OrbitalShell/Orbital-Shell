@@ -7,10 +7,12 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <IsPackable>true</IsPackable>
     <Authors>Orbital Shell team</Authors>
-    <Company>franck.gaspoz@gmail.com</Company>
-    <Product>Orbital Shell - Module - Prompt Git Info</Product>
-    <Description>Prompt git info adds infos about git repository on the orbital shell command line prompt</Description>
+    <Company>Orbital Shell</Company>
+    <Product>Prompt Git Info (Orbital Shell Module)</Product>
+    <Description>Prompt git info adds infos about git repository to the orbital shell command line prompt</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
+    <Version>1.0.0.0</Version>
+    <InformationalVersion>1.0.0.0</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

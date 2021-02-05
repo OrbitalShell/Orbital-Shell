@@ -22,8 +22,8 @@ namespace OrbitalShell.Module.PromptGitInfo
 
         public void Update()
         {
-            LocalChanges = X.Values.Aggregate(0, (a, b) => a + b);
-            RemoteChanges = Y.Values.Aggregate(0, (a, b) => a + b);
+            LocalChanges = X.Values.Aggregate(0, (a, b) => a + b) - X['?'] - X['A'] - X['D'];
+            RemoteChanges = Y.Values.Aggregate(0, (a, b) => a + b) - Y['?'] - Y['A'] - Y['D']; ;
             LocalAdded = X['A'];
             LocalDeleted = X['D'];
             RemoteAdded = Y['A'];
@@ -40,9 +40,9 @@ namespace OrbitalShell.Module.PromptGitInfo
             if (!Y.ContainsKey(rName)) Y[rName] = 0;
 
             // untracked
-            if (lName == '?' && rName == '?') X[lName]++;
+            if (lName == '?' && rName == '?') { X[lName]++; Y[lName]++; }
             // ignored
-            if (lName == '!' && rName == '!') X[lName]++;
+            if (lName == '!' && rName == '!') { X[lName]++; Y[lName]++; }
             // updated in index
             if (lName == 'M' && rName == ' ') X[lName]++;
             // added in index

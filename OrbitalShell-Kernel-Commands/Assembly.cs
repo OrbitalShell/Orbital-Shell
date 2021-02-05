@@ -1,9 +1,11 @@
+using System.Reflection;
 using OrbitalShell.Component.Shell.Module;
 
 /// <summary>
 /// declare a shell module
 /// </summary>
-[assembly: OrbitalShellModule("1.0.0-beta-preview")]
+[assembly: OrbitalShellModule("1.0.0.0")]
+[assembly: ModuleAuthors("Orbital Shell team")]
 namespace OrbitalShell.Kernel.Commands
 {
     class Assembly { }

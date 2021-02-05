@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>    
+  <PropertyGroup>
     <!--<TargetFramework>net5.0</TargetFramework>-->
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <!--<TargetFramework>netstandard2.1</TargetFramework>-->
@@ -9,10 +9,12 @@
     <NeutralLanguage>en-US</NeutralLanguage>
 	  <IsPackable>true</IsPackable>
     <Authors>Orbital Shell team</Authors>
-    <Company>franck.gaspoz@gmail.com</Company>
+    <Company>Orbital Shell</Company>
     <Product>Orbital Shell - Kernel</Product>
     <Description>Orbital Shell kernel - Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
+    <Version>0.0.0.1</Version>
+    <InformationalVersion>1.0.0-beta-preview</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

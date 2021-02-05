@@ -8,7 +8,7 @@ namespace OrbitalShell.Component.Shell.Module
     [AttributeUsage(AttributeTargets.Assembly)]
     public class OrbitalShellModuleAttribute : Attribute
     {
-        public string ShellMinVersion;
+        public readonly string ShellMinVersion;
 
         public OrbitalShellModuleAttribute(string shellMinVersion)
         {
