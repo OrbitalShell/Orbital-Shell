@@ -420,6 +420,10 @@ namespace OrbitalShell.Component.CommandLine.Processor
             {
                 Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
             }
+
+            this.Try(() => ModuleManager.ModuleHookManager.InvokeHooks(CommandEvaluationContext, Hooks.ModuleInit),
+                  (s) => { LogError(s); });
+
             _isInitialized = true;
         }
 
@@ -713,63 +717,94 @@ namespace OrbitalShell.Component.CommandLine.Processor
             return false;
         }
 
+        public const int MaxWaitTime = 2000;    // 2 sec
+
         public int ShellExec(
             CommandEvaluationContext context,
             string comPath,
             string args,
-            bool waitForExit = true)
+            out string output,
+            bool waitForExit = true,
+            bool isStreamsEchoEnabled = true,
+            bool isOutputCaptureEnabled = true,
+            bool mergeErrorStreamIntoOutput = true
+            )
         {
-            var processStartInfo = new ProcessStartInfo()
+            try
             {
-                UseShellExecute = false,
-                //StandardOutputEncoding = Encoding.UTF8,   // keep system default
-                //StandardErrorEncoding = Encoding.UTF8,    // keep system default
-                RedirectStandardError = true,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                LoadUserProfile = true,
-                CreateNoWindow = true,
-                FileName = comPath,
-                Arguments = args,
-                WindowStyle = ProcessWindowStyle.Normal,
-                WorkingDirectory = Environment.CurrentDirectory
-            };
-
-            // batch shell exec ?
-            if (Path.GetExtension(comPath) == context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clp_shellExecBatchExt))
-            {
-                var batchMethod = typeof(CommandLineProcessorCommands).GetMethod(nameof(CommandLineProcessorCommands.Batch));
-                return Eval(context, batchMethod, "\"" + comPath + " " + args + "\"", 0).EvalResultCode;
-            }
-
-            var pw = ProcessWrapper.ThreadRun(
-                processStartInfo,
-                null,
-                (outStr) =>
+                output = null;
+                var processStartInfo = new ProcessStartInfo()
                 {
-                    context.Out.Echoln(outStr);
-                },
-                (errStr) =>
+                    UseShellExecute = false,
+                    //StandardOutputEncoding = Encoding.UTF8,   // keep system default
+                    //StandardErrorEncoding = Encoding.UTF8,    // keep system default
+                    RedirectStandardError = true,
+                    RedirectStandardInput = false,
+                    RedirectStandardOutput = true,
+                    LoadUserProfile = true,
+                    CreateNoWindow = true,
+                    FileName = comPath,
+                    Arguments = args,
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    WorkingDirectory = Environment.CurrentDirectory
+                };
+                var sb = new StringBuilder();
+
+                // batch shell exec ?
+                if (Path.GetExtension(comPath) == context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clp_shellExecBatchExt))
                 {
-                    context.Errorln(errStr);
+                    var batchMethod = typeof(CommandLineProcessorCommands).GetMethod(nameof(CommandLineProcessorCommands.Batch));
+                    var r = Eval(context, batchMethod, "\"" + comPath + " " + args + "\"", 0);
+                    output = sb.ToString();
+                    return r.EvalResultCode;
                 }
-            );
 
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessStart)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' [{pw.Process.Id}] started(rdc)");
+                var pw = ProcessWrapper.ThreadRun(
+                    processStartInfo,
+                    null,
+                    (outStr) =>
+                    {
+                        if (isStreamsEchoEnabled) context.Out.Echoln(outStr);
+                        if (isOutputCaptureEnabled) sb.AppendLine(outStr);
+                    },
+                    (errStr) =>
+                    {
+                        if (isStreamsEchoEnabled) context.Errorln(errStr);
+                        if (isOutputCaptureEnabled && mergeErrorStreamIntoOutput) sb.AppendLine(errStr);
+                    }
+                );
 
-            int retCode = 0;
+                if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessStart)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' [{pw.Process.Id}] started(rdc)");
 
-            if (waitForExit)
-            {
-                pw.Process.WaitForExit();
-                retCode = pw.Process.ExitCode;
-                pw.StdOutCallBackThread.Join();
-                pw.StdErrCallBackThread.Join();
+                int retCode = 0;
+
+                if (waitForExit)
+                {
+                    pw.Process.WaitForExit();
+                    retCode = pw.Process.ExitCode;
+
+                    /*
+                    pw.StdOutCallBackThread.Join(MaxWaitTime);
+                    pw.StdErrCallBackThread.Join(MaxWaitTime);
+                    */
+
+                    output = sb.ToString();
+
+                    //if (pw.StdOutCallBackThread.ThreadState != System.Threading.ThreadState.WaitSleepJoin) pw.StdOutCallBackThread.Join();
+                    //if (pw.StdErrCallBackThread.ThreadState != System.Threading.ThreadState.WaitSleepJoin) pw.StdErrCallBackThread.Join();
+                }
+
+                if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' exited with code: {retCode}(rdc)");
+
+                return retCode;
             }
-
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' exited with code: {retCode}(rdc)");
-
-            return retCode;
+            catch (Exception shellExecException)
+            {
+                throw new Exception($"ShellExec error: {shellExecException}", shellExecException);
+            }
+            finally
+            {
+            }
         }
 
         /// <summary>

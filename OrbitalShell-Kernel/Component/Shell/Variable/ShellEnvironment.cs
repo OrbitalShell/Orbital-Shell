@@ -305,10 +305,40 @@ namespace OrbitalShell.Component.Shell.Variable
 
         public bool HasObject(ShellEnvironmentNamespace ns) => Vars.GetObject(Nsp(ns), out _, false);
         public bool HasValue(ShellEnvironmentVar ns) => Vars.GetObject(Nsp(ns), out var o, false) && o is DataValue;
+        public bool HasObject(string varPath, string varName) => Vars.GetObject(Nsp(varPath, varName), out _, false);
+        public bool HasValue(string varPath, string varName) => Vars.GetObject(Nsp(varPath, varName), out var o, false) && o is DataValue;
+        public bool HasValue(string path) => Vars.GetObject(Nsp(path), out var o, false) && o is DataValue;
 
         public DataValue AddValue(ShellEnvironmentVar var, object value, bool readOnly = false)
         {
             var path = Nsp(var);
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            var val = new DataValue(name, value, readOnly);
+            Vars.Set(path, val);
+            return val;
+        }
+
+        public DataValue AddValue(ShellEnvironmentNamespace var, string subPath, object value, bool readOnly = false)
+        {
+            var path = Nsp(var, new string[] { subPath });
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            var val = new DataValue(name, value, readOnly);
+            Vars.Set(path, val);
+            return val;
+        }
+
+        public DataValue AddValue(ShellEnvironmentNamespace var, string subPath, string varName, object value, bool readOnly = false)
+        {
+            var path = Nsp(var, new string[] { subPath, varName });
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            var val = new DataValue(name, value, readOnly);
+            Vars.Set(path, val);
+            return val;
+        }
+
+        public DataValue AddValue(string varPath, string varName, object value, bool readOnly = false)
+        {
+            var path = Nsp(varPath, varName);
             var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
             var val = new DataValue(name, value, readOnly);
             Vars.Set(path, val);
@@ -335,6 +365,18 @@ namespace OrbitalShell.Component.Shell.Variable
             return o;
         }
 
+        public DataValue SetValue(string varPath, string varName, object value)
+        {
+            var path = Nsp(varPath, varName);
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            if (!HasValue(path))
+                return AddValue(path, value);
+            var o = GetDataValue(path);
+            o.SetValue(value);
+            return o;
+        }
+
+
         #region getters
 
         public bool Get(ShellEnvironmentVar var, out object value, bool throwException = true)
@@ -348,10 +390,15 @@ namespace OrbitalShell.Component.Shell.Variable
             var path = Nsp(var);
             return Vars.GetValue(path, throwException);
         }
-
+        public DataValue GetDataValue(string path, bool throwException = true)
+        {
+            return Vars.GetValue(path, throwException);
+        }
         public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true) => (T)GetDataValue(var, throwException).Value;
+        public T GetValue<T>(string varPath, string varName, bool throwException = true) => (T)GetDataValue(Nsp(varPath, varName), throwException).Value;
 
         public bool IsOptionSetted(ShellEnvironmentVar @var) => GetValue<bool>(@var, false);
+        public bool IsOptionSetted(string Namespace, string varName) => Vars.GetValue<bool>(Nsp(Namespace, varName));
 
         #endregion
 

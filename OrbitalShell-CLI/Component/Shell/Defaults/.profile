@@ -9,7 +9,7 @@
 # to do: add ANSI.RSTXTA at line begin (replace rdc)
 #prompt "(RSTXTA)(b8=19) (b8=20) (exec=System.Environment.CurrentDirectory) (b8=19,f8=46) (b8=18) (b8=17) (br)(f=yellow) > (rdc)"
 #prompt "(RSTXTA)(f=cyan)(uon)(exec=System.Environment.CurrentDirectory)(tdoff)(br) (f=yellow,b=darkblue)>(rdc) "
-prompt "(RSTXTA)(f=green)(uon)(exec=System.Environment.CurrentDirectory)(tdoff)(br) (f=black,b=green)>(rdc) "
+prompt "(RSTXTA)(f=green)(uon)(exec=System.Environment.CurrentDirectory)(tdoff)(br)(f=black,b=green)>(rdc) "
 #prompt "(RSTXTA)(b8=19) (b8=20) $USERDOMAIN (b8=19,f8=46) (b8=18,f=yellow)>(b8=17) (rdc)"
 #prompt "(RSTXTA)(f=cyan)$USERDOMAIN (f=white)> (rdc)"
 #prompt "(RSTXTA) > "
@@ -21,3 +21,7 @@ prompt "(RSTXTA)(f=green)(uon)(exec=System.Environment.CurrentDirectory)(tdoff)(
 echo "loading module: PromptGitInfo ... " -n
 module -l "$shell/../../../../OrbitalShell-Modules/OrbitalShell-Module-PromptGitInfo/bin/debug/netcoreapp3.1/OrbitalShell-Module-PromptGitInfo.dll"
 echo ""
+
+alias proj "cd '$shell/../../../..'"
+alias gits "git status"
+alias gita "git add . && git status"

@@ -22,13 +22,14 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         [Command("os (sub-shell) exec")]
-        public CommandResult<int> Exec(
+        public CommandResult<(int retCode, string output)> Exec(
             CommandEvaluationContext context,
             [Parameter(0, "executable file path")] FilePath path,
             [Parameter(1, "arguments", true)] string args
             )
         {
             int ret = (int)ReturnCode.Error;
+            string output = null;
             if (path.CheckExists(context))
             {
                 ret = context
@@ -36,10 +37,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     .ShellExec(
                         context,
                         path.FullName,
-                        args
+                        args,
+                        out output
                     );
             }
-            return new CommandResult<int>(ret);
+            return new CommandResult<(int retCode, string output)>((ret, output));
         }
     }
 }

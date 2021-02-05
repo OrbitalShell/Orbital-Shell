@@ -14,6 +14,7 @@ using sc = System.Console;
 using OrbitalShell.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Component.CommandLine.Reader
 {
@@ -170,7 +171,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         () => evalCommandDelegate(
                                 CommandLineProcessor.CommandEvaluationContext,
                                 commandLine,
-                                _prompt == null ? 0 : Out.GetPrint(_prompt).Length,        // @TODO: has no sens with multi line prompt !!!
+                                _prompt == null ? 0 : Out.GetPrint(_prompt).Length,        // TODO has no sens with multi line prompt !!!
                                 (enablePrePostComOutput && CommandLineProcessor != null) ?
                                     CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput) : ""),
                             CommandLineProcessor.CancellationTokenSource.Token
@@ -267,6 +268,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
             _prompt = prompt;
             bool noWorkArea = !InWorkArea;
             Point? lastInputPos = null;
+            var hm = CommandLineProcessor.ModuleManager.ModuleHookManager;
+            var context = CommandLineProcessor.CommandEvaluationContext;
 
             _inputReaderThread = new Thread(() =>
             {
@@ -282,8 +285,13 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         {
                             lock (ConsoleLock)
                             {
+                                hm.InvokeHooks(context, Hooks.PromptOutputBegin);
+
                                 var _beginPromptPos = Out.CursorPos;
                                 Out.Echo(prompt);
+
+                                hm.InvokeHooks(context, Hooks.PromptOutputEnd);
+
                                 _beginOfLineCurPos = Out.CursorPos;
                                 lastInputPos = _beginOfLineCurPos;
                                 Out.ConsoleCursorPosBackup();

@@ -46,7 +46,7 @@ namespace OrbitalShell.Console
         public const char EdgeTopLeft = '┌';
         public const char EdgeTopRight = '┐';
         public const char EdgeBottomLeft = '└';
-        public const char EdgeBottomRight = '┘';        
+        public const char EdgeBottomRight = '┘';
         public const char EdgeRowLeft = '├';
         public const char EdgeRowRight = '┤';
         public const char EdgeColTop = '┬';
@@ -74,5 +74,7 @@ namespace OrbitalShell.Console
         public const char CardTrefl = '♣';
         public const char CardArt = '♥';
         public const char CardCarro = '♦';
+        public const char SmileyTransp = '☺';
+        public const char Smiley = '☻';
     }
 }

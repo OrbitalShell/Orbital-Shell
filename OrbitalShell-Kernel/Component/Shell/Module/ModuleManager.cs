@@ -109,7 +109,7 @@ namespace OrbitalShell.Component.Shell.Module
                         var hook = mi.GetCustomAttribute<HookAttribute>();
                         if (hook != null)
                         {
-                            ModuleHookManager.RegisterHook(context, hook.HookName, null, mi);
+                            ModuleHookManager.RegisterHook(context, hook.HookName, mi);
                             hooksCount++;
                         }
                     }

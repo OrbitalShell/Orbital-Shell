@@ -7,11 +7,23 @@ using System.Reflection;
 namespace OrbitalShell.Lib
 {
     /// <summary>
-    /// 'types extension methods
+    /// types extension methods
     /// </summary>
     public static partial class TypesExt
     {
         #region type Type extensions
+
+        public static void Try(this object o, Action action, Action<string> errorAction)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                errorAction(ex.Message);
+            }
+        }
 
         /// <summary>
         /// surface clone

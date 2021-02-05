@@ -16,9 +16,9 @@
         settings,
 
         /// <summary>
-        /// CommandSettings
+        /// commands settings
         /// </summary>        
-        commandsSettings,
+        com,
 
         /// <summary>
         /// debug settings
