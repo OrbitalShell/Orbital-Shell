@@ -315,6 +315,11 @@
         settings_clp_shellExecBatchExt = 10105,
 
         /// <summary>
+        /// module repositories list (urls)
+        /// </summary>
+        settings_module_providerUrls = 10106,
+
+        /// <summary>
         /// if enabled, trace information about pipelines analysis
         /// </summary>
         debug_pipeline = 21,

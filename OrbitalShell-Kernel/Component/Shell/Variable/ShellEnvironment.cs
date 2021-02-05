@@ -89,6 +89,7 @@ namespace OrbitalShell.Component.Shell.Variable
 
             // shell settings (defaults)
 
+            AddValue(ShellEnvironmentVar.settings_module_providerUrls, new List<string> { "" });
             AddValue(ShellEnvironmentVar.settings_console_prompt, ANSI.RSTXTA + "> ");        // prompt   
             AddValue(ShellEnvironmentVar.settings_console_initialWindowWidth, -1);
             AddValue(ShellEnvironmentVar.settings_console_initialWindowHeight, -1);
@@ -103,9 +104,9 @@ namespace OrbitalShell.Component.Shell.Variable
             AddValue(ShellEnvironmentVar.settings_console_banner_path,
                 Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    context.CommandLineProcessor.Settings.KernelCommandsRootNamespace,
-                    nameof(CommandLineProcessor),
-                    "banner-4.txt"));
+                        context.CommandLineProcessor.Settings.KernelCommandsRootNamespace,
+                        nameof(CommandLineProcessor),
+                        "banner-4.txt"));
             AddValue(ShellEnvironmentVar.settings_console_banner_isEnabled, true);
             AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex, 202);// 167);
             AddValue(ShellEnvironmentVar.settings_console_banner_colorIndexStep, 1);// 167);
