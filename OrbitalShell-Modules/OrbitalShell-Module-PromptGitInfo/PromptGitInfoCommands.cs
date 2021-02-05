@@ -69,7 +69,7 @@ namespace OrbitalShell.Module.PromptGitInfo
 
         #endregion
 
-        #region Commands
+        #region Command
 
         /// <summary>
         /// enable or disable prompt git info TODO: fix do not works the first time (datavalue cloned ?)
@@ -80,7 +80,7 @@ namespace OrbitalShell.Module.PromptGitInfo
             [Option("e", "enable", "if true enable the prompt customization, otherwise disable it", true, true)] bool isEnabled = true
         )
         {
-            context.ShellEnv.SetValue(_namespace, VarIsEnabled, isEnabled);
+            context.Variables.SetValue(Variables.Nsp(VariableNamespace.env + "", _namespace), VarIsEnabled, isEnabled);
             return CommandVoidResult.Instance;
         }
 

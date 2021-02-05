@@ -2,6 +2,7 @@
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -66,27 +67,52 @@ namespace OrbitalShell.Component.Shell.Variable
 
         #region value setters
 
-        public DataValue SetValue(string path, string value)
+        public DataValue AddValue(string var, object value, bool readOnly = false)
         {
+            var path = Nsp(var);
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            var val = new DataValue(name, value, readOnly);
+            Set(path, val);
+            return val;
+        }
+
+        public DataValue SetValue(string path, object value)
+        {
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            if (!HasValue(path))
+                return AddValue(path, value);
             var o = GetValue(path);
+            o.SetValue(value);
             return o;
         }
 
-        public DataValue SetValue(string rootPath, string path, string value)
+        public DataValue SetValue(string rootPath, string path, object value)
         {
-            var o = GetValue(Nsp(rootPath, path));
+            path = Nsp(rootPath, path);
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            if (!HasValue(path))
+                return AddValue(path, value);
+            var o = GetValue(path);
+            o.SetValue(value);
             return o;
         }
 
-        public DataValue SetValue(VariableNamespace rootPath, string path)
+        public DataValue SetValue(VariableNamespace rootPath, string path, object value)
         {
-            var o = GetValue(Nsp(rootPath, path));
+            path = Nsp(rootPath, path);
+            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            if (!HasValue(path))
+                return AddValue(path, value);
+            var o = GetValue(path);
+            o.SetValue(value);
             return o;
         }
 
         #endregion
 
         #region getters
+
+        public bool HasValue(string path) => GetObject(Nsp(path), out var o, false) && o is DataValue;
 
         /// <summary>
         /// search in variables the path according to these precedence rules:
