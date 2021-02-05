@@ -6,6 +6,11 @@ namespace OrbitalShell.Component.Shell
     public enum Hooks
     {
         /// <summary>
+        /// shell has just terminate Initialize()
+        /// </summary>
+        ShellInitialized,
+
+        /// <summary>
         /// module init (module load)
         /// </summary>
         ModuleInit,

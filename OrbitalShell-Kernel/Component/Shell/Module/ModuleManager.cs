@@ -145,6 +145,17 @@ namespace OrbitalShell.Component.Shell.Module
                         hooksCount
                     )
                 ));
+
+            // run module hook init
+            ModuleHookManager.InvokeHooks(
+                context,
+                Hooks.ModuleInit,
+                (o) =>
+                {
+                    moduleSpecification.IsInitialized = true;
+                }
+            );
+
             return moduleSpecification;
         }
 

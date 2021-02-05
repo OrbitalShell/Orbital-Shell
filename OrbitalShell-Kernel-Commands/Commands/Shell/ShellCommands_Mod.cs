@@ -73,12 +73,15 @@ namespace OrbitalShell.Commands.Shell
                 }
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
             }
+
+            ModuleSpecification moduleSpecification = null;
+
             if (loadModulePath != null)
             {
                 if (loadModulePath.CheckExists(context))
                 {
                     var a = Assembly.LoadFrom(loadModulePath.FileSystemInfo.FullName);
-                    var moduleSpecification = context.CommandLineProcessor.ModuleManager.RegisterModule(context, a);
+                    moduleSpecification = context.CommandLineProcessor.ModuleManager.RegisterModule(context, a);
                     context.Out.Echoln($"loaded: {moduleSpecification.Info.GetDescriptor(context)}");
                 }
                 else
@@ -89,7 +92,7 @@ namespace OrbitalShell.Commands.Shell
             {
                 if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == unloadModuleName))
                 {
-                    var moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, unloadModuleName);
+                    moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, unloadModuleName);
                     context.Out.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
                 }
                 else
@@ -98,7 +101,7 @@ namespace OrbitalShell.Commands.Shell
                     return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
                 }
             }
-            return new CommandResult<List<ModuleSpecification>>();
+            return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { moduleSpecification });
         }
 
     }

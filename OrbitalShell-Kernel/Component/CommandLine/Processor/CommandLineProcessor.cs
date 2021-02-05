@@ -421,8 +421,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
             }
 
-            this.Try(() => ModuleManager.ModuleHookManager.InvokeHooks(CommandEvaluationContext, Hooks.ModuleInit),
-                  (s) => { LogError(s); });
+            ModuleManager.ModuleHookManager.InvokeHooks(
+                CommandEvaluationContext,
+                Hooks.ShellInitialized);
 
             _isInitialized = true;
         }

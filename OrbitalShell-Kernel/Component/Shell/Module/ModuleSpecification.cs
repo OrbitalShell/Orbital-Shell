@@ -22,6 +22,8 @@ namespace OrbitalShell.Component.Shell.Module
 
         public static ModuleSpecification ModuleSpecificationNotDefined = new ModuleSpecification();
 
+        public bool IsInitialized;
+
         public ModuleSpecification(
             string key,
             string name,

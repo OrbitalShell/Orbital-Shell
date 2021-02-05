@@ -50,17 +50,31 @@ namespace OrbitalShell.Component.Shell.Module
 
         /// <summary>
         /// invoke hooks having the given name
+        /// hooks crashes are catched here for kernel stability reasons
         /// </summary>
+        /// <param name="context">context</param>
         /// <param name="name">hook name</param>
+        /// <param name="callBack">called after a hook has finished exec (param is the hook method object owner)</param>
         public void InvokeHooks(
             CommandEvaluationContext context,
-            string name
+            string name,
+            Action<object> callBack = null
         )
         {
             if (_hooks.TryGetValue(name, out var hookList))
             {
                 foreach (var hook in hookList)
-                    hook.Method.Invoke(hook.Owner, new object[] { context });
+                {
+                    try
+                    {
+                        hook.Method.Invoke(hook.Owner, new object[] { context });
+                        callBack?.Invoke(hook.Owner);
+                    }
+                    catch (Exception ex)
+                    {
+                        context.CommandLineProcessor.LogError($"kook '{name}' crashed: {ex.Message}");
+                    }
+                }
             }
         }
 
@@ -70,10 +84,11 @@ namespace OrbitalShell.Component.Shell.Module
         /// <param name="name">hook name</param>
         public void InvokeHooks(
             CommandEvaluationContext context,
-            Hooks name
+            Hooks name,
+            Action<object> callBack = null
         )
         {
-            InvokeHooks(context, name + "");
+            InvokeHooks(context, name + "", callBack);
         }
     }
 }
