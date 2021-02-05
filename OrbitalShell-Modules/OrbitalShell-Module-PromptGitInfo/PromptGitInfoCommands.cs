@@ -56,7 +56,7 @@ namespace OrbitalShell.Module.PromptGitInfo
             context.ShellEnv.AddValue(
             _namespace,
                 VarTextTemplateNoData,
-                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% {sepSymbol} %errorMessage%(rdc)", false);
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% {sepSymbol} %errorMessage%(rdc) ", false);
             context.ShellEnv.AddValue(
                 _namespace,
                 VarTextTemplateNoRepository,
