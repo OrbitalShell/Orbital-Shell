@@ -61,7 +61,7 @@ namespace OrbitalShell.Module.PromptGitInfo
                 VarTextTemplateNoRepository,
                 $"(b=darkblue)(f=white) {branchSymbol} %errorMessage%(rdc) ", false);
             context.ShellEnv.AddValue(_namespace, VarBehindBackgroundColor, "(b=darkred)", false);
-            context.ShellEnv.AddValue(_namespace, VarUpToDateBackgroundColor, "(b=darkgreen)", false);
+            context.ShellEnv.AddValue(_namespace, VarUpToDateBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(22), false);
             context.ShellEnv.AddValue(_namespace, VarAheadBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(172), false);
             context.ShellEnv.AddValue(_namespace, VarUnknownBackgroundColor, "(b=darkblue)", false);
         }
