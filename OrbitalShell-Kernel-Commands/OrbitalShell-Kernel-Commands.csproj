@@ -13,7 +13,7 @@
     <Product>Orbital Shell - Kernel commands module</Product>
     <Description>Orbital Shell kernel commands module</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>0.0.0.1</Version>
+    <Version>0.1.0.0</Version>
     <InformationalVersion>1.0.0-beta-preview</InformationalVersion>
   </PropertyGroup>
 

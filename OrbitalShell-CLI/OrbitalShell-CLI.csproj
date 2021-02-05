@@ -14,8 +14,8 @@
     <Description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>0.0.0.1</Version>
-    <InformationalVersion>1.0.0-beta-preview</InformationalVersion>
+    <Version>0.1.0.0</Version>
+    <InformationalVersion>1.0.0-beta</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

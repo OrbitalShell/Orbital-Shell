@@ -77,7 +77,7 @@ namespace OrbitalShell.Component.Shell.Module
         {
             ModuleSpecification moduleSpecification;
 
-            var moduleAttr = assembly.GetCustomAttribute<OrbitalShellModuleAttribute>();
+            var moduleAttr = assembly.GetCustomAttribute<ShellModuleAttribute>();
             if (moduleAttr == null)
             {
                 context.Errorln($"assembly is not a shell module: '{assembly.FullName}'");

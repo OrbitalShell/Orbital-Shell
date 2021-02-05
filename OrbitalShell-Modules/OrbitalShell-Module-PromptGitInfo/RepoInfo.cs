@@ -40,21 +40,21 @@ namespace OrbitalShell.Module.PromptGitInfo
             if (!Y.ContainsKey(rName)) Y[rName] = 0;
 
             // untracked
-            if (lName == '?' && rName == '?') { X[lName]++; Y[lName]++; }
+            if (lName == '?' && rName == '?') { X[lName]++; Y[rName]++; }
             // ignored
-            if (lName == '!' && rName == '!') { X[lName]++; Y[lName]++; }
-            // updated in index
+            if (lName == '!' && rName == '!') { X[lName]++; Y[rName]++; }
+            // updated
             if (lName == 'M' && rName == ' ') X[lName]++;
-            // added in index
+            // added
             if (lName == 'A' && rName == ' ') X[lName]++;
-            // deleted from index
+            // deleted
             if (lName == 'D' && rName == ' ') X[lName]++;
-            // renamed from index
+            // renamed
             if (lName == 'R' && rName == ' ') X[lName]++;
-            // copied in index
+            // copied
             if (lName == 'C' && rName == ' ') X[lName]++;
             // remote change
-            if (lName == ' ' && rName != ' ') Y[lName]++;
+            if (lName == ' ' && rName != ' ') Y[rName]++;
             // changed both equals
             if (lName == rName && lName != ' ' && lName != '?' && lName != '!') X[lName]++;
         }
