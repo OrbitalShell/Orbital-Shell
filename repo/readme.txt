@@ -1,5 +1,4 @@
 this is a module and packages repository for orbital 🇸hell
 conventions to use for using this 'repo' :
 * store nuget packages generated localy
-* store modules packages generated localy and externaly
-* provide a list of availables modules
+* provide a list of availables modules (nuget urls)
