@@ -64,8 +64,8 @@ namespace OrbitalShell.Console
         public const char EdgeDoubleColTop = '╦';
         public const char EdgeDoubleColBottom = '╩';
         public const char EdgeDoubleRowColCross = '╬';
-        public const char BoxHalfBottom = '▀';
-        public const char BoxHalfTop = '▄';
+        public const char BoxHalfTop = '▀';
+        public const char BoxHalfBottom = '▄';
         public const char Box = '█';
         public const char BoxQuarLight = '░';
         public const char BoxTierLight = '▒';

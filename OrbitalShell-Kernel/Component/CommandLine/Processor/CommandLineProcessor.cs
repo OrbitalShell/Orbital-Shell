@@ -783,10 +783,10 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     pw.Process.WaitForExit();
                     retCode = pw.Process.ExitCode;
 
-                    /*
-                    pw.StdOutCallBackThread.Join(MaxWaitTime);
-                    pw.StdErrCallBackThread.Join(MaxWaitTime);
-                    */
+
+                    pw.StdOutCallBackThread.Join();
+                    pw.StdErrCallBackThread.Join();
+
 
                     output = sb.ToString();
 

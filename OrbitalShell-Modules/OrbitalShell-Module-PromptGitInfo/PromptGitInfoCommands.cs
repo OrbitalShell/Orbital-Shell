@@ -46,23 +46,24 @@ namespace OrbitalShell.Module.PromptGitInfo
         public void Init(CommandEvaluationContext context)
         {
             // init settings
-            var branchSymbol = Unicode.EdgeFlatTopRight;
+            var branchSymbol = Unicode.EdgeRowLeft;
+            var sepSymbol = Unicode.RightChevron;
             context.ShellEnv.AddValue(_namespace, VarIsEnabled, true, false);
             context.ShellEnv.AddValue(
                 _namespace,
                 VarTextTemplate,
-                $"%bgColor%(f=white) %branch% {branchSymbol} %errorMessage%{ANSI.SGR_SetBackgroundColor8bits(100)}+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% %isBehindSymbol%(rdc) ", false);
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% {sepSymbol} %errorMessage%{ANSI.SGR_SetBackgroundColor8bits(100)} +%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% %isBehindSymbol%(rdc) ", false);
             context.ShellEnv.AddValue(
             _namespace,
                 VarTextTemplateNoData,
-                $"%bgColor%(f=white) %branch% {branchSymbol} %errorMessage%(rdc) ", false);
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% {sepSymbol} %errorMessage%(rdc)", false);
             context.ShellEnv.AddValue(
                 _namespace,
                 VarTextTemplateNoRepository,
-                $"(b=darkblue)(f=white) {branchSymbol} %errorMessage%(rdc) ", false);
+                $"(b=darkblue)(f=white) {sepSymbol} %errorMessage%(rdc) ", false);
             context.ShellEnv.AddValue(_namespace, VarBehindBackgroundColor, "(b=darkred)", false);
             context.ShellEnv.AddValue(_namespace, VarUpToDateBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(22), false);
-            context.ShellEnv.AddValue(_namespace, VarAheadBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(172), false);
+            context.ShellEnv.AddValue(_namespace, VarAheadBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(136), false);
             context.ShellEnv.AddValue(_namespace, VarUnknownBackgroundColor, "(b=darkblue)", false);
         }
 
@@ -95,6 +96,7 @@ namespace OrbitalShell.Module.PromptGitInfo
             {
                 var repoPath = _RepoPathExists(Environment.CurrentDirectory);
                 var repo = _GetRepoStatus(context, repoPath);
+                var repoName = Path.GetFileName(Path.GetDirectoryName(repoPath));
 
                 string text =
                      context.ShellEnv.GetValue<string>(
@@ -134,7 +136,8 @@ namespace OrbitalShell.Module.PromptGitInfo
                     { "remoteAdded" , repo.RemoteAdded+"" },
                     { "remoteDeleted" , repo.RemoteDeleted+"" },
                     { "untracked" , repo.Untracked+"" },
-                    { "isBehindSymbol" , repo.RepoStatus==RepoStatus.Behind?"!":""}
+                    { "isBehindSymbol" , repo.RepoStatus==RepoStatus.Behind?"!":""},
+                    { "repoName" , repoName }
                 };
                 text = _SetVars(context, text, vars);
 
