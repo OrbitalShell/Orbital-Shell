@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Lib;

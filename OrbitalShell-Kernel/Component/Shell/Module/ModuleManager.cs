@@ -1,13 +1,10 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Component.Shell.Hook;
 using System.Reflection;
-using OrbitalShell.Lib;
 using System.IO;
 using OrbitalShell.Component.CommandLine.Parsing;
 
