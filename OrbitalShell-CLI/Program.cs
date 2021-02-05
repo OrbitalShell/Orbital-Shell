@@ -2,7 +2,7 @@
 using System;
 using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 
 namespace OrbitalShell
 {

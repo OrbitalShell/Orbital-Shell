@@ -27,7 +27,7 @@ using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Lib.FileSystem;
 using System.Text;
 using OrbitalShell.Lib.Process;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {

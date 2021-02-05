@@ -1,7 +1,7 @@
 ﻿//#define printDefaultValueInSyntax
 
 using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using System.Reflection;
 using static OrbitalShell.DotNetConsole;
 #if printDefaultValueInSyntax

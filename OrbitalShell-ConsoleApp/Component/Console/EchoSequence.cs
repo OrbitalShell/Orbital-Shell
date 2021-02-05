@@ -2,7 +2,7 @@
 using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.EchoDirective;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     public class EchoSequence
     {

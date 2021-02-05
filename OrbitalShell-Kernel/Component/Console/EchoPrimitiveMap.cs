@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     // TODO: still a draft ...
     public class EchoPrimitiveMap

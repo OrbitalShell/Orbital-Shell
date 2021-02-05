@@ -4,7 +4,7 @@ using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.CommandLine.Pipeline;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;

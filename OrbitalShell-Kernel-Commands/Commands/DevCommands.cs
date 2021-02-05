@@ -1,7 +1,7 @@
 ﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Console;
-using static OrbitalShell.Console.ANSI;
+using OrbitalShell.Component.Console;
+using static OrbitalShell.Component.Console.ANSI;
 using OrbitalShell.Component.Parser.ANSI;
 using System;
 using OrbitalShell.Component.Shell.Variable;
@@ -19,7 +19,7 @@ namespace OrbitalShell.Commands.Dev
         [Command("generate EchoDirectives from Console.Unicode (19/1/21)")]
         public CommandVoidResult GenDirectivesFromUnicode(CommandEvaluationContext context)
         {
-            var t = typeof(Console.Unicode);
+            var t = typeof(Unicode);
             var echodirs = "";
             var textwrapper = "";
             var commentdoc = @"    

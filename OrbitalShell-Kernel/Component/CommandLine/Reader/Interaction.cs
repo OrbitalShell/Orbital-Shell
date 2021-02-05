@@ -1,4 +1,4 @@
-﻿using OrbitalShell.Console;
+﻿using OrbitalShell.Component.Console;
 using System;
 using System.Collections.Generic;
 using static OrbitalShell.DotNetConsole;
@@ -20,7 +20,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
             {
                 r = result.AsyncState?.ToString()?.ToLower() == "y";
             }
-            var cmdlr = new CommandLineReader(null,question + "? ", null);
+            var cmdlr = new CommandLineReader(null, question + "? ", null);
             cmdlr.BeginReadln(endReadln, null, true, false);
             Out.Echoln();
             return r;
@@ -32,7 +32,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
         /// <param name="text"></param>
         /// <param name="inputMap"></param>
         /// <returns></returns>
-        public static object InputBar(string text,List<InputMap> inputMaps)
+        public static object InputBar(string text, List<InputMap> inputMaps)
         {
             object r = null;
             Out.Echo($"{Colors.InteractionBar}{text}{ANSI.RSTXTA}");
@@ -46,7 +46,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 bool partialMatch = false;
                 foreach (var inputMap in inputMaps)
                 {
-                    var match = inputMap.Match(input,c);
+                    var match = inputMap.Match(input, c);
                     if (match == InputMap.ExactMatch)
                     {
                         r = inputMap.Code;

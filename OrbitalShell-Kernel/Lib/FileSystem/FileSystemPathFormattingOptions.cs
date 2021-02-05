@@ -1,5 +1,4 @@
-﻿using OrbitalShell.Console;
-
+﻿using OrbitalShell.Component.Console;
 namespace OrbitalShell.Lib.FileSystem
 {
     public class FileSystemPathFormattingOptions : FormattingOptions
@@ -14,12 +13,12 @@ namespace OrbitalShell.Lib.FileSystem
         public FileSystemPathFormattingOptions() { }
 
         public FileSystemPathFormattingOptions(
-            bool printAttributes=true,
-            bool shortPath=false,
-            string prefix="",
-            string postfix="",
-            int paddingRight=-1,
-            string linePrefix="")
+            bool printAttributes = true,
+            bool shortPath = false,
+            string prefix = "",
+            string postfix = "",
+            int paddingRight = -1,
+            string linePrefix = "")
         {
             PrintAttributes = printAttributes;
             ShortPath = shortPath;

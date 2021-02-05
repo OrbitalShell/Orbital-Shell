@@ -1,6 +1,6 @@
 ﻿using OrbitalShell.Component.CommandLine.Processor;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     /// <summary>
     /// recommended but not mandatory interface of an object that might almost be displayed in the shell and used a a command parameter
@@ -12,7 +12,7 @@ namespace OrbitalShell.Console
         /// must works with a given command evaluation context
         /// </summary>
         /// <param name="context">echo context from command eval context</param>
-        void Echo( EchoEvaluationContext context );
+        void Echo(EchoEvaluationContext context);
 
         /// <summary>
         /// returns the object as text representation of its value (the returned value might be convertible to a native value)

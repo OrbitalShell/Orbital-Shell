@@ -3,7 +3,7 @@ using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     public class TextColor
     {

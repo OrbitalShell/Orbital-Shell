@@ -1,5 +1,5 @@
 ﻿using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using System.Collections.Generic;
 using System.Linq;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;

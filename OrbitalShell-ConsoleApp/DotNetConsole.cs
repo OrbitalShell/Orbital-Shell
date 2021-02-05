@@ -1,7 +1,7 @@
 ﻿#define dbg
 
 using OrbitalShell.Component.UI;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System;

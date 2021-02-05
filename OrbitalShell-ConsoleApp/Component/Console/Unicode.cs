@@ -1,4 +1,4 @@
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     /// <summary>
     /// unicode characters

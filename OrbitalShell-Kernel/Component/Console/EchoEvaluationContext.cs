@@ -1,6 +1,6 @@
 ﻿using OrbitalShell.Component.CommandLine.Processor;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     /// <summary>
     /// contextual data of an echo operation context

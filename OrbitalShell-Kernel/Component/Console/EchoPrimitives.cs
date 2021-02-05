@@ -12,7 +12,7 @@ using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using System.Collections;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     public static partial class EchoPrimitives
     {

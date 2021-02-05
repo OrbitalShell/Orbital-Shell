@@ -4,7 +4,7 @@ using System.IO;
 using static OrbitalShell.Lib.Str;
 using static OrbitalShell.DotNetConsole;
 using System.Globalization;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Variable;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;

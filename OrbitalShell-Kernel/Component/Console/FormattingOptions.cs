@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     public class FormattingOptions : ShellObject
     {
@@ -20,9 +20,10 @@ namespace OrbitalShell.Console
 
         public FormattingOptions() { }
 
-        public FormattingOptions(FormattingOptions o) => InitFrom(o);        
+        public FormattingOptions(FormattingOptions o) => InitFrom(o);
 
-        public void InitFrom(FormattingOptions o) {
+        public void InitFrom(FormattingOptions o)
+        {
             this.IsRawModeEnabled = o.IsRawModeEnabled;
             this.LineBreak = o.LineBreak;
         }

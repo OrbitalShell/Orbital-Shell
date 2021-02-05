@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using static OrbitalShell.Component.CommandLine.Processor.CommandLineProcessor;
 using static OrbitalShell.DotNetConsole;
 using sc = System.Console;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Shell;

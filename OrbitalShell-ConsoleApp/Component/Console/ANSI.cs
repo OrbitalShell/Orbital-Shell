@@ -1,7 +1,7 @@
 ﻿using System;
 using OrbitalShell.Component.Parser.ANSI;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     /// <summary>
     /// all ANSI codes that we take into account for the targetted terminals referential

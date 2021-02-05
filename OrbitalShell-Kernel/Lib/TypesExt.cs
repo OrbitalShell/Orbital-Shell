@@ -1,5 +1,5 @@
 ﻿using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +18,7 @@ namespace OrbitalShell.Lib
             )
         {
             var (@out, context, _) = ctx;
-            
+
             //@out.Echo(context.ShellEnv.Colors.Default);           // ???? FGZ 28/1
             if (echoMethodInfo.GetParameters().Length == 1)
             {
@@ -30,7 +30,7 @@ namespace OrbitalShell.Lib
             }
         }
 
-        public static string InvokeAsText(this MethodInfo asTextMethodInfo,object obj,CommandEvaluationContext context)
+        public static string InvokeAsText(this MethodInfo asTextMethodInfo, object obj, CommandEvaluationContext context)
         {
             if (asTextMethodInfo.GetParameters().Length == 1)
                 return (string)asTextMethodInfo.Invoke(obj, new object[] { context });
@@ -38,7 +38,7 @@ namespace OrbitalShell.Lib
                 return (string)asTextMethodInfo.Invoke(obj, new object[] { obj, context });
         }
 
-        public static object GetParameterDefaultValue(this MethodInfo mi,int pindex) 
+        public static object GetParameterDefaultValue(this MethodInfo mi, int pindex)
             => Activator.CreateInstance(mi.GetParameters()[pindex].ParameterType);
 
         public static MethodInfo GetAsTextMethod(this object o)
@@ -67,7 +67,7 @@ namespace OrbitalShell.Lib
             }
         }
 
-        public static MethodInfo GetEchoMethod( this object o )
+        public static MethodInfo GetEchoMethod(this object o)
         {
             if (o == null) throw new ArgumentNullException(nameof(o));
             var t = o.GetType();
@@ -76,30 +76,31 @@ namespace OrbitalShell.Lib
                 var inheritanceChain = t.GetInheritanceChain();
 
                 MethodInfo mi = null;
-                foreach ( var it in inheritanceChain )
+                foreach (var it in inheritanceChain)
                 {
                     mi = it.GetMethod(
                         "Echo",
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static
                         );
-                    if (mi!=null) break;
+                    if (mi != null) break;
                 }
-                
+
                 // extension of a type not in this assembly is not found
                 // search in extension class to fix it
-                if (mi==null)
+                if (mi == null)
                 {
                     var mis = typeof(EchoPrimitives).GetMethods();
-                    foreach ( var it in inheritanceChain )
+                    foreach (var it in inheritanceChain)
                     {
                         mi = mis.Where(x => x.Name == "Echo" && x.GetParameters()[0].ParameterType == it).FirstOrDefault();
-                        if (mi!=null) break;
+                        if (mi != null) break;
                     }
                 }
 
                 return mi;
 
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }

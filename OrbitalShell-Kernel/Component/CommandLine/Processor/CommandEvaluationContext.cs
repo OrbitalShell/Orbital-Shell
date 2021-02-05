@@ -1,5 +1,5 @@
 ﻿using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using System.IO;
 using System;
 

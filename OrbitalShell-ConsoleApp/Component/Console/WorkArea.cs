@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     public class WorkArea
     {

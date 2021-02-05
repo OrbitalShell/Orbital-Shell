@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using static OrbitalShell.DotNetConsole;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using System;
 using System.Text;
 

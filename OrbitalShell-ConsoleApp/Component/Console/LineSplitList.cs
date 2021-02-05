@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     public class LineSplitList
     {

@@ -2,9 +2,9 @@
 using OrbitalShell.Lib;
 using System.Reflection;
 using System.Text;
-using static OrbitalShell.Console.EchoPrimitives;
+using static OrbitalShell.Component.Console.EchoPrimitives;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     /// <summary>
     /// dynamically outputable &amp; convertible object that integrates with the shell

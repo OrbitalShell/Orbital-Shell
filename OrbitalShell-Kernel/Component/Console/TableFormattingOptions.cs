@@ -1,4 +1,4 @@
-﻿namespace OrbitalShell.Console
+﻿namespace OrbitalShell.Component.Console
 {
     public class TableFormattingOptions : FormattingOptions
     {
@@ -28,8 +28,8 @@
         }
 
         public TableFormattingOptions(
-            bool noBorders = true, 
-            bool padLastColumn = true, 
+            bool noBorders = true,
+            bool padLastColumn = true,
             TableLayout layout = TableLayout.HeaderHorizontalSeparator,
             bool unfoldCategories = true,
             bool unfoldItems = true)

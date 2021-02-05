@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Data;
-using static OrbitalShell.Console.EchoPrimitives;
+using static OrbitalShell.Component.Console.EchoPrimitives;
 using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell.Component.Shell.Data

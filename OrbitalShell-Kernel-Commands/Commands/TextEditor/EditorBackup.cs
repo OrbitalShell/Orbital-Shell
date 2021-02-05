@@ -1,4 +1,4 @@
-﻿using OrbitalShell.Console;
+﻿using OrbitalShell.Component.Console;
 using OrbitalShell.Lib.FileSystem;
 using System.Collections.Generic;
 using System.Drawing;

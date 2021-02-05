@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     public class InputMap
     {

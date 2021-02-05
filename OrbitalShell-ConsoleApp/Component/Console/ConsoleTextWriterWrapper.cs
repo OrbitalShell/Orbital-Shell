@@ -12,10 +12,10 @@ using static OrbitalShell.DotNetConsole;
 using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.Str;
 using sc = System.Console;
-using static OrbitalShell.Console.ANSI;
+using static OrbitalShell.Component.Console.ANSI;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     public class ConsoleTextWriterWrapper : TextWriterWrapper
     {

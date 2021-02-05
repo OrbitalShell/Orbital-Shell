@@ -2,7 +2,7 @@
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using OrbitalShell.Lib;
 using OrbitalShell.Lib.Data;
 using OrbitalShell.Lib.FileSystem;

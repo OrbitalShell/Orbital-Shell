@@ -2,12 +2,12 @@
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Shell;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using static OrbitalShell.Console.EchoPrimitives;
+using static OrbitalShell.Component.Console.EchoPrimitives;
 using static OrbitalShell.Lib.Str;
 using OrbitalShell.Component.CommandLine;
 

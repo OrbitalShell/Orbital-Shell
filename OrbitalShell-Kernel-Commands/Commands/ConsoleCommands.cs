@@ -2,14 +2,13 @@
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Shell;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Component.Commands
 {

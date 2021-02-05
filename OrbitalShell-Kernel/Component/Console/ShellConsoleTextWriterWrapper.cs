@@ -2,7 +2,7 @@ using System.IO;
 using System;
 using OrbitalShell.Component.CommandLine.Processor;
 
-namespace OrbitalShell.Console
+namespace OrbitalShell.Component.Console
 {
     /// <summary>
     /// wraps the console text writer wrapper for the needs of the shell

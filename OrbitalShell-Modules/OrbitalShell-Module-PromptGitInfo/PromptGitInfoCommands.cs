@@ -7,7 +7,7 @@ using OrbitalShell.Component.CommandLine.Processor;
 using System;
 using System.IO;
 using System.Linq;
-using OrbitalShell.Console;
+using OrbitalShell.Component.Console;
 using System.Collections.Generic;
 
 namespace OrbitalShell.Module.PromptGitInfo
