@@ -19,6 +19,7 @@ namespace OrbitalShell.Component.Console
             CommandEvaluationContext = commandEvaluationContext;
         }
 
+        // TODO missing line break in some cases
         public override void Echo(
             object o,
             bool lineBreak = false,

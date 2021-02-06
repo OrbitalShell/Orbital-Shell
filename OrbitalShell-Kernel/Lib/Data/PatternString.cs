@@ -1,7 +1,6 @@
 using OrbitalShell.Component.CommandLine.CommandModel;
 using static OrbitalShell.Lib.Str;
 using System.Text.RegularExpressions;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace OrbitalShell.Lib.Data
 {

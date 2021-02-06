@@ -186,10 +186,10 @@ namespace OrbitalShell.Commands.Shell
                 throw new Exception($"can't get information for a variable member");
 
             Table dt = new Table();
-            dt.AddColumns("property", "value");
+            dt.AddColumns("property", "value")
+                .SetFormat("property", $"{context.ShellEnv.Colors.Label}{{0}}{Rdc}");
             dt.Columns[0].DataType = typeof(string);
             dt.Columns[1].DataType = typeof(object);
-            dt.SetFormat("property", $"{context.ShellEnv.Colors.Label}{{0}}{Rdc}");
 
             foreach (var kv in props)
             {

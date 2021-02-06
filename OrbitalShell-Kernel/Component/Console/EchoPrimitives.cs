@@ -11,6 +11,7 @@ using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using System.Collections;
+using OrbitalShell.Component.Shell.Module;
 
 namespace OrbitalShell.Component.Console
 {
@@ -337,6 +338,8 @@ namespace OrbitalShell.Component.Console
 
         #endregion
 
+        // TODO: check: EchoEvaluationContext.LineBreak seems to generally never been used
+
         #region system library types
 
         public static void Echo(
@@ -358,6 +361,15 @@ namespace OrbitalShell.Component.Console
         #endregion
 
         #region library types
+
+        public static void Echo(
+            this ModuleVersion obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, _) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+            @out.Echo($"{context.ShellEnv.Colors.Integer}{obj}(rdc)");
+        }
 
         public static void Echo(
             this StringWrapper obj,
@@ -569,7 +581,7 @@ namespace OrbitalShell.Component.Console
         {
             var (@out, context, options) = ctx;
             if (context.EchoMap.MappedCall(table, ctx)) return;
-            _Echo(table, @out, context, (TableFormattingOptions)options);
+            _Echo(table, @out, context, options as TableFormattingOptions);
         }
 
         public static void Echo(
@@ -578,7 +590,7 @@ namespace OrbitalShell.Component.Console
         {
             var (@out, context, options) = ctx;
             if (context.EchoMap.MappedCall(table, ctx)) return;
-            _Echo(table, @out, context, (TableFormattingOptions)options);
+            _Echo(table, @out, context, options as TableFormattingOptions);
         }
 
         static void _Echo(
@@ -591,6 +603,7 @@ namespace OrbitalShell.Component.Console
             @out.EnableFillLineFromCursor = false;
             @out.HideCur();
             var colLengths = new int[table.Columns.Count];
+
             foreach (var rw in table.Rows)
             {
                 var cols = ((DataRow)rw).ItemArray;
@@ -612,19 +625,28 @@ namespace OrbitalShell.Component.Console
                     }
                 }
             }
-            var colsep = options.NoBorders ? " " : (context.ShellEnv.Colors.TableBorder + " | " + context.ShellEnv.Colors.Default);
+            var colsep = options.NoBorders ? 
+                " ".PadLeft(Math.Max(1,options.ColumnRightMargin))
+                : (context.ShellEnv.Colors.TableBorder + " | " + context.ShellEnv.Colors.Default);
+
+
             var colseplength = options.NoBorders ? 0 : 3;
             var tablewidth = options.NoBorders ? 0 : 3;
+
             for (int i = 0; i < table.Columns.Count; i++)
                 tablewidth += table.Columns[i].ColumnName.PadRight(colLengths[i], ' ').Length + colseplength;
+
             var line = options.NoBorders ? "" : (context.ShellEnv.Colors.TableBorder + "".PadRight(tablewidth, '-'));
 
             if (!options.NoBorders) @out.Echoln(line);
             string fxh(string header) => (table is Table t) ? t.GetFormatedHeader(header) : header;
 
+            // headers
+
             for (int i = 0; i < table.Columns.Count; i++)
             {
-                if (i == 0) @out.Echo(colsep);
+                if (!options.NoBorders && i == 0) @out.Echo(colsep);
+
                 var col = table.Columns[i];
                 var colName = (i == table.Columns.Count - 1 && !options.PadLastColumn) ?
                     fxh(col.ColumnName)
@@ -635,6 +657,8 @@ namespace OrbitalShell.Component.Console
             }
             @out.Echoln();
             if (!options.NoBorders) @out.Echoln(line);
+
+            // rows
 
             string fhv(string header, string value) => (table is Table t) ? t.GetFormatedValue(context, header, value) : value;
             foreach (var rw in table.Rows)
@@ -650,7 +674,8 @@ namespace OrbitalShell.Component.Console
                 var arr = row.ItemArray;
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    if (i == 0) Out.Echo(colsep);
+                    if (!options.NoBorders && i == 0) Out.Echo(colsep);
+
                     var txt = (arr[i] == null) ? "" : arr[i].ToString();
                     var fvalue = fhv(table.Columns[i].ColumnName, txt);
                     var o = arr[i];

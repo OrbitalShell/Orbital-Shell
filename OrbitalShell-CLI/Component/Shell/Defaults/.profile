@@ -23,5 +23,6 @@ module -l "$shell/../../../../OrbitalShell-Modules/OrbitalShell-Module-PromptGit
 echo ""
 
 alias proj "cd '$shell/../../../..'"
-alias gits "git status"
-alias gita "git add . && git status"
+alias gss "git status -s"
+alias gs "git status"
+alias ga "git add . && git status"

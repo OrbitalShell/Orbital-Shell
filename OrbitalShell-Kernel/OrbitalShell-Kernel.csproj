@@ -41,4 +41,8 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Lib\Net\" />
+  </ItemGroup>
+
 </Project>

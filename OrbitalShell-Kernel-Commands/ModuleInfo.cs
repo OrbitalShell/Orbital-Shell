@@ -10,5 +10,6 @@ using OrbitalShell.Lib;
 [assembly: ModuleAuthors("Orbital Shell team")]
 namespace OrbitalShell.Kernel.Commands
 {
-    class ModuleInfo { }
+    internal class ModuleInfo
+    { }
 }

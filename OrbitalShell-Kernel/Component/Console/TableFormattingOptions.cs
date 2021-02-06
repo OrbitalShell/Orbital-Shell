@@ -14,6 +14,8 @@
         public TableLayout Layout = TableLayout.HeaderHorizontalSeparator;
         public bool UnfoldCategories = true;
         public bool UnfoldItems = true;
+        public int ColumnLeftMargin = 0;
+        public int ColumnRightMargin = 4;
 
         public TableFormattingOptions() { }
 
@@ -25,6 +27,8 @@
             Layout = o.Layout;
             UnfoldCategories = o.UnfoldCategories;
             UnfoldItems = o.UnfoldItems;
+            ColumnLeftMargin = o.ColumnLeftMargin;
+            ColumnRightMargin = o.ColumnRightMargin;
         }
 
         public TableFormattingOptions(
@@ -32,13 +36,17 @@
             bool padLastColumn = true,
             TableLayout layout = TableLayout.HeaderHorizontalSeparator,
             bool unfoldCategories = true,
-            bool unfoldItems = true)
+            bool unfoldItems = true,
+            int columnLeftMargin = 0,
+            int columnRightMargin = 4)
         {
             NoBorders = noBorders;
             PadLastColumn = padLastColumn;
             Layout = layout;
             UnfoldCategories = unfoldCategories;
             UnfoldItems = unfoldItems;
+            ColumnLeftMargin = columnLeftMargin;
+            ColumnRightMargin = columnRightMargin;
         }
     }
 }

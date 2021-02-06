@@ -1,5 +1,4 @@
-﻿using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Lib.FileSystem;
@@ -15,7 +14,7 @@ using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Console;
 using System;
 using System.Net.Http;
-using System.Net;
+using OrbitalShell.Component.Shell.Data;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -24,23 +23,32 @@ namespace OrbitalShell.Commands.Shell
     /// </summary>
     public partial class ShellCommands
     {
-        [Command("list modules if no option specified, else load or unload modules")]
+        [Command("otuput a report of loaded modules if no option is specified, else allows to load/unload/install/remove/update modules and get informations from repositories of modules")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.module)]
         [CommandAlias("mod", "module")]
         [CommandAlias("mods", "module -s")]
         public CommandResult<List<ModuleSpecification>> Module(
             CommandEvaluationContext context,
             [Option("l", "load", "load a module from the given path", true, true)] FilePath loadModulePath = null,
-            [Option("u", "unload", "unload the module having the given name ", true, true)] string unloadModuleName = null,
+            [Option("n", "unload", "unload the module having the given name ", true, true)] string unloadModuleName = null,
             [Option("i", "install", "install a module from the nuget source", true, true)] string installModuleName = null,
-            [Option("f", "fetch", "fetch list of modules from modules repositories", true)] bool getList = false,
-            [Option("v", "version", "version to be installed in case of", true, true)] string version = null,
+            [Option("r", "remove", "uninstall a module and remove the module files", true, true)] string uninstallModuleName = null,
+            [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
+            [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool getList = false,
+            [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module and output informations about it. the module is not installed", true, true )] string fetchInfoName = null,
+            [Option("v", "version", "version to be installed in applyable", true, true)] string version = null,
             [Option("s", "short", "output less informations", true)] bool @short = false
             )
         {
+            ModuleSpecification moduleSpecification = null;
             var f = context.ShellEnv.Colors.Default.ToString();
-            if (loadModulePath == null && unloadModuleName == null && !getList)
+            bool fetchInfo = fetchInfoName != null;
+
+            if (loadModulePath == null && unloadModuleName == null && updateModuleName == null && installModuleName == null && uninstallModuleName == null 
+                && !getList && !fetchInfo)
             {
+                // output reports on loaded modules
+
                 var col1length = context.CommandLineProcessor.ModuleManager.Modules.Values.Select(x => x.Name.Length).Max() + 1;
                 int n = 1;
                 foreach (var kvp in context.CommandLineProcessor.ModuleManager.Modules)
@@ -82,11 +90,10 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
             }
 
-            ModuleSpecification moduleSpecification = null;
-
-            if (!getList)
+            if (!getList && !fetchInfo)
             {
                 // load/init module
+
                 if (loadModulePath != null)
                 {
                     if (loadModulePath.CheckExists(context))
@@ -100,6 +107,7 @@ namespace OrbitalShell.Commands.Shell
                 }
 
                 // unload module
+
                 if (unloadModuleName != null)
                 {
                     if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == unloadModuleName))
@@ -116,49 +124,49 @@ namespace OrbitalShell.Commands.Shell
             }
             else
             {
-                // get list
-                var repoList = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.settings_module_providerUrls);
-                if (repoList == null || repoList.Count == 0)
+                // fetch mod repos
+                if (_GetModuleListFromRepositories(context, out var modRefs))
                 {
-                    context.Out.Errorln("module repository list is empty");
-                }
-                else
-                {
-                    context.Out.Echo(context.ShellEnv.Colors.Log + " fetching data from repositories ... ");
-                    foreach (var repo in repoList)
+                    context.Out.Echo(ANSI.CPL(1)+ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
+
+                    if (modRefs.Count > 0)
                     {
-                        try
+                        // fetch module info
+
+                        if (fetchInfo)
                         {
-                            var modLists = new List<string>();
-                            using (var httpClient = new HttpClient())
+                            var modRef = modRefs.Where(x => x.Name == fetchInfoName).FirstOrDefault();
+                            if (modRef != null)
                             {
-                                using (var request = new HttpRequestMessage(new HttpMethod("GET"), repo))
-                                {
-                                    var tsk = httpClient.SendAsync(request);
-                                    var result = tsk.Result;
-                                    if (result.IsSuccessStatusCode)
-                                    {
-                                        modLists.Add(result.Content.ReadAsStringAsync().Result);
-                                    }
-                                    else
-                                        context.Out.Errorln($"get fail from '{repo}' due to error: {result.ReasonPhrase}");
-                                }
+                                // catch from nuget
                             }
-                            context.Out.Echoln(context.ShellEnv.Colors.Log + "Done");
-
-                            var modRefs = new List<ModuleReference>();
-                            foreach (var modList in modLists)
-                                modRefs.AddRange(_GetModules(modList));
-
-                            if (modRefs.Count > 0) context.Out.Echoln();
-                            foreach (var modref in modRefs)
-                                context.Out.Echoln(modref + "");
+                            else
+                                context.Out.Errorln("no module having name '{fetchInfoName}' can be found in repostories");
                         }
-                        catch (Exception repoAccessError)
+
+                        if (getList)
                         {
-                            context.Out.Errorln($"get fail from '{repo}' due to error: {repoAccessError.Message}");
+                            // get list
+
+                            var tb = new Table(
+                                ("name", typeof(string)),
+                                ("version", typeof(ModuleVersion)),
+                                ("description", typeof(string))
+                            );
+                            foreach (var modref in modRefs)
+                                tb.AddRow(modref.Name, modref.Version, modref.Description);
+
+                            tb.Echo(new EchoEvaluationContext(
+                                context.Out,
+                                context,
+                                new TableFormattingOptions(
+                                    context.ShellEnv.GetValue<TableFormattingOptions>(
+                                        ShellEnvironmentVar.display_tableFormattingOptions))
+                                { }));
                         }
                     }
+                    else
+                        context.Out.Errorln("module repository list doesn't contains any module reference");
                 }
             }
 
@@ -168,7 +176,56 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { });
         }
 
-        List<ModuleReference> _GetModules(string modList)
+        bool _GetModuleListFromRepositories(CommandEvaluationContext context,out List<ModuleReference> modulesReferences)
+        {
+            modulesReferences = null;
+
+            var repoList = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.settings_module_providerUrls);
+            if (repoList == null || repoList.Count == 0)
+            {
+                context.Out.Errorln("module repository list is empty");
+            }
+            else
+            {
+                context.Out.Echo(context.ShellEnv.Colors.Log + " fetching data from repositories ... ");
+                foreach (var repo in repoList)
+                {
+                    try
+                    {
+                        var modLists = new List<string>();
+                        using (var httpClient = new HttpClient())
+                        {
+                            using (var request = new HttpRequestMessage(new HttpMethod("GET"), repo))
+                            {
+                                var tsk = httpClient.SendAsync(request);
+                                var result = tsk.Result;
+                                if (result.IsSuccessStatusCode)
+                                {
+                                    modLists.Add(result.Content.ReadAsStringAsync().Result);
+                                }
+                                else
+                                    context.Out.Errorln($"fetch list fail from '{repo}' due to error: {result.ReasonPhrase}");
+                            }
+                        }
+                        context.Out.Echoln(context.ShellEnv.Colors.Log + "Done");
+
+                        var modRefs = new List<ModuleReference>();
+                        foreach (var modList in modLists)
+                            modRefs.AddRange(_ParseModuleList(modList));
+
+                        modulesReferences = modRefs;
+                        return true;                        
+                    }
+                    catch (Exception repoAccessError)
+                    {
+                        context.Out.Errorln($"fetch list fail from '{repo}' due to error: {repoAccessError.Message}");
+                    }
+                }
+            }
+            return false;
+        }
+
+        List<ModuleReference> _ParseModuleList(string modList)
         {
             var r = new List<ModuleReference>();
             var lines = modList.Split("\n");
@@ -178,7 +235,7 @@ namespace OrbitalShell.Commands.Shell
                 if (!string.IsNullOrWhiteSpace(s) && !s.StartsWith(";"))
                 {
                     var t = s.Split(";");
-                    if (t.Length == 3)
+                    if (t.Length == 4)
                     {
                         var itemType = t[0].ToLower();
                         if (itemType == "m")
