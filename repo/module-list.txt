@@ -1,7 +1,7 @@
 ; this is the a list of orbital shell modules that have been registered into this module repository
-; one line = item type; a nuget package name that designs a shell module nuget package [ ; last knonwn version ]
+; one line = item type; a nuget package name that designs a shell module nuget package ; [ last knonwn version ] ; description
  
-m;OrbitalShell-Module-PromptGitInfo
-m;OrbitalShell-Kernel;0.1.0.0
-m;OrbitalShell-Kernel-Commands;0.1.0.0
+m;OrbitalShell-Module-PromptGitInfo;;Prompt git info adds infos about git repository to the orbital shell command line prompt
+m;OrbitalShell-Kernel;0.1.0.0;Orbital Shell kernel - Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core
+m;OrbitalShell-Kernel-Commands;0.1.0.0;Orbital Shell kernel commands module
 

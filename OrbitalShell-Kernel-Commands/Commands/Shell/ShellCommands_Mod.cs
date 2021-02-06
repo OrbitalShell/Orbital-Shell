@@ -144,7 +144,15 @@ namespace OrbitalShell.Commands.Shell
                                         context.Out.Errorln($"get fail from '{repo}' due to error: {result.ReasonPhrase}");
                                 }
                             }
-                            context.Out.Echo(context.ShellEnv.Colors.Log + "Done");
+                            context.Out.Echoln(context.ShellEnv.Colors.Log + "Done");
+
+                            var modRefs = new List<ModuleReference>();
+                            foreach (var modList in modLists)
+                                modRefs.AddRange(_GetModules(modList));
+
+                            if (modRefs.Count > 0) context.Out.Echoln();
+                            foreach (var modref in modRefs)
+                                context.Out.Echoln(modref + "");
                         }
                         catch (Exception repoAccessError)
                         {
@@ -155,10 +163,36 @@ namespace OrbitalShell.Commands.Shell
             }
 
             if (moduleSpecification != null)
-                return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { moduleSpecification
-    });
+                return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { moduleSpecification });
             else
                 return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { });
+        }
+
+        List<ModuleReference> _GetModules(string modList)
+        {
+            var r = new List<ModuleReference>();
+            var lines = modList.Split("\n");
+            foreach (var s in lines)
+            {
+                var ts = s.Trim();
+                if (!string.IsNullOrWhiteSpace(s) && !s.StartsWith(";"))
+                {
+                    var t = s.Split(";");
+                    if (t.Length == 3)
+                    {
+                        var itemType = t[0].ToLower();
+                        if (itemType == "m")
+                        {
+                            var name = t[1];
+                            var desc = t[3];
+                            var version = t[2];
+                            var modref = new ModuleReference(name, version, desc);
+                            r.Add(modref);
+                        }
+                    }
+                }
+            }
+            return r;
         }
 
     }
