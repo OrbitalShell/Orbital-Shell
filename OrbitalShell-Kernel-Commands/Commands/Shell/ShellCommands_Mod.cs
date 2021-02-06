@@ -138,7 +138,8 @@ namespace OrbitalShell.Commands.Shell
                             var modRef = modRefs.Where(x => x.Name == fetchInfoName).FirstOrDefault();
                             if (modRef != null)
                             {
-                                // catch from nuget
+                                // try to fetch the module : name[,version]->nuget
+
                             }
                             else
                                 context.Out.Errorln("no module having name '{fetchInfoName}' can be found in repostories");
