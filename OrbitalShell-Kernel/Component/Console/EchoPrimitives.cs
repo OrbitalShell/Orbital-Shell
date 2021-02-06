@@ -686,7 +686,15 @@ namespace OrbitalShell.Component.Console
                     {
                         // value dump via Echo primitive
                         @out.Echo("" + context.ShellEnv.Colors.Default);
+                        var p0 = @out.CursorPos;
                         mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, options));
+                        var p1 = @out.CursorPos;
+                        if (p1.Y==p0.Y)
+                        {
+                            var l = p1.X - p0.X;
+                            var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
+                            @out.Echo(spc);
+                        }
                         @out.Echo(colsep);
                     }
                     else
