@@ -11,6 +11,11 @@ using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.Shell;
 using System.IO;
 using OrbitalShell.Lib;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Component.Console;
+using System;
+using System.Net.Http;
+using System.Net;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -27,11 +32,14 @@ namespace OrbitalShell.Commands.Shell
             CommandEvaluationContext context,
             [Option("l", "load", "load a module from the given path", true, true)] FilePath loadModulePath = null,
             [Option("u", "unload", "unload the module having the given name ", true, true)] string unloadModuleName = null,
+            [Option("i", "install", "install a module from the nuget source", true, true)] string installModuleName = null,
+            [Option("f", "fetch", "fetch list of modules from modules repositories", true)] bool getList = false,
+            [Option("v", "version", "version to be installed in case of", true, true)] string version = null,
             [Option("s", "short", "output less informations", true)] bool @short = false
             )
         {
             var f = context.ShellEnv.Colors.Default.ToString();
-            if (loadModulePath == null && unloadModuleName == null)
+            if (loadModulePath == null && unloadModuleName == null && !getList)
             {
                 var col1length = context.CommandLineProcessor.ModuleManager.Modules.Values.Select(x => x.Name.Length).Max() + 1;
                 int n = 1;
@@ -76,32 +84,81 @@ namespace OrbitalShell.Commands.Shell
 
             ModuleSpecification moduleSpecification = null;
 
-            if (loadModulePath != null)
+            if (!getList)
             {
-                if (loadModulePath.CheckExists(context))
+                // load/init module
+                if (loadModulePath != null)
                 {
-                    var a = Assembly.LoadFrom(loadModulePath.FileSystemInfo.FullName);
-                    moduleSpecification = context.CommandLineProcessor.ModuleManager.RegisterModule(context, a);
-                    if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($" Done : {moduleSpecification.Info.GetDescriptor(context)}");
+                    if (loadModulePath.CheckExists(context))
+                    {
+                        var a = Assembly.LoadFrom(loadModulePath.FileSystemInfo.FullName);
+                        moduleSpecification = context.CommandLineProcessor.ModuleManager.RegisterModule(context, a);
+                        if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($" Done : {moduleSpecification.Info.GetDescriptor(context)}");
+                    }
+                    else
+                        return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
+                }
+
+                // unload module
+                if (unloadModuleName != null)
+                {
+                    if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == unloadModuleName))
+                    {
+                        moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, unloadModuleName);
+                        if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
+                    }
+                    else
+                    {
+                        context.Errorln($"module '{unloadModuleName}' is not registered");
+                        return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
+                    }
+                }
+            }
+            else
+            {
+                // get list
+                var repoList = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.settings_module_providerUrls);
+                if (repoList == null || repoList.Count == 0)
+                {
+                    context.Out.Errorln("module repository list is empty");
                 }
                 else
-                    return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
+                {
+                    context.Out.Echo(context.ShellEnv.Colors.Log + " fetching data from repositories ... ");
+                    foreach (var repo in repoList)
+                    {
+                        try
+                        {
+                            var modLists = new List<string>();
+                            using (var httpClient = new HttpClient())
+                            {
+                                using (var request = new HttpRequestMessage(new HttpMethod("GET"), repo))
+                                {
+                                    var tsk = httpClient.SendAsync(request);
+                                    var result = tsk.Result;
+                                    if (result.IsSuccessStatusCode)
+                                    {
+                                        modLists.Add(result.Content.ReadAsStringAsync().Result);
+                                    }
+                                    else
+                                        context.Out.Errorln($"get fail from '{repo}' due to error: {result.ReasonPhrase}");
+                                }
+                            }
+                            context.Out.Echo(context.ShellEnv.Colors.Log + "Done");
+                        }
+                        catch (Exception repoAccessError)
+                        {
+                            context.Out.Errorln($"get fail from '{repo}' due to error: {repoAccessError.Message}");
+                        }
+                    }
+                }
             }
 
-            if (unloadModuleName != null)
-            {
-                if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == unloadModuleName))
-                {
-                    moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, unloadModuleName);
-                    if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
-                }
-                else
-                {
-                    context.Errorln($"module '{unloadModuleName}' is not registered");
-                    return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
-                }
-            }
-            return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { moduleSpecification });
+            if (moduleSpecification != null)
+                return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { moduleSpecification
+    });
+            else
+                return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { });
         }
 
     }

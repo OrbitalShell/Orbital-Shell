@@ -1,2 +1,7 @@
-; this is the list of orbital shell modules that can be found from this repository
+; this is the a list of orbital shell modules that have been registered into this module repository
+; one line = item type; a nuget package name that designs a shell module nuget package [ ; last knonwn version ]
  
+m;OrbitalShell-Module-PromptGitInfo
+m;OrbitalShell-Kernel;0.1.0.0
+m;OrbitalShell-Kernel-Commands;0.1.0.0
+
