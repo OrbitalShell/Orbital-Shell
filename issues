@@ -12,10 +12,7 @@ improvements to do 👷
 3/2/21  FGZ     ✅ NEXT fix alias replacement that is currently only at pipeline begin + add commands shortcuts 
                     (not aliases, that are names synonyms that can substitute to original command name and that preserve the rest of the command line)
 4/2/21 FGZ      💥 no var subst in shell exec com ?
-4/2/21 FGZ      💥 loose quotes arround args in shell exec com
 6/2/21 FGZ      💥 a toString method lead to stack overflow during debug - probably on object method
-6/2/21 FGZ      💥 \" not transcoded correclty by clpa: get \" , should have " (that's could explain why some args can't be neutralized in certain cases (see ShellExec))
-6/2/21 FGZ      👷 ShellExec not able to handle quoted parameters (quotes are systematically lost)
 7/2/21 FGZ      💥 rm do not delete the top level item (test case: dir with or without recurse)
 
 📂variables
@@ -52,6 +49,9 @@ procrastinated:
 olds:
 -----
 
+4/2/21 FGZ      🆗 loose quotes arround args in shell exec com : normal due to eval of args : need to neutralize quotes
+6/2/21 FGZ      🆗 \" not transcoded correclty by clpa: get \" , should have " (that's could explain why some args can't be neutralized in certain cases (see ShellExec))
+6/2/21 FGZ      🆗 ShellExec not able to handle quoted parameters (quotes are systematically lost)
 26/1/21 FGZ     🆗 accept wildcard in help -t -n -m : think regex in wildcard parameters
 2/2/21 FGZ      🆗 echo $£
                     failed to convert value of variable $£, the value '' of type:  can't be converted to the attempted parameter type: object
