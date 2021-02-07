@@ -29,6 +29,12 @@ namespace OrbitalShell.Commands.FileSystem
     [CommandsNamespace(CommandNamespace.fs)]
     public class FileSystemCommands : ICommandsDeclaringType
     {
+        [Command("transform a windows path style to an unix path style (change path separators '\\' to '/')")]
+        public CommandResult<string> ToUnixPath(
+            CommandEvaluationContext context,
+            [Parameter("path to be transformed to a linux path style")] string path            
+            ) => new CommandResult<string>(FileSystemPath.UnescapePathSeparators(path));
+
         [Command("search files, folders and text file content depending on search criteria")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Find(
             CommandEvaluationContext context,
