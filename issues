@@ -15,6 +15,7 @@ improvements to do 👷
 4/2/21 FGZ      💥 loose quotes arround args in shell exec com
 6/2/21 FGZ      💥 a toString method lead to stack overflow during debug - probably on object method
 6/2/21 FGZ      💥 \" not transcoded correclty by clpa: get \" , should have " (that's could explain why some args can't be neutralized in certain cases (see ShellExec))
+6/2/21 FGZ      👷 ShellExec not able to handle quoted parameters (quotes are systematically lost)
 7/2/21 FGZ      💥 rm do not delete the top level item (test case: dir with or without recurse)
 
 📂variables

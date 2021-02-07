@@ -22,6 +22,9 @@ using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Commands.FileSystem
 {
+    /// <summary>
+    /// file systems commands
+    /// </summary>
     [Commands("commands related to files,directories,mounts/filesystems and disks")]
     [CommandsNamespace(CommandNamespace.fs)]
     public class FileSystemCommands : ICommandsDeclaringType

@@ -6,6 +6,9 @@ using sc = System.Console;
 
 namespace OrbitalShell.Component.CommandLine.Reader
 {
+    /// <summary>
+    /// TODO: move to Component.UI.Input
+    /// </summary>
     public static class Interaction
     {
         /// <summary>

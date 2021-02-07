@@ -239,6 +239,10 @@ namespace OrbitalShell
 #endif
         }
 
+        /// <summary>
+        /// terminates current process
+        /// </summary>
+        /// <param name="r">return code</param>
         public static void Exit(int r = 0) => Environment.Exit(r);
 
 #region work area operations
@@ -253,6 +257,10 @@ namespace OrbitalShell
         /// </summary>
         public static bool IsConsoleGeometryEnabled = true;
 
+        /// <summary>
+        /// update the IsConsoleGeometryEnabled field
+        /// </summary>
+        /// <returns>value of the field</returns>
         public static bool CheckConsoleHasGeometry()
         {
             try
