@@ -3,11 +3,8 @@ using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Console;
 using System;
-using System.Collections.Generic;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
-using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
 
 namespace OrbitalShell.Component.CommandLine.Pipeline
 {

@@ -760,6 +760,18 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public const int MaxWaitTime = 2000;    // 2 sec
 
+        /// <summary>
+        /// exec a file with os shell exec or orbsh shell exec
+        /// </summary>
+        /// <param name="context">command evaluation context</param>
+        /// <param name="comPath">command filePath</param>
+        /// <param name="args">command line arguments string</param>
+        /// <param name="output">shell exec result if any</param>
+        /// <param name="waitForExit">true if wait for exec process exits</param>
+        /// <param name="isStreamsEchoEnabled">if true, exec process output stream is echoized to context out (dump command output)</param>
+        /// <param name="isOutputCaptureEnabled">if true capture the exec process output and give the result in parameter 'output'</param>
+        /// <param name="mergeErrorStreamIntoOutput">if true merge exec process err stream content to the process output content (if process out capture is enabled)</param>
+        /// <returns>exec process return code</returns>
         public int ShellExec(
             CommandEvaluationContext context,
             string comPath,
@@ -851,11 +863,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <summary>
         /// react after parse within a parse work unit result
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="expr"></param>
-        /// <param name="outputX"></param>
-        /// <param name="parseResult"></param>
-        /// <returns></returns>
+        /// <param name="context">command eval context</param>
+        /// <param name="expr">command line expr</param>
+        /// <param name="outputX">begin cursor x output</param>
+        /// <param name="parseResult">parse resul</param>
+        /// <returns>expression evaluation context</returns>
         ExpressionEvaluationResult AnalysisPipelineParseResult(
             CommandEvaluationContext context,
             PipelineParseResult pipelineParseResult,
@@ -872,30 +884,13 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
             switch (parseResult.ParseResultType)
             {
-#if no
-                /*
-                    case ParseResultType.Valid:
-                    var syntaxParsingResult = parseResult.SyntaxParsingResults.First();
-                    try
-                    {
-                        var outputData = InvokeCommand(CommandEvaluationContext, syntaxParsingResult.CommandSyntax.CommandSpecification, syntaxParsingResult.MatchingParameters);
-
-                        r = new ExpressionEvaluationResult(null, ParseResultType.Valid, outputData, (int)ReturnCode.OK, null);
-                    } catch (Exception commandInvokeError)
-                    {
-                        var commandError = commandInvokeError.InnerException ?? commandInvokeError;
-                        context.Errorln(commandError.Message);
-                        return new ExpressionEvaluationResult(null, parseResult.ParseResultType, null, (int)ReturnCode.Error, commandError);
-                    }
-                    break;
-                */
-#endif
-
                 case ParseResultType.Empty:
+
                     r = new ExpressionEvaluationResult(expr, null, parseResult.ParseResultType, null, (int)ReturnCode.OK, null);
                     break;
 
                 case ParseResultType.NotValid:  /* command syntax not valid */
+
                     var perComErrs = new Dictionary<string, List<CommandSyntaxParsingResult>>();
                     foreach (var prs in parseResult.SyntaxParsingResults)
                         if (prs.CommandSyntax != null)
@@ -943,6 +938,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     break;
 
                 case ParseResultType.Ambiguous:
+
                     errorText += $"{Red}ambiguous syntaxes:{Br}";
                     foreach (var prs in parseResult.SyntaxParsingResults)
                         errorText += $"{Red}{prs.CommandSyntax}{Br}";
@@ -965,6 +961,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     break;
 
                 case ParseResultType.SyntaxError:
+
                     t = new string[expr.Length + 2];
                     for (int j = 0; j < t.Length; j++) t[j] = " ";
                     var err2 = parseResult.SyntaxParsingResults.First().ParseErrors.First();

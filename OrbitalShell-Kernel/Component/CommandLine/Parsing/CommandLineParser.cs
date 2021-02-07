@@ -8,14 +8,11 @@ using OrbitalShell.Component.Console;
 using OrbitalShell.Lib;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Text;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 using static OrbitalShell.Component.CommandLine.Pipeline.PipelineParser;
 using static OrbitalShell.Component.Shell.Variable.Variables;
-using static OrbitalShell.DotNetConsole;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {
@@ -35,12 +32,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             )
         {
             if (expr == null) return new StringSegment[] { };
+
             var splits = new List<StringSegment>();
             var t = expr.Trim().ToCharArray();
-
             char prevc = SpaceSeparator;
             int i = 0;
-
             var inString = false;
             var inSingleQuoteString = false;
             var inDoubleQuoteString = false;
@@ -48,9 +44,22 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             var prevStr = "";
             var k = t.Length;
 
+            // find a meta char for private coding that is not in the string - try char 0 or a random in 10000-20000
+            char metachar = (char)0;
+            var badmetachar = expr.Contains(metachar);
+            if (badmetachar) {
+                var r = new Random();
+                while (badmetachar)
+                {
+                    metachar = (char)r.Next(10000, 20000);
+                    badmetachar = expr.Contains(metachar);
+                }
+            }
+
             while (i < k)
             {
                 var c = t[i];
+                var isNeutralizer = c == NeutralizerSymbol;
                 var neutralizedBySymbol = prevc == NeutralizerSymbol;
                 var isSeparator = c == SpaceSeparator;
                 var isStringSeparator = !neutralizedBySymbol && (c == SingleQuote || c == DoubleQuote);
@@ -101,6 +110,13 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                         inString = false;
                     }
                 }
+
+                if (isNeutralizer)
+                {
+                    // neutralizer symbol: should be removed from parsed split
+                    t[i] = metachar;
+                }
+
                 prevc = c;
                 i++;
             }
@@ -117,63 +133,16 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             }
 #endif
             splits = splits.Where(x => !string.IsNullOrEmpty(x.Text)).ToArray().ToList();
-            return splits.ToArray();
-        }
 
-#if NO
-        /// <summary>
-        /// split an expression to be evaluted at top level syntax level
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="expr"></param>
-        /// <returns>segments of syntaxes to be evaluated</returns>
-        public static string[] SplitExpr0(
-            CommandEvaluationContext context,
-            string expr)
-        {
-            // @TODO: - add pipes syntaxs as spliters syntax + manage ' and " neutralization (even on variable syntaxe)
-            // @TODO: - add streams syntaxes as splitters syntax
-            // must returns splits in a pipeline execution model instance
-            if (expr == null) return new string[] { };
-            var splits = new List<string>();
-            var t = expr.Trim().ToCharArray();
-            var inQuotedStr = false;
-            int i = 0;
-            var curStr = "";
-            char prevc = ' ';
-            while (i < t.Length)
+            // clean up meta chars in splits
+
+            foreach ( var split in splits )
             {
-                var c = t[i];
-                if (!inQuotedStr)
-                {
-                    if (c == ' ')
-                    {
-                        splits.Add(curStr);
-                        curStr = "";
-                    }
-                    else
-                    {
-                        if (c == '"')
-                            inQuotedStr = true;
-                        else
-                            curStr += c;
-                    }
-                }
-                else
-                {
-                    if (c == '"' && prevc != '\\')
-                        inQuotedStr = false;
-                    else
-                        curStr += c;
-                }
-                prevc = c;
-                i++;
+                split.SetText(split.Text.Replace($"{metachar}", ""));
             }
-            if (!string.IsNullOrWhiteSpace(curStr))
-                splits.Add(curStr);
+
             return splits.ToArray();
         }
-#endif
 
         public static int GetIndex(
             CommandEvaluationContext context,
@@ -188,6 +157,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         }
 
 #if experiment
+        // TODO: remove or explain
 
         public static void StoreReference(
             CommandEvaluationContext context,
@@ -206,7 +176,6 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             context.Variables.Get(VariableNamespace.Local, reference, out var value, false);
             return value;
         }
-
 #endif
 
         /// <summary>
@@ -326,6 +295,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
             var splits0 = SplitExpr(context, expr);
 
+            // TODO: add splits to debug var in debug mode
+
             try
             {
                 var pipeline = GetPipeline(context, splits0);
@@ -334,6 +305,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 var references = new Dictionary<string, object>();
 
                 // check and substitute alias
+
                 var token = workUnit.Segments.First()?.Text;
                 if (token != null && context
                         .CommandLineProcessor
@@ -373,6 +345,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
                     workUnit = workUnit.NextUnit;
                 }
+
+                // TODO: add segments to debug var in debug mode
             }
             catch (ParseErrorException parseErrorEx)
             {

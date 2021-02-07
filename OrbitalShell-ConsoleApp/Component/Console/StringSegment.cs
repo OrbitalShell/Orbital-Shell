@@ -5,12 +5,22 @@ namespace OrbitalShell.Component.Console
 {
     public class StringSegment
     {
-        public readonly string Text;
-        public readonly int X;
-        public readonly int Y;
-        public readonly int Length;
+        public string Text { get; protected set; }
+        public int X { get; protected set; }
+        public int Y { get; protected set; }
+        public int Length { get; protected set; }
 
         public Dictionary<string, object> Map;
+
+        public void SetText(string text,bool updateCoords=false)
+        {
+            Text = text;
+            if (updateCoords)
+            {
+                Length = text.Length;
+                Y = X + Length;
+            }
+        }
 
         public StringSegment(string text, int x, int y, int length)
         {
@@ -48,9 +58,14 @@ namespace OrbitalShell.Component.Console
                 Map = new Dictionary<string, object> { map };
         }
 
+        /// <summary>
+        /// warn: this is intensively used in error messages...
+        /// </summary>
+        /// <returns>text representation of a StringSegment</returns>
         public override string ToString()
         {
-            return $"pos={X},{Y} l={Length} Text={Text}";
+            //return $"pos={X},{Y} l={Length} Text={Text}"; // warn: this is intensively used in error messages...
+            return Text;
         }
     }
 }
