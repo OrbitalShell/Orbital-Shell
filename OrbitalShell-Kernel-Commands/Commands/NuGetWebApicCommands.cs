@@ -3,6 +3,7 @@ using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell;
 using System.Net.Http;
+using OrbitalShell.Component.Console;
 
 namespace OrbitalShell.Commands
 {
@@ -10,29 +11,38 @@ namespace OrbitalShell.Commands
     [CommandsNamespace(CommandNamespace.net,CommandNamespace.http,"nuget")]
     public class NuGetWebApiCommands : ICommandsDeclaringType
     {
-        public const string queryUrl = "{@id}?q={QUERY}&skip={SKIP}&take={TAKE}&prerelease={PRERELEASE}&semVerLevel={SEMVERLEVEL}&packageType={PACKAGETYPE}";
+        public const string queryUrl = "https://api-v2v3search-0.nuget.org/query?q={QUERY}&skip={SKIP}&take={TAKE}&prerelease={PRERELEASE}&semVerLevel={SEMVERLEVEL}&packageType={PACKAGETYPE}";
 
-        [Command("get")]
-        public CommandResult<String> Get(
+        [Command("call nuget web query service and output results")]
+        public CommandResult<String> NugetQuery(
             CommandEvaluationContext context,
-            [Parameter("query")] string query,
-            [Option("s","skip","")] bool skip,
-            [Option("t","take","")] bool take,
-            [Option("r","pre-release","pre release")] bool preRelease,
-            [Option("l","sem-ver-level","sem verion level")] bool semVerLevel,
-            [Option("p","package-type","pre release")] bool packageType,
+            [Parameter("the search terms to used to filter packages",true)] string query,
+            [Option("s","skip", "the number of results to skip, for pagination")] int skip=-1,
+            [Option("t","take", "the number of results to return, for pagination")] int take=-1,
+            [Option("r","pre-release", "true or false determining whether to include pre-release packages (default no)")] bool preRelease = false,
+            [Option("l","sem-ver-level", "a SemVer 1.0.0 version string")] string semVerLevel = null,
+            [Option("p","package-type", "the package type to use to filter packages (added in SearchQueryService/3.5.0)")] string packageType = null,
             [Option("u","query-url","nuget web api query service template url")] string url = queryUrl
             )
         {
             string @return = null;
 
-            var queryString = url
-                .Replace("{@id}", "")
-                .Replace("{QUERY}", query)
-                .Replace("{TAKE}", take+"")
-                .Replace("{PRERELEASE}", preRelease+"")
-                .Replace("{SEMVERLEVEL}", semVerLevel+"")
-                .Replace("{PACKAGETYPE}", packageType+"");
+            query ??= "";
+            var queryString = url.Replace("{QUERY}", query.Trim());
+
+            if (skip > -1) queryString = queryString.Replace("{SKIP}", skip + "");
+            if (take > -1) queryString = queryString.Replace("{TAKE}", take + "");
+            queryString = queryString.Replace("{PRERELEASE}", preRelease.ToString().ToLower());
+            if (semVerLevel != null) queryString = queryString.Replace("{SEMVERLEVEL}", semVerLevel);
+            if (packageType != null) queryString = queryString.Replace("{PACKAGETYPE}", packageType);
+            queryString = queryString
+                .Replace("&skip={SKIP}", "")
+                .Replace("&take={TAKE}", "")
+                .Replace("&prerelease={PRERELEASE}", "")
+                .Replace("&semVerLevel={SEMVERLEVEL}", "")
+                .Replace("&packageType={PACKAGETYPE}", "");
+
+            context.Out.Echo(context.ShellEnv.Colors.Log + $"GET {queryString}(rdc) ...");
 
             using (var httpClient = new HttpClient())
             {
@@ -44,6 +54,8 @@ namespace OrbitalShell.Commands
                     {
                         @return = result.Content.ReadAsStringAsync().Result;
 
+                        context.Out.Echoln(" Done ");
+                        context.Out.Echo(ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
                         context.Out.Echoln(@return);
                     }
                     else
