@@ -81,6 +81,21 @@ namespace OrbitalShell.Component.Shell
         data,
 
         /// <summary>
+        /// network
+        /// </summary>
+        net,
+
+        /// <summary>
+        /// web
+        /// </summary>
+        web,
+
+        /// <summary>
+        /// http
+        /// </summary>
+        http,
+
+        /// <summary>
         /// might be possible to find games
         /// </summary>
         games,

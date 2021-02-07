@@ -12,6 +12,7 @@ issues 💥
 6/2/21 FGZ      💥 a toString method lead to stack overflow during debug - probably on object method
 7/2/21 FGZ      💥 rm do not delete the top level item (test case: dir with or without recurse)
 7/2/21 FGZ      💥 accept only offical escaped caracters in clpa
+7/2/21 FGZ      💥 " at end of command line lead to an empty command line (clpa)
 
 improvements to do 💭
 ------------------

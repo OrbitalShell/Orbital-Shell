@@ -20,6 +20,11 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             Segments = new string[] { "" + @namespace };
         }
 
+        public CommandsNamespaceAttribute(params CommandNamespace[] segments)
+        {
+            Segments = segments.Select(x => x + "").ToArray();
+        }
+
         public CommandsNamespaceAttribute(CommandNamespace @namespace, params string[] segments)
         {
             var s = new List<string> { "" + @namespace };

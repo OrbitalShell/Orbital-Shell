@@ -35,7 +35,7 @@ namespace OrbitalShell.Commands.FileSystem
             [Parameter("path to be transformed to a linux path style")] string path            
             ) => new CommandResult<string>(FileSystemPath.UnescapePathSeparators(path));
 
-        [Command("search files, folders and text file content depending on search criteria")]
+        [Command("search files, folders and text file content depending on search criteria")]      
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Find(
             CommandEvaluationContext context,
             [Parameter("search target: can be a folder or a file. If target is a file, the command must have a -c|--contains parameter (search in file)")] FileSystemPath path,

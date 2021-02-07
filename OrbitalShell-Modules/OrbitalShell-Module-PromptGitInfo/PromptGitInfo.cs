@@ -18,7 +18,7 @@ namespace OrbitalShell.Module.PromptGitInfo
     [Commands("prompt git info module commands")]
     [CommandsNamespace(CommandNamespace.tools, ToolNamespace)]
     [Hooks]
-    public class PromptGitInfoCommands : ICommandsDeclaringType
+    public class PromptGitInfo : ICommandsDeclaringType
     {
         #region attributes 
 

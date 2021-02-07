@@ -10,7 +10,7 @@ using System.Text;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.CommandLine;
 
-namespace OrbitalShell.Component.Commands
+namespace OrbitalShell.Commands
 {
     [Commands("commands of the console")]
     [CommandsNamespace(CommandNamespace.cons)]

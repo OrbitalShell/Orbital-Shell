@@ -11,7 +11,7 @@ using static OrbitalShell.Component.Console.EchoPrimitives;
 using static OrbitalShell.Lib.Str;
 using OrbitalShell.Component.CommandLine;
 
-namespace OrbitalShell.Component.Commands
+namespace OrbitalShell.Commands
 {
     [Commands("system commands")]
     [CommandsNamespace(CommandNamespace.sys)]

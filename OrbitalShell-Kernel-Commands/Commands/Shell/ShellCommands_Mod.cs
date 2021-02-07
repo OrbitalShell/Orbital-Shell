@@ -36,7 +36,7 @@ namespace OrbitalShell.Commands.Shell
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
             [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool getList = false,
             [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module and output informations about it. the module is not installed", true, true )] string fetchInfoName = null,
-            [Option("v", "version", "version to be installed in applyable", true, true)] string version = null,
+            [Option("v", "version", "version to be installed if applyable", true, true)] string version = null,
             [Option("s", "short", "output less informations", true)] bool @short = false
             )
         {
