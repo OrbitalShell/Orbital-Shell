@@ -1,9 +1,12 @@
 ﻿#define dbg
+#define enable_cscript
 
 using OrbitalShell.Component.UI;
 using OrbitalShell.Component.Console;
+#if enable_cscript
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,17 +29,17 @@ namespace OrbitalShell
     /// </summary>
     public static class DotNetConsole
     {
-        #region attributes
+#region attributes
 
-        #region streams : entry points to DotNetConsole output operations
+#region streams : entry points to DotNetConsole output operations
 
         public static ConsoleTextWriterWrapper Out = new ConsoleTextWriterWrapper(sc.Out);
         public static TextWriterWrapper Err = new TextWriterWrapper(sc.Error);
         public static TextReader In = System.Console.In;
 
-        #endregion
+#endregion
 
-        #region work area settings
+#region work area settings
 
         static WorkArea _workArea = new WorkArea();
         public static WorkArea WorkArea => new WorkArea(_workArea);
@@ -45,7 +48,7 @@ namespace OrbitalShell
         public static EventHandler<WorkAreaScrollEventArgs> WorkAreaScrolled;
         public static bool EnableConstraintConsolePrintInsideWorkArea = false;
 
-        #endregion
+#endregion
 
         public static bool IsErrorRedirected = false;
         public static bool IsOutputRedirected = false;
@@ -79,7 +82,9 @@ namespace OrbitalShell
         static StreamWriter _outputStreamWriter;
         static FileStream _outputFileStream;
 
+        #if enable_cscript
         static readonly Dictionary<string, Script<object>> _csscripts = new Dictionary<string, Script<object>>();
+        #endif
 
         static string[] _crlf = { Environment.NewLine };
 
@@ -91,9 +96,9 @@ namespace OrbitalShell
 
         public static ColorSettings Colors = new ColorSettings();
 
-        #endregion
+#endregion
 
-        #region log methods
+#region log methods
 
         public static void LogError(Exception ex)
         {
@@ -155,7 +160,7 @@ namespace OrbitalShell
             foreach (var l in ls) Out.Echoln(l);
         }
 
-        #endregion
+#endregion
 
         public static void Error(string s = "") => Error(s, false);
         public static void Errorln(string s = "") => Error(s, true);
@@ -210,6 +215,7 @@ namespace OrbitalShell
 
         public static object ExecCSharp(string csharpText)
         {
+#if enable_cscript
             try
             {
                 var scriptKey = csharpText;
@@ -228,11 +234,14 @@ namespace OrbitalShell
                 LogError(string.Join(Environment.NewLine, ex.Diagnostics));
                 return null;
             }
+#else
+            return null;
+#endif
         }
 
         public static void Exit(int r = 0) => Environment.Exit(r);
 
-        #region work area operations
+#region work area operations
 
         /// <summary>
         /// this setting limit wide of lines (available width -1) to prevent sys console to automatically put a line break when reaching end of line (console bug ?)
@@ -311,9 +320,9 @@ namespace OrbitalShell
             }
         }
 
-        #endregion
+#endregion
 
-        #region UI operations
+#region UI operations
 
         public static void FixCoords(ref int x, ref int y)
         {
@@ -324,9 +333,9 @@ namespace OrbitalShell
             }
         }
 
-        #endregion
+#endregion
 
-        #region stream methods
+#region stream methods
 
         public static void RedirectOut(StreamWriter sw)
         {
@@ -406,15 +415,15 @@ namespace OrbitalShell
             }
         }
 
-        #endregion
+#endregion
 
-        #region folders
+#region folders
 
         //public static string TempPath => Path.Combine( Environment.CurrentDirectory , "Temp" );
 
-        #endregion
+#endregion
 
-        #region implementation methods
+#region implementation methods
 
         public static int GetCursorX(object x)
         {
@@ -440,7 +449,7 @@ namespace OrbitalShell
             }
         }
 
-        #endregion
+#endregion
 
 
 

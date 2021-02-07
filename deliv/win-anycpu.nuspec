@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-    <metadata minClientVersion="3.3">
+    <metadata>
 		
 		<id>OrbitalShell-win-anycpu</id>
         <version>1.0.0-beta-preview-3</version>
