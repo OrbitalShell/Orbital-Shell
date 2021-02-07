@@ -185,7 +185,7 @@ namespace OrbitalShell.Lib.FileSystem
                 }
                 attr = $" {dir}{ro}{sys}{h}{a} {size,10} {smoddat}  ";
             }
-            var name = options.ShortPath ? FileSystemInfo.Name : FileSystemInfo.FullName;
+            var name = options.ShortPath ? FileSystemInfo.Name : UnescapePathSeparators( FileSystemInfo.FullName );
             var quote = name.Contains(' ') ? "\"" : "";
             var pdr = options.PaddingRight - name.Length;
             if (!string.IsNullOrWhiteSpace(quote)) pdr -= 2;
@@ -198,50 +198,11 @@ namespace OrbitalShell.Lib.FileSystem
             @out.Echo(ANSI.RSTXTA); // @TODO: convention - si modif des couleurs uniquement ?? ou est-ce un hack pour la fin de ligne ?? a pour contrat de resetter f et b + unset text decoration
         }
 
-#if NO
-        public void __Print(bool printAttributes=false,bool shortPath=false,string prefix="",string postfix="",int paddingRight=-1,string linePrefix="")
-        {
-            var bg = GetCmd(EchoDirectives.b + "", DefaultBackground.ToString().ToLower());
-            var fg = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
-            var color = (IsDirectory) ? NormalDirectoryColorization : FileColorization;
-            if (!IsSystem && IsDirectory && !IsReadOnly) color += WritableDirectoryColorization;
-            if (IsSystem && !IsDirectory) color += SystemColorization + bg;
-            if (IsSystem && IsDirectory && !IsReadOnly) color += SystemWritableDirectoryColorization;
-            if (IsFile && IsReadOnly) color += ReadOnlyFileColorization;
-            var endcolor = bg + fg;
-            var r = "";
-            var attr = "";
-            string hidden = "";
-            if (printAttributes)
-            {
-                var dir = IsDirectory ? "d" : "-";
-                var ro = IsReadOnly ? "r-" : "rw";
-                var sys = IsSystem ? "s" : "-";
-                var h = IsHidden ? "h" : "-";
-                //var c = IsCompressed ? "c" : "-";
-                var a = IsArchive ? "a" : "-";
-                var size = (IsDirectory) ? "" : HumanFormatOfSize(((FileInfo)FileSystemInfo).Length, 2);
-                var moddat = FileSystemInfo.LastWriteTime;
-                hidden = IsHidden ? "*" : "";
-                var dat = (moddat.Year != System.DateTime.Now.Year) ? moddat.Year+"" : "";
-                var smoddat = $"{dat,4} {moddat.ToString("MMM", CultureInfo.InvariantCulture),-3} {moddat.Day,-2} {moddat.Hour.ToString().PadLeft(2,'0')}:{moddat.Minute.ToString().PadLeft(2,'0')}";
-                attr = $" {dir}{ro}{sys}{h}{a} {size,10} {smoddat}  ";
-            }
-            var name = shortPath ? FileSystemInfo.Name : FileSystemInfo.FullName;
-            var quote =name.Contains(' ') ? "\"" : "";
-            var pdr = paddingRight - name.Length;
-            if (!string.IsNullOrWhiteSpace(quote)) pdr -= 2;
-            var rightspace = (paddingRight > -1) ? endcolor+"".PadRight(pdr>0?pdr:1, ' ') : "";
-            r += $"{linePrefix}{attr}{color}{prefix}{quote}{name}{quote}{hidden}{rightspace}{postfix}";
-            Out.Echo(r+ColorSettings.Default);
-            if (HasError)
-                Out.Echo($" {ErrorColorization}{GetError()}");
-        }
-#endif
-
         public override string ToString()
         {
-            return FileSystemInfo.FullName;
+            return UnescapePathSeparators( FileSystemInfo.FullName );
         }
+
+        public string UnescapePathSeparators(string path) => (path == null) ? path : path.Replace('\\', '/');
     }
 }

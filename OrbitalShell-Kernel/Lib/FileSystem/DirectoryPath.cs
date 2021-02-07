@@ -7,6 +7,7 @@ namespace OrbitalShell.Lib.FileSystem
 {
     /// <summary>
     /// directory path wrapper<br/>
+    /// normalize path text in string conversion to use / instead of \<br/>
     /// supports path syntaxes :<br/>
     /// c:\MyDir\MyFile.txt<br/>
     /// c:/MyDir/MyFile.txt<br/>
@@ -46,7 +47,7 @@ namespace OrbitalShell.Lib.FileSystem
 
         public override string ToString()
         {
-            return DirectoryInfo.FullName;
+            return UnescapePathSeparators( DirectoryInfo.FullName );
         }
     }
 }
