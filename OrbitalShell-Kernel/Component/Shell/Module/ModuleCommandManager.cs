@@ -272,47 +272,59 @@ namespace OrbitalShell.Component.Shell.Module
                                     (cmdNameAttr != null && cmdNameAttr.Name != null) ?
                                         cmdNameAttr.Name
                                         : (cmd.Name ?? method.Name));
-
-                            var cmdspec = new CommandSpecification(
-                                cmdNamespace,
-                                cmdName,
-                                cmd.Description,
-                                cmd.LongDescription,
-                                cmd.Documentation,
-                                method,
-                                instance,
-                                cmdAliases,
-                                paramspecs);
-
+                            
                             bool registered = true;
-                            if (_commands.TryGetValue(cmdspec.Name, out var cmdlst))
+                            CommandSpecification cmdspec = null;
+
+                            try
                             {
-                                if (cmdlst.Select(x => x.MethodInfo.DeclaringType == type).Any())
+                                cmdspec = new CommandSpecification(
+                                    cmdNamespace,
+                                    cmdName,
+                                    cmd.Description,
+                                    cmd.LongDescription,
+                                    cmd.Documentation,
+                                    method,
+                                    instance,
+                                    cmdAliases,
+                                    paramspecs);
+
+                            } catch (Exception ex)
+                            {
+                                context.Errorln($"error in command '{cmdName}' specification: {ex.Message}");
+                            }
+
+                            if (cmdspec != null)
+                            {
+                                if (_commands.TryGetValue(cmdspec.Name, out var cmdlst))
                                 {
-                                    context.Errorln($"command already registered: '{cmdspec.Name}' in type '{cmdspec.DeclaringTypeFullName}'");
-                                    registered = false;
+                                    if (cmdlst.Select(x => x.MethodInfo.DeclaringType == type).Any())
+                                    {
+                                        context.Errorln($"command already registered: '{cmdspec.Name}' in type '{cmdspec.DeclaringTypeFullName}'");
+                                        registered = false;
+                                    }
+                                    else
+                                    {
+                                        cmdlst.Add(cmdspec);
+                                    }
                                 }
                                 else
+                                    _commands.Add(cmdspec.Name, new List<CommandSpecification> { cmdspec });
+
+
+                                if (registered)
                                 {
-                                    cmdlst.Add(cmdspec);
+                                    _syntaxAnalyzer.Add(cmdspec);
+                                    comsCount++;
+                                    // register command Aliases
+                                    if (cmdspec.Aliases != null)
+                                        foreach (var alias in cmdspec.Aliases)
+                                            context.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(
+                                                context,
+                                                alias.name,
+                                                alias.text
+                                                );
                                 }
-                            }
-                            else
-                                _commands.Add(cmdspec.Name, new List<CommandSpecification> { cmdspec });
-
-
-                            if (registered)
-                            {
-                                _syntaxAnalyzer.Add(cmdspec);
-                                comsCount++;
-                                // register command Aliases
-                                if (cmdspec.Aliases != null)
-                                    foreach (var alias in cmdspec.Aliases)
-                                        context.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(
-                                            context,
-                                            alias.name,
-                                            alias.text
-                                            );
                             }
                         }
                     }

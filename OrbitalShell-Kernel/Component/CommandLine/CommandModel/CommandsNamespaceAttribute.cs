@@ -9,6 +9,9 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
     public class CommandsNamespaceAttribute : Attribute
     {
         public readonly string[] Segments;
+        private CommandNamespace net;
+        private CommandNamespace http;
+        private string v;
 
         public CommandsNamespaceAttribute(params string[] segments)
         {
@@ -28,6 +31,20 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
         public CommandsNamespaceAttribute(CommandNamespace @namespace, params string[] segments)
         {
             var s = new List<string> { "" + @namespace };
+            s.AddRange(segments);
+            Segments = s.ToArray();
+        }
+
+        public CommandsNamespaceAttribute(CommandNamespace @namespace1, CommandNamespace @namespace2, params string[] segments)
+        {
+            var s = new List<string> { "" + @namespace1 , "" + @namespace2 };
+            s.AddRange(segments);
+            Segments = s.ToArray();
+        }
+
+        public CommandsNamespaceAttribute(CommandNamespace @namespace1, CommandNamespace @namespace2, CommandNamespace @namespace3, params string[] segments)
+        {
+            var s = new List<string> { "" + @namespace1, "" + @namespace2 , "" + namespace3 };
             s.AddRange(segments);
             Segments = s.ToArray();
         }

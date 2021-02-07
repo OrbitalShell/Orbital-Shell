@@ -13,6 +13,7 @@ issues 💥
 7/2/21 FGZ      💥 rm do not delete the top level item (test case: dir with or without recurse)
 7/2/21 FGZ      💥 accept only offical escaped caracters in clpa
 7/2/21 FGZ      💥 " at end of command line lead to an empty command line (clpa)
+8/2/21 FGZ      💥 commands with redondant short name are not registered (check use of namespaces at command registration + measure impact / fix command help + check clp)
 
 improvements to do 💭
 ------------------

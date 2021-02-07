@@ -49,7 +49,15 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             MethodOwner = methodOwner;
             MethodInfo = methodInfo;
             if (commandParameterSpecifications != null)
-                commandParameterSpecifications.ToList().ForEach(x => _parametersSpecifications.Add(x.ActualName, x));
+            {
+                foreach (var cmdParamSpec in commandParameterSpecifications.ToList() )
+                {
+                    var key = cmdParamSpec.ActualName;
+                    if (_parametersSpecifications.ContainsKey(key))
+                        throw new Exception($"redondant command parameter specification: {cmdParamSpec}");
+                    _parametersSpecifications.Add(cmdParamSpec.ActualName, cmdParamSpec);
+                }
+            }
             var t = methodInfo.ReturnType;
             if (t.HasInterface(typeof(ICommandResult)))
             {
