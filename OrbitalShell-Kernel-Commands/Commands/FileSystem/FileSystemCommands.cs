@@ -18,10 +18,6 @@ using static OrbitalShell.Lib.FileSystem.FileSystem;
 using static OrbitalShell.Lib.Str;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component;
-using OrbitalShell.Component.CommandLine;
-using System.ComponentModel;
-using System.Text.RegularExpressions;
 using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Commands.FileSystem
@@ -60,43 +56,28 @@ namespace OrbitalShell.Commands.FileSystem
             return new CommandResult<(List<FileSystemPath>, FindCounts)>((new List<FileSystemPath>(), new FindCounts()), ReturnCode.Error);
         }
 
-        [Flags]
-        public enum DirSort
+        [Command("make a directory")]
+        public CommandResult<DirectoryPath> Mkdir(
+            CommandEvaluationContext context,
+            [Parameter("path of the new directory")] DirectoryPath path
+            )
         {
-            /// <summary>
-            /// sort not specified
-            /// </summary>
-            not_specified = 0,
+            DirectoryPath r = null;
+            var di = Directory.CreateDirectory(path.FullName);
+            if (di.Exists) r = new DirectoryPath(di.FullName);
+            return new CommandResult<DirectoryPath>(r);
+        }
 
-            /// <summary>
-            /// sort by name or fullname
-            /// </summary>
-            name = 1,
-
-            /// <summary>
-            /// sort by size
-            /// </summary>
-            size = 2,
-
-            /// <summary>
-            /// sort by extension
-            /// </summary>
-            ext = 4,
-
-            /// <summary>
-            /// files on top
-            /// </summary>
-            file = 8,
-
-            /// <summary>
-            /// dirs on top
-            /// </summary>
-            dir = 16,
-
-            /// <summary>
-            /// reverse sort
-            /// </summary>
-            rev = 32
+        [Command("remove a directory. the directory must be empty, or else recurse options can be set to delete any folder sub-content and the folder itself")]
+        public CommandVoidResult Rmdir(
+            CommandEvaluationContext context,
+            [Parameter("path of the directory to be deleted")] DirectoryPath path,
+            [Option("r","recurse","recurse delete in sub folders, also delete files and sub folders")] bool recurse
+            )
+        {
+            if (path.CheckExists(context))
+                Directory.Delete(path.FullName,recurse);            
+            return CommandVoidResult.Instance;
         }
 
         // TODO --sort=... or -s= and no short name should be possible (symbol =) ?

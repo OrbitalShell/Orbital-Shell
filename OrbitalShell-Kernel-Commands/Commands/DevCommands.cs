@@ -155,16 +155,16 @@ namespace OrbitalShell.Commands.Dev
         [Command("command with collection parameters types (29/1/21)")]
         public CommandVoidResult ComParamColTest(
             CommandEvaluationContext context,
-            [Option("A", "optiona", "option a", true, true)] FileSystemCommands.DirSort A,
+            [Option("A", "optiona", "option a", true, true)] DirSort A,
             [Option("b", "b", "option b", true, true)] List<string> b,
             [Option("c", "c", "option c", true, true)] List<int> c,
-            [Parameter(1, "x", true)] FileSystemCommands.DirSort B,
-            [Parameter(2, "y", true)] List<FileSystemCommands.DirSort> C
+            [Parameter(1, "x", true)] DirSort B,
+            [Parameter(2, "y", true)] List<DirSort> C
             )
         {
             int i = 0;
-            var v = Enum.GetValues(typeof(FileSystemCommands.DirSort));
-            foreach (var s in Enum.GetNames(typeof(FileSystemCommands.DirSort)))
+            var v = Enum.GetValues(typeof(DirSort));
+            foreach (var s in Enum.GetNames(typeof(DirSort)))
             {
                 context.Out.Echo($"s={s} n={(int)v.GetValue(i)}", true);
                 i++;

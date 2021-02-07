@@ -268,8 +268,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
             _prompt = prompt;
             bool noWorkArea = !InWorkArea;
             Point? lastInputPos = null;
-            var hm = CommandLineProcessor.ModuleManager.ModuleHookManager;
-            var context = CommandLineProcessor.CommandEvaluationContext;
+            var hm = CommandLineProcessor?.ModuleManager?.ModuleHookManager;
+            var context = CommandLineProcessor?.CommandEvaluationContext;
 
             _inputReaderThread = new Thread(() =>
             {
@@ -285,12 +285,12 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         {
                             lock (ConsoleLock)
                             {
-                                hm.InvokeHooks(context, Hooks.PromptOutputBegin);
+                                hm?.InvokeHooks(context, Hooks.PromptOutputBegin);
 
                                 var _beginPromptPos = Out.CursorPos;
                                 Out.Echo(prompt);
 
-                                hm.InvokeHooks(context, Hooks.PromptOutputEnd);
+                                hm?.InvokeHooks(context, Hooks.PromptOutputEnd);
 
                                 _beginOfLineCurPos = Out.CursorPos;
                                 lastInputPos = _beginOfLineCurPos;

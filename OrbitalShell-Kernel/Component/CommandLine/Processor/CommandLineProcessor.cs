@@ -27,9 +27,6 @@ using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Lib.FileSystem;
 using System.Text;
 using OrbitalShell.Lib.Process;
-using OrbitalShell.Component.Console;
-using System.Collections;
-using System.Reflection.Metadata;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -95,7 +92,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         {
             _args = (string[])args?.Clone();
 
-            // parse and apply any -env:{VarName}={VarValue} argument
+            // parse and apply any --env:{VarName}={VarValue} argument
             foreach (var arg in args)
             {
                 if (arg.StartsWith(OPT_ENV + OPT_NAME_VALUE_SEPARATOR))
