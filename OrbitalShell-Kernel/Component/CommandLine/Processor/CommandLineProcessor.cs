@@ -749,8 +749,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     }
                     else
                     {
-                        var matchingFiles = path.DirectoryInfo.GetFiles().Where(x => Path.GetFileNameWithoutExtension(x.FullName).Equals(cmdName, stringComparison)).Select(x => new FilePath(x.FullName));
-                        filePath.AddRange(matchingFiles);
+                        if (path.CheckExists(context))
+                        {
+                            var matchingFiles = path.DirectoryInfo.GetFiles().Where(x => Path.GetFileNameWithoutExtension(x.FullName).Equals(cmdName, stringComparison)).Select(x => new FilePath(x.FullName));
+                            filePath.AddRange(matchingFiles);
+                        }
                     }
                 }
                 i++;
