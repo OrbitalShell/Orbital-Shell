@@ -8,7 +8,7 @@ namespace OrbitalShell.Component.EchoDirective
 {
     /// <summary>
     /// echo directives processor
-    /// <para>&#9989; drives directly the writer, but this dependency could be removed (returning text instead).</para>
+    /// <para>&#9989; drives directly the writer (simple approach to execute print directives)</para>
     /// </summary>
     public class EchoDirectiveProcessor
     {

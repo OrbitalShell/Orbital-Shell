@@ -3,10 +3,6 @@
 
 using OrbitalShell.Component.UI;
 using OrbitalShell.Component.Console;
-#if enable_cscript
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
-#endif
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -81,10 +77,6 @@ namespace OrbitalShell
         static TextWriter _outputWriter;
         static StreamWriter _outputStreamWriter;
         static FileStream _outputFileStream;
-
-        #if enable_cscript
-        static readonly Dictionary<string, Script<object>> _csscripts = new Dictionary<string, Script<object>>();
-        #endif
 
         static string[] _crlf = { Environment.NewLine };
 
@@ -211,32 +203,6 @@ namespace OrbitalShell
                     Out.Echoln($"cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");
                 }
             };
-        }
-
-        public static object ExecCSharp(string csharpText)
-        {
-#if enable_cscript
-            try
-            {
-                var scriptKey = csharpText;
-                if (!_csscripts.TryGetValue(scriptKey, out var script))
-                {
-                    script = CSharpScript.Create<object>(csharpText);
-                    script.Compile();
-                    _csscripts[scriptKey] = script;
-                }
-                var res = script.RunAsync();
-                return res.Result.ReturnValue;
-            }
-            catch (CompilationErrorException ex)
-            {
-                LogError($"{csharpText}");
-                LogError(string.Join(Environment.NewLine, ex.Diagnostics));
-                return null;
-            }
-#else
-            return null;
-#endif
         }
 
         /// <summary>

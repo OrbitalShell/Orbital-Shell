@@ -14,6 +14,7 @@ using static OrbitalShell.Lib.Str;
 using sc = System.Console;
 using static OrbitalShell.Component.Console.ANSI;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.Script;
 
 namespace OrbitalShell.Component.Console
 {
@@ -24,17 +25,6 @@ namespace OrbitalShell.Component.Console
         public bool RedirecToErr = false;
 
         public ColorSettings ColorSettings = Colors;
-
-        #endregion
-
-        #region console output settings
-
-        public int CropX = -1;
-        public bool EnableFillLineFromCursor = true;
-
-        public bool EnableAvoidEndOfLineFilledWithBackgroundColor = true;
-
-        #endregion
 
         protected int _cursorLeftBackup;
         protected int _cursorTopBackup;
@@ -57,6 +47,19 @@ namespace OrbitalShell.Component.Console
             }
         }
 
+        public CSharpScriptEngine CSharpScriptEngine;
+
+        #endregion
+
+        #region console output settings
+
+        public int CropX = -1;
+        public bool EnableFillLineFromCursor = true;
+
+        public bool EnableAvoidEndOfLineFilledWithBackgroundColor = true;
+
+        #endregion
+
         #region console information cache
 
         protected Point _cachedCursorPosition = Point.Empty;
@@ -66,29 +69,24 @@ namespace OrbitalShell.Component.Console
 
         #endregion
 
-        #region construction & init
+        #region init
 
         public ConsoleTextWriterWrapper() : base() { Init(); }
 
         public ConsoleTextWriterWrapper(TextWriter textWriter) : base(textWriter) { Init(); }
 
+        public ConsoleTextWriterWrapper(CSharpScriptEngine cSharpScriptEngine) : base() { Init(cSharpScriptEngine); }
+
+        public ConsoleTextWriterWrapper(TextWriter textWriter, CSharpScriptEngine cSharpScriptEngine) : base(textWriter) { Init(cSharpScriptEngine); }
+
         /// <summary>
         /// shell init
         /// </summary>
-        void Init()
+        void Init(CSharpScriptEngine cSharpScriptEngine = null)
         {
-#if NO
-            DefaultForeground = sc.ForegroundColor;
-            DefaultBackground = sc.BackgroundColor;
-            // fix for linux
-            if ((int)DefaultForeground == -1) DefaultForeground = ConsoleColor.White;
-            if ((int)DefaultBackground == -1) DefaultBackground = ConsoleColor.Black;
-            
-            _cachedForegroundColor = DefaultForeground;
-            _cachedBackgroundColor = DefaultBackground;
-#endif
+            CSharpScriptEngine = cSharpScriptEngine ?? new CSharpScriptEngine();
 
-            // TIP: dot not affect background color through System.Console.Background to preserve terminal console background transparency
+            // TIP: dot not affect background color throught System.Console.Background to preserve terminal console background transparency
             DefaultForeground = sc.ForegroundColor;
             _cachedForegroundColor = DefaultForeground;
 
@@ -406,7 +404,7 @@ namespace OrbitalShell.Component.Console
         }
         object _SetCursorX(object x) { CursorLeft = GetCursorX(x); return null; }
         object _SetCursorY(object x) { CursorTop = GetCursorY(x); return null; }
-        object _ExecCSharp(object x) { return ExecCSharp((string)x); }
+        object _ExecCSharp(object x) { return CSharpScriptEngine.ExecCSharp((string)x,this); }
         void _MoveCursorTop() { MoveCursorTop(1); }
         void _MoveCursorDown() { MoveCursorDown(1); }
         void _MoveCursorLeft() { MoveCursorLeft(1); }
@@ -417,7 +415,6 @@ namespace OrbitalShell.Component.Console
         object _MoveCursorRight(object x) { MoveCursorRight(Convert.ToInt32(x)); return null; }
 
         #endregion
-
 
         #region buffering operations
 

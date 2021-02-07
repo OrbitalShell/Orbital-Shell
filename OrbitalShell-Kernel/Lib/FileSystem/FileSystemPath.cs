@@ -203,6 +203,6 @@ namespace OrbitalShell.Lib.FileSystem
             return UnescapePathSeparators( FileSystemInfo.FullName );
         }
 
-        public string UnescapePathSeparators(string path) => (path == null) ? path : path.Replace('\\', '/');
+        public static string UnescapePathSeparators(string path) => (path == null) ? path : path.Replace('\\', '/');
     }
 }

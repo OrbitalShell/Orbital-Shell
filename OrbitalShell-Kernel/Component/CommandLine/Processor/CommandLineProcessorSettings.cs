@@ -2,12 +2,16 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
+using Microsoft.CodeAnalysis.Scripting;
+
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Script;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
     /// <summary>
-    /// @TODO: move in Orbsh settings
+    /// orbital shell kernel settings
     /// </summary>
     public class CommandLineProcessorSettings
     {
@@ -30,10 +34,16 @@ namespace OrbitalShell.Component.CommandLine.Processor
             In = System.Console.In;
             */
 
+            var scriptOptions = ScriptOptions.Default;
+            var abl = Assembly.GetExecutingAssembly();
+            scriptOptions = scriptOptions.WithReferences(abl);
+            var cSharpScriptEngine = new CSharpScriptEngine(scriptOptions);
+
             //Out = DotNetConsole.Out;
             Out = new ShellConsoleTextWriterWrapper(
                 commandEvaluationContext,
-                System.Console.Out
+                System.Console.Out,
+                cSharpScriptEngine
             );
 
             /*  

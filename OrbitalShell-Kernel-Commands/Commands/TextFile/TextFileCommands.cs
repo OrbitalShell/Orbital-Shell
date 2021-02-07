@@ -31,7 +31,8 @@ namespace OrbitalShell.Commands.TextFile
         public CommandResult<List<TextFileInfo>> More(
             CommandEvaluationContext context,
             [Parameter("file or folder path")] WildcardFilePath path,
-            [Option("h", "hide-line-numbers", "hide line numbers")] bool hideLineNumbers
+            [Option("h", "hide-line-numbers", "hide line numbers")] bool hideLineNumbers,
+            [Option("r","raw","turn on raw output")] bool raw
             )
         {
             if (path.CheckExists(context))
@@ -41,7 +42,7 @@ namespace OrbitalShell.Commands.TextFile
                 var r = new List<TextFileInfo>();
                 foreach (var item in items)
                 {
-                    PrintFile(context, (FilePath)item, hideLineNumbers);
+                    PrintFile(context, (FilePath)item, hideLineNumbers,raw);
                     r.Add(new TextFileInfo((FilePath)item, null, OSPlatform.Create("?"), null));
                 }
                 if (items.Count == 0)
@@ -61,7 +62,9 @@ namespace OrbitalShell.Commands.TextFile
         TextFileInfo PrintFile(
             CommandEvaluationContext context,
             FilePath file,
-            bool hideLineNumbers)
+            bool hideLineNumbers,
+            bool raw
+            )
         {
             const int cl = -14;
             string quit = $"{context.ShellEnv.Colors.ParameterName}{$"q|Q",cl}{context.ShellEnv.Colors.Default}quit";
@@ -88,7 +91,6 @@ namespace OrbitalShell.Commands.TextFile
             };
 
             var fileEncoding = file.GetEncoding(Encoding.Default);
-            //var lines = fileEncoding == null ? File.ReadAllLines(file.FullName, fileEncoding).ToArray() : File.ReadAllLines(file.FullName).ToArray();
             var (rlines, filePlatform, eol) = ReadAllLines(file.FullName);
             var lines = rlines.ToArray();
             var nblines = lines.Length;
@@ -130,7 +132,10 @@ namespace OrbitalShell.Commands.TextFile
                             if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
                                 return new TextFileInfo(file, rlines, filePlatform, eol);
                             var prefix = hideLineNumbers ? "" : (context.ShellEnv.Colors.Dark + "  " + (pos + decpos + i + 1).ToString().PadRight(linecollength, ' ') + "  ");
-                            context.Out.Echoln(prefix + context.ShellEnv.Colors.Default + lines[pos + decpos + i]);
+
+                            context.Out.Echo(prefix + context.ShellEnv.Colors.Default);
+                            context.Out.Echo( lines[pos + decpos + i] , true, raw);
+                            
                             i++;
                         }
                         context.Out.ShowCur();

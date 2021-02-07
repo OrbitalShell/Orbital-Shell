@@ -1,6 +1,7 @@
 using System.IO;
 using System;
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Script;
 
 namespace OrbitalShell.Component.Console
 {
@@ -13,13 +14,13 @@ namespace OrbitalShell.Component.Console
 
         public ShellConsoleTextWriterWrapper(
             CommandEvaluationContext commandEvaluationContext,
-            TextWriter textWriter
-            ) : base(textWriter)
+            TextWriter textWriter,
+            CSharpScriptEngine cSharpScriptEngine = null
+            ) : base(textWriter,cSharpScriptEngine)
         {
             CommandEvaluationContext = commandEvaluationContext;
         }
 
-        // TODO missing line break in some cases
         public override void Echo(
             object o,
             bool lineBreak = false,
@@ -34,6 +35,8 @@ namespace OrbitalShell.Component.Console
         {
             if (o == null)
             {
+                // handle null
+
                 base.Echo(
                     EchoPrimitives.DumpNull(CommandEvaluationContext),
                     lineBreak,
@@ -49,6 +52,8 @@ namespace OrbitalShell.Component.Console
             {
                 if (o is string)
                 {
+                    // handle string
+
                     base.Echo(
                         o,
                         lineBreak,
@@ -62,6 +67,8 @@ namespace OrbitalShell.Component.Console
                 }
                 else
                 {
+                    // handle object
+
                     o.Echo(
                         new EchoEvaluationContext(
                             (ConsoleTextWriterWrapper)CommandEvaluationContext.Out,
