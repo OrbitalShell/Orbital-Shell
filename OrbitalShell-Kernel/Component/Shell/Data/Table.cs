@@ -24,35 +24,9 @@ namespace OrbitalShell.Component.Shell.Data
 
         #region attributs
 
-        Dictionary<string, string> _columnHeadersTextFormats;
-        public IReadOnlyDictionary<string, string> ColumnsHeadersTextFormats
-        {
-            get
-            {
-                if (_columnHeadersTextFormats == null)
-                {
-                    _columnHeadersTextFormats = new Dictionary<string, string>();
-                    foreach (DataColumn column in Columns)
-                        _columnHeadersTextFormats.Add(column.ColumnName, null);
-                }
-                return _columnHeadersTextFormats;
-            }
-        }
+        public Dictionary<string, string> ColumnsHeadersTextFormats = new Dictionary<string, string>();
 
-        Dictionary<string, string> _columnsTextFormats;
-        public IReadOnlyDictionary<string, string> ColumnsTextFormats
-        {
-            get
-            {
-                if (_columnsTextFormats == null)
-                {
-                    _columnsTextFormats = new Dictionary<string, string>();
-                    foreach (DataColumn column in Columns)
-                        _columnsTextFormats.Add(column.ColumnName, null);
-                }
-                return _columnsTextFormats;
-            }
-        }
+        public Dictionary<string, string> ColumnsTextFormats = new Dictionary<string, string>();
 
         #endregion
 
@@ -91,7 +65,7 @@ namespace OrbitalShell.Component.Shell.Data
             foreach (var col in columns)
             {
                 Columns.Add(col.name, col.type);
-                _columnsTextFormats[col.name] = col.format;
+                ColumnsTextFormats[col.name] = col.format;
             }
             return this;
         }
@@ -101,8 +75,8 @@ namespace OrbitalShell.Component.Shell.Data
             foreach (var col in columns)
             {
                 Columns.Add(col.name, col.type);
-                _columnsTextFormats[col.name] = col.format;
-                _columnHeadersTextFormats[col.name] = col.headerFormat;
+                ColumnsTextFormats[col.name] = col.format;
+                ColumnsHeadersTextFormats[col.name] = col.headerFormat;
             }
             return this;
         }
@@ -113,15 +87,13 @@ namespace OrbitalShell.Component.Shell.Data
 
         public Table SetFormat(string columnName, string format)
         {
-            _ = ColumnsTextFormats;
-            _columnsTextFormats[columnName] = format;
+            ColumnsTextFormats[columnName] = format;
             return this;
         }
 
         public Table SetHeaderFormat(string columnName, string format)
         {
-            _ = ColumnsHeadersTextFormats;
-            _columnHeadersTextFormats[columnName] = format;
+            ColumnsHeadersTextFormats[columnName] = format;
             return this;
         }
 
@@ -131,20 +103,18 @@ namespace OrbitalShell.Component.Shell.Data
 
         public string GetFormatedValue(CommandEvaluationContext context, string columnName, object value)
         {
-            var textFormat = ColumnsTextFormats[columnName];
-            return
-                (textFormat == null) ?
-                    DumpAsText(context, value, false)
-                    : string.Format(textFormat, DumpAsText(context, value, false));
+            if (ColumnsTextFormats.TryGetValue(columnName,out var textFormat))
+                return string.Format(textFormat, DumpAsText(context, value, false));
+            else
+                return DumpAsText(context, value, false);
         }
 
         public string GetFormatedHeader(string columnName)
         {
-            var textFormat = ColumnsHeadersTextFormats[columnName];
-            return
-                (textFormat == null) ?
-                    columnName
-                    : string.Format(textFormat, columnName);
+            if (ColumnsHeadersTextFormats.TryGetValue(columnName, out var textFormat))
+                return string.Format(textFormat, columnName);
+            else
+                return columnName;                   
         }
 
         #endregion

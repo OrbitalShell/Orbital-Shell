@@ -324,6 +324,44 @@ namespace OrbitalShell.Component.Console
             }
         }
 
+        // TODO: arrays Echo methods needs a generic impl.  (improve. Has Echo Method to find object[] method for any array or more specific one if exists depending on type)
+
+        public static void Echo(
+            this object[] obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+
+            var i = 1;
+            var nb = obj.Length;
+            foreach (var o in obj)
+            {
+                Echo(o, ctx);
+                if (!ctx.Options.LineBreak && i < nb)
+                    @out.Echo(ShellEnvironment.SystemPathSeparator);
+                i++;
+            }
+        }
+
+        public static void Echo(
+            this string[] obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+
+            var i = 1;
+            var nb = obj.Length;
+            foreach (var o in obj)
+            {
+                Echo(o, ctx);
+                if (!ctx.Options.LineBreak && i < nb)
+                    @out.Echo(ShellEnvironment.SystemPathSeparator);
+                i++;
+            }
+        }
+
         public static void Echo(
             this KeyValuePair<string, object> obj,
             EchoEvaluationContext ctx)
@@ -681,7 +719,7 @@ namespace OrbitalShell.Component.Console
                     var o = arr[i];
 
                     MethodInfo mi = null;
-                    if (((!(o is string)) || table.Columns[i].DataType == typeof(object))
+                    if (((!(o is string)) || table.Columns[i].DataType == typeof(object) )
                             && o != null && (mi = o.GetEchoMethod()) != null)
                     {
                         // value dump via Echo primitive

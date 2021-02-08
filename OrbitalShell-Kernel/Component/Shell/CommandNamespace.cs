@@ -103,6 +103,11 @@ namespace OrbitalShell.Component.Shell
         /// <summary>
         /// tools (a typically modules root namespace)
         /// </summary>
-        tools
+        tools,
+
+        /// <summary>
+        /// tools for .net development
+        /// </summary>
+        dotnet
     }
 }
