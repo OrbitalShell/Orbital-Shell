@@ -30,6 +30,7 @@ improvements to do 💭
 
 📂various
 
+8/2/21  FGZ     ✅ ehnance echo primitives arrays types coverage
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 20/1/21 FGZ     please add sort in env table
 26/1/21 FGZ     extra line break after command parse error to be removed
