@@ -32,6 +32,25 @@ namespace OrbitalShell.Component.Console
             Options = options;
         }
 
+        public EchoEvaluationContext(
+            EchoEvaluationContext ctx
+            )
+        {
+            Out = ctx.Out;
+            CommandEvaluationContext = ctx.CommandEvaluationContext;
+            Options = ctx.Options;
+        }
+
+        public EchoEvaluationContext(
+            EchoEvaluationContext ctx,
+            FormattingOptions options
+            )
+        {
+            Out = ctx.Out;
+            CommandEvaluationContext = ctx.CommandEvaluationContext;
+            Options = options;
+        }
+
         /// <summary>
         ///  for Lib.TypeExt.Clone() method purpose
         /// </summary>

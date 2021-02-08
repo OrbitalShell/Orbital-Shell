@@ -24,7 +24,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
             [Parameter("the search terms to used to filter packages",true)] string query,
             [Option("s","skip", "the number of results to skip, for pagination",true,true)] int skip=-1,
             [Option("t","take", "the number of results to return, for pagination", true, true)] int take=-1,
-            [Option("r","pre-release", "true or false determining whether to include pre-release packages (default no)", true, true)] bool preRelease = false,
+            [Option("r","pre-release", "true or false determining whether to include pre-release packages (default no)")] bool preRelease = false,
             [Option("l","sem-ver-level", "a SemVer 1.0.0 version string", true, true)] string semVerLevel = "2.0.0",
             [Option("p","package-type", "the package type to use to filter packages (added in SearchQueryService/3.5.0)",true,true)] string packageType = null,
             [Option("u","query-url","nuget web api query service template url", true, true)] string url = queryUrl

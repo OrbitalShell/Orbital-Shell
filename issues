@@ -9,7 +9,7 @@ issues 💥
 3/2/21  FGZ     ✅ NEXT fix alias replacement that is currently only at pipeline begin + add commands shortcuts 
                     (not aliases, that are names synonyms that can substitute to original command name and that preserve the rest of the command line)
 4/2/21 FGZ      💥 no var subst in shell exec com ?
-6/2/21 FGZ      💥 a toString method lead to stack overflow during debug - probably on object method
+6/2/21 FGZ      💥 a toString method lead to stack overflow during debug - probably on object method (ShellObject.ToString() sur EchoEvaluationContext)
 7/2/21 FGZ      💥 rm do not delete the top level item (test case: dir with or without recurse)
 7/2/21 FGZ      💥 accept only offical escaped caracters in clpa
 7/2/21 FGZ      💥 " at end of command line lead to an empty command line (clpa)

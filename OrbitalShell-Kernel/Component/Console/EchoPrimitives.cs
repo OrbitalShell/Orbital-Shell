@@ -181,10 +181,10 @@ namespace OrbitalShell.Component.Console
             if (obj.Length == 0)
             {
                 obj = QuotedString(context, obj);
-                @out.Echo(obj, false, false);
+                @out.Echo(obj, (ctx.Options != null) && ctx.Options.LineBreak, false);
             }
             else
-                @out.Echo(obj, false, (ctx.Options == null) ? false : ctx.Options.IsRawModeEnabled);
+                @out.Echo(obj, (ctx.Options != null) && ctx.Options.LineBreak, (ctx.Options != null) && ctx.Options.IsRawModeEnabled);
         }
 
         public static void Echo(
@@ -195,7 +195,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo("" + (obj ? context.ShellEnv.Colors.BooleanTrue : context.ShellEnv.Colors.BooleanFalse));
-            @out.Echo(obj.ToString().ToLower());
+            @out.Echo(obj.ToString().ToLower(), (ctx.Options != null) && ctx.Options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -207,7 +207,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Integer}");
-            @out.Echo(obj.ToString());
+            @out.Echo(obj.ToString(), (ctx.Options != null) && ctx.Options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -219,7 +219,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Double}");
-            @out.Echo(obj.ToString());
+            @out.Echo(obj.ToString(), (ctx.Options != null) && ctx.Options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -231,7 +231,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Float}");
-            @out.Echo(obj.ToString());
+            @out.Echo(obj.ToString(), (ctx.Options != null) && ctx.Options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -243,7 +243,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Decimal}");
-            @out.Echo(obj.ToString());
+            @out.Echo(obj.ToString(), (ctx.Options != null) && ctx.Options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -255,7 +255,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Char}");
-            @out.Echo(obj);
+            @out.Echo(obj, (ctx.Options != null) && ctx.Options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -294,14 +294,14 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Count;
             foreach (var o in obj)
             {
-                Echo(o, ctx);
+                Echo(o, new EchoEvaluationContext(ctx,new FormattingOptions(ctx.Options) { LineBreak = false }));
                 if (i < nb)
                 {
                     if (!ctx.Options.LineBreak)
-                        @out.Echo(ShellEnvironment.SystemPathSeparator, true /*TODO: currently no way to support option change from any context (see: shell meta-options + output filters )*/ );
+                        @out.Echo(ShellEnvironment.SystemPathSeparator /*TODO: currently no way to support option change from any context (see: shell meta-options + output filters )*/ );
                     else
                         @out.Echoln();
-                }
+                } else if (ctx.Options.LineBreak) @out.Echoln();
                 i++;
             }
         }
@@ -317,9 +317,14 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Count;
             foreach (var o in obj)
             {
-                Echo(o, ctx);
-                if (!ctx.Options.LineBreak && i < nb)
-                    @out.Echo(ShellEnvironment.SystemPathSeparator);
+                Echo(o, new EchoEvaluationContext(ctx, new FormattingOptions(ctx.Options) { LineBreak = false }));
+                if (i < nb)
+                {
+                    if (!ctx.Options.LineBreak)
+                        @out.Echo(ShellEnvironment.SystemPathSeparator);
+                    else
+                        @out.Echoln();
+                } else if (ctx.Options.LineBreak) @out.Echoln();
                 i++;
             }
         }
@@ -337,9 +342,14 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Length;
             foreach (var o in obj)
             {
-                Echo(o, ctx);
-                if (!ctx.Options.LineBreak && i < nb)
-                    @out.Echo(ShellEnvironment.SystemPathSeparator);
+                Echo(o, new EchoEvaluationContext(ctx, new FormattingOptions(ctx.Options) { LineBreak = false }));
+                if (i < nb)
+                {
+                    if (!ctx.Options.LineBreak)
+                        @out.Echo(ShellEnvironment.SystemPathSeparator);
+                    else
+                        @out.Echoln();
+                } else if (ctx.Options.LineBreak) @out.Echoln();
                 i++;
             }
         }
@@ -355,9 +365,14 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Length;
             foreach (var o in obj)
             {
-                Echo(o, ctx);
-                if (!ctx.Options.LineBreak && i < nb)
-                    @out.Echo(ShellEnvironment.SystemPathSeparator);
+                Echo(o, new EchoEvaluationContext(ctx, new FormattingOptions(ctx.Options) { LineBreak = false }));
+                if (i < nb)
+                {
+                    if (!ctx.Options.LineBreak && i < nb)
+                        @out.Echo(ShellEnvironment.SystemPathSeparator);
+                    else
+                        @out.Echoln();
+                } else if (ctx.Options.LineBreak) @out.Echoln();
                 i++;
             }
         }
@@ -725,7 +740,7 @@ namespace OrbitalShell.Component.Console
                         // value dump via Echo primitive
                         @out.Echo("" + context.ShellEnv.Colors.Default);
                         var p0 = @out.CursorPos;
-                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, options));
+                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, new FormattingOptions(options) { LineBreak = false }  ));
                         var p1 = @out.CursorPos;
                         if (p1.Y==p0.Y)
                         {

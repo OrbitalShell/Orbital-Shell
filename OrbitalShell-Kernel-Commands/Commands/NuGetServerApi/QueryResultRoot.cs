@@ -31,11 +31,11 @@ namespace OrbitalShell.Commands.NuGetServerApi
             var r = cols.Default + Environment.NewLine;
             var s = $"{cols.HighlightSymbol}TotalHits";
             s += $"{cols.Default}=";
-            s += $"{cols.Numeric}{TotalHits}{r}{cols.Default}";
+            s += $"{cols.Numeric}{TotalHits}{cols.Default}";
             context.Out.Echoln(s);
             if (Data != null && Data.Length > 0)
             {
-                context.Out.Echoln( $"Packages list:{r}" );
+                context.Out.Echoln( $"{r}Packages list:{r}" );
                 int i = 1;
                 foreach (var item in Data)
                 {
