@@ -3,7 +3,8 @@ namespace OrbitalShell.Module.PromptGitInfo
     public enum RepoStatus
     {
         UpToDate,
-        Ahead,
+        Modified,
+        ModifiedUntracked,
         Behind,
         Unknown
     }

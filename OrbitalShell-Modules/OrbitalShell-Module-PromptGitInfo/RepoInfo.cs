@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace OrbitalShell.Module.PromptGitInfo
 {
@@ -10,10 +11,10 @@ namespace OrbitalShell.Module.PromptGitInfo
         public Dictionary<char, int> X = new Dictionary<char, int>();
         public Dictionary<char, int> Y = new Dictionary<char, int>();
         public string ErrorMessage;
-        public static List<char> Names = new List<char> { 'M', 'A', 'D', 'R', 'C', 'U', ' ', '?', '!' };
+        public static List<char> Names = new List<char> { 'M', 'A', 'D', 'R', 'C', 'U', ' ', '?', '!' , '#' };
 
-        public int LocalChanges, RemoteChanges, LocalAdded, LocalDeleted, RemoteAdded, RemoteDeleted, Untracked;
-        public bool IsModified => (LocalChanges + RemoteChanges + LocalAdded + LocalDeleted + RemoteAdded + RemoteDeleted + Untracked) > 0;
+        public int IndexChanges, WorktreeChanges, LocalAdded, LocalDeleted, WorktreeAdded, WorktreeDeleted, Untracked, Behind;
+        public bool IsModified => (IndexChanges + WorktreeChanges + LocalAdded + LocalDeleted + WorktreeAdded + WorktreeDeleted + Untracked + Behind) > 0;
 
         public RepoInfo()
         {
@@ -22,19 +23,21 @@ namespace OrbitalShell.Module.PromptGitInfo
 
         public void Update()
         {
-            LocalChanges = X.Values.Aggregate(0, (a, b) => a + b) - X['?'] - X['A'] - X['D'];
-            RemoteChanges = Y.Values.Aggregate(0, (a, b) => a + b) - Y['?'] - Y['A'] - Y['D']; ;
+            IndexChanges = X.Values.Aggregate(0, (a, b) => a + b) - X['?'] - X['A'] - X['D'] - X['#'];
+            WorktreeChanges = Y.Values.Aggregate(0, (a, b) => a + b) - Y['?'] - Y['A'] - Y['D'];
             LocalAdded = X['A'];
             LocalDeleted = X['D'];
-            RemoteAdded = Y['A'];
-            RemoteDeleted = Y['D'];
+            WorktreeAdded = Y['A'];
+            WorktreeDeleted = Y['D'];
             Untracked = X['?'];
+            Behind = X['#'];
             RepoStatus = RepoStatus.UpToDate;
-            if (LocalChanges > 0 && RemoteChanges == 0) RepoStatus = RepoStatus.Ahead;
-            if (LocalChanges >= 0 && RemoteChanges > 0) RepoStatus = RepoStatus.Behind;
+            if ((IndexChanges > 0 || WorktreeChanges > 0) && Untracked==0) RepoStatus = RepoStatus.Modified;
+            if ((IndexChanges > 0 || WorktreeChanges > 0) && Untracked>0) RepoStatus = RepoStatus.ModifiedUntracked;           
+            if (Behind > 0) RepoStatus = RepoStatus.Behind;
         }
 
-        public void Inc(char lName, char rName)
+        public void Inc(char lName, char rName,string line)
         {
             if (!X.ContainsKey(lName)) X[lName] = 0;
             if (!Y.ContainsKey(rName)) Y[rName] = 0;
@@ -53,10 +56,22 @@ namespace OrbitalShell.Module.PromptGitInfo
             if (lName == 'R' && rName == ' ') X[lName]++;
             // copied
             if (lName == 'C' && rName == ' ') X[lName]++;
-            // remote change
+            // unstaged change
             if (lName == ' ' && rName != ' ') Y[rName]++;
             // changed both equals
-            if (lName == rName && lName != ' ' && lName != '?' && lName != '!') X[lName]++;
+            if (lName == rName && lName != ' ' && lName != '?' && lName != '#' && lName != '!') X[lName]++;
+            // branch info: behind commites
+            if (lName == '#' && rName == '#')
+            {
+                // branch
+                var e = new Regex(@" (\d+)\]$");
+                var m = e.Match(line);
+                if (m.Success)
+                {
+                    var n = Convert.ToInt32(m.Captures[0].Value[1..^1]);
+                    X[lName] = n;
+                }
+            }
         }
 
         public override string ToString()

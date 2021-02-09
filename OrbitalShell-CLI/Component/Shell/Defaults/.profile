@@ -23,6 +23,9 @@ module -l "$shell/../../../../OrbitalShell-Modules/OrbitalShell-Module-PromptGit
 echo ""
 
 alias proj "cd '$shell/../../../..'"
-alias gss "git status -s"
+alias gss "git status -s -b -u -M --porcelain"
 alias gs "git status"
 alias ga "git add . && git status"
+
+alias vsproj "cd \"$home/documents/visual studio 2019/projects/applications\""
+

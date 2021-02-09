@@ -25,12 +25,15 @@ namespace OrbitalShell.Module.PromptGitInfo
         public const string ToolNamespace = "git";
         public const string ToolVarSettingsName = "promptInfo";
         public const string VarIsEnabled = "isEnabled";
+        public const string VarInfoBackgroundColor = "infoBackgroundColor";
         public const string VarBehindBackgroundColor = "behindBackgroundColor";
         public const string VarUpToDateBackgroundColor = "upToDateBackgroundColor";
-        public const string VarAheadBackgroundColor = "aheadBackgroundColor";
+        public const string VarModifiedBackgroundColor = "modifiedBackgroundColor";
+        public const string VarModifiedUntrackedBackgroundColor = "modifiedUntrackedBackgroundColor";
         public const string VarUnknownBackgroundColor = "unknownBackgroundColor";
-        public const string VarTextTemplate = "template";
-        public const string VarTextTemplateNoData = "templateNoData";
+        public const string VarModifiedTextTemplate = "modifiedTextTemplate";
+        public const string VarBehindTextTemplate = "behindTextTemplate";
+        public const string VarTextTemplateNoData = "noDataTextTemplate";
         public const string VarTextTemplateNoRepository = "templateNoRepository";
         public const string GitFolder = ".git";
         string _namespace => Variables.Nsp(ShellEnvironmentNamespace.com + "", ToolNamespace, ToolVarSettingsName);
@@ -48,23 +51,37 @@ namespace OrbitalShell.Module.PromptGitInfo
             // init settings
             var branchSymbol = Unicode.EdgeRowLeft;
             var sepSymbol = Unicode.RightChevron;
-            context.ShellEnv.AddValue(_namespace, VarIsEnabled, true, false);
-            context.ShellEnv.AddValue(
+            context.ShellEnv.AddNew(_namespace, VarIsEnabled, true, false);
+            var behindColor = "(b=darkred)";
+            var infoColor = ANSI.SGR_SetBackgroundColor8bits(237/*59*/);
+
+            context.ShellEnv.AddNew(_namespace, VarInfoBackgroundColor, infoColor);
+
+            context.ShellEnv.AddNew(
                 _namespace,
-                VarTextTemplate,
-                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% {sepSymbol} %errorMessage%{ANSI.SGR_SetBackgroundColor8bits(100)} +%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% ?%untracked% %isBehindSymbol%(rdc) ", false);
-            context.ShellEnv.AddValue(
-            _namespace,
+                VarModifiedTextTemplate,
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% %sepSymbol%%errorMessage%{infoColor}+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% ?%untracked%(rdc) ", false);
+
+            context.ShellEnv.AddNew(
+                _namespace,
+                VarBehindTextTemplate,
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% %sepSymbol%%errorMessage%{infoColor}+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% ?%untracked% {behindColor}{Unicode.ArrowDown}%behind%(rdc) ", false);
+           
+            context.ShellEnv.AddNew(
+                _namespace,
                 VarTextTemplateNoData,
-                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% {sepSymbol} %errorMessage%(rdc) ", false);
-            context.ShellEnv.AddValue(
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch%%errorMessage%(rdc) ", false);
+            
+            context.ShellEnv.AddNew(
                 _namespace,
                 VarTextTemplateNoRepository,
                 $"(b=darkblue)(f=white) {sepSymbol} %errorMessage%(rdc) ", false);
-            context.ShellEnv.AddValue(_namespace, VarBehindBackgroundColor, "(b=darkred)", false);
-            context.ShellEnv.AddValue(_namespace, VarUpToDateBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(22), false);
-            context.ShellEnv.AddValue(_namespace, VarAheadBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(136), false);
-            context.ShellEnv.AddValue(_namespace, VarUnknownBackgroundColor, "(b=darkblue)", false);
+            
+            context.ShellEnv.AddNew(_namespace, VarBehindBackgroundColor, behindColor, false);
+            context.ShellEnv.AddNew(_namespace, VarUpToDateBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(22), false);
+            context.ShellEnv.AddNew(_namespace, VarModifiedBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(130), false);
+            context.ShellEnv.AddNew(_namespace, VarModifiedUntrackedBackgroundColor, ANSI.SGR_SetBackgroundColor8bits(166), false);
+            context.ShellEnv.AddNew(_namespace, VarUnknownBackgroundColor, "(b=darkblue)", false);
         }
 
         #endregion
@@ -72,7 +89,7 @@ namespace OrbitalShell.Module.PromptGitInfo
         #region Command
 
         /// <summary>
-        /// enable or disable prompt git info TODO: fix do not works the first time (datavalue cloned ?)
+        /// enable or disable prompt git info
         /// </summary>
         [Command("setup prompt git infos")]
         public CommandVoidResult PromptInfo(
@@ -104,7 +121,8 @@ namespace OrbitalShell.Module.PromptGitInfo
                      context.ShellEnv.GetValue<string>(
                          _namespace,
                          repoPath != null ?
-                            ((repo.IsModified) ? VarTextTemplate : VarTextTemplateNoData)
+                            ((repo.Behind>0)? VarBehindTextTemplate :
+                            ((repo.IsModified) ? VarModifiedTextTemplate : VarTextTemplateNoData))
                             : VarTextTemplateNoRepository
                      );
 
@@ -114,8 +132,11 @@ namespace OrbitalShell.Module.PromptGitInfo
                     case RepoStatus.Behind:
                         bgColor = context.ShellEnv.GetValue<string>(_namespace, VarBehindBackgroundColor);
                         break;
-                    case RepoStatus.Ahead:
-                        bgColor = context.ShellEnv.GetValue<string>(_namespace, VarAheadBackgroundColor);
+                    case RepoStatus.Modified:
+                        bgColor = context.ShellEnv.GetValue<string>(_namespace, VarModifiedBackgroundColor);
+                        break;
+                    case RepoStatus.ModifiedUntracked:
+                        bgColor = context.ShellEnv.GetValue<string>(_namespace, VarModifiedUntrackedBackgroundColor);
                         break;
                     case RepoStatus.UpToDate:
                         bgColor = context.ShellEnv.GetValue<string>(_namespace, VarUpToDateBackgroundColor);
@@ -132,14 +153,16 @@ namespace OrbitalShell.Module.PromptGitInfo
                     { "branch" , branch },
                     { "errorMessage" , repo.ErrorMessage },
                     { "localAdded" , repo.LocalAdded+"" },
-                    { "localChanges" , repo.LocalChanges+"" },
+                    { "localChanges" , repo.IndexChanges+"" },
                     { "localDeleted" , repo.LocalDeleted+"" },
-                    { "remoteChanges" , repo.RemoteChanges+"" },
-                    { "remoteAdded" , repo.RemoteAdded+"" },
-                    { "remoteDeleted" , repo.RemoteDeleted+"" },
+                    { "remoteChanges" , repo.WorktreeChanges+"" },
+                    { "remoteAdded" , repo.WorktreeAdded+"" },
+                    { "remoteDeleted" , repo.WorktreeDeleted+"" },
                     { "untracked" , repo.Untracked+"" },
-                    { "isBehindSymbol" , "" }, //repo.RepoStatus==RepoStatus.Behind?"!":""},
-                    { "repoName" , repoName }
+                    { "isBehindSymbol" , "" },
+                    { "repoName" , repoName },
+                    { "behind" , repo.Behind+"" },
+                    { "sepSymbol" , "" }
                 };
                 text = _SetVars(context, text, vars);
 
@@ -176,7 +199,7 @@ namespace OrbitalShell.Module.PromptGitInfo
 
             try
             {
-                context.CommandLineProcessor.ShellExec(context, "git", "status --porcelain", out var output, true, false);
+                context.CommandLineProcessor.ShellExec(context, "git", "status -s -b -u -M --porcelain", out var output, true, false);
                 //string output = null;
                 if (output != null)
                 {
@@ -191,12 +214,14 @@ namespace OrbitalShell.Module.PromptGitInfo
                             M,' '   updated
                             U       updated but not merged
                             ?       untracked
+                            #       behind
+                            !       ignored
                         */
                         if (!string.IsNullOrWhiteSpace(line) && line.Length > 2)
                         {
                             var x = line[0];
                             var y = line[1];
-                            r.Inc(x, y);
+                            r.Inc(x, y,line);
                         }
                     }
                     r.Update();

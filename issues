@@ -14,7 +14,7 @@ issues 💥
 7/2/21 FGZ      💥 accept only offical escaped caracters in clpa
 7/2/21 FGZ      💥 " at end of command line lead to an empty command line (clpa)
 8/2/21 FGZ      💥 commands with redondant short name are not registered (check use of namespaces at command registration + measure impact / fix command help + check clp)
-8/2/21 FGZ      💥 help: missing com syntax: missing default values for non bool options
+8/2/21 FGZ      💥 command model : should disallow option parameter with no bool type and no hasvalue flag set ==> parameter won't be handle correctly. should avoid (that have no sens)
 
 improvements to do 💭
 ------------------
@@ -117,3 +117,47 @@ olds:
 18/1/21 FGZ     🆗 env & var prints nothing when pointing to an object or variable if no -n or -o (must check with empty namespaces)
 18/1/21 FGZ     🆗 replace -env: by --env: in shell init (posix)
 18/1/21 FGZ     🆗 prompt: fill line from cursor. should do from end of line
+
+-------------------------------------
+
+check this!
+-----------
+
+paste this: 🍄 in command line: (default encoding )
+
+>   ^
+unknown command: ?
+
+type 'cls' + return
+
+input stream reader crashed
+System.Text.EncoderFallbackException: Unable to translate Unicode character \\uD83C at index 0 to specified code page.
+   at System.Text.EncoderExceptionFallbackBuffer.Fallback(Char charUnknown, Int32 index)
+   at System.Text.EncoderFallbackBuffer.InternalFallback(ReadOnlySpan`1 chars, Int32& charsConsumed)
+   at System.Text.Encoding.GetBytesWithFallback(ReadOnlySpan`1 chars, Int32 originalCharsLength, Span`1 bytes, Int32 originalBytesLength, EncoderNLS encoder)
+   at System.Text.Encoding.GetBytesWithFallback(Char* pOriginalChars, Int32 originalCharCount, Byte* pOriginalBytes, Int32 originalByteCount, Int32 charsConsumedSoFar, Int32 bytesWrittenSoFar, EncoderNLS encoder)
+   at System.Text.Encoding.GetBytes(Char* pChars, Int32 charCount, Byte* pBytes, Int32 byteCount, EncoderNLS encoder)
+   at System.Text.EncoderNLS.GetBytes(Char[] chars, Int32 charIndex, Int32 charCount, Byte[] bytes, Int32 byteIndex, Boolean flush)
+   at System.IO.StreamWriter.Flush(Boolean flushStream, Boolean flushEncoder)
+   at System.IO.StreamWriter.Write(String value)
+   at OrbitalShell.Component.Console.TextWriterWrapper.Write(String s) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\TextWriterWrapper.cs:line 290
+   at OrbitalShell.Component.Console.ConsoleTextWriterWrapper.Write(String s) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\ConsoleTextWriterWrapper.cs:line 1083
+   at OrbitalShell.Component.Console.ConsoleTextWriterWrapper.ConsoleSubPrint(String s, Boolean lineBreak) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\ConsoleTextWriterWrapper.cs:line
+
+> encoding utf-16
+> 🍄    (same operation)
+
+input stream reader crashed
+System.Text.EncoderFallbackException: Unable to translate Unicode character \\uD83C at index 0 to specified code page.
+   at System.Text.EncoderExceptionFallbackBuffer.Fallback(Char charUnknown, Int32 index)
+   at System.Text.EncoderFallbackBuffer.InternalFallback(ReadOnlySpan`1 chars, Int32& charsConsumed)
+   at System.Text.Encoding.GetBytesWithFallback(ReadOnlySpan`1 chars, Int32 originalCharsLength, Span`1 bytes, Int32 originalBytesLength, EncoderNLS encoder)
+   at System.Text.Encoding.GetBytesWithFallback(Char* pOriginalChars, Int32 originalCharCount, Byte* pOriginalBytes, Int32 originalByteCount, Int32 charsConsumedSoFar, Int32 bytesWrittenSoFar, EncoderNLS encoder)
+   at System.Text.Encoding.GetBytes(Char* pChars, Int32 charCount, Byte* pBytes, Int32 byteCount, EncoderNLS encoder)
+   at System.Text.EncoderNLS.GetBytes(Char[] chars, Int32 charIndex, Int32 charCount, Byte[] bytes, Int32 byteIndex, Boolean flush)
+   at System.IO.StreamWriter.Flush(Boolean flushStream, Boolean flushEncoder)
+   at System.IO.StreamWriter.Write(String value)
+   at OrbitalShell.Component.Console.TextWriterWrapper.Write(String s) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\TextWriterWrapper.cs:line 290
+   at OrbitalShell.Component.Console.ConsoleTextWriterWrapper.Write(String s) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\ConsoleTextWriterWrapper.cs:line 1083
+   at OrbitalShell.Component.Console.ConsoleTextWriterWrapper.ConsoleSubPrint(String s, Boolean lineBreak) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\ConsoleTextWriterWrapper.cs:line 1230
+

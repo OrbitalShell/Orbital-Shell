@@ -337,7 +337,7 @@ namespace OrbitalShell.Component.Shell.Variable
             return val;
         }
 
-        public DataValue AddValue(string varPath, string varName, object value, bool readOnly = false)
+        public DataValue AddNew(string varPath, string varName, object value, bool readOnly = false)
         {
             var path = Nsp(varPath, varName);
             var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();

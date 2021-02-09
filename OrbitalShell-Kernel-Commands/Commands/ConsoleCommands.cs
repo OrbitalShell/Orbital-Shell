@@ -133,7 +133,7 @@ current print directives are:
                 try
                 {
                     var ne = System.Text.Encoding.GetEncoding(encodingName);
-                    System.Console.OutputEncoding = ne;
+                    System.Console.OutputEncoding = ne;                    
                     ret = ne;
                 }
                 catch (ArgumentException)

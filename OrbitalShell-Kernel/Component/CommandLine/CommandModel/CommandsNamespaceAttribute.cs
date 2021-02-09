@@ -9,9 +9,6 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
     public class CommandsNamespaceAttribute : Attribute
     {
         public readonly string[] Segments;
-        private CommandNamespace net;
-        private CommandNamespace http;
-        private string v;
 
         public CommandsNamespaceAttribute(params string[] segments)
         {
