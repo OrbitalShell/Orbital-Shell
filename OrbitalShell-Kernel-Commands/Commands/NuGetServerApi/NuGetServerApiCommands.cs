@@ -88,14 +88,15 @@ namespace OrbitalShell.Commands.NuGetServerApi
                                 
                                 @return = res;
 
-                                if (res != null) 
-                                    context.Out.Echoln(res);
+                                if (res != null)
+                                { if (!string.IsNullOrWhiteSpace(res)) context.Out.Echoln(res); }
                                 else
+                                    context.Warningln("quey result is empty");
                                     context.Warningln("quey result is empty");
 
                                 if (result.StatusCode == HttpStatusCode.Created
                                     || result.StatusCode == HttpStatusCode.Accepted )
-                                    context.Out.Echoln("package '' has been successfully pushed");
+                                    context.Out.Echoln($"package '{Path.GetFileName(pkgFile.FullName)}' has been successfully pushed");
                             }
                             else
                                 context.Errorln($"can't get response content: {(int)result.StatusCode} {result.ReasonPhrase}");
