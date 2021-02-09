@@ -1,31 +1,51 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <!--<TargetFramework>net5.0</TargetFramework>-->
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <!--<TargetFramework>netstandard2.1</TargetFramework>-->
-    <RootNamespace>OrbitalShell.Component.Commands</RootNamespace>
+	  
+    <RootNamespace>OrbitalShell</RootNamespace>
     <AssemblyName>OrbitalShell-Kernel-Commands</AssemblyName>
     <NeutralLanguage>en-US</NeutralLanguage>
-	  <IsPackable>true</IsPackable>
-    <Authors>Orbital Shell team</Authors>
+	  
+	<IsPackable>true</IsPackable>
+    <Authors>Franck Gaspoz</Authors>
     <Company>Orbital Shell</Company>
     <Product>Orbital Shell - Kernel commands module</Product>
-    <Description>Orbital Shell kernel commands module</Description>
+    <Description>Orbital Shell kernel commands module. Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>0.1.0.0</Version>
-    <InformationalVersion>1.0.0-beta</InformationalVersion>
+    <Version>1.0.0.0-beta-4</Version>
+    <InformationalVersion>1.0.0.0-beta-4</InformationalVersion>
+
+	<PackageReleaseNotes>beta-4 milestone 1</PackageReleaseNotes>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageProjectUrl>https://franck-gaspoz.github.io/orbital-shell/</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/franck-gaspoz/orbital-shell.git</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<PackageTags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</PackageTags>
+	<PackageIcon>robotazteque.png</PackageIcon>
+
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	 
+	<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+	  
   </PropertyGroup>
 
 <ItemGroup>
+    <None Remove="assets\robotazteque.png" />
     <None Remove="Commands\CommandLineProcessor\banner-2.txt" />
     <None Remove="Commands\CommandLineProcessor\banner-3.txt" />
     <None Remove="Commands\CommandLineProcessor\banner-4.txt" />
     <None Remove="Commands\CommandLineProcessor\banner.txt" />
     <None Remove="Commands\TextEditor\edit-help.txt" />
+	<None Include="assets\robotazteque.png">
+		<Pack>True</Pack>
+		<PackagePath></PackagePath>
+	</None>
 </ItemGroup>
 
 <ItemGroup>
+    <Content Include="assets\robotazteque.png" />
     <Content Include="Commands\CommandLineProcessor\banner-2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -50,6 +70,12 @@
   <ItemGroup>
     <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -12,9 +12,10 @@ issues 💥
 6/2/21 FGZ      💥 a toString method lead to stack overflow during debug - probably on object method (ShellObject.ToString() sur EchoEvaluationContext)
 7/2/21 FGZ      💥 rm do not delete the top level item (test case: dir with or without recurse)
 7/2/21 FGZ      💥 accept only offical escaped caracters in clpa
-7/2/21 FGZ      💥 " at end of command line lead to an empty command line (clpa)
+7/2/21 FGZ      💥 unexpected " at end of command line lead to an empty command line (clpa)
 8/2/21 FGZ      💥 commands with redondant short name are not registered (check use of namespaces at command registration + measure impact / fix command help + check clp)
-8/2/21 FGZ      💥 command model : should disallow option parameter with no bool type and no hasvalue flag set ==> parameter won't be handle correctly. should avoid (that have no sens)
+8/2/21 FGZ      💥 command model : should disallow option parameter with no bool type and no hasvalue flag set ==> parameter won't be handle correctly. should avoid (that have no sens, lead to confusion)
+9/2/21 FGZ      💥 \\ not properly handled by clr
 
 improvements to do 💭
 ------------------
@@ -22,26 +23,26 @@ improvements to do 💭
 📂variables
 
 21/1/21 FGZ     add expression {var}={expr} recognition and analysis (based on set command)
+20/1/21 FGZ     variable defined as a reference to another but having its own path/name
+20/1/21 FGZ     variable value provided by a programmatic way
 
 📂settings
 
 19/1/21 FGZ     add load settings from json + revert to json (add variables binding)
 20/1/21 FGZ     reflects setting change (case settings.prompt : call command prompt)
 
-📂various
+📂kernel
 
-8/2/21  FGZ     ✅ ehnance echo primitives arrays types coverage
+8/2/21  FGZ     ✅ ehance echo primitives arrays types coverage
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
-20/1/21 FGZ     please add sort in env table
 26/1/21 FGZ     extra line break after command parse error to be removed
-20/1/21 FGZ     variable defined as a reference to another but having its own path/name
-20/1/21 FGZ     variable value provided by a programmatic way
 
 📂commands
 
 26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
 2/2/21 FGZ      fix ansi missing in shell exec
 2/2/21 FGZ      shell exec for .sh : check contains #!orbsh at first line before accept to execute it
+20/1/21 FGZ     please add sort in env table
 
 procrastinated:
 ---------------

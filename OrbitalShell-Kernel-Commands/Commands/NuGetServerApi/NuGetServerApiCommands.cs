@@ -5,10 +5,12 @@ using OrbitalShell.Component.Shell;
 using System.Net.Http;
 using OrbitalShell.Component.Console;
 using Newtonsoft.Json;
+using OrbitalShell.Lib.FileSystem;
+using System.IO;
 
 namespace OrbitalShell.Commands.NuGetServerApi
 {
-    [Commands("http web apu nuget commands")]
+    [Commands("nuget http server api commands")]
     [CommandsNamespace(CommandNamespace.net,CommandNamespace.http,"nuget")]
     public class NuGetServerApiCommands : ICommandsDeclaringType
     {
@@ -17,6 +19,28 @@ namespace OrbitalShell.Commands.NuGetServerApi
         /// Query endpoint of NuGet Search service (primary) used by RC clients
         /// </summary>
         public const string queryUrl = "https://api-v2v3search-0.nuget.org/query?q={QUERY}&skip={SKIP}&take={TAKE}&prerelease={PRERELEASE}&semVerLevel={SEMVERLEVEL}&packageType={PACKAGETYPE}";
+
+        [Command("publish a nuget package")]
+        public CommandResult<string> NugetPublish(
+            CommandEvaluationContext context,
+            [Parameter("package (.nuget) file path")] FilePath pkgFile
+            )
+        {
+            var @return = "";
+            if (pkgFile.CheckExists(context))
+            {
+                var ext = Path.GetExtension(pkgFile.FullName);
+                var atExt = ".nupkg";
+                if (ext.ToLower() != atExt )
+                {
+                    context.Errorln($"bad file extension: '{ext}', should be '{atExt}'");
+                } else
+                {
+
+                }
+            }
+            return new CommandResult<string>(@return);
+        }
 
         [Command("call nuget web query service and output results")]
         public CommandResult<QueryResultRoot> NugetQuery(

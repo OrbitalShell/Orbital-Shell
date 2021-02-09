@@ -1,23 +1,74 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+	<!--<TargetFramework>net5.0</TargetFramework>-->
 	<TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>OrbitalShell.Module.PromptGitInfo</RootNamespace>
+    
+	<RootNamespace>OrbitalShell.Module.PromptGitInfo</RootNamespace>
     <AssemblyName>OrbitalShell-Module-PromptGitInfo</AssemblyName>
-    <NeutralLanguage>en-US</NeutralLanguage>
+	<NeutralLanguage>en-US</NeutralLanguage>
+	<ApplicationIcon>assets\robotazteque.ico</ApplicationIcon>
+    
     <IsPackable>true</IsPackable>
-    <Authors>Orbital Shell team</Authors>
+    <Authors>Franck Gaspoz</Authors>
     <Company>Orbital Shell</Company>
     <Product>Prompt Git Info (Orbital Shell Module)</Product>
-    <Description>Prompt git info adds infos about git repository to the orbital shell command line prompt</Description>
-    <Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>0.1.0.0</Version>
-    <InformationalVersion>1.0.0-beta-1</InformationalVersion>
+    <Description>Add information about any current or parent GIT repository to orbital shell command line prompt. for example: OrbitalShell ├ master +0 ~0 -0 | ~2 -0 ?2 - Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>    
+	<Copyright>(c) 2020 Licence MIT</Copyright>
+    <Version>1.0.0.0-beta</Version>
+    <InformationalVersion>1.0.0.0-beta</InformationalVersion>
+    
+	<PackageReleaseNotes>initial stable release</PackageReleaseNotes>
+    <ApplicationIcon>assets\robotazteque.ico</ApplicationIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://franck-gaspoz.github.io/orbital-shell/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/franck-gaspoz/orbital-shell.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</PackageTags>    
+    <PackageIcon>robotazteque.png</PackageIcon>
+      
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  
+	<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+	
   </PropertyGroup>
 
+    <ItemGroup>
+	    <Compile Remove="assets\**" />
+	    <EmbeddedResource Remove="assets\**" />
+	    <None Remove="assets\**" />
+	    <None Include="assets\LICENSE.md" />
+	    <None Include="assets\README.md">
+	      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    </None>
+	    <None Include="assets\robotazteque.ico" />
+	    <None Include="assets\robotazteque.png">
+	      <Pack>True</Pack>
+	      <PackagePath></PackagePath>
+	    </None>
+    </ItemGroup>
+	
   <ItemGroup>
-    <ProjectReference Include="..\..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
-    <ProjectReference Include="..\..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />
+    <None Remove="module.nuspec" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <None Include="assets\robotazteque.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <ProjectReference Include="..\..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj">
+		  <ExcludeAssets>build</ExcludeAssets>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj">
+		  <ExcludeAssets>build</ExcludeAssets>
+	  </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

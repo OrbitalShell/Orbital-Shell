@@ -1,0 +1,1 @@
+﻿# this folder contains the modules installed into the shell. each module has a specific folder which is the module name (mangled if necessary)
