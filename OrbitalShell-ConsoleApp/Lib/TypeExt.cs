@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
@@ -243,19 +242,5 @@ namespace OrbitalShell.Lib
 
         #endregion
 
-        // echo
-        /* OBSOLETE?
-                public static void Echo(this string x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-                public static void Echo(this int x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-                public static void Echo(this double x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-                public static void Echo(this float x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-                public static void Echo(this bool x, ConsoleTextWriterWrapper @out) => @out.Echo(x);
-
-                public static void Echoln(this string x, ConsoleTextWriterWrapper @out) => @out.Echoln(x);
-                public static void Echoln(this int x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
-                public static void Echoln(this double x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
-                public static void Echoln(this float x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
-                public static void Echoln(this bool x, ConsoleTextWriterWrapper @out) => @out.Echoln(x + "");
-        */
     }
 }

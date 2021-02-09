@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Module.PromptGitInfo
 {
@@ -64,13 +65,11 @@ namespace OrbitalShell.Module.PromptGitInfo
             if (lName == '#' && rName == '#')
             {
                 // branch
-                var e = new Regex(@" (\d+)\]$");
-                var m = e.Match(line);
-                if (m.Success)
-                {
-                    var n = Convert.ToInt32(m.Captures[0].Value[1..^1]);
-                    X[lName] = n;
-                }
+                Match m = null;
+                if ((m = line.Match(@"ahead (\d+)\]$")) != null && m.Success)
+                    X['#'] = -Convert.ToInt32(m.Groups[1].Value);
+                if ((m = line.Match(@"behind (\d+)\]$")) != null && m.Success)
+                    X['#'] = Convert.ToInt32(m.Groups[1].Value);
             }
         }
 

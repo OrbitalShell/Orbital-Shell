@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace OrbitalShell.Lib
 {
@@ -9,6 +10,16 @@ namespace OrbitalShell.Lib
     /// </summary>
     public static class StrExt
     {
+        #region others
+
+        public static Match Match(this string input,string regex)
+        {
+            var r = new Regex(regex);
+            return r.Match(input);
+        }
+
+        #endregion
+
         public static List<string> SplitNotUnslashed(this string s, char c)
         {
             var r = new List<string>();

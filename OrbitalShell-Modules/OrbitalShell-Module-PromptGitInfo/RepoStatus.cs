@@ -6,6 +6,7 @@ namespace OrbitalShell.Module.PromptGitInfo
         Modified,
         ModifiedUntracked,
         Behind,
+        Ahead,
         Unknown
     }
 }
