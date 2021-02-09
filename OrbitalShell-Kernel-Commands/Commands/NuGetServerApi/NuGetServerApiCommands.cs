@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using OrbitalShell.Lib.FileSystem;
 using System.IO;
 using System.Net.Http.Headers;
+using System.Net;
 
 namespace OrbitalShell.Commands.NuGetServerApi
 {
@@ -92,7 +93,8 @@ namespace OrbitalShell.Commands.NuGetServerApi
                                 else
                                     context.Warningln("quey result is empty");
 
-                                if (result.StatusCode == System.Net.HttpStatusCode.Created)
+                                if (result.StatusCode == HttpStatusCode.Created
+                                    || result.StatusCode == HttpStatusCode.Accepted )
                                     context.Out.Echoln("package '' has been successfully pushed");
                             }
                             else
