@@ -662,19 +662,22 @@ namespace OrbitalShell.Component.Console
                 var cols = ((DataRow)rw).ItemArray;
                 for (int i = 0; i < cols.Length; i++)
                 {
-                    string s = null, s2 = null;
+                    string s , s2;
                     if (table is Table t)
                     {
                         s = @out.GetPrint(t.GetFormatedValue(context, table.Columns[i].ColumnName, cols[i]?.ToString())) ?? "";
                         colLengths[i] = Math.Max(s.Length, colLengths[i]);
                         s2 = @out.GetPrint(t.GetFormatedHeader(table.Columns[i].ColumnName)) ?? "";
                         colLengths[i] = Math.Max(s2.Length, colLengths[i]);
+                        if (i == cols.Length - 1) colLengths[i] = s.Length+2;
                     }
                     else
                     {
                         s = @out.GetPrint(cols[i]?.ToString()) ?? "";
                         colLengths[i] = Math.Max(s.Length, colLengths[i]);
                         colLengths[i] = Math.Max(table.Columns[i].ColumnName.Length, colLengths[i]);
+                        if (i == cols.Length - 1) colLengths[i] = 1;
+                        if (i == cols.Length - 1) colLengths[i] = s.Length + 2;
                     }
                 }
             }

@@ -41,8 +41,20 @@ namespace OrbitalShell.Commands.NuGetServerApi
         /// <param name="context">echo context</param>
         public void Echo(EchoEvaluationContext context)
         {
+            var options = new TableFormattingOptions(context.CommandEvaluationContext.ShellEnv.TableFormattingOptions)
+            {
+                UnfoldCategories = false,
+                UnfoldItems = false,
+                IsRawModeEnabled = true
+            };
+
             var cols = context.CommandEvaluationContext.ShellEnv.Colors;
-            var tb = new Table(("property", typeof(string), $"{cols.Label}{{0}}{cols.Default}"), ("value", typeof(object), "{0}"));
+            var tb = new Table(
+                ("property", typeof(string), $"{cols.Label}{{0}}{cols.Default}")
+            );
+
+            tb.AddColumns(("value", typeof(object)));
+
             tb.AddRow("id", Id);
             tb.AddRow("registration", Registration);
             tb.AddRow("version", Version);
@@ -58,7 +70,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
             tb.AddRow("verified", Verified);
             tb.AddRow("packages types", PackageTypes);
             tb.AddRow("versions", Versions);
-            tb.Echo(context);
+            tb.Echo(new EchoEvaluationContext(context,options));
         }
     }
 }

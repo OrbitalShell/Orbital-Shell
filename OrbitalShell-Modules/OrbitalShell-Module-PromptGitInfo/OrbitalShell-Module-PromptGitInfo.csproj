@@ -59,9 +59,11 @@
   <ItemGroup>
 	  <ProjectReference Include="..\..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj">
 		  <ExcludeAssets>build</ExcludeAssets>
+		  <Private>false</Private>
 	  </ProjectReference>
 	  <ProjectReference Include="..\..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj">
 		  <ExcludeAssets>build</ExcludeAssets>
+		  <Private>false</Private>
 	  </ProjectReference>
   </ItemGroup>
 
