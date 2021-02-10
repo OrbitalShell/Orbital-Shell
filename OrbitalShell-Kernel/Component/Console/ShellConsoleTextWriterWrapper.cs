@@ -73,7 +73,7 @@ namespace OrbitalShell.Component.Console
                         new EchoEvaluationContext(
                             (ConsoleTextWriterWrapper)CommandEvaluationContext.Out,
                             CommandEvaluationContext,
-                            new FormattingOptions(lineBreak, parseCommands)
+                            new FormatingOptions(lineBreak, parseCommands)
                         )
                     );
                     if (lineBreak) base.Echo("", true);  // TODO: formatting option not implemented ?

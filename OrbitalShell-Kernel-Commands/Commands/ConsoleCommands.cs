@@ -103,9 +103,8 @@ current print directives are:
                             new EchoEvaluationContext(
                                 context.Out,
                                 context,
-                                new FormattingOptions(!avoidLineBreak, raw)
+                                new FormatingOptions(!avoidLineBreak, raw)
                             ));
-                        if (!avoidLineBreak) context.Out.Echo("", true);    // TODO: formatting option not implemented ?
                     }
                 }
                 return CommandVoidResult.Instance;

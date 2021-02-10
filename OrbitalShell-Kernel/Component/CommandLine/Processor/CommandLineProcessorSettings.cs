@@ -83,9 +83,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
         #region official files names
 
         public string UserProfileFileName = ".profile";
+        public string DefaultUserProfileFileName = "profile";
         public string LogFileName = "log";
         public string HistoryFileName = ".history";
         public string CommandsAliasFileName = ".aliases";
+        public string DefaultCommandsAliasFileName = "aliases";
         public string DefaultsFolderName = "Defaults";
 
         #endregion

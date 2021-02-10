@@ -20,12 +20,12 @@ namespace OrbitalShell.Component.Console
         /// <summary>
         /// formatting options
         /// </summary>
-        public FormattingOptions Options;
+        public FormatingOptions Options;
 
         public EchoEvaluationContext(
             ConsoleTextWriterWrapper @out,
             CommandEvaluationContext cmdContext,
-            FormattingOptions options = null)
+            FormatingOptions options = null)
         {
             Out = @out;
             CommandEvaluationContext = cmdContext;
@@ -43,7 +43,7 @@ namespace OrbitalShell.Component.Console
 
         public EchoEvaluationContext(
             EchoEvaluationContext ctx,
-            FormattingOptions options
+            FormatingOptions options
             )
         {
             Out = ctx.Out;
@@ -59,7 +59,7 @@ namespace OrbitalShell.Component.Console
         public void Deconstruct(
             out ConsoleTextWriterWrapper @out,
             out CommandEvaluationContext context,
-            out FormattingOptions options)
+            out FormatingOptions options)
         {
             @out = Out;
             context = CommandEvaluationContext;

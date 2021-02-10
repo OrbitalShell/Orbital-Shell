@@ -1,6 +1,7 @@
 ﻿using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
 
@@ -61,10 +62,16 @@ namespace OrbitalShell.Lib
             }
         }
 
+        /// <summary>
+        /// search an 'Echo' method for the given object
+        /// </summary>
+        /// <param name="o">object</param>
+        /// <returns>method info or null</returns>
         public static MethodInfo GetEchoMethod(this object o)
         {
             if (o == null) throw new ArgumentNullException(nameof(o));
             var t = o.GetType();
+
             try
             {
                 var inheritanceChain = t.GetInheritanceChain();
@@ -81,10 +88,23 @@ namespace OrbitalShell.Lib
 
                 // extension of a type not in this assembly is not found
                 // search in extension class to fix it
+
+                MethodInfo[] mis = null;
+
                 if (mi == null)
                 {
-                    var mis = typeof(EchoPrimitives).GetMethods();
+                    mis = typeof(EchoPrimitives).GetMethods();
                     foreach (var it in inheritanceChain)
+                    {
+                        mi = mis.Where(x => x.Name == "Echo" && x.GetParameters()[0].ParameterType == it).FirstOrDefault();
+                        if (mi != null) break;
+                    }
+                }
+
+                // search extension method with interfaces types
+
+                if (mi == null) {
+                    foreach (var it in t.GetInterfaces())
                     {
                         mi = mis.Where(x => x.Name == "Echo" && x.GetParameters()[0].ParameterType == it).FirstOrDefault();
                         if (mi != null) break;

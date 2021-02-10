@@ -32,9 +32,10 @@ namespace OrbitalShell.Component.CommandLine.Processor
 {
     public class CommandLineProcessor
     {
-        static object _logFileLock = new object();
-
         #region attributes
+
+        static object _logFileLock = new object();
+        bool _muteLogErrors;
 
         public CommandLineProcessorSettings Settings { get; protected set; }
 
@@ -167,6 +168,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CommandLineProcessorSettings settings,
             CommandEvaluationContext context = null)
         {
+            _muteLogErrors = true;
             _args = (string[])args?.Clone();
             Settings = settings;
 
@@ -205,7 +207,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
             Done(moduleSpecification.Info.GetDescriptor(context));
 
             // can't reference by type an external module for which we have not a project reference
-            a = Assembly.LoadWithPartialName(settings.KernelCommandsModuleAssemblyName);
+            //a = Assembly.LoadWithPartialName(settings.KernelCommandsModuleAssemblyName);
+            a = Assembly.Load(settings.KernelCommandsModuleAssemblyName);
             Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands module: '{a}' ... ", true, false);
             moduleSpecification = ModuleManager.RegisterModule(CommandEvaluationContext, a);
             Done(moduleSpecification.Info.GetDescriptor(context));
@@ -215,6 +218,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"init user profile from: '{Settings.AppDataFolderPath}' ... ", true, false);
 
             lbr = InitUserProfileFolder(lbr);
+            _muteLogErrors = false;
 
             Done();
             Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{Settings.HistoryFilePath}' ... ", true, false);
@@ -285,12 +289,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
             // create/restore user aliases
             var createNewCommandsAliasFile = !File.Exists(Settings.CommandsAliasFilePath);
             if (createNewCommandsAliasFile)
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ", false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ",true, false);
             try
             {
                 if (createNewCommandsAliasFile)
                 {
-                    var defaultAliasFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.CommandsAliasFileName);
+                    var defaultAliasFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.DefaultCommandsAliasFileName);
                     File.Copy(defaultAliasFilePath, Settings.CommandsAliasFilePath);
                     lbr |= true;
                     Success();
@@ -309,7 +313,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CmdsHistory = new CommandsHistory();
             var createNewHistoryFile = !File.Exists(Settings.HistoryFilePath);
             if (createNewHistoryFile)
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", false);
+                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", true, false);
             try
             {
                 if (createNewHistoryFile)
@@ -374,7 +378,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ", true, false);
                 try
                 {
-                    var defaultProfileFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.UserProfileFileName);
+                    var defaultProfileFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.DefaultUserProfileFileName);
                     File.Copy(defaultProfileFilePath, Settings.UserProfileFilePath);
                     Success();
                 }
@@ -547,16 +551,17 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 }
                 catch (Exception logAppendAllLinesException)
                 {
-                    if (Settings.LogAppendAllLinesErrorIsEnabled)
-                        Errorln(logAppendAllLinesException.Message);
+                    if (!_muteLogErrors)
+                    {
+                        if (Settings.LogAppendAllLinesErrorIsEnabled)
+                            Errorln(logAppendAllLinesException.Message);
+                    }
                     return logAppendAllLinesException;
                 }
             }
         }
 
         #endregion
-
-
 
         #endregion
 

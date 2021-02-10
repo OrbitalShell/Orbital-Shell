@@ -6,8 +6,8 @@
         {
             AppName = "orbsh";
             AppLongName = "Orbital Shell";
-            AppEditor = "released on June 2020 under licence MIT";
-            AppVersion = "1.0-beta";
+            AppEditor = "released on June 2020 under licence MIT";      // TODO: remove these obvious settings
+            AppVersion = "1.0-beta";    
 
             AppDataFolderName = "OrbitalShell";
             UserProfileFileName = ".profile";

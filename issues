@@ -16,6 +16,7 @@ issues 💥
 8/2/21 FGZ      💥 commands with redondant short name are not registered (check use of namespaces at command registration + measure impact / fix command help + check clp)
 8/2/21 FGZ      💥 command model : should disallow option parameter with no bool type and no hasvalue flag set ==> parameter won't be handle correctly. should avoid (that have no sens, lead to confusion)
 9/2/21 FGZ      💥 \\ not properly handled by clr
+10/2/21 FGZ     💥 find miss display 1 result (signle result). test case : find . -p *.cs -c "options ??=" -m (in proj)
 
 improvements to do 💭
 ------------------
@@ -40,7 +41,6 @@ improvements to do 💭
 📂commands
 
 26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
-2/2/21 FGZ      fix ansi missing in shell exec
 2/2/21 FGZ      shell exec for .sh : check contains #!orbsh at first line before accept to execute it
 20/1/21 FGZ     please add sort in env table
 
@@ -55,6 +55,7 @@ procrastinated:
 olds:
 -----
 
+2/2/21 FGZ      🆗 fix ansi missing in shell exec
 4/2/21 FGZ      🆗 loose quotes arround args in shell exec com : normal due to eval of args : need to neutralize quotes
 6/2/21 FGZ      🆗 \" not transcoded correclty by clpa: get \" , should have " (that's could explain why some args can't be neutralized in certain cases (see ShellExec))
 6/2/21 FGZ      🆗 ShellExec not able to handle quoted parameters (quotes are systematically lost)

@@ -2,14 +2,14 @@
 
 namespace OrbitalShell.Component.Console
 {
-    public class FormattingOptions : ShellObject
+    public class FormatingOptions : ShellObject
     {
-        static new FormattingOptions _instance;
-        public new static FormattingOptions Instance
+        static new FormatingOptions _instance;
+        public new static FormatingOptions Instance
         {
             get
             {
-                if (_instance == null) _instance = new FormattingOptions();
+                if (_instance == null) _instance = new FormatingOptions();
                 return _instance;
             }
         }
@@ -18,17 +18,18 @@ namespace OrbitalShell.Component.Console
 
         public bool IsRawModeEnabled = false;
 
-        public FormattingOptions() { }
+        public FormatingOptions() { }
 
-        public FormattingOptions(FormattingOptions o) => InitFrom(o);
+        public FormatingOptions(FormatingOptions o) => InitFrom(o);
 
-        public void InitFrom(FormattingOptions o)
+        public FormatingOptions InitFrom(FormatingOptions o)
         {
             this.IsRawModeEnabled = o.IsRawModeEnabled;
             this.LineBreak = o.LineBreak;
+            return this;
         }
 
-        public FormattingOptions(
+        public FormatingOptions(
             bool lineBreak,
             bool isRawModeEnabled)
         {

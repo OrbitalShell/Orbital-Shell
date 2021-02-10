@@ -15,7 +15,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
         /// <param name="context">echo context</param>
         public void Echo(EchoEvaluationContext context)
         {
-            context.Out.Echoln($"Version={Version} Downloads={Downloads}");
+            context.Out.Echo($"Version={Version} Downloads={Downloads}", context.Options.LineBreak, context.Options.IsRawModeEnabled);
         }
     }
 }

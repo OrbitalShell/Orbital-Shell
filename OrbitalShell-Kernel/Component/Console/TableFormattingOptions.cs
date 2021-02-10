@@ -1,6 +1,6 @@
 ﻿namespace OrbitalShell.Component.Console
 {
-    public class TableFormattingOptions : FormattingOptions
+    public class TableFormattingOptions : FormatingOptions
     {
         public enum TableLayout
         {
@@ -18,6 +18,8 @@
         public int ColumnRightMargin = 4;
 
         public TableFormattingOptions() { }
+
+        public TableFormattingOptions(FormatingOptions o) => InitFrom(o);
 
         public TableFormattingOptions(TableFormattingOptions o)
         {

@@ -154,7 +154,19 @@ namespace OrbitalShell.Lib.FileSystem
             if (context.EchoMap.MappedCall(this, ctx)) return;
 
             var options = opts as FileSystemPathFormattingOptions;
-            options ??= context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.display_fileSystemPathFormattingOptions);
+            options ??= (FileSystemPathFormattingOptions)
+                context.ShellEnv.GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.display_fileSystemPathFormattingOptions)
+                .InitFrom(opts);
+
+            if (options.IsRawModeEnabled)
+            {
+                var rs = options.ShortPath ? FileSystemInfo.Name : UnescapePathSeparators(FileSystemInfo.FullName);
+                var q = rs.Contains(' ') ? "\"" : "";
+                rs = q + rs + q;
+                @out.Echo(rs,options.LineBreak,options.IsRawModeEnabled);
+                return;
+            }
+
             var bg = GetCmd(EchoDirectives.b + "", DefaultBackground.ToString().ToLower());
             var fg = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
             var color = (IsDirectory) ? NormalDirectoryColorization : FileColorization;

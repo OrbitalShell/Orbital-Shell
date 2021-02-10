@@ -47,12 +47,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Component\Shell\Defaults\.profile" />
+    <None Remove="Component\Shell\Defaults\profile" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="assets\robotazteque.png" />
-    <Content Include="Component\Shell\Defaults\.profile">
+    <Content Include="Component\Shell\Defaults\profile">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="assets\LICENSE.md">

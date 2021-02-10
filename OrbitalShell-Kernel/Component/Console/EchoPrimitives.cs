@@ -294,14 +294,15 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Count;
             foreach (var o in obj)
             {
-                Echo(o, new EchoEvaluationContext(ctx,new FormattingOptions(ctx.Options) { LineBreak = false }));
+                Echo(o, new EchoEvaluationContext(ctx,new FormatingOptions(ctx.Options) { LineBreak = false }));
                 if (i < nb)
                 {
                     if (!ctx.Options.LineBreak)
                         @out.Echo(ShellEnvironment.SystemPathSeparator /*TODO: currently no way to support option change from any context (see: shell meta-options + output filters )*/ );
                     else
                         @out.Echoln();
-                } else if (ctx.Options.LineBreak) @out.Echoln();
+                } else if (ctx.Options.LineBreak) 
+                    @out.Echoln();
                 i++;
             }
         }
@@ -317,7 +318,7 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Count;
             foreach (var o in obj)
             {
-                Echo(o, new EchoEvaluationContext(ctx, new FormattingOptions(ctx.Options) { LineBreak = false }));
+                Echo(o, new EchoEvaluationContext(ctx, new FormatingOptions(ctx.Options) { LineBreak = false }));
                 if (i < nb)
                 {
                     if (!ctx.Options.LineBreak)
@@ -329,7 +330,29 @@ namespace OrbitalShell.Component.Console
             }
         }
 
-        // TODO: arrays Echo methods needs a generic impl.  (improve. Has Echo Method to find object[] method for any array or more specific one if exists depending on type)
+        public static void Echo(
+            this Array obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+
+            var i = 1;
+            var nb = obj.Length;
+            foreach (var o in obj)
+            {
+                Echo(o, new EchoEvaluationContext(ctx, new FormatingOptions(ctx.Options) { LineBreak = false }));
+                if (i < nb)
+                {
+                    if (!ctx.Options.LineBreak)
+                        @out.Echo(ShellEnvironment.SystemPathSeparator);
+                    else
+                        @out.Echoln();
+                }
+                else if (ctx.Options.LineBreak) @out.Echoln();
+                i++;
+            }
+        }
 
         public static void Echo(
             this object[] obj,
@@ -342,7 +365,7 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Length;
             foreach (var o in obj)
             {
-                Echo(o, new EchoEvaluationContext(ctx, new FormattingOptions(ctx.Options) { LineBreak = false }));
+                Echo(o, new EchoEvaluationContext(ctx, new FormatingOptions(ctx.Options) { LineBreak = false }));
                 if (i < nb)
                 {
                     if (!ctx.Options.LineBreak)
@@ -365,7 +388,7 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Length;
             foreach (var o in obj)
             {
-                Echo(o, new EchoEvaluationContext(ctx, new FormattingOptions(ctx.Options) { LineBreak = false }));
+                Echo(o, new EchoEvaluationContext(ctx, new FormatingOptions(ctx.Options) { LineBreak = false }));
                 if (i < nb)
                 {
                     if (!ctx.Options.LineBreak && i < nb)
@@ -484,7 +507,7 @@ namespace OrbitalShell.Component.Console
         }
 
         /// <summary>
-        /// echo fallback method
+        /// echo object fallback method
         /// </summary>
         /// <param name="obj">any object</param>
         /// <param name="ctx">echo evaluation context</param>
@@ -574,7 +597,9 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             var options = opts as TableFormattingOptions;
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
+            options ??= (TableFormattingOptions)
+                context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions)
+                .InitFrom(opts);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
             var dt = GetVarsDataTable(context, obj, new List<IDataObject>(), options);
             dt.Echo(new EchoEvaluationContext(@out, context, options));
@@ -593,7 +618,9 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(dataObject, ctx)) return;
 
             var options = opts as TableFormattingOptions;
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
+            options ??= (TableFormattingOptions)
+                context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions)
+                .InitFrom(opts);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
             var attrs = dataObject.GetAttributes();
             attrs.Sort((x, y) => x.Name.CompareTo(y.Name));
@@ -617,7 +644,8 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(variables, ctx)) return;
 
             var options = opts as TableFormattingOptions;
-            options ??= context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
+            options ??= (TableFormattingOptions)context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions)
+                .InitFrom(opts);
             var values = variables.GetDataValues();
             values.Sort((x, y) => x.Name.CompareTo(y.Name));
             var dt = GetVarsDataTable(context, null, values, options);
@@ -743,7 +771,7 @@ namespace OrbitalShell.Component.Console
                         // value dump via Echo primitive
                         @out.Echo("" + context.ShellEnv.Colors.Default);
                         var p0 = @out.CursorPos;
-                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, new FormattingOptions(options) { LineBreak = false }  ));
+                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, new FormatingOptions(options) { LineBreak = false }  ));
                         var p1 = @out.CursorPos;
                         if (p1.Y==p0.Y)
                         {
