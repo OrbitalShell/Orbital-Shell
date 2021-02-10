@@ -7,7 +7,8 @@
     <RootNamespace>OrbitalShell</RootNamespace>
     <AssemblyName>OrbitalShell-Kernel-Commands</AssemblyName>
     <NeutralLanguage>en-US</NeutralLanguage>
-	  
+
+	<PackageId>OrbitalShell-Kernel-Commands</PackageId>
 	<IsPackable>true</IsPackable>
     <Authors>Franck Gaspoz</Authors>
     <Company>Orbital Shell</Company>

@@ -12,12 +12,13 @@
     <NeutralLanguage>en-US</NeutralLanguage>
 	  
     <ApplicationIcon>assets\robotazteque.ico</ApplicationIcon>
-	
+
+	<PackageId>OrbitalShell</PackageId>
     <IsPackable>true</IsPackable>
     <Authors>Franck Gaspoz</Authors>
     <Company>Orbital Shell</Company>
     <Product>Orbital Shell</Product>
-    <Description>Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>
+    <Description>This is the Orbital Shell CLI. Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core.</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
     <Version>1.0.0.0-beta-4</Version>
     <InformationalVersion>1.0.0.0-beta-4</InformationalVersion>
