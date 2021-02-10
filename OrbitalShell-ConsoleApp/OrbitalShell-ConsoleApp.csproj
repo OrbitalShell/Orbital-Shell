@@ -15,8 +15,8 @@
     <Product>Orbital Shell - ConsoleApp</Product>
     <Description>Orbital Shell console application library</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>1.0.0.0-beta-4</Version>
-    <InformationalVersion>1.0.0.0-beta-4</InformationalVersion>
+    <Version>1.0.1-beta4</Version>
+    <InformationalVersion>1.0.1-beta4</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

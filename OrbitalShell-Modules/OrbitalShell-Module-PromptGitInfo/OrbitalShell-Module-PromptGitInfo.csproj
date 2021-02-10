@@ -16,8 +16,8 @@
     <Product>Prompt Git Info (Orbital Shell Module)</Product>
     <Description>Add information about any current or parent GIT repository to orbital shell command line prompt. for example: OrbitalShell ├ master +0 ~0 -0 | ~2 -0 ?2 - Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>    
 	<Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>1.0.0.1</Version>
-    <InformationalVersion>1.0.0.1</InformationalVersion>
+    <Version>1.0.1</Version>
+    <InformationalVersion>1.0.1</InformationalVersion>
     
 	<PackageReleaseNotes>initial stable release</PackageReleaseNotes>
     <ApplicationIcon>assets\robotazteque.ico</ApplicationIcon>
