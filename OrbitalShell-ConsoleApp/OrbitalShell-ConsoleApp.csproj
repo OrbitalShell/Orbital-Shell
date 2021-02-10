@@ -9,6 +9,7 @@
     <AssemblyName>OrbitalShell-ConsoleApp</AssemblyName>    
     <NeutralLanguage>en-US</NeutralLanguage>
 
+	<PackageId>OrbitalShell-ConsoleApp</PackageId>
 	<IsPackable>true</IsPackable>
     <Authors>Franck Gaspoz</Authors>
     <Company>Orbital Shell</Company>
@@ -17,9 +18,31 @@
     <Copyright>(c) 2020 Licence MIT</Copyright>
     <Version>1.0.1-beta4</Version>
     <InformationalVersion>1.0.1-beta4</InformationalVersion>
+
+	<PackageReleaseNotes>beta-4 milestone 1</PackageReleaseNotes>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageProjectUrl>https://franck-gaspoz.github.io/orbital-shell/</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/franck-gaspoz/orbital-shell.git</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<PackageTags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</PackageTags>
+	<PackageIcon>robotazteque.png</PackageIcon>
+	  
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+	<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+		
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\robotazteque.png" />
+    <None Include="assets\robotazteque.png">
+		<Pack>True</Pack>
+		<PackagePath></PackagePath>
+	</None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="assets\robotazteque.png" />
     <Content Include="Component/Parser/ANSI/ansi-seq-patterns.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -28,6 +51,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />
     <PackageReference Include="Newtonsoft.json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

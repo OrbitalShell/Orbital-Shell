@@ -40,11 +40,11 @@
     <Compile Remove="assets\**" />
     <EmbeddedResource Remove="assets\**" />
     <None Remove="assets\**" />
-  <None Include="assets\robotazteque.ico" />
-	    <None Include="assets\robotazteque.png">
-	      <Pack>True</Pack>
-	      <PackagePath></PackagePath>
-	    </None>
+    <None Include="assets\robotazteque.ico" />
+	  <None Include="assets\robotazteque.png">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+	  </None>
   </ItemGroup>
 
   <ItemGroup>
