@@ -99,7 +99,6 @@ namespace OrbitalShell.Commands.Shell
                 {
                     var lastVer = string.IsNullOrWhiteSpace(version);
                     var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");                    
-                    //var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{installModuleName} {version}", 0);
                     var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{installModuleName}", 0);
                     if (r.EvalResultCode==(int)ReturnCode.OK)
                     {
@@ -107,14 +106,26 @@ namespace OrbitalShell.Commands.Shell
                         if (!lastVer && !vers.Versions.Contains(version))
                         {
                             context.Errorln($"module version not found");
-                            return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
+                            return _ModuleErr();
                         }
                         if (lastVer)
                         {
                             version = vers.Versions.Last();
                             context.Out.Echoln($"select last version: {version}");
                         }
-                    }
+                        var dwnMethod = typeof(NuGetServerApiCommands).GetMethod("NugetDownload");
+                        var output = FileSystemPath.UnescapePathSeparators( context.CommandLineProcessor.Settings.ModulesFolderPath );
+                        var pkgf = $"{installModuleName.ToLower()}.{version.ToLower()}";
+                        if (!Directory.Exists(output)) Directory.CreateDirectory(output);
+                        var rd = context.CommandLineProcessor.Eval(context, dwnMethod, $"{installModuleName} {version} -o {output}", 0);
+                        if (rd.EvalResultCode==(int)ReturnCode.OK)
+                        {
+
+                        } else 
+                            return _ModuleErr();
+                    } 
+                    else 
+                        return _ModuleErr();
                 }
 
                 // load/init module
@@ -128,7 +139,7 @@ namespace OrbitalShell.Commands.Shell
                         if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($" Done : {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else
-                        return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
+                        return _ModuleErr();
                 }
 
                 // unload module
@@ -143,7 +154,7 @@ namespace OrbitalShell.Commands.Shell
                     else
                     {
                         context.Errorln($"module '{unloadModuleName}' is not registered");
-                        return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
+                        return _ModuleErr();
                     }
                 }
             }
@@ -201,6 +212,8 @@ namespace OrbitalShell.Commands.Shell
             else
                 return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { });
         }
+
+        CommandResult<List<ModuleSpecification>> _ModuleErr() => new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
 
         #region util
 

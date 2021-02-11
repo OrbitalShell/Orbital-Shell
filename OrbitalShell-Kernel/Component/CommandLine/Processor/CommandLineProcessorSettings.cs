@@ -106,6 +106,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public string BinFolderPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public string ModulesFolderPath => Path.Combine(BinFolderPath, "Modules");
         public string DefaultsFolderPath
         {
             get
