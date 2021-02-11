@@ -10,7 +10,7 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Net;
 
-namespace OrbitalShell.Module.NuGetServerApi
+namespace OrbitalShell.Module.GitHubRestApi
 {
     [Commands("github http server api commands")]
     [CommandsNamespace(CommandNamespace.net, CommandNamespace.http, "github")]

@@ -8,7 +8,7 @@ using OrbitalShell.Lib;
 [assembly: ModuleTargetPlateform(TargetPlatform.Any)]
 [assembly: ModuleShellMinVersion("1.0.1-beta4")]
 [assembly: ModuleAuthors("Orbital Shell team")]
-namespace OrbitalShell.Module.PromptGitInfo
+namespace OrbitalShell.Module.GitHubRestApi
 {
     public class ModuleInfo { }
 }

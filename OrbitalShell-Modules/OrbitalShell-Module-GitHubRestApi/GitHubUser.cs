@@ -1,4 +1,4 @@
-﻿namespace OrbitalShell.Module.NuGetServerApi
+﻿namespace OrbitalShell.Module.GitHubRestApi
 {
     public class GitHubUser
     {
