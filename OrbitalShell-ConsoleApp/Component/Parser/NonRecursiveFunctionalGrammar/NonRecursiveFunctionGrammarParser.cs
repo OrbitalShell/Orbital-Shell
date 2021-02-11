@@ -9,12 +9,12 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
         #region predefined grammar functions
 
         /// <summary>
-        /// ascii<32 && !=27 (Single Code Function)
+        /// ascii<32 && !=27 (ANSI Single Code Function)
         /// </summary>
         public const string SCF = "scf";
 
         /// <summary>
-        /// char
+        /// CHAR
         /// </summary>
         public const string CHAR = "char";
 
@@ -24,7 +24,7 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
         public const string TEXT = "text";
 
         /// <summary>
-        /// (NUM? ;? NUM?)*
+        /// (NUM? ;?)*
         /// </summary>
         public const string NUMLIST = "numlist?";
 

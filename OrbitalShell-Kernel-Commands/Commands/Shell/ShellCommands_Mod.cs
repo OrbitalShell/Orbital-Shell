@@ -25,7 +25,7 @@ namespace OrbitalShell.Commands.Shell
     /// </summary>
     public partial class ShellCommands
     {
-        [Command("otuput a report of loaded modules if no option is specified, else allows to load/unload/install/remove/update modules and get informations from repositories of modules")]
+        [Command("output a report of loaded modules if no option is specified, else allows to load/unload/install/remove/update modules and get informations from repositories of modules")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.module)]
         [CommandAlias("mod", "module")]
         [CommandAlias("mods", "module -s")]
@@ -38,7 +38,7 @@ namespace OrbitalShell.Commands.Shell
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
             [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool getList = false,
             [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module and output informations about it. the module is not installed", true, true)] string fetchInfoName = null,
-            [Option("v", "version", "version to be installed if applyable", true, true)] string version = null,
+            [Option("v", "version", "module version if applyable", true, true)] string version = null,
             [Option("s", "short", "output less informations", true)] bool @short = false
             )
         {
