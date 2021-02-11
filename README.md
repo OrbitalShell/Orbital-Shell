@@ -19,14 +19,6 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/orbital-shell?style=plastic)
 ![version](https://img.shields.io/github/v/tag/franck-gaspoz/orbital-shell?style=plastic) ![version](https://img.shields.io/badge/Version-1.0.beta-green)
 
-*notice:*
-
-> The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **ARCHIVED** because it has been integrated in the **orbital-shell** project repository, so it is still under development but code has been moved to this repository
-
-> ![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
-> ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
-> ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)   
-
 ## Features
 
 <img src="docs/assets/img/git-doc/orbital-shell.png"/>
@@ -86,6 +78,14 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
   - that will be auto documented like this by the shell help feature:
   
     <img src="docs/assets/img/git-doc/2020-06-13%2006_36_43-Window.png"/>
+
+*notice:*
+
+> The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **ARCHIVED** because it has been integrated in the **orbital-shell** project repository, so it is still under development but code has been moved to this repository
+
+> ![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
+> ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
+> ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)   
 
 ## Packages dependencies:
 
