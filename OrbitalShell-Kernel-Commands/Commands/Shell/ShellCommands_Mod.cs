@@ -16,6 +16,7 @@ using System;
 using System.Net.Http;
 using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Commands.NuGetServerApi;
+using System.IO.Compression;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -111,15 +112,28 @@ namespace OrbitalShell.Commands.Shell
                         if (lastVer)
                         {
                             version = vers.Versions.Last();
-                            context.Out.Echoln($"select last version: {version}");
+                            context.Out.Echoln($"{context.ShellEnv.Colors.Log}select last version: {version}(rdc)");
                         }
                         var dwnMethod = typeof(NuGetServerApiCommands).GetMethod("NugetDownload");
-                        var output = FileSystemPath.UnescapePathSeparators( context.CommandLineProcessor.Settings.ModulesFolderPath );
-                        var pkgf = $"{installModuleName.ToLower()}.{version.ToLower()}";
-                        if (!Directory.Exists(output)) Directory.CreateDirectory(output);
-                        var rd = context.CommandLineProcessor.Eval(context, dwnMethod, $"{installModuleName} {version} -o {output}", 0);
+                        var output = context.CommandLineProcessor.Settings.ModulesFolderPath;
+                        var folderName = $"{installModuleName.ToLower()}.{version.ToLower()}";
+                        var moduleFolder = Path.Combine( output, folderName );
+
+                        if (!Directory.Exists(moduleFolder)) Directory.CreateDirectory(moduleFolder);
+
+                        moduleFolder = FileSystemPath.UnescapePathSeparators(moduleFolder);
+                        var rd = context.CommandLineProcessor.Eval(context, dwnMethod, $"{installModuleName} {version} -o {moduleFolder}", 0);
                         if (rd.EvalResultCode==(int)ReturnCode.OK)
                         {
+                            context.Out.Echo(context.ShellEnv.Colors.Log + $"extracting package... ");
+
+                            var nupkgFileName = (string)rd.Result;
+                            ZipFile.ExtractToDirectory(Path.Combine(moduleFolder, nupkgFileName),moduleFolder,true);
+
+                            context.Out.Echoln(" Done(rdc)");
+                            context.Out.Echo(ANSI.RSTXTA + ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
+
+                            context.Out.Echoln("module installed");
 
                         } else 
                             return _ModuleErr();

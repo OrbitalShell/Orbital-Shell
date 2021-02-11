@@ -67,7 +67,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
         }
 
         [Command("download a nuget package")]
-        public CommandVoidResult NugetDownload(
+        public CommandResult<string> NugetDownload(
             CommandEvaluationContext context,
             [Parameter(0, "package (.nuget) ID")] string id,
             [Parameter(1, "package version")] string ver,
@@ -108,15 +108,17 @@ namespace OrbitalShell.Commands.NuGetServerApi
                     str.Close();
                     fstr.Close();
                     context.Out.Echoln($"package '{fn}' has been downloaded to: {new FilePath(@out)}");
+
+                    return new CommandResult<string>(@out);
                 }
             }
             else
             {
                 context.Errorln($"can't get response content: {result.ReasonPhrase}");
-                return new CommandVoidResult(ReturnCode.Error);
+                return new CommandResult<string>(ReturnCode.Error);
             }
 
-            return CommandVoidResult.Instance;
+            return new CommandResult<string>(ReturnCode.Error);
         }
 
         [Command("push a nuget package")]
