@@ -22,7 +22,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
         public int TotalDownloads;
         public bool Verified;
         public PackageType[] PackageTypes;
-        public PackageVersion[] Versions;
+        public PackageVersionInfos[] Versions;
 
         public override string ToString()
         {

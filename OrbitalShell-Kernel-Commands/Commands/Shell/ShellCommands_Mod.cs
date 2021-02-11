@@ -15,6 +15,7 @@ using OrbitalShell.Component.Console;
 using System;
 using System.Net.Http;
 using OrbitalShell.Component.Shell.Data;
+using OrbitalShell.Commands.NuGetServerApi;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -35,7 +36,7 @@ namespace OrbitalShell.Commands.Shell
             [Option("r", "remove", "uninstall a module and remove the module files", true, true)] string uninstallModuleName = null,
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
             [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool getList = false,
-            [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module and output informations about it. the module is not installed", true, true )] string fetchInfoName = null,
+            [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module and output informations about it. the module is not installed", true, true)] string fetchInfoName = null,
             [Option("v", "version", "version to be installed if applyable", true, true)] string version = null,
             [Option("s", "short", "output less informations", true)] bool @short = false
             )
@@ -44,7 +45,7 @@ namespace OrbitalShell.Commands.Shell
             var f = context.ShellEnv.Colors.Default.ToString();
             bool fetchInfo = fetchInfoName != null;
 
-            if (loadModulePath == null && unloadModuleName == null && updateModuleName == null && installModuleName == null && uninstallModuleName == null 
+            if (loadModulePath == null && unloadModuleName == null && updateModuleName == null && installModuleName == null && uninstallModuleName == null
                 && !getList && !fetchInfo)
             {
                 // output reports on loaded modules
@@ -92,6 +93,30 @@ namespace OrbitalShell.Commands.Shell
 
             if (!getList && !fetchInfo)
             {
+                // install module
+
+                if (installModuleName != null)
+                {
+                    var lastVer = string.IsNullOrWhiteSpace(version);
+                    var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");                    
+                    //var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{installModuleName} {version}", 0);
+                    var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{installModuleName}", 0);
+                    if (r.EvalResultCode==(int)ReturnCode.OK)
+                    {
+                        var vers = (PackageVersions)r.Result;
+                        if (!lastVer && !vers.Versions.Contains(version))
+                        {
+                            context.Errorln($"module version not found");
+                            return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
+                        }
+                        if (lastVer)
+                        {
+                            version = vers.Versions.Last();
+                            context.Out.Echoln($"select last version: {version}");
+                        }
+                    }
+                }
+
                 // load/init module
 
                 if (loadModulePath != null)
@@ -127,7 +152,7 @@ namespace OrbitalShell.Commands.Shell
                 // fetch mod repos
                 if (_GetModuleListFromRepositories(context, out var modRefs))
                 {
-                    context.Out.Echo(ANSI.CPL(1)+ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
+                    context.Out.Echo(ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
 
                     if (modRefs.Count > 0)
                     {
@@ -177,7 +202,9 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { });
         }
 
-        bool _GetModuleListFromRepositories(CommandEvaluationContext context,out List<ModuleReference> modulesReferences)
+        #region util
+
+        bool _GetModuleListFromRepositories(CommandEvaluationContext context, out List<ModuleReference> modulesReferences)
         {
             modulesReferences = null;
 
@@ -215,7 +242,7 @@ namespace OrbitalShell.Commands.Shell
                             modRefs.AddRange(_ParseModuleList(modList));
 
                         modulesReferences = modRefs;
-                        return true;                        
+                        return true;
                     }
                     catch (Exception repoAccessError)
                     {
@@ -253,5 +280,6 @@ namespace OrbitalShell.Commands.Shell
             return r;
         }
 
+        #endregion
     }
 }

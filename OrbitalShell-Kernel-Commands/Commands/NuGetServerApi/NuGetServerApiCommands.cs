@@ -27,7 +27,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
         public const string ProtocolVersion = "4.1.0";
 
         [Command("get versions of a nuget package")]
-        public CommandVoidResult NugetVer(
+        public CommandResult<PackageVersions> NugetVer(
             CommandEvaluationContext context,
             [Parameter(0, "package (.nuget) ID")] string id,
             [Option("u", "get-url", "nuget server api query service template url", true, true)] string url = GetVerUrl
@@ -49,15 +49,21 @@ namespace OrbitalShell.Commands.NuGetServerApi
                 context.Out.Echoln(" Done(rdc)");
                 context.Out.Echo(ANSI.RSTXTA + ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
 
-                if (res != null && !string.IsNullOrWhiteSpace(res) )
+                if (res != null && !string.IsNullOrWhiteSpace(res))
+                {
                     context.Out.Echoln(res);
+
+                    var obj = JsonConvert.DeserializeObject<PackageVersions>(res);
+
+                    return new CommandResult<PackageVersions>(obj);
+                }
                 else
                     context.Warning("result is empty");
             }
             else
                 context.Errorln($"can't get response content: {result.ReasonPhrase}");
 
-            return CommandVoidResult.Instance;
+            return new CommandResult<PackageVersions>(null);
         }
 
         [Command("download a nuget package")]

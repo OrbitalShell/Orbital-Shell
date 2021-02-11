@@ -2,7 +2,7 @@
 
 namespace OrbitalShell.Commands.NuGetServerApi
 {
-    public class PackageVersion
+    public class PackageVersionInfos
     {
         public string Version;
         public int Downloads;
