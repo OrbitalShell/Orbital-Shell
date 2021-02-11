@@ -64,7 +64,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     pathExt
                 ))
 
-                foreach (var p in list) //context.Out.Echoln(p);
+                foreach (var p in list)
                     p.Echo(
                         new EchoEvaluationContext(
                             context.Out,
