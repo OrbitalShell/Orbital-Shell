@@ -39,7 +39,7 @@ namespace OrbitalShell.Lib.FileSystem
 
         public override string ToString()
         {
-            return FileInfo.FullName;
+            return UnescapePathSeparators(FileInfo.FullName);
         }
 
         public Encoding GetEncoding(Encoding defaultEncoding = null)
