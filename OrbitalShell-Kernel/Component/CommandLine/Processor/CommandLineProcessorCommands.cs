@@ -24,7 +24,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             return new CommandResult<int>(r);
         }
 
-        [Command("os (sub-shell) exec")]
+        [Command("os shell exec")]
         public CommandResult<(int retCode, string output)> Exec(
             CommandEvaluationContext context,
             [Parameter(0, "executable file path")] FilePath path,
@@ -47,31 +47,31 @@ namespace OrbitalShell.Component.CommandLine.Processor
             return new CommandResult<(int retCode, string output)>((ret, output));
         }
 
-        [Command("locate a file in shell paths, eventually limit possible file extensions of results to only registered shell path extensions")]
-        public CommandResult<List<FilePath>> Locate(
+        [Command("find a file in shell paths, eventually limit possible file extensions of results to only registered shell path extensions")]
+        public CommandResult<List<FilePath>> Which(
             CommandEvaluationContext context,
             [Parameter(0, "a file name, with or without extension")] string fileName,
             [Option("p", "path-ext", "select only results having a file extension that exists in PathExt")] bool pathExt,
             [Option("s", "short", "suppress file attributes in output")] bool @short
         )
         {
-            var r = context
+            if (context
                 .CommandLineProcessor
                 .FindInPath(
                     context,
                     fileName,
                     out var list,
                     pathExt
-                );
+                ))
 
-            foreach (var p in list) //context.Out.Echoln(p);
-                p.Echo(
-                    new EchoEvaluationContext(
-                        context.Out,
-                        context,
-                        new FileSystemPathFormattingOptions(!@short, false, "", "(br)")
-                        )
-                );
+                foreach (var p in list) //context.Out.Echoln(p);
+                    p.Echo(
+                        new EchoEvaluationContext(
+                            context.Out,
+                            context,
+                            new FileSystemPathFormattingOptions(!@short, false, "", "(br)")
+                            )
+                    );
 
             return new CommandResult<List<FilePath>>(list);
         }
