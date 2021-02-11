@@ -95,9 +95,9 @@ namespace OrbitalShell.Commands.NuGetServerApi
                 {
                     var fn = $"{id}.{ver}.nupkg";
                     @out = Path.Combine(@out, fn);
-                    using var fstr = new FileStream(@out,FileMode.Create,FileAccess.Write);
+                    using var fstr = new FileStream(@out, FileMode.Create, FileAccess.Write);
                     int b;
-                    while ((b=str.ReadByte())!=-1)                    
+                    while ((b = str.ReadByte()) != -1)
                         fstr.WriteByte((byte)b);
                     str.Close();
                     fstr.Close();
@@ -105,7 +105,10 @@ namespace OrbitalShell.Commands.NuGetServerApi
                 }
             }
             else
+            {
                 context.Errorln($"can't get response content: {result.ReasonPhrase}");
+                return new CommandVoidResult(ReturnCode.Error);
+            }
 
             return CommandVoidResult.Instance;
         }
