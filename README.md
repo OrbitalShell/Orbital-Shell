@@ -108,5 +108,5 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 
-<img src="docs/assets/img/tra4brains.png"/> | :warning: this project might be considered like a toy for old developer<br><br><img src="docs/assets/img/pegi46small.png"/>
+<img src="docs/assets/img/tra4brains.png"/> | :warning: this project might be considered as a toy for old developer<br><br><img src="docs/assets/img/pegi46small.png"/>
 -- | --
