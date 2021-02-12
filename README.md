@@ -10,7 +10,6 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 
 > The full documentation of the **Orbital Shell**, for users and developers, is available here: [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
 
-
 > [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
 > <u>project repositories status:</u><br>
@@ -21,15 +20,15 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 
 ## Features
 
-<img src="docs/assets/img/git-doc/orbital-shell.png"/>
-<center><small><i>a view of the shell running in Windows Terminal</i></small></center>
+<img src="docs/assets/img/git-doc/orbital-shell.png"/>*a view of the shell running in Windows Terminal*
 
 
 - Is a '**bash** style' POSIX command shell
-- The shell integrates **modules** of commands contains **the most usefull shell commands** (ls/dir,rm,mv,cp,find,echo,clear,more,env,set,export,history,alias,...), tests commands, **text editor command**, and so on... , covering the fields of file system,text files,console output, data management, user input
-  - dedicated repositories are used to get/update modules (that can includes commands,hooks,assets)
-  - 
-- <u>The shell command engine implements:</u>
+- The **modules** that are integrated into the shell provide **the most usefull shell commands** (ls/dir,rm,mv,cp,find,echo,clear,more,env,set,export,history,alias,...), tests commands, **text editor command**, and so on... , covering the fields of file system,text files,console output, data management, user input
+  - modules can contains any item that the shell is intended to handle: commands, **hooks**, scripts/functions, settings, help, doc, assets, ...
+  - dedicated repositories are used to get known modules list
+  - modules are versioned and delivered throught **nupkg** packets, currently hosted to **NuGet**
+- _The shell command engine implements:_
   - A **command line reader** with usual input keyboard shortcuts, auto completion and input feedback (colorization)
   - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*)
   - **Streams redirections** ( **<** **>** )
