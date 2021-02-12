@@ -103,11 +103,11 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 
 ## *notice / advert*
 
-> The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **ARCHIVED** because it has been integrated in the **orbital-shell** project repository as the project , so it is still under development but code has been moved to this repository
+> The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **ARCHIVED** because it has been integrated in the **orbital-shell** project repository as the project **OrbitalShell-ConsoleApp**, so it is still under development but code has been moved to this repository
 ![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 
 &nbsp; | &nbsp;
 -- | --
-<img src="docs/assets/img/tra4brains.png"/> | this project might be conidered like a toy for old developper
+<img src="docs/assets/img/tra4brains.png"/> | :warning: this project might be considered like a toy for old developper
