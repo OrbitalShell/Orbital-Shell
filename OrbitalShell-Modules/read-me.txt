@@ -6,7 +6,7 @@ module project: /OrbitalShell-Module-{moduleName}
 
 deployment on NuGet:
 
-    OrbitalShell-Module-{moduleName}-{moduleVersion}
+    OrbitalShell-Module-{moduleName}
 
 namespace :
 
