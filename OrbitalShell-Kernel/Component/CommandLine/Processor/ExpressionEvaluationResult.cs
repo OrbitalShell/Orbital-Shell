@@ -43,6 +43,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// </summary>
         public readonly string EvalErrorText;
 
+        public string ErrorReason => EvalError?.Message ?? EvalErrorText; 
+
         /// <summary>
         /// cmd line expr. eval result
         /// </summary>

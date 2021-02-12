@@ -47,7 +47,8 @@ namespace OrbitalShell.Component.Shell.Variable
 
             // debug
 
-            AddValue(ShellEnvironmentVar.debug_pipeline, false);
+            AddValue(ShellEnvironmentVar.debug_enablePipelineTrace, false);
+            AddValue(ShellEnvironmentVar.debug_enableHookTrace, false);
 
             // env
 
@@ -67,6 +68,7 @@ namespace OrbitalShell.Component.Shell.Variable
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor, true);
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true);
             AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), true);
+            AddValue(ShellEnvironmentVar.modules, new DirectoryPath(context.CommandLineProcessor.Settings.ModulesFolderPath), true);
             AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataFolderPath), true);
             var path = GetSystemPath();
             var pathExt = GetSystemPathExt();

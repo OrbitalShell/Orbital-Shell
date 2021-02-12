@@ -320,9 +320,14 @@
         settings_module_providerUrls = 10106,
 
         /// <summary>
+        /// enable trace for hooks
+        /// </summary>
+        debug_enableHookTrace = 10107,
+
+        /// <summary>
         /// if enabled, trace information about pipelines analysis
         /// </summary>
-        debug_pipeline = 21,
+        debug_enablePipelineTrace = 21,
 
         /// <summary>
         /// table formatting options
@@ -358,6 +363,11 @@
         /// path ext to be added to system path
         /// </summary>
         pathExtInit = 11002,
+
+        /// <summary>
+        /// modules path
+        /// </summary>
+        modules = 11003,
 
         // traditional bash variables
 

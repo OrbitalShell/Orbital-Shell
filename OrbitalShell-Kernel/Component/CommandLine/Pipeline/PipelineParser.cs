@@ -101,7 +101,7 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
                 i++;
             }
 
-            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.debug_pipeline, false))
+            if (context.ShellEnv.GetValue<bool>(ShellEnvironmentVar.debug_enablePipelineTrace, false))
                 context.Out.Echoln(Darkcyan + model);
 
             return model;

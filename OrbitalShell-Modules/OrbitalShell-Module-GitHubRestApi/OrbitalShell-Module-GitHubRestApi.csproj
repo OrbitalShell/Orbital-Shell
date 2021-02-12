@@ -13,7 +13,7 @@
 	  <IsPackable>true</IsPackable>
 	  <Authors>Franck Gaspoz</Authors>
 	  <Company>Orbital Shell</Company>
-	  <Product>Prompt Git Info (Orbital Shell Module)</Product>
+	  <Product>Git Hub Rest Api (Orbital Shell Module)</Product>
 	  <Description>commands of the nuget rest api in a nutshell! implements the octopai libray as shell commands</Description>
 	  <Copyright>(c) 2020 Licence MIT</Copyright>
 	  <Version>1.0.0-beta</Version>

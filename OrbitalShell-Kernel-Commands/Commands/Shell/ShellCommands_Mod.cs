@@ -36,10 +36,11 @@ namespace OrbitalShell.Commands.Shell
             [Option("i", "install", "install a module from the nuget source", true, true)] string installModuleName = null,
             [Option("r", "remove", "uninstall a module and remove the module files", true, true)] string uninstallModuleName = null,
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
-            [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool getList = false,
+            [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool fetchList = false,
             [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module and output informations about it. the module is not installed", true, true)] string fetchInfoName = null,
             [Option("v", "version", "module version if applyable", true, true)] string version = null,
-            [Option("s", "short", "output less informations", true)] bool @short = false
+            [Option("s", "short", "output less informations", true)] bool @short = false,
+            [Option(null,"force","perform the requested operation even if already done, in case of it is meaningfull (example: -i --force constraint the command to reinstall a module)")] bool force = false
             )
         {
             ModuleSpecification moduleSpecification = null;
@@ -47,7 +48,7 @@ namespace OrbitalShell.Commands.Shell
             bool fetchInfo = fetchInfoName != null;
 
             if (loadModulePath == null && unloadModuleName == null && updateModuleName == null && installModuleName == null && uninstallModuleName == null
-                && !getList && !fetchInfo)
+                && !fetchList && !fetchInfo)
             {
                 // output reports on loaded modules
 
@@ -92,7 +93,7 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
             }
 
-            if (!getList && !fetchInfo)
+            if (!fetchList && !fetchInfo)
             {
                 // install module
 
@@ -104,21 +105,25 @@ namespace OrbitalShell.Commands.Shell
                     if (r.EvalResultCode==(int)ReturnCode.OK)
                     {
                         var vers = (PackageVersions)r.Result;
-                        if (!lastVer && !vers.Versions.Contains(version))
-                        {
-                            context.Errorln($"module version not found");
-                            return _ModuleErr();
-                        }
+
+                        if (!lastVer && !vers.Versions.Contains(version))                        
+                            return _ModuleErr(context,$"module version '{version}' not found");
+                        
                         if (lastVer)
                         {
                             version = vers.Versions.Last();
-                            context.Out.Echoln($"{context.ShellEnv.Colors.Log}select last version: {version}(rdc)");
+                            context.Out.Echoln($"{context.ShellEnv.Colors.Log}select last package version: {version}(rdc)");
                         }
                         var dwnMethod = typeof(NuGetServerApiCommands).GetMethod("NugetDownload");
                         var output = context.CommandLineProcessor.Settings.ModulesFolderPath;
-                        var folderName = $"{installModuleName.ToLower()}.{version.ToLower()}";
-                        var moduleFolder = Path.Combine( output, folderName );
+                        var moduleLowerId = $"{installModuleName.ToLower()}.{version.ToLower()}";  // == module lower id
+                        var folderName = moduleLowerId;
 
+                        if (context.CommandLineProcessor.ModuleManager.IsModuleInstalled(moduleLowerId) && !force)
+                            // error already installed, !force
+                            return _ModuleErr(context,$"module '{moduleLowerId}' is already installed (may try --force)");
+
+                        var moduleFolder = Path.Combine( output, folderName );
                         if (!Directory.Exists(moduleFolder)) Directory.CreateDirectory(moduleFolder);
 
                         moduleFolder = FileSystemPath.UnescapePathSeparators(moduleFolder);
@@ -136,10 +141,10 @@ namespace OrbitalShell.Commands.Shell
                             context.Out.Echoln("module installed");
 
                         } else 
-                            return _ModuleErr();
+                            return _ModuleErr(context,rd.ErrorReason);
                     } 
                     else 
-                        return _ModuleErr();
+                        return _ModuleErr(context,"module id is required");
                 }
 
                 // load/init module
@@ -153,7 +158,7 @@ namespace OrbitalShell.Commands.Shell
                         if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($" Done : {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else
-                        return _ModuleErr();
+                        return _ModuleErr(null,null);
                 }
 
                 // unload module
@@ -166,10 +171,7 @@ namespace OrbitalShell.Commands.Shell
                         if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else
-                    {
-                        context.Errorln($"module '{unloadModuleName}' is not registered");
-                        return _ModuleErr();
-                    }
+                        return _ModuleErr(context, $"module '{unloadModuleName}' is not registered");
                 }
             }
             else
@@ -195,7 +197,7 @@ namespace OrbitalShell.Commands.Shell
                                 context.Out.Errorln("no module having name '{fetchInfoName}' can be found in repostories");
                         }
 
-                        if (getList)
+                        if (fetchList)
                         {
                             // get list
 
@@ -227,7 +229,11 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { });
         }
 
-        CommandResult<List<ModuleSpecification>> _ModuleErr() => new CommandResult<List<ModuleSpecification>>(ReturnCode.Error);
+        CommandResult<List<ModuleSpecification>> _ModuleErr(CommandEvaluationContext context,string reason)
+        {
+            context?.Errorln(reason);
+            return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error, reason);
+        }
 
         #region util
 

@@ -7,6 +7,7 @@ using OrbitalShell.Component.Shell.Hook;
 using System.Reflection;
 using System.IO;
 using OrbitalShell.Component.CommandLine.Parsing;
+using System;
 
 namespace OrbitalShell.Component.Shell.Module
 {
@@ -81,7 +82,11 @@ namespace OrbitalShell.Component.Shell.Module
                 return ModuleSpecification.ModuleSpecificationNotDefined;
             }
 
-            var modKey = Path.GetFileNameWithoutExtension(assembly.ManifestModule.Name);
+            var id = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? 
+                throw new Exception($"module id missing in assembly '{assembly.ManifestModule.Name}' ('AssemblyTitle' attribute missing)");
+            var ver = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? 
+                throw new Exception($"module version missing in assembly '{assembly.ManifestModule.Name}' ('AssemblyInformationalVersion' attribute missing)");
+            var modKey = GetModuleLowerId(id,ver);
 
             if (_modules.ContainsKey(modKey))
             {
@@ -156,5 +161,16 @@ namespace OrbitalShell.Component.Shell.Module
             return moduleSpecification;
         }
 
+        /// <summary>
+        /// get the normalized lower module id (for nuget and orbsh)
+        /// </summary>
+        /// <param name="id">module id (= module nuget package id = assembly manifest module name )</param>
+        /// <param name="version">module version id (= module nuget package version)</param>
+        public string GetModuleLowerId(string id,string version) => id.ToLower()+"."+version.ToLower();
+
+        public bool IsModuleInstalled(string moduleLowerId) => _modules.ContainsKey(moduleLowerId);
+
+        public bool IsModuleInstalled(string id, string version) => IsModuleInstalled(GetModuleLowerId(id, version));
+        
     }
 }

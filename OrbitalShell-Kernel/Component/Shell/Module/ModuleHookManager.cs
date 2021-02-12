@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Hook;
+using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Shell.Module
@@ -66,12 +67,17 @@ namespace OrbitalShell.Component.Shell.Module
                 {
                     try
                     {
+                        if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace)) 
+                            context.Out.Echo(context.ShellEnv.Colors.Log + $"[ hook '{hook.Name}' handled by: '" + hook.Owner + "'] ");
+
                         hook.Method.Invoke(hook.Owner, new object[] { context });
                         callBack?.Invoke(hook.Owner);
                     }
                     catch (Exception ex)
                     {
-                        context.CommandLineProcessor.LogError($"kook '{name}' crashed: {ex.Message}");
+                        var m = $"hook '{ex.Source}' has crashed: {ex.InnerException?.Message}";
+                        context.Out.Errorln(m);
+                        context.CommandLineProcessor.LogError(m);
                     }
                 }
             }
@@ -87,6 +93,9 @@ namespace OrbitalShell.Component.Shell.Module
             Action<object> callBack = null
         )
         {
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace))
+                context.Out.Echo(context.ShellEnv.Colors.Log + "[ invoke hook: " + name + "] ");
+
             InvokeHooks(context, name + "", callBack);
         }
     }
