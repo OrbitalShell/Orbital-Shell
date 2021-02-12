@@ -11,7 +11,7 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 > The full documentation of the **Orbital Shell**, for users and developers, is available here: [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
 
 
-[![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license.md) This project is licensed under the terms of the MIT license: [LICENSE.md](LICENSE.md)  
+[![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
 <u>project repositories status:</u>
 
