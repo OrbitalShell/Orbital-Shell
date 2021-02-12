@@ -6,13 +6,13 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 
 ## About the project
 
-> Find any information and documentation about this project on the project's Web Site at: [Orbital SHell Git-Pages](https://franck-gaspoz.github.io/orbital-shell) 
+Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://franck-gaspoz.github.io/orbital-shell) 
 
  &nbsp; | &nbsp;
 -- | --
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <img src="docs/assets/img/2021-02-12 03_47_28-Window.png"/> 
 
-> Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
+Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
 
 > [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
