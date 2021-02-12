@@ -8,9 +8,8 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 
 Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://franck-gaspoz.github.io/orbital-shell) 
 
- &nbsp; | &nbsp;
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <img src="docs/assets/img/2021-02-12 03_47_28-Window.png"/>
 -- | --
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <img src="docs/assets/img/2021-02-12 03_47_28-Window.png"/> 
 
 Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
 
