@@ -110,4 +110,4 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 
 &nbsp; | &nbsp;
 -- | --
-<img src="docs/assets/img/git-doc/tbrain.png"/> | this project might be conidered like a toy for old developper
+<img src="docs/assets/img/tbrain.png"/> | this project might be conidered like a toy for old developper
