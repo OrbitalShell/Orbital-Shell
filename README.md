@@ -110,4 +110,4 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 
 &nbsp; | &nbsp;
 -- | --
-<img src="docs/assets/img/tra4brains.png"/> | :warning: this project might be considered like a toy for old developper
+<img src="docs/assets/img/tra4brains.png"/> | :warning: this project might be considered like a toy for old developper<br><br><img src="docs/assets/img/pegi46small.png"/>
