@@ -6,9 +6,13 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 
 ## About the project
 
-> Find anything about this project on the project's Web Site at: [Orbital SHell Git-Pages](https://franck-gaspoz.github.io/orbital-shell) 
+> Find any information and documentation about this project on the project's Web Site at: [Orbital SHell Git-Pages](https://franck-gaspoz.github.io/orbital-shell) 
 
-> The full documentation of the **Orbital Shell**, for users and developers, is available here: [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
+ &nbsp; | &nbsp;
+-- | --
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <img src="docs/assets/img/2021-02-12 03_47_28-Window.png"/> 
+
+> Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
 
 > [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
@@ -27,7 +31,7 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 - The **modules** that are integrated into the shell provide **the most usefull shell commands** (ls/dir,rm,mv,cp,find,echo,clear,more,env,set,export,history,alias,...), tests commands, **text editor command**, and so on... , covering the fields of file system,text files,console output, data management, user input
   - modules can contains any item that the shell is intended to handle: commands, **hooks**, scripts/functions, settings, help, doc, assets, ...
   - dedicated repositories are used to get known modules list
-  - modules are versioned and delivered throught **nupkg** packets, currently hosted to **NuGet**
+  - modules are versioned and delivered throught **nupkg** packets, currently hosted at **NuGet**
 - _The shell command engine implements:_
   - A **command line reader** with usual input keyboard shortcuts, auto completion and input feedback (colorization)
   - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*)
