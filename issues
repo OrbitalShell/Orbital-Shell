@@ -35,7 +35,6 @@ improvements to do 💭
 
 📂kernel
 
-8/2/21  FGZ     ✅ ehance echo primitives arrays types coverage
 25/1/21 FGZ     implements ways to input special characters in text (standard \x, etc..)
 26/1/21 FGZ     extra line break after command parse error to be removed
 
@@ -56,6 +55,7 @@ procrastinated:
 olds:
 -----
 
+8/2/21  FGZ     🆗 ehance echo primitives arrays types coverage
 2/2/21 FGZ      🆗 fix ansi missing in shell exec
 4/2/21 FGZ      🆗 loose quotes arround args in shell exec com : normal due to eval of args : need to neutralize quotes
 6/2/21 FGZ      🆗 \" not transcoded correclty by clpa: get \" , should have " (that's could explain why some args can't be neutralized in certain cases (see ShellExec))
@@ -152,15 +152,4 @@ System.Text.EncoderFallbackException: Unable to translate Unicode character \\uD
 
 input stream reader crashed
 System.Text.EncoderFallbackException: Unable to translate Unicode character \\uD83C at index 0 to specified code page.
-   at System.Text.EncoderExceptionFallbackBuffer.Fallback(Char charUnknown, Int32 index)
-   at System.Text.EncoderFallbackBuffer.InternalFallback(ReadOnlySpan`1 chars, Int32& charsConsumed)
-   at System.Text.Encoding.GetBytesWithFallback(ReadOnlySpan`1 chars, Int32 originalCharsLength, Span`1 bytes, Int32 originalBytesLength, EncoderNLS encoder)
-   at System.Text.Encoding.GetBytesWithFallback(Char* pOriginalChars, Int32 originalCharCount, Byte* pOriginalBytes, Int32 originalByteCount, Int32 charsConsumedSoFar, Int32 bytesWrittenSoFar, EncoderNLS encoder)
-   at System.Text.Encoding.GetBytes(Char* pChars, Int32 charCount, Byte* pBytes, Int32 byteCount, EncoderNLS encoder)
-   at System.Text.EncoderNLS.GetBytes(Char[] chars, Int32 charIndex, Int32 charCount, Byte[] bytes, Int32 byteIndex, Boolean flush)
-   at System.IO.StreamWriter.Flush(Boolean flushStream, Boolean flushEncoder)
-   at System.IO.StreamWriter.Write(String value)
-   at OrbitalShell.Component.Console.TextWriterWrapper.Write(String s) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\TextWriterWrapper.cs:line 290
-   at OrbitalShell.Component.Console.ConsoleTextWriterWrapper.Write(String s) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\ConsoleTextWriterWrapper.cs:line 1083
-   at OrbitalShell.Component.Console.ConsoleTextWriterWrapper.ConsoleSubPrint(String s, Boolean lineBreak) in C:\Users\franc\Documents\ORBITAL-SHELL\OrbitalShell\OrbitalShell-ConsoleApp\Component\Console\ConsoleTextWriterWrapper.cs:line 1230
 
