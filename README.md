@@ -99,7 +99,7 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 
 - Microsoft.CodeAnalysis.CSharp.Scripting
 - NewtonSoft.Json
-- Octopus (module GitHubRestApi)
+- Octokit.Net (module GitHubRestApi)
 
 ## *notice / caveat*
 
