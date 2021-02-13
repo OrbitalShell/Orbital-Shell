@@ -1,7 +1,7 @@
 # Site settings
 title: Orbital Shell
 description: > # this means to ignore newlines until "baseurl:"
-baseurl: "/orbital-shell/" # the subpath of your site, e.g. /blog/
+baseurl: "/Orbital-Shell/" # the subpath of your site, e.g. /blog/
 url: "" # the base hostname & protocol for your site
 author: Copyright &copy; licence MIT 2021
 lang: en_US
