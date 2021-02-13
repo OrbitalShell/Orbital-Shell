@@ -8,20 +8,20 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 
 ## About the project
 
-Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://franck-gaspoz.github.io/orbital-shell) 
+Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://orbitalshell.github.io/Orbital-Shell/) 
 
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <img src="docs/assets/img/2021-02-12 03_47_28-Window.png"/>
 -- | --
 
-Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://franck-gaspoz.github.io/orbital-shell/documentation) 
+Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://orbitalshell.github.io/Orbital-Shell/documentation) 
 
 > [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
 > <u>project repositories status:</u><br>
-![orbital-shell](https://img.shields.io/badge/orbital--shell-repository-lightgrey?style=plastic)
-![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/orbital-shell?style=plastic)
+![orbital-shell](https://img.shields.io/badge/Orbital--Shell-repository-lightgrey?style=plastic)
+![last commit](https://img.shields.io/github/last-commit/orbitalshell/Orbital-Shell?style=plastic)
 ![version](https://img.shields.io/badge/Version-1.0.1--beta4-green)
-![version](https://img.shields.io/github/v/tag/franck-gaspoz/orbital-shell?style=plastic) 
+![version](https://img.shields.io/github/v/tag/orbitalshell/Orbital-Shell?style=plastic) 
 
 ## Features
 
