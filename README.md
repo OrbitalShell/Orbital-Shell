@@ -101,7 +101,7 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 - NewtonSoft.Json
 - Octokit.Net (module GitHubRestApi)
 
-## *notice / caveat*
+## notice / caveat
 
 > The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **ARCHIVED** since it has been integrated into the **orbital-shell** project repository as project **OrbitalShell-ConsoleApp**, so it is still under development but code has been moved to this repository
 ![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
