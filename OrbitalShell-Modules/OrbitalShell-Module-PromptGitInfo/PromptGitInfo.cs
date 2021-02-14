@@ -63,17 +63,17 @@ namespace OrbitalShell.Module.PromptGitInfo
             context.ShellEnv.AddNew(
                 _namespace,
                 VarModifiedTextTemplate,
-                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% %sepSymbol%%errorMessage%{infoColor}+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% ?%untracked%(rdc) ", false);
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% %sepSymbol%%errorMessage%{infoColor}+%indexAdded% ~%indexChanges% -%indexDeleted% | ~%worktreeChanges% -%worktreeDeleted% ?%untracked%(rdc) ", false);
 
             context.ShellEnv.AddNew(
                 _namespace,
                 VarBehindTextTemplate,
-                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% %sepSymbol%%errorMessage%{infoColor}+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% ?%untracked% {behindColor}{Unicode.ArrowDown}%behind%(rdc) ", false);
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% %sepSymbol%%errorMessage%{infoColor}+%indexAdded% ~%indexChanges% -%indexDeleted% | ~%worktreeChanges% -%worktreeDeleted% ?%untracked% {behindColor}{Unicode.ArrowDown}%behind%(rdc) ", false);
             
             context.ShellEnv.AddNew(
                 _namespace,
                 VarAheadTextTemplate,
-                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% %sepSymbol%%errorMessage%{infoColor}+%localAdded% ~%localChanges% -%localDeleted% | ~%remoteChanges% -%remoteDeleted% ?%untracked% {aheadColor}{Unicode.ArrowUp}%ahead%(rdc) ", false);
+                $"%bgColor%(f=white) %repoName% {branchSymbol} %branch% %sepSymbol%%errorMessage%{infoColor}+%indexAdded% ~%indexChanges% -%indexDeleted% | ~%worktreeChanges% -%worktreeDeleted% ?%untracked% {aheadColor}{Unicode.ArrowUp}%ahead%(rdc) ", false);
 
             context.ShellEnv.AddNew(
                 _namespace,
@@ -169,12 +169,12 @@ namespace OrbitalShell.Module.PromptGitInfo
                     { "bgColor" , bgColor },
                     { "branch" , branch },
                     { "errorMessage" , repo.ErrorMessage },
-                    { "localAdded" , repo.LocalAdded+"" },
-                    { "localChanges" , repo.IndexChanges+"" },
-                    { "localDeleted" , repo.LocalDeleted+"" },
-                    { "remoteChanges" , repo.WorktreeChanges+"" },
-                    { "remoteAdded" , repo.WorktreeAdded+"" },
-                    { "remoteDeleted" , repo.WorktreeDeleted+"" },
+                    { "indexAdded" , repo.LocalAdded+"" },
+                    { "indexChanges" , repo.IndexChanges+"" },
+                    { "indexDeleted" , repo.LocalDeleted+"" },
+                    { "worktreeChanges" , repo.WorktreeChanges+"" },
+                    { "worktreeAdded" , repo.WorktreeAdded+"" },
+                    { "worktreeDeleted" , repo.WorktreeDeleted+"" },
                     { "untracked" , repo.Untracked+"" },
                     { "repoName" , repoName },
                     { "behind" , repo.Behind+"" },

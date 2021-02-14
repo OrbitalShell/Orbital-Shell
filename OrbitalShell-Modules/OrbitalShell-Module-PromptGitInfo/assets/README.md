@@ -1,6 +1,9 @@
-# Prompt Git Info
+﻿# Prompt Git Info
+**module Orbital Shell**
 
 Add custom text to the prompt of console showing the status of git repositories if the current directory is above a repository folder:
+
+### Preview
 
 up to date
 
@@ -14,7 +17,7 @@ index changed
 
 <img src="2.png"/>
 
-a
+ahead
 
 <img src="3.png"/>
 
@@ -25,6 +28,28 @@ behind
 no repo
 
 <img src="norepo.png"/>
+<br>
+<br>
+
+### Settings
+
+namespace **env.com.git.promptInfo**
+
+variable | type | value
+-- | -- | --
+aheadBackgroundColor               | string          | \e[48;5;136m
+aheadTextTemplate                  | string          | %bgColor%(f=white) %repoName% ├ %branch% %sepSymbol%%errorMessage%\e[48;5;237m+%indexAdded% ~%indexChanges% -%indexDeleted% \| ~%worktreeChanges% -%worktreeDeleted% ?%untracked% \e[48;5;136m↑%ahead%(rdc)
+behindBackgroundColor              | string          | (b=darkred)
+behindTextTemplate                 | string          | %bgColor%(f=white) %repoName% ├ %branch% %sepSymbol%%errorMessage%\e[48;5;237m+%indexAdded% ~%indexChanges% -%indexDeleted% \| ~%worktreeChanges% -%worktreeDeleted% ?%untracked% (b=darkred)↓%behind%(rdc)
+infoBackgroundColor                | string          | \e[48;5;237m
+isEnabled                          | bool            | true
+modifiedBackgroundColor            | string          | \e[48;5;130m
+modifiedTextTemplate               | string          | %bgColor%(f=white) %repoName% ├ %branch% %sepSymbol%%errorMessage%\e[48;5;237m+%indexAdded% ~%indexChanges% -%indexDeleted% \| ~%worktreeChanges% -%worktreeDeleted% ?%untracked%(rdc)
+modifiedUntrackedBackgroundColor   | string          | \e[48;5;166m
+noDataTextTemplate                 | string          | %bgColor%(f=white) %repoName% ├ %branch% %errorMessage%(rdc)
+templateNoRepository               | string          | (b=darkblue)(f=white) » %errorMessage%(rdc)
+unknownBackgroundColor             | string          | (b=darkblue)
+upToDateBackgroundColor            | string          | \e[48;5;22m
 
 <hr>
 
