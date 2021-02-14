@@ -2,7 +2,27 @@
 
 Add custom text to the prompt of console showing the status of git repositories if the current directory is above a repository folder:
 
-<img src="screenshot.png"/>
+up to date
+
+<img src="0.png"/>
+
+worktree changed
+
+<img src="1.png"/>
+
+index changed
+
+<img src="2.png"/>
+
+a
+
+<img src="3.png"/>
+
+behind
+
+<img src="4.png"/>
+
+no repo
 
 <img src="norepo.png"/>
 
