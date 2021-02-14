@@ -21,10 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel-Command
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-CLI", "OrbitalShell-CLI\OrbitalShell-CLI.csproj", "{C2920F91-71BE-4B0F-8742-4C52F4A75D56}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrbitalShell-Modules", "OrbitalShell-Modules", "{D2950EDA-0381-4B44-9520-9EC9EC652072}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Module-PromptGitInfo", "OrbitalShell-Modules\OrbitalShell-Module-PromptGitInfo\OrbitalShell-Module-PromptGitInfo.csproj", "{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{BAA43DC2-D26E-42BD-BA87-48B717D93F26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deliv", "deliv", "{0ED8AA3D-B8AD-46A7-8ECD-F7892BD628DF}"
@@ -34,7 +30,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deliv", "deliv", "{0ED8AA3D
 		deliv\win-anycpu.nuspec = deliv\win-anycpu.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrbitalShell-Module-GitHubRestApi", "OrbitalShell-Modules\OrbitalShell-Module-GitHubRestApi\OrbitalShell-Module-GitHubRestApi.csproj", "{AC7C9C46-CBBB-479C-8E51-E936BD834474}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prompt-Git-Info", "..\OrbitalShell-Modules-Repositories\Prompt-Git-Info\Prompt-Git-Info.csproj", "{C6E0BA9B-6551-49C9-B855-52245CF1B253}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{0D7B6371-CC74-4464-8027-D10E687F19D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,25 +56,20 @@ Global
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BAA43DC2-D26E-42BD-BA87-48B717D93F26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BAA43DC2-D26E-42BD-BA87-48B717D93F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAA43DC2-D26E-42BD-BA87-48B717D93F26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC7C9C46-CBBB-479C-8E51-E936BD834474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC7C9C46-CBBB-479C-8E51-E936BD834474}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC7C9C46-CBBB-479C-8E51-E936BD834474}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC7C9C46-CBBB-479C-8E51-E936BD834474}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6E0BA9B-6551-49C9-B855-52245CF1B253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6E0BA9B-6551-49C9-B855-52245CF1B253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6E0BA9B-6551-49C9-B855-52245CF1B253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6E0BA9B-6551-49C9-B855-52245CF1B253}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5B15B429-C562-423F-8A8D-5E5B7FADB0E8} = {D2950EDA-0381-4B44-9520-9EC9EC652072}
 		{0ED8AA3D-B8AD-46A7-8ECD-F7892BD628DF} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
-		{AC7C9C46-CBBB-479C-8E51-E936BD834474} = {D2950EDA-0381-4B44-9520-9EC9EC652072}
+		{C6E0BA9B-6551-49C9-B855-52245CF1B253} = {0D7B6371-CC74-4464-8027-D10E687F19D3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE827123-7F20-471E-B1BF-3E12AE9FFDC8}
