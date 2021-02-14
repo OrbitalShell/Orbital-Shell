@@ -54,15 +54,27 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <None Include="assets\norepo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+	
+  <ItemGroup>
+    <None Include="assets\screenshot.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+	
+  <ItemGroup>
     <None Include="assets\robotazteque.png" />
   </ItemGroup>
 	
   <ItemGroup>
 	  <PackageReference Include="OrbitalShell-ConsoleApp" Version="1.0.1-beta4">
-		  <ExcludeAssets>all</ExcludeAssets> 
+		  <ExcludeAssets>contentfiles</ExcludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="OrbitalShell-Kernel" Version="1.0.1-beta4" >
-		  <ExcludeAssets>all</ExcludeAssets>
+	  <PackageReference Include="OrbitalShell-Kernel" Version="1.0.1-beta4">
+		  <ExcludeAssets>contentfiles</ExcludeAssets>
 	  </PackageReference>
   </ItemGroup>
 

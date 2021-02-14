@@ -1,8 +1,10 @@
 # Prompt Git Info
 
-Adds custom text to the prompt of console showing the status of git repositories if the current directory is above a repository folder:
+Add custom text to the prompt of console showing the status of git repositories if the current directory is above a repository folder:
 
+<img src="screenshot.png"/>
 
+<img src="norepo.png"/>
 
 <hr>
 

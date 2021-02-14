@@ -57,12 +57,17 @@
 		  <None Include="assets\robotazteque.png" />
 	  </ItemGroup>
 
-	  <ItemGroup>
-		  <PackageReference Include="OrbitalShell-ConsoleApp" Version="1.0.1-beta4" />
-		  <PackageReference Include="OrbitalShell-Kernel" Version="1.0.1-beta4" />
-	  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="OrbitalShell-ConsoleApp" Version="1.0.1-beta4">
+			<ExcludeAssets>contentfiles</ExcludeAssets>
+		</PackageReference>
+		<PackageReference Include="OrbitalShell-Kernel" Version="1.0.1-beta4">
+			<ExcludeAssets>contentfiles</ExcludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-	  <ItemGroup>
+
+	<ItemGroup>
 		  <None Update="assets\LICENSE.md">
 			  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  </None>
