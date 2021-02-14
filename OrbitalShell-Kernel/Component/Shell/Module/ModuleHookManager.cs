@@ -68,14 +68,14 @@ namespace OrbitalShell.Component.Shell.Module
                     try
                     {
                         if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace)) 
-                            context.Out.Echo(context.ShellEnv.Colors.Log + $"[ hook '{hook.Name}' handled by: '" + hook.Owner + "'] ");
+                            context.Out.Echo(context.ShellEnv.Colors.Log + $"[hook '{hook.Name}' handled by: '{hook.Owner}.{hook.Method}'] ");
 
                         hook.Method.Invoke(hook.Owner, new object[] { context });
                         callBack?.Invoke(hook.Owner);
                     }
                     catch (Exception ex)
                     {
-                        var m = $"hook '{ex.Source}' has crashed: {ex.InnerException?.Message}";
+                        var m = $"hook '{hook.Owner}.{hook.Method}' has crashed: {ex.InnerException?.Message}";
                         context.Out.Errorln(m);
                         context.CommandLineProcessor.LogError(m);
                     }
@@ -94,7 +94,7 @@ namespace OrbitalShell.Component.Shell.Module
         )
         {
             if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace))
-                context.Out.Echo(context.ShellEnv.Colors.Log + "[ invoke hook: " + name + "] ");
+                context.Out.Echo(context.ShellEnv.Colors.Log + "[invoke hook: " + name + "] ");
 
             InvokeHooks(context, name + "", callBack);
         }
