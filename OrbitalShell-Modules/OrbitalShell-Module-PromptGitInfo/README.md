@@ -7,27 +7,27 @@ Add custom text to the prompt of console showing the status of git repositories 
 
 up to date
 
-<img src="0.png"/>
+<img src="assets/0.png"/>
 
 worktree changed
 
-<img src="1.png"/>
+<img src="assets/1.png"/>
 
 index changed
 
-<img src="2.png"/>
+<img src="assets/2.png"/>
 
 ahead
 
-<img src="3.png"/>
+<img src="assets/3.png"/>
 
 behind
 
-<img src="4.png"/>
+<img src="assets/4.png"/>
 
 no repo
 
-<img src="norepo.png"/>
+<img src="assets/norepo.png"/>
 <br>
 <br>
 
@@ -53,5 +53,5 @@ upToDateBackgroundColor            | string          | \e[48;5;22m
 
 <hr>
 
-<b>Orbital Shell</b> is a multi-plateform (**windows, linux, macos**) command shell, inspired by <b><i>bash</i></b> and POSIX recommendations. It provides any usual bash shell feature (even if modernized) and nice syntaxes and features allowing to access (get/set/call) C# objects. Developed using **C# 8, .NET Core 3.1/Net 5 and .NET Standard 2.1**
+<b>Orbital Shell</b> is a multi-plateform (**windows, linux, macos, arm**) command shell, inspired by <b><i>bash</i></b> and POSIX recommendations. It provides any usual bash shell feature (even if modernized) and nice syntaxes and features allowing to access (get/set/call) C# objects. Developed using **C# 8, .NET Core 3.1/Net 5 and .NET Standard 2.1**
 
