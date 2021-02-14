@@ -43,6 +43,7 @@ improvements to do 💭
 26/1/21 FGZ     command 'cat' with raw outputs, to be added also to 'more' options
 2/2/21 FGZ      shell exec for .sh : check contains #!orbsh at first line before accept to execute it
 20/1/21 FGZ     please add sort in env table
+14/02/21 FGZ    update alias command to fit original 
 
 procrastinated:
 ---------------
