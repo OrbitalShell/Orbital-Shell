@@ -3,7 +3,7 @@
 	<!-- xmlns="https://raw.githubusercontent.com/NuGet/NuGet.Client/dev/src/NuGet.Core/NuGet.Packaging/compiler/resources/nuspec.xsd"> -->
 	<metadata>
 		<id>OrbitalShell</id>
-		<version>1.0.4</version>
+		<version>1.0.5</version>
 		<authors>Franck Gaspoz</authors>
 		<owners>Franck Gaspoz</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -25,7 +25,7 @@
 		<file src="../assets/robotazteque.png" target="assets/" />
 		<file src="../LICENSE.md" target="" />
 		<file src="../README.md" target="" />
-		<file src="..\bin\publish\netcoreapp3.1\**\*.*" target="netcoreapp3.1\orbital-shell" />
+		<file src="..\bin\publish\netcoreapp3.1\**\*.*" target="netcoreapp3.1/" />
 	</files>
 	
 </package>
