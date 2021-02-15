@@ -815,7 +815,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 if (Path.GetExtension(comPath) == context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clp_shellExecBatchExt))
                 {
                     var batchMethod = typeof(CommandLineProcessorCommands).GetMethod(nameof(CommandLineProcessorCommands.Batch));
-                    var r = Eval(context, batchMethod, "\"" + comPath + " " + args + "\"", 0);
+                    var r = Eval(context, batchMethod, "\"" + FileSystemPath.UnescapePathSeparators(comPath) + " " + args + "\"", 0);
                     output = sb.ToString();
                     return r.EvalResultCode;
                 }
