@@ -22,6 +22,8 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 ![last commit](https://img.shields.io/github/last-commit/orbitalshell/Orbital-Shell?style=plastic)
 ![version](https://img.shields.io/badge/Version-1.0.1--beta4-green)
 ![version](https://img.shields.io/github/v/tag/orbitalshell/Orbital-Shell?style=plastic) 
+![toplanguage](https://img.shields.io/github/languages/top/orbitalshell/Orbital-Shell)
+![lngcount](https://img.shields.io/github/languages/count/orbitalshell/Orbital-Shell)
 
 ## Features
 
