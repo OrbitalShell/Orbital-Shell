@@ -14,26 +14,18 @@
 						
 		<icon>assets/robotazteque.png</icon>
 
-		<description>This is the Orbital Shell CLI binaries for any plateform (having dotnet) and also self-contained apps for common runtimes environments (win-x64,linux-x64,linux-musl-x64,linux-arm,linux-arm64). Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core.</description>
+		<description>This is the Orbital Shell CLI binaries for any plateform having dotnet installed. Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core.</description>
 		<releaseNotes>initial stable release of binaries</releaseNotes>
 		<copyright>© Orbital Shell 2020</copyright>
 		<tags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</tags>
-		
-		<!--<dependencies>
-			<group targetFramework=".NETStandard2.1">
-				<dependency id="orbitalshell-consoleapp" version="1.0.5" />
-				<dependency id="orbitalshell-kernel" version="1.0.2" />
-				<dependency id="orbitalshell-kernel-commands" version="1.0.2" />
-			</group>
-		</dependencies>-->
-		
+
 	</metadata>
 
 	<files>
 		<file src="../assets/robotazteque.png" target="assets/" />
 		<file src="../LICENSE.md" target="" />
 		<file src="../README.md" target="" />
-		<file src="..\bin\publish\**\*.*" target="" />
+		<file src="..\bin\publish\netcoreapp3.1\**\*.*" target="netcoreapp3.1\orbital-shell" />
 	</files>
 	
 </package>

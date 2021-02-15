@@ -37,7 +37,6 @@
 
 	 
   <ItemGroup>
-    <!--<None Remove="assets\**" />!-->
 	  <None Include="assets\robotazteque.ico">
 		  <Pack>True</Pack>
 		  <PackagePath>contentFiles/any/netcoreapp3.1/assets/;content/assets/</PackagePath>
@@ -68,28 +67,18 @@
 	  </None>
 	  
 	  <None Include="scripts\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		<Pack>True</Pack>
 		<PackagePath>contentFiles/any/netcoreapp3.1/scripts/;content/scripts/</PackagePath>
+		<PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
 	
-  </ItemGroup>
-
-	 
-  <ItemGroup>
-    <Compile Remove="bin\Release\netcoreapp3.1\**" />
-    <EmbeddedResource Remove="bin\Release\netcoreapp3.1\**" />
-    <None Remove="bin\Release\netcoreapp3.1\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel-Commands\OrbitalShell-Kernel-Commands.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="bin\Release\" />
   </ItemGroup>
 
 </Project>
