@@ -16,16 +16,16 @@
     <Product>Orbital Shell - ConsoleApp</Product>
     <Description>Orbital Shell console application library</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>1.0.2</Version>
-    <InformationalVersion>1.0.2</InformationalVersion>
+    <Version>1.0.5</Version>
+    <InformationalVersion>1.0.5</InformationalVersion>
 
 	<PackageReleaseNotes>milestone 1</PackageReleaseNotes>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageProjectUrl>https://franck-gaspoz.github.io/orbital-shell/</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/franck-gaspoz/orbital-shell.git</RepositoryUrl>
+	  <PackageProjectUrl>https://orbitalshell.github.io/Orbital-Shell/</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/OrbitalShell/Orbital-Shell.git</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</PackageTags>
-	<PackageIcon>robotazteque.png</PackageIcon>
+	<PackageIcon>content\assets\robotazteque.png</PackageIcon>
 	  
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
@@ -33,26 +33,20 @@
 		
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="assets\robotazteque.png" />
-    <None Include="assets\robotazteque.png">
-		<Pack>True</Pack>
-		<PackagePath></PackagePath>
-	</None>
-	  <None Include="Component/Parser/ANSI/ansi-seq-patterns.txt">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		  <Pack>True</Pack>
-		  <PackagePath></PackagePath>
-		  <PackageCopyToOutput>true</PackageCopyToOutput>
-	  </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="assets\robotazteque.png" />
-    <Content Include="Component/Parser/ANSI/ansi-seq-patterns.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="assets\robotazteque.png" />
+		<None Include="assets\robotazteque.png">
+			<Pack>True</Pack>
+			<PackagePath>contentFiles/any/netcoreapp3.1/assets/;content/assets/</PackagePath>
+		</None>
+		<None Remove="Component/Parser/ANSI/ansi-seq-patterns.txt" />
+		<None Include="Component/Parser/ANSI/ansi-seq-patterns.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Pack>True</Pack>
+			<PackagePath>contentFiles/any/netcoreapp3.1/Component/Parser/ANSI/;content/Component/Parser/ANSI/</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+		</None>
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />

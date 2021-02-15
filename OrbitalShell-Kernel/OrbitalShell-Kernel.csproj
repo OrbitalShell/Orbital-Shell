@@ -15,16 +15,16 @@
     <Product>Orbital Shell - Kernel</Product>
     <Description>Orbital Shell kernel - Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>1.0.1-beta4</Version>
-    <InformationalVersion>1.0.1-beta4</InformationalVersion>
+    <Version>1.0.2</Version>
+    <InformationalVersion>1.0.2</InformationalVersion>
 
-	<PackageReleaseNotes>beta-4 milestone 1</PackageReleaseNotes>
+	<PackageReleaseNotes>milestone 1</PackageReleaseNotes>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageProjectUrl>https://franck-gaspoz.github.io/orbital-shell/</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/franck-gaspoz/orbital-shell.git</RepositoryUrl>
+	  <PackageProjectUrl>https://orbitalshell.github.io/Orbital-Shell/</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/OrbitalShell/Orbital-Shell.git</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</PackageTags>	
-	<PackageIcon>robotazteque.png</PackageIcon>
+	<PackageIcon>content\assets\robotazteque.png</PackageIcon>
 
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
@@ -32,47 +32,46 @@
 	  
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="assets\robotazteque.png" />
-    <None Remove="Component\Shell\Defaults\aliases" />
-    <None Remove="Component\Shell\Defaults\profile" />
-	  <None Include="assets\robotazteque.png">
-		  <Pack>True</Pack>
-		  <PackagePath></PackagePath>
-	  </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="assets\robotazteque.png" />
-    <Content Include="Component\Shell\Defaults\aliases">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Component\Shell\Defaults\profile">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>    
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="assets\robotazteque.png" />
+		<None Include="assets\robotazteque.png">
+			<Pack>True</Pack>
+			<PackagePath>contentFiles/any/netcoreapp3.1/assets/;content/assets/</PackagePath>
+		</None>
+		<None Remove="Component\Shell\Defaults\aliases" />
+		<None Include="Component\Shell\Defaults\aliases">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Pack>True</Pack>
+			<PackagePath>contentFiles/any/netcoreapp3.1/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+		</None>
+		<None Remove="Component\Shell\Defaults\profile" />
+		<None Include="Component\Shell\Defaults\profile">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Pack>True</Pack>
+			<PackagePath>contentFiles/any/netcoreapp3.1/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+		</None>
+		<None Include="LICENSE.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Pack>True</Pack>
+			<PackagePath>contentFiles/any/netcoreapp3.1/;content/</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+		</None>
+		<None Include="Modules/read-me.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Pack>True</Pack>
+			<PackagePath>contentFiles/any/netcoreapp3.1/Modules;content/Modules</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+		</None>
+	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <Compile Update="Component\Shell\Data\Table.cs">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>-->
-
   <ItemGroup>
     <Folder Include="Lib\Net\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="LICENSE.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Modules\read-me.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

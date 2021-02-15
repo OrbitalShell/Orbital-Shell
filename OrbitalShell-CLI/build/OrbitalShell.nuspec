@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<!-- xmlns="https://raw.githubusercontent.com/NuGet/NuGet.Client/dev/src/NuGet.Core/NuGet.Packaging/compiler/resources/nuspec.xsd"> -->
+	<metadata>
+		<id>OrbitalShell</id>
+		<version>1.0.3</version>
+		<authors>Franck Gaspoz</authors>
+		<owners>Franck Gaspoz</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<license type="expression">MIT</license>
+
+		<projectUrl>https://orbitalshell.github.io/Orbital-Shell/</projectUrl>
+		<repository type="git" url="https://github.com/OrbitalShell/Orbital-Shell.git"/>
+					
+		<icon>assets/robotazteque.png</icon>
+
+		<description>Add information about any current or parent GIT repository to orbital shell command line prompt. for example: OrbitalShell ├ master +0 ~0 -0 | ~2 -0 ?2</description>
+		<releaseNotes>update documentation</releaseNotes>
+		<copyright>© Orbital Shell 2020</copyright>
+		<tags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</tags>
+		<dependencies>
+			<group targetFramework=".NETStandard2.1">
+				<dependency id="orbitalshell-consoleapp" version="1.0.5" />
+				<dependency id="orbitalshell-kernel" version="1.0.2" />
+				<dependency id="orbitalshell-kernel-commands" version="1.0.2" />
+			</group>
+		</dependencies>
+		
+	</metadata>
+
+	<files>
+		<file src="../assets/robotazteque.png" target="assets/" />
+		<file src="../LICENSE.md" target="" />
+		<file src="../README.md" target="" />
+		<file src="..\bin\publish\**\*.*" target="" />
+	</files>
+	
+</package>

@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel-Command
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-CLI", "OrbitalShell-CLI\OrbitalShell-CLI.csproj", "{C2920F91-71BE-4B0F-8742-4C52F4A75D56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{BAA43DC2-D26E-42BD-BA87-48B717D93F26}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deliv", "deliv", "{0ED8AA3D-B8AD-46A7-8ECD-F7892BD628DF}"
 	ProjectSection(SolutionItems) = preProject
 		OrbitalShell-Modules\OrbitalShell-Module-PromptGitInfo\module.nuspec = OrbitalShell-Modules\OrbitalShell-Module-PromptGitInfo\module.nuspec
@@ -56,9 +54,6 @@ Global
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAA43DC2-D26E-42BD-BA87-48B717D93F26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAA43DC2-D26E-42BD-BA87-48B717D93F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAA43DC2-D26E-42BD-BA87-48B717D93F26}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6E0BA9B-6551-49C9-B855-52245CF1B253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6E0BA9B-6551-49C9-B855-52245CF1B253}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6E0BA9B-6551-49C9-B855-52245CF1B253}.Release|Any CPU.ActiveCfg = Release|Any CPU
