@@ -56,12 +56,6 @@
     <Content Include="Component\Shell\Defaults\profile">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="assets\LICENSE.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="assets\README.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="assets\robotazteque.ico" />
   </ItemGroup>
 
@@ -90,6 +84,15 @@
     <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel-Commands\OrbitalShell-Kernel-Commands.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

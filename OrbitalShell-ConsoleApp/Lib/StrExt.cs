@@ -18,6 +18,12 @@ namespace OrbitalShell.Lib
             return r.Match(input);
         }
 
+        public static void Match(this string input, string regex,out Match match)
+        {
+            var r = new Regex(regex);
+            match = r.Match(input);
+        }
+
         #endregion
 
         public static List<string> SplitNotUnslashed(this string s, char c)
