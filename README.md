@@ -4,7 +4,7 @@
 -- | --
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;
 
-![.NET](https://github.com/OrbitalShell/Orbital-Shell/workflows/.NET/badge.svg)
+![.NET](https://github.com/OrbitalShell/Orbital-Shell/workflows/.NET/badge.svg?branch=master)
 ![last commit](https://img.shields.io/github/last-commit/orbitalshell/Orbital-Shell?style=plastic)
 ![releasever](https://img.shields.io/github/v/release/orbitalshell/Orbital-Shell?style=plastic) 
 ![releasedate](https://img.shields.io/github/release-date/orbitalshell/Orbital-Shell?style=plastic) 
