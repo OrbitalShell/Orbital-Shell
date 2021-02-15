@@ -25,9 +25,13 @@ dotnet publish --configuration Release --output bin/publish/netcoreapp3.1/
 # framework-independent
 dotnet publish --runtime win-x64 --configuration Release --output bin/publish/win-x64/
 dotnet publish --runtime linux-x64 --configuration Release --output bin/publish/linux-x64/
+dotnet publish --runtime linux-musl-x64 --configuration Release --output bin/publish/linux-musl-x64/
+dotnet publish --runtime linux-arm --configuration Release --output bin/publish/linux-arm/
+dotnet publish --runtime linux-arm64 --configuration Release --output bin/publish/linux-arm64/
+dotnet publish --runtime osx-x64 --configuration Release --output bin/publish/osx-x64/
 
 which dotnet
-cd "C:/Program Files/dotnet/dotnet.exe"
+cd "C:/Program Files/dotnet/dotnet.exe"	
 
 # get nuget binaries (.netcore 3.1 assemblies)
 # --------------------------------------------------------------

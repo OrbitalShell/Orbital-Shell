@@ -3,7 +3,7 @@
 	<!-- xmlns="https://raw.githubusercontent.com/NuGet/NuGet.Client/dev/src/NuGet.Core/NuGet.Packaging/compiler/resources/nuspec.xsd"> -->
 	<metadata>
 		<id>OrbitalShell</id>
-		<version>1.0.3</version>
+		<version>1.0.4</version>
 		<authors>Franck Gaspoz</authors>
 		<owners>Franck Gaspoz</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,20 +11,21 @@
 
 		<projectUrl>https://orbitalshell.github.io/Orbital-Shell/</projectUrl>
 		<repository type="git" url="https://github.com/OrbitalShell/Orbital-Shell.git"/>
-					
+						
 		<icon>assets/robotazteque.png</icon>
 
-		<description>Add information about any current or parent GIT repository to orbital shell command line prompt. for example: OrbitalShell ├ master +0 ~0 -0 | ~2 -0 ?2</description>
-		<releaseNotes>update documentation</releaseNotes>
+		<description>This is the Orbital Shell CLI binaries for any plateform (having dotnet) and also self-contained apps for common runtimes environments (win-x64,linux-x64,linux-musl-x64,linux-arm,linux-arm64). Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core.</description>
+		<releaseNotes>initial stable release of binaries</releaseNotes>
 		<copyright>© Orbital Shell 2020</copyright>
 		<tags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</tags>
-		<dependencies>
+		
+		<!--<dependencies>
 			<group targetFramework=".NETStandard2.1">
 				<dependency id="orbitalshell-consoleapp" version="1.0.5" />
 				<dependency id="orbitalshell-kernel" version="1.0.2" />
 				<dependency id="orbitalshell-kernel-commands" version="1.0.2" />
 			</group>
-		</dependencies>
+		</dependencies>-->
 		
 	</metadata>
 
