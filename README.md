@@ -38,9 +38,9 @@ You can directly **FORK** the project @ [https://github.com/OrbitalShell/Orbital
 Join the **orbital shell team** and get advantages of the team tools on github. We can contact 💬 by mail, skype and so on...
 
   - read the [contribution guide lines](https://github.com/OrbitalShell/Orbital-Shell/blob/master/CONTRIBUTING.md) and the [code of conduct of the project](https://github.com/OrbitalShell/Orbital-Shell/blob/master/CODE_OF_CONDUCT.md)
-  - read the project README @ [https://github.com/franck-gaspoz/orbital-shell/blob/master/README.md](https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md)
-  - visit the project's web site @ [https://franck-gaspoz.github.io/orbital-shell/](https://orbitalshell.github.io/Orbital-Shell/)
-  - visit the project repository @ [https://github.com/franck-gaspoz/orbital-shell/](https://github.com/OrbitalShell/Orbital-Shell/)
+  - read the project README @ [https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md](https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md)
+  - visit the project's web site @ [https://orbitalshell.github.io/Orbital-Shell/](https://orbitalshell.github.io/Orbital-Shell/)
+  - visit the project repository @ [https://github.com/OrbitalShell/Orbital-Shell/](https://github.com/OrbitalShell/Orbital-Shell/)
   
 **Join the project**: 
 - Send a mail to the project team @ [mailto://orbital-shell@outlook.fr](mailto://orbital-shell@outlook.fr) or to [me](mailto://franck.gaspoz@gmail.com)
