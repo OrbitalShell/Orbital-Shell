@@ -22,7 +22,7 @@ nuget pack OrbitalShell.nuspec
 cd OrbitalShell-cli
 # framework-dependent
 dotnet publish --configuration Release --output bin/publish/netcoreapp3.1/
-# framework-independent
+# framework-independent (self-contained)
 dotnet publish --runtime win-x64 --configuration Release --output bin/publish/win-x64/
 dotnet publish --runtime linux-x64 --configuration Release --output bin/publish/linux-x64/
 dotnet publish --runtime linux-musl-x64 --configuration Release --output bin/publish/linux-musl-x64/
@@ -36,5 +36,12 @@ cd "C:/Program Files/dotnet/dotnet.exe"
 # get nuget binaries (.netcore 3.1 assemblies)
 # --------------------------------------------------------------
 
-#...
-
+# framework-dependent
+nuget install orbitalshell
+# framework-independent (self-contained)
+nuget install orbitalshell-win-x64
+nuget install orbitalshell-linux-x64
+nuget install orbitalshell-linux-musl-x64
+nuget install orbitalshell-linux-arm
+nuget install orbitalshell-linux-arm64
+nuget install orbitalshell-osx-x64
