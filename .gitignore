@@ -14,7 +14,8 @@
 *.userprefs
 
 # exclude team assets
-team-assets/
+team-assets/**
+!team-assets/read-me.txt
 
 # Build results
 [Dd]ebug/
