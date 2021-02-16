@@ -28,6 +28,25 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 
 > [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
+## Contribute !
+
+😄 We are looking for **collaborators** 👯 to help for evolving this tool ! If you **like** the **command line**, the **bash** syntax, programming **cli tools**, **parsers**, **data streams**, ANSI, C# 8, batch, and so on... you may like to develop orbital shell! Any idea, suggest, code, feedback is welcomed ! 
+
+You can directly **FORK** the project @ [https://github.com/OrbitalShell/Orbital-Shell.git](https://github.com/OrbitalShell/Orbital-Shell.git) and start developing to prepare your first pull request, it will be well received. You can also peek **an issue** and start working on. 
+
+Join the **orbital shell team** and get advantages of the team tools on github. We can contact 💬 by mail, skype and so on...
+
+  - read the [contribution guide lines](https://github.com/OrbitalShell/Orbital-Shell/blob/master/CONTRIBUTING.md) and the [code of conduct of the project](https://github.com/OrbitalShell/Orbital-Shell/blob/master/CODE_OF_CONDUCT.md)
+  - read the project README @ [https://github.com/franck-gaspoz/orbital-shell/blob/master/README.md](https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md)
+  - visit the project's web site @ [https://franck-gaspoz.github.io/orbital-shell/](https://orbitalshell.github.io/Orbital-Shell/)
+  - visit the project repository @ [https://github.com/franck-gaspoz/orbital-shell/](https://github.com/OrbitalShell/Orbital-Shell/)
+  
+**Join the project**: 
+- Send a mail to the project team @ [mailto://orbital-shell@outlook.fr](mailto://orbital-shell@outlook.fr) or to [me](mailto://franck.gaspoz@gmail.com)
+- or **push to repository** you will receive an invite to join the project via github
+
+**The project team like to meet people and wish to share pleasure of programming and technology enthusiasm, with fun and good spirit** 
+
 ## Features
 
 <img src="docs/assets/img/git-doc/orbital-shell.png"/>*a view of the shell running in Windows Terminal*
@@ -104,7 +123,6 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 
 - Microsoft.CodeAnalysis.CSharp.Scripting
 - NewtonSoft.Json
-- Octokit.Net (module GitHubRestApi)
 
 ## notice / caveat
 
