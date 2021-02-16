@@ -15,6 +15,12 @@ find . -p "*contentFiles*" -f -s
 
 nuget spec OrbitalShell.csproj
 nuget pack OrbitalShell.nuspec
+nuget sources Add -Name githuborbsh -Source https://nuget.pkg.github.com/OrbitalShell/index.json
+
+# github
+# ------
+
+ssh-keygen -t rsa -b 4096
 
 # publid OrbitalShell-cli
 # --------------------------------------------------------------
