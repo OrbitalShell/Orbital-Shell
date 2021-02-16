@@ -13,6 +13,9 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# exclude team assets
+team-assets/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
