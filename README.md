@@ -1,8 +1,8 @@
 ## Orbital Shell
 
-<img src="docs/assets/img/robotazteque.png" align="top" style="float:left;margin-right:8px"/> | <b>Orbital Shell</b> is a multi-plateform (**windows, linux, macos, arm**) command shell (according to .Net Core supported platforms and APIs compatibilities), inspired by <b><i>bash</i></b> and **POSIX** recommendations.<br><br>It provides any usual bash shell feature (even if modernized) and 'user friendly' syntaxes allowing to access (get/set/call) C# objects.<br><br>Developed using **C# 8, .NET Core 3.1/Net 5 and .NET Standard 2.1**
--- | --
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;
+<img src="docs/assets/img/robotazteque.png" align="left" style="float:left;margin-right:8px"/><br><b>Orbital Shell</b> is a multi-plateform (**windows, linux, macos, arm**) command shell (according to .Net Core supported platforms and APIs compatibilities), inspired by <b><i>bash</i></b> and **POSIX** recommendations.<br><br>It provides any usual bash shell feature (even if modernized) and 'user friendly' syntaxes allowing to access (get/set/call) C# objects.<br><br>Developed using **C# 8, .NET Core 3.1/Net 5 and .NET Standard 2.1**
+
+<br>
 
 ![.NET](https://github.com/OrbitalShell/Orbital-Shell/workflows/.NET/badge.svg?branch=master)
 ![last commit](https://img.shields.io/github/last-commit/orbitalshell/Orbital-Shell?style=plastic)
