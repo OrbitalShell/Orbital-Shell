@@ -1,7 +1,6 @@
 ﻿#!porbsh
 # build/publish orbital shell binaries
 
-set source nuget
 set version 1.0.5
 set nugetext .nupkg
 
