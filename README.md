@@ -27,6 +27,8 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 
 > [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
+<br>
+
 ## Contribute !
 
 😄 We are looking for **collaborators** 👯 to help for evolving this tool ! If you **like** the **command line**, the **bash** syntax, programming **cli tools**, **parsers**, **data streams**, ANSI, C# 8, batch, and so on... you may like to develop orbital shell! Any idea, suggest, code, feedback is welcomed ! 
@@ -46,10 +48,13 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
 
 **The project team like to meet people and wish to share pleasure of programming and technology enthusiasm, with fun and good spirit** 
 
+<br>
+
 ## Features
 
 <img src="docs/assets/img/git-doc/orbital-shell.png"/>*a view of the shell running in Windows Terminal*
 
+<br>
 
 - Is a '**bash** style' POSIX command shell
 - The **modules** that are integrated into the shell provide **the most usefull shell commands** (ls/dir,rm,mv,cp,find,echo,clear,more,env,set,export,history,alias,...), tests commands, **text editor command**, and so on... , covering the fields of file system,text files,console output, data management, user input
@@ -117,11 +122,14 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
   
     <img src="docs/assets/img/git-doc/2021-02-12%2014_28_35-Window.png"/>
 
+<br>
 
 ## Orbital shell uses these libraries:
 
 - Microsoft.CodeAnalysis.CSharp.Scripting
 - NewtonSoft.Json
+
+<br>
 
 ## notice / caveat
 
