@@ -22,7 +22,7 @@ dotnet publish --configuration Release --output bin/publish/netcoreapp3.1/
 # framework-independent (self-contained) - current plateforms
 
 echo "(br)(f=green)publish self-contained binaries: (b=darkgreen,f=yellow)netcoreapp3.1(rdc)(br)"
-#dotnet publish --runtime win-x64 --configuration Release --output bin/publish/win-x64/
+dotnet publish --runtime win-x64 --configuration Release --output bin/publish/win-x64/
 
 echo "(br)(f=green)publish self-contained binaries: (b=darkgreen,f=yellow)linux-x64(rdc)(br)"
 #dotnet publish --runtime linux-x64 --configuration Release --output bin/publish/linux-x64/
@@ -49,6 +49,12 @@ echo "(b=darkgreen,f=yellow)PACK(rdc)"
 nuget pack OrbitalShell.nuspec -Properties version=$version
 echo "(b=darkgreen,f=yellow)PUSH(rdc)"
 nuget-push OrbitalShell.$version$nugetext $key
+
+echo "(br)(f=green)nuget publish self-contained binaries: (b=darkgreen,f=yellow)win-x64(rdc)(br)"
+echo "(b=darkgreen,f=yellow)PACK(rdc)"
+nuget pack OrbitalShell-win-x64.nuspec -Properties version=$version
+echo "(b=darkgreen,f=yellow)PUSH(rdc)"
+nuget-push OrbitalShell-win-x64.$version$nugetext $key
 
 echo "(br)(f=green)nuget publish self-contained binaries: (b=darkgreen,f=yellow)linux-x64(rdc)(br)"
 echo "(b=darkgreen,f=yellow)PACK(rdc)"

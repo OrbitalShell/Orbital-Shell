@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<!-- xmlns="https://raw.githubusercontent.com/NuGet/NuGet.Client/dev/src/NuGet.Core/NuGet.Packaging/compiler/resources/nuspec.xsd"> -->
+	<metadata>
+		<id>OrbitalShell-win-x64</id>
+		<version>$version$</version>
+		<authors>Franck Gaspoz</authors>
+		<owners>Franck Gaspoz</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<license type="expression">MIT</license>
+
+		<projectUrl>https://orbitalshell.github.io/Orbital-Shell/</projectUrl>
+		<repository type="git" url="https://github.com/OrbitalShell/Orbital-Shell.git"/>
+						
+		<icon>assets/robotazteque.png</icon>
+
+		<description>This is the Orbital Shell CLI binaries of self-contained app for win-x64 plateform. Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core.</description>
+		<releaseNotes>initial stable release of binaries</releaseNotes>
+		<copyright>© Orbital Shell 2020</copyright>
+		<tags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</tags>
+
+	</metadata>
+
+	<files>
+		<file src="../assets/robotazteque.png" target="assets/" />
+		<file src="../LICENSE.md" target="" />
+		<file src="../README.md" target="" />
+		<file src="..\bin\publish\win-x64\**\*.*" target="netcoreapp3.1/" />
+	</files>
+	
+</package>
