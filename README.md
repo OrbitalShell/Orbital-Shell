@@ -90,9 +90,9 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
   - <u>**Variables**</u>
     - Variables can store any data of **any C# object type**      
       - The command line syntax has been extended to **support an object notation to indicate accessing an object member or invoking an object method** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/16)       
-      - Integrates the os shell **environment variables** (with type **String**) <br> ![done](https://img.shields.io/badge/done-green?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/17) 
-      - Are getted and setted with **$** (in any command arg), **set** and **=** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/18)
-    - **Functions** can be defined by a **shell script** or by a **C# compiled source** <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/19)
+      - Integrates the os shell **environment variables** (with type **String**) <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
+      - Are getted and setted with **$** (in any command arg), **set** and **=** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/17)
+    - **Functions** can be defined by a **shell script** or by a **C# compiled source** <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/18)
     - **Aliases** for command names <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
     - **Shell environment** : the shell initialization feature deploy and setup a shell environment for the current user (profile folder and initialization scripts: *.profile*,*.alias*,*.history*,*.orbsh*) <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
   - **Extensibility**:
