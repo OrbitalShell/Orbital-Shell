@@ -45,9 +45,9 @@ You can directly **FORK** the project @ [https://github.com/OrbitalShell/Orbital
 Join the **orbital shell team** and get advantages of the team tools on github. We can contact 💬 by mail, skype and so on...
 
   - read the [contribution guide lines](https://github.com/OrbitalShell/Orbital-Shell/blob/master/CONTRIBUTING.md) and the [code of conduct of the project](https://github.com/OrbitalShell/Orbital-Shell/blob/master/CODE_OF_CONDUCT.md)
-  - read the project README @ [https://github.com/franck-gaspoz/orbital-shell/blob/master/README.md](https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md)
-  - visit the project's web site @ [https://franck-gaspoz.github.io/orbital-shell/](https://orbitalshell.github.io/Orbital-Shell/)
-  - visit the project repository @ [https://github.com/franck-gaspoz/orbital-shell/](https://github.com/OrbitalShell/Orbital-Shell/)
+  - read the project README @ [https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md](https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md)
+  - visit the project's web site @ [https://orbitalshell.github.io/Orbital-Shell/](https://orbitalshell.github.io/Orbital-Shell/)
+  - visit the project repository @ [https://github.com/OrbitalShell/Orbital-Shell/](https://github.com/OrbitalShell/Orbital-Shell/)
   
 **Join the project**: 
 - Send a mail to the project team @ [mailto://orbital-shell@outlook.fr](mailto://orbital-shell@outlook.fr) or to [me](mailto://franck.gaspoz@gmail.com)
@@ -63,36 +63,42 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
 
 <br>
 
-- Is a '**bash** style' POSIX command shell
+- Is a '**bash** style' POSIX command shell <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
 - The **modules** that are integrated into the shell provide **the most usefull shell commands** (ls/dir,rm,mv,cp,find,echo,clear,more,env,set,export,history,alias,...), tests commands, **text editor command**, and so on... , covering the fields of file system,text files,console output, data management, user input
-  - modules can contains any item that the shell is intended to handle: commands, **hooks**, scripts/functions, settings, help, doc, assets, ...
-  - dedicated repositories are used to get known modules list
-  - modules are versioned and delivered throught **nupkg** packets, currently hosted at **NuGet**
+  - modules can contains any item that the shell is intended to handle: commands, **hooks**, scripts/functions, settings, help, doc, assets, ... <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
+  - dedicated repositories are used to get known modules list <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
+  - modules are versioned and delivered throught **nupkg** packets, currently hosted at **NuGet** <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
+  - modules are installed into the binaries of the shell <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic) ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/5)
+  - modules to be loaded are loaded by the shell kernel on user session startup <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic) ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/6)
 - _The shell command engine implements:_
-  - A **command line reader** with usual input keyboard shortcuts, auto completion and input feedback (colorization)
-  - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*)
-  - **Streams redirections** ( **<** **>** )
-  - <u>**pipelines** of commands:</u>aa
-    - sequences of commands ( **|** ) and conditional sequences of commands ( **&&**, **||** )
-    - groups of commands **(** .. **;** .. **)**
-    - background execution ( **&** )
-    - commands return a **result code** and can returns **values**. When returning values and when specified, a pipe ( **|** ) between commands can **pass objects instead of streams**
-  - <u>**Batches of commands**</u> (scripts)   
-    - **Cancellation** of commands execution **Task** (Ctrl-Z)
-    - traditional batch of shell commands (.sh,.orbsh)
-    - C# language scripts (.cssh)
+  - A **command line reader** with:
+    - usual input keyboard shortcuts <br> ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/4)
+    - auto completion <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/7)
+    - input feedback (colorization) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic) ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/8)
+  - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*) <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
+  - **Streams redirections** ( **<** **>** ) <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/9)
+  - **pipelines** of commands:
+    - sequences of commands ( **|** ) and conditional sequences of commands ( **&&**, **||** ) <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/10)
+    - groups of commands **(** .. **;** .. **)** <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/11)
+    - background execution ( **&** ) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/12)
+    - commands return a **result code** and can returns **values** <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
+      - When returning values and when specified, a pipe ( **|** ) between commands can **pass objects instead of streams** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/13)
+  - **Cancellation** of commands execution **Task** (Ctrl-Z) <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
+  - <u>**Batches of commands**</u> (scripts)
+    - traditional batch of shell commands (.sh,.orbsh) <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/14)
+    - C# language scripts (.cssh) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/15)
   - <u>**Variables**</u>
-    - Variables can store any data of **any C# object type**
-      - The command line syntax has been extended to **support an object notation to indicate accessing an object member or invoking an object method**
-      - The **environment variables** are of type **String**
-      - Are getted and setted with **$** (in any command arg), **set** and **=**
-    - **Functions** can be defined by a **shell script** or by a **C# compiled source**
-    - **Aliases** for command names
-    - **Shell environment** : the shell initialization feature deploy and setup a shell environment for the current user (profile folder and initialization scripts: *.profile*,*.alias*,*.history*,*.orbsh*)
-    - **Extensibility**:
-      - The default command line grammar can be changed to get other syntaxes (***zsh***, ***DOS***,...) or a new one
-      - The command line engine can be overriden and extended to enhance the existing features (auto complete inputs,parsing inputs,running commands,...)
-    - **A simple way to define shell commands** using C# method and parameters attributes, avoiding the developer to handle syntax analyzing and shell integration (command help, pipelines, standard stream redirections) councerns, allowing to support either simple values types (int,float,string,date time,..) and object types (even generic collection), and that can interacts together and with the shell throught data objects
+    - Variables can store any data of **any C# object type**      
+      - The command line syntax has been extended to **support an object notation to indicate accessing an object member or invoking an object method** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/16)       
+      - Integrates the os shell **environment variables** (with type **String**) <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
+      - Are getted and setted with **$** (in any command arg), **set** and **=** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/17)
+    - **Functions** can be defined by a **shell script** or by a **C# compiled source** <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/18)
+    - **Aliases** for command names <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
+    - **Shell environment** : the shell initialization feature deploy and setup a shell environment for the current user (profile folder and initialization scripts: *.profile*,*.alias*,*.history*,*.orbsh*) <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
+  - **Extensibility**:
+    - The default command line grammar can be changed to get other syntaxes (***zsh***, ***DOS***,...) or a new one <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
+    - The command line engine can be overriden and extended to enhance the existing features (auto complete inputs,parsing inputs,running commands,...) <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
+    - **A simple way to define shell commands** using C# method and parameters attributes, avoiding the developer to handle syntax analyzing and shell integration (command help, pipelines, standard stream redirections) councerns, allowing to support either simple values types (int,float,string,date time,..) and object types (even generic collection), and that can interacts together and with the shell throught data objects <br> ![done](https://img.shields.io/badge/done-green?style=plastic) 
 
     ``` csharp
     // a Unix rm command implementation:
