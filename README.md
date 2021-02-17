@@ -93,9 +93,9 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
     - **Functions** can be defined by a **shell script** or by a **C# compiled source** <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
     - **Aliases** for command names <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
     - **Shell environment** : the shell initialization feature deploy and setup a shell environment for the current user (profile folder and initialization scripts: *.profile*,*.alias*,*.history*,*.orbsh*) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
-    - **Extensibility**:
-      - The default command line grammar can be changed to get other syntaxes (***zsh***, ***DOS***,...) or a new one <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
-      - The command line engine can be overriden and extended to enhance the existing features (auto complete inputs,parsing inputs,running commands,...) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
+  - **Extensibility**:
+    - The default command line grammar can be changed to get other syntaxes (***zsh***, ***DOS***,...) or a new one <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
+    - The command line engine can be overriden and extended to enhance the existing features (auto complete inputs,parsing inputs,running commands,...) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
     - **A simple way to define shell commands** using C# method and parameters attributes, avoiding the developer to handle syntax analyzing and shell integration (command help, pipelines, standard stream redirections) councerns, allowing to support either simple values types (int,float,string,date time,..) and object types (even generic collection), and that can interacts together and with the shell throught data objects <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
 
     ``` csharp
