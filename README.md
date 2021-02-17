@@ -63,14 +63,17 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
 
 <br>
 
-- Is a '**bash** style' POSIX command shell
+- Is a '**bash** style' POSIX command shell <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic)
 - The **modules** that are integrated into the shell provide **the most usefull shell commands** (ls/dir,rm,mv,cp,find,echo,clear,more,env,set,export,history,alias,...), tests commands, **text editor command**, and so on... , covering the fields of file system,text files,console output, data management, user input
-  - modules can contains any item that the shell is intended to handle: commands, **hooks**, scripts/functions, settings, help, doc, assets, ...
-  - dedicated repositories are used to get known modules list
-  - modules are versioned and delivered throught **nupkg** packets, currently hosted at **NuGet**
+  - modules can contains any item that the shell is intended to handle: commands, **hooks**, scripts/functions, settings, help, doc, assets, ... <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic)
+  - dedicated repositories are used to get known modules list <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic)
+  - modules are versioned and delivered throught **nupkg** packets, currently hosted at **NuGet** <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic)
 - _The shell command engine implements:_
-  - A **command line reader** with usual input keyboard shortcuts, auto completion and input feedback (colorization)
-  - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*)
+  - A **command line reader** with:
+    - usual input keyboard shortcuts <br> ![issue](https://img.shields.io/github/bug/detail/status/orbitalshell/Orbital-Shell/4)
+    - auto completion ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
+    - input feedback (colorization) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
+  - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic)
   - **Streams redirections** ( **<** **>** )
   - <u>**pipelines** of commands:</u>aa
     - sequences of commands ( **|** ) and conditional sequences of commands ( **&&**, **||** )
