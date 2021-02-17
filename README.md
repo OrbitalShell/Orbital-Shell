@@ -73,8 +73,8 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
 - _The shell command engine implements:_
   - A **command line reader** with:
     - usual input keyboard shortcuts <br> ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/4)
-    - auto completion <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
-    - input feedback (colorization) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
+    - auto completion <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/7)
+    - input feedback (colorization) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic) ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/8)
   - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*) <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
   - **Streams redirections** ( **<** **>** ) <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)
   - **pipelines** of commands:
