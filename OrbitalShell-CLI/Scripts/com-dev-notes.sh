@@ -51,3 +51,5 @@ nuget install orbitalshell-linux-musl-x64
 nuget install orbitalshell-linux-arm
 nuget install orbitalshell-linux-arm64
 nuget install orbitalshell-osx-x64
+# then cd OrbitalShell-{rid}.{ver}/{rid}/
+
