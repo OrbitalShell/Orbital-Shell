@@ -74,28 +74,29 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
     - auto completion <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
     - input feedback (colorization) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
   - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic)
-  - **Streams redirections** ( **<** **>** ) <br> ![incomplete](https://img.shields.io/badge/todo-red?style=plastic)
+  - **Streams redirections** ( **<** **>** ) <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)
   - **pipelines** of commands:
-    - sequences of commands ( **|** ) and conditional sequences of commands ( **&&**, **||** ) <br> ![incomplete](https://img.shields.io/badge/todo-red?style=plastic)
-    - groups of commands **(** .. **;** .. **)**
-    - background execution ( **&** )
-    - commands return a **result code** and can returns **values**. When returning values and when specified, a pipe ( **|** ) between commands can **pass objects instead of streams**
-  - <u>**Batches of commands**</u> (scripts)   
-    - **Cancellation** of commands execution **Task** (Ctrl-Z)
-    - traditional batch of shell commands (.sh,.orbsh)
-    - C# language scripts (.cssh)
+    - sequences of commands ( **|** ) and conditional sequences of commands ( **&&**, **||** ) <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)
+    - groups of commands **(** .. **;** .. **)** <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
+    - background execution ( **&** ) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
+    - commands return a **result code** and can returns **values** <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
+      - When returning values and when specified, a pipe ( **|** ) between commands can **pass objects instead of streams** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)
+  - **Cancellation** of commands execution **Task** (Ctrl-Z) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
+  - <u>**Batches of commands**</u> (scripts)
+    - traditional batch of shell commands (.sh,.orbsh) <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)
+    - C# language scripts (.cssh) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
   - <u>**Variables**</u>
-    - Variables can store any data of **any C# object type**
-      - The command line syntax has been extended to **support an object notation to indicate accessing an object member or invoking an object method**
-      - The **environment variables** are of type **String**
-      - Are getted and setted with **$** (in any command arg), **set** and **=**
-    - **Functions** can be defined by a **shell script** or by a **C# compiled source**
-    - **Aliases** for command names
-    - **Shell environment** : the shell initialization feature deploy and setup a shell environment for the current user (profile folder and initialization scripts: *.profile*,*.alias*,*.history*,*.orbsh*)
+    - Variables can store any data of **any C# object type**      
+      - The command line syntax has been extended to **support an object notation to indicate accessing an object member or invoking an object method** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)       
+      - Integrates the os shell **environment variables** (with type **String**) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
+      - Are getted and setted with **$** (in any command arg), **set** and **=** <br> ![uncomplete](https://img.shields.io/badge/uncomplete-darkred?style=plastic)
+    - **Functions** can be defined by a **shell script** or by a **C# compiled source** <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
+    - **Aliases** for command names <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
+    - **Shell environment** : the shell initialization feature deploy and setup a shell environment for the current user (profile folder and initialization scripts: *.profile*,*.alias*,*.history*,*.orbsh*) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
     - **Extensibility**:
-      - The default command line grammar can be changed to get other syntaxes (***zsh***, ***DOS***,...) or a new one
-      - The command line engine can be overriden and extended to enhance the existing features (auto complete inputs,parsing inputs,running commands,...)
-    - **A simple way to define shell commands** using C# method and parameters attributes, avoiding the developer to handle syntax analyzing and shell integration (command help, pipelines, standard stream redirections) councerns, allowing to support either simple values types (int,float,string,date time,..) and object types (even generic collection), and that can interacts together and with the shell throught data objects
+      - The default command line grammar can be changed to get other syntaxes (***zsh***, ***DOS***,...) or a new one <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
+      - The command line engine can be overriden and extended to enhance the existing features (auto complete inputs,parsing inputs,running commands,...) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
+    - **A simple way to define shell commands** using C# method and parameters attributes, avoiding the developer to handle syntax analyzing and shell integration (command help, pipelines, standard stream redirections) councerns, allowing to support either simple values types (int,float,string,date time,..) and object types (even generic collection), and that can interacts together and with the shell throught data objects <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic) 
 
     ``` csharp
     // a Unix rm command implementation:
