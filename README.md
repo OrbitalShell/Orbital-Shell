@@ -70,13 +70,13 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
   - modules are versioned and delivered throught **nupkg** packets, currently hosted at **NuGet** <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic)
 - _The shell command engine implements:_
   - A **command line reader** with:
-    - usual input keyboard shortcuts <br> ![issue](https://img.shields.io/github/bug/detail/status/orbitalshell/Orbital-Shell/4)
-    - auto completion ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
+    - usual input keyboard shortcuts <br> ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/4)
+    - auto completion <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
     - input feedback (colorization) <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic)
   - **Streams** standard input (*stdIn*), standard output (*stdOut*), and standard error (*StdErr*) <br> ![ok](https://img.shields.io/badge/ok-green?style=plastic)
-  - **Streams redirections** ( **<** **>** )
-  - <u>**pipelines** of commands:</u>aa
-    - sequences of commands ( **|** ) and conditional sequences of commands ( **&&**, **||** )
+  - **Streams redirections** ( **<** **>** ) <br> ![incomplete](https://img.shields.io/badge/todo-red?style=plastic)
+  - **pipelines** of commands:
+    - sequences of commands ( **|** ) and conditional sequences of commands ( **&&**, **||** ) <br> ![incomplete](https://img.shields.io/badge/todo-red?style=plastic)
     - groups of commands **(** .. **;** .. **)**
     - background execution ( **&** )
     - commands return a **result code** and can returns **values**. When returning values and when specified, a pipe ( **|** ) between commands can **pass objects instead of streams**
