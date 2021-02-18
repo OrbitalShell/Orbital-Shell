@@ -769,7 +769,68 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public const int MaxWaitTime = 2000;    // 2 sec
 
         /// <summary>
+        /// shell exec short syntax. output not provided
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="com"></param>
+        /// <param name="args"></param>
+        /// <param name="returnCommandResult"></param>
+        /// <returns></returns>
+        public bool ShellExec(
+           CommandEvaluationContext context,
+           string com,
+           string args,
+           out CommandVoidResult returnCommandResult)
+        {
+            var returnCode = ShellExec(
+                context, com, args, out var output, 
+                true
+                );
+            var success = (returnCode == (int)ReturnCode.OK);
+
+            returnCommandResult = success ? null : new CommandVoidResult(returnCode, output);
+
+            return success;
+        }
+
+        /// <summary>
         /// exec a file with os shell exec or orbsh shell exec
+        /// </summary>
+        /// <param name="context">command evaluation context</param>
+        /// <param name="comPath">command filePath</param>
+        /// <param name="args">command line arguments string</param>
+        /// <param name="output">shell exec result if any</param>
+        /// <param name="waitForExit">true if wait for exec process exits</param>
+        /// <param name="isStreamsEchoEnabled">if true, exec process output stream is echoized to context out (dump command output)</param>
+        /// <param name="isOutputCaptureEnabled">if true capture the exec process output and give the result in parameter 'output'</param>
+        /// <param name="mergeErrorStreamIntoOutput">if true merge exec process err stream content to the process output content (if process out capture is enabled)</param>
+        /// <returns>exec process return code</returns>
+        public int ShellExec(
+            CommandEvaluationContext context,
+            string comPath,
+            string args,
+            string workingDirectory = null,
+            bool waitForExit = true,
+            bool isStreamsEchoEnabled = true,
+            bool isOutputCaptureEnabled = true,
+            bool mergeErrorStreamIntoOutput = true
+            )
+        {
+            return ShellExec(
+                context,
+                comPath,
+                args,
+                workingDirectory,
+                out _,
+                waitForExit,
+                isStreamsEchoEnabled,
+                isOutputCaptureEnabled,
+                mergeErrorStreamIntoOutput
+                );
+        }
+
+        /// <summary>
+        /// exec a file with os shell exec or orbsh shell exec [delivered]
         /// </summary>
         /// <param name="context">command evaluation context</param>
         /// <param name="comPath">command filePath</param>
@@ -789,11 +850,46 @@ namespace OrbitalShell.Component.CommandLine.Processor
             bool isStreamsEchoEnabled = true,
             bool isOutputCaptureEnabled = true,
             bool mergeErrorStreamIntoOutput = true
+            ) => ShellExec(
+                    context,
+                    comPath,
+                    args,
+                    null,
+                    out output,
+                    waitForExit,
+                    isStreamsEchoEnabled,
+                    isOutputCaptureEnabled,
+                    mergeErrorStreamIntoOutput                
+                );
+
+        /// <summary>
+        /// exec a file with os shell exec or orbsh shell exec
+        /// </summary>
+        /// <param name="context">command evaluation context</param>
+        /// <param name="comPath">command filePath</param>
+        /// <param name="args">command line arguments string</param>
+        /// <param name="output">shell exec result if any</param>
+        /// <param name="waitForExit">true if wait for exec process exits</param>
+        /// <param name="isStreamsEchoEnabled">if true, exec process output stream is echoized to context out (dump command output)</param>
+        /// <param name="isOutputCaptureEnabled">if true capture the exec process output and give the result in parameter 'output'</param>
+        /// <param name="mergeErrorStreamIntoOutput">if true merge exec process err stream content to the process output content (if process out capture is enabled)</param>
+        /// <returns>exec process return code</returns>
+        public int ShellExec(
+            CommandEvaluationContext context,
+            string comPath,
+            string args,
+            string workingDirectory,
+            out string output,
+            bool waitForExit = true,
+            bool isStreamsEchoEnabled = true,
+            bool isOutputCaptureEnabled = true,
+            bool mergeErrorStreamIntoOutput = true
             )
-        {
+        {            
             try
             {
                 output = null;
+                workingDirectory ??= Environment.CurrentDirectory;
                 var processStartInfo = new ProcessStartInfo()
                 {
                     UseShellExecute = false,
@@ -807,7 +903,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     FileName = comPath,
                     Arguments = args,
                     WindowStyle = ProcessWindowStyle.Normal,
-                    WorkingDirectory = Environment.CurrentDirectory
+                    WorkingDirectory = workingDirectory
                 };
                 var sb = new StringBuilder();
 

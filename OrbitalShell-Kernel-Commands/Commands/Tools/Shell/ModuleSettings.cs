@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
+using OrbitalShell.Component.Console;
+
 namespace OrbitalShell.Commands.Tools.Shell
 {
-    public class ModuleSettings
+    public class ModuleSettings : ShellObject
     {
         /// <summary>
         /// module id (C# case) - auto from command new-module
@@ -80,7 +82,17 @@ namespace OrbitalShell.Commands.Tools.Shell
         /// package web site url
         /// </summary>
         public string ModulePackageUrl = "https://orbitalshell.github.io/Orbital-Shell/";
-        
+
+        /// <summary>
+        /// package web site url
+        /// </summary>
+        public string ModuleRepositoryUrl = "https://github.com/OrbitalShell/Orbital-Shell.git";
+
+        /// <summary>
+        /// module repository owner
+        /// </summary>
+        public string ModuleRepositoryOwner = "ModuleRepositoryOwner";
+
         /// <summary>
         /// package tags
         /// </summary>
@@ -101,5 +113,21 @@ namespace OrbitalShell.Commands.Tools.Shell
         /// </summary>
         public string ModuleToolVarSettingsName;
 
+        /// <summary>
+        /// fill automatically some fields
+        /// </summary>
+        /// <param name="id">module id (C# case)</param>
+        /// <returns></returns>
+        public ModuleSettings AutoFill(string moduleId,string packageId=null)
+        {
+            ModuleID = moduleId;
+            packageId ??= moduleId;
+            ModulePackageID = packageId;
+            ModulePascalCaseID = char.ToLower(packageId[0]) + packageId.Substring(1);
+            ModuleLowerID = $"orbitalshell-module-{ModulePackageID.ToLower()}";
+            ModuleNamespace = $"env.com.{ModuleToolNamespace.ToLower()}";
+
+            return this;
+        }
     }
 }
