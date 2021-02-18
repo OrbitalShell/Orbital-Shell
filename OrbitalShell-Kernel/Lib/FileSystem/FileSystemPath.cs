@@ -127,6 +127,7 @@ namespace OrbitalShell.Lib.FileSystem
             return true;
         }
 
+        public virtual bool CheckExists() => FileSystemInfo.Exists;
         public virtual long Length => 0;
 
         public bool IsDirectory => FileSystemInfo.Attributes.HasFlag(FileAttributes.Directory);

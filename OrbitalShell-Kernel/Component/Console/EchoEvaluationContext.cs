@@ -32,6 +32,13 @@ namespace OrbitalShell.Component.Console
             Options = options;
         }
 
+        public EchoEvaluationContext(CommandEvaluationContext context)
+        {
+            Out = context.Out;
+            CommandEvaluationContext = context;
+            Options = new FormatingOptions();
+        }
+
         public EchoEvaluationContext(
             EchoEvaluationContext ctx
             )

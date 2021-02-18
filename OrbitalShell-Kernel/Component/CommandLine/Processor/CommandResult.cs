@@ -34,6 +34,23 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         public CommandVoidResult(
+            ReturnCode returnCode,
+            string execErrorText
+            )
+        {
+            ReturnCode = (int)returnCode;
+            ExecErrorText = execErrorText;
+        }
+
+        public CommandVoidResult(
+            int returnCode,
+            string execErrorText)
+        {
+            ReturnCode = returnCode;
+            ExecErrorText = execErrorText;
+        }
+
+        public CommandVoidResult(
             ReturnCode returnCode)
         {
             ReturnCode = (int)returnCode;
