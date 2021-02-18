@@ -11,14 +11,16 @@ using OrbitalShell.Commands.FileSystem;
 using System.Collections.Generic;
 using OrbitalShell.Lib.FileSystem;
 using System.IO;
+using Newtonsoft.Json;
 
-namespace OrbitalShell.Commands.Tools
+namespace OrbitalShell.Commands.Tools.Shell
 {
     [Commands("tools dedicated to development of tools built upon the shell")]
     [CommandsNamespace(CommandNamespace.tools,CommandNamespace.shell)]
     public class ToolsShellCommands : ICommandsDeclaringType
     {
         public const string moduleProjectTemplateRepositoryUrl = "https://github.com/OrbitalShell/OrbitalShell-Module-Template.git";
+        public const string defaultSettingsFileName = "module-settings.json";
 
         string Title(string text)
         {
@@ -44,7 +46,9 @@ namespace OrbitalShell.Commands.Tools
             CommandEvaluationContext context,
             [Parameter(0, "module ID")] string id,
             [Option("o","out","output path",true,true)] DirectoryPath output = null,
+            [Option("i","in","take parameters from json input file",true,true)] string inputFile = defaultSettingsFileName,
             [Option("f","force","delete target if already exists")] bool force = false,
+            [Option("s","skip-errors","skip ant error if possible")] bool skipErrors = false,
             [Option("project template url", "modproj-tpl-url", "module project template url", true, true)] string url = moduleProjectTemplateRepositoryUrl
             )
         {
@@ -52,14 +56,14 @@ namespace OrbitalShell.Commands.Tools
             var c = context.ShellEnv.Colors;
             output ??= new DirectoryPath(Environment.CurrentDirectory);
             output = new DirectoryPath(Path.Combine(output.FullName, id));
+            var input = new FilePath(inputFile);
             var ectx = new EchoEvaluationContext(context);
 
             o.Echo(Title("shell module dotnet project generator"));
 
+            if (!input.CheckExists(context)) return new CommandVoidResult(ReturnCode.Error);
             if (force && output.CheckExists()) Directory.Delete(output.FullName, true);
-            //if (!output.CheckExists()) Directory.CreateDirectory(output.FullName);            
-            //if (!output.CheckExists(context)) return CommandVoidResult.Instance;            
-
+            
             o.Echoln(Action("cloning module project repository",url));
             o.Echo(_("into: ")); 
             output.Echo(ectx); o.Echoln();
@@ -72,8 +76,19 @@ namespace OrbitalShell.Commands.Tools
                 $"clone {url} {output.FullName}",
                 out var cmd0Out);
 
-            if (r0 != (int)ReturnCode.OK)
+            if (!skipErrors && r0 != (int)ReturnCode.OK)
                 return new CommandVoidResult(r0, cmd0Out);
+
+            o.Echoln(Action($"set parameters in new module ", $"'{id}'"));
+
+            var settingsText = File.ReadAllText(input.FullName);
+            var settings = JsonConvert.DeserializeObject<ModuleSettings>(settingsText);
+
+            /*              
+            cd MyModule
+            git remote remove origin
+            git remote add origin {repositoryUrl}
+             */
 
             return CommandVoidResult.Instance;
         }
