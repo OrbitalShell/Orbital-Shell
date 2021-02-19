@@ -41,12 +41,15 @@ namespace OrbitalShell.Component.Shell.Module
         public void RegisterHook(
             CommandEvaluationContext context,
             string name,
+
             MethodInfo mi)
         {
-            object owner = _GetInstance(mi.DeclaringType);
+            object owner = _GetInstance(mi.DeclaringType);      // TODO: having no instance, we MUST use DI to share INSTANCES
             var hs = new HookSpecification(name, owner, mi);
             _hooks.AddOrReplace(name, hs);
         }
+
+        readonly Dictionary<string, HookTriggerMode> HooksTriggerState = new Dictionary<string, HookTriggerMode>();
 
         /// <summary>
         /// invoke hooks having the given name
@@ -58,17 +61,26 @@ namespace OrbitalShell.Component.Shell.Module
         public void InvokeHooks(
             CommandEvaluationContext context,
             string name,
+            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
         )
         {
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace))
+                context.Out.Echo(context.ShellEnv.Colors.Log + "[invoke hook: " + name + "](rdc) ");
+
             if (_hooks.TryGetValue(name, out var hookList))
             {
                 foreach (var hook in hookList)
                 {
                     try
                     {
+                        var triggerStateKey = hook.Owner.ToString() + hookTriggerMode;
+                        if (HooksTriggerState.ContainsKey(triggerStateKey) && hookTriggerMode == HookTriggerMode.FirstTimeOnly)
+                            break;
+                        HooksTriggerState.AddOrReplace(triggerStateKey, hookTriggerMode);
+
                         if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace)) 
-                            context.Out.Echo(context.ShellEnv.Colors.Log + $"[hook '{hook.Name}' handled by: '{hook.Owner}.{hook.Method}'] ");
+                            context.Out.Echo(context.ShellEnv.Colors.Log + $"[hook '{hook.Name}' handled by: '{hook.Owner}.{hook.Method}'](rdc) ");
 
                         hook.Method.Invoke(hook.Owner, new object[] { context });
                         callBack?.Invoke(hook.Owner);
@@ -86,17 +98,14 @@ namespace OrbitalShell.Component.Shell.Module
         /// <summary>
         /// invoke hooks having the given name
         /// </summary>
+        /// <param name="context">command eval context</param>
         /// <param name="name">hook name</param>
+        /// <param name="hookTriggerMode">how the hook should be tiggered</param>
         public void InvokeHooks(
             CommandEvaluationContext context,
             Hooks name,
+            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
-        )
-        {
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace))
-                context.Out.Echo(context.ShellEnv.Colors.Log + "[invoke hook: " + name + "] ");
-
-            InvokeHooks(context, name + "", callBack);
-        }
+        ) => InvokeHooks(context, name + "", hookTriggerMode, callBack);
     }
 }

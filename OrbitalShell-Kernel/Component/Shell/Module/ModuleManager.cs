@@ -152,6 +152,7 @@ namespace OrbitalShell.Component.Shell.Module
             ModuleHookManager.InvokeHooks(
                 context,
                 Hooks.ModuleInit,
+                HookTriggerMode.FirstTimeOnly,
                 (o) =>
                 {
                     moduleSpecification.IsInitialized = true;
