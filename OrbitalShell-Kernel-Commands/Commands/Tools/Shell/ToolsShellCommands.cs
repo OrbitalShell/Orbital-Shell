@@ -52,15 +52,19 @@ namespace OrbitalShell.Commands.Tools.Shell
             [Option("i","in","take parameters from json input file",true,true)] string inputFile = defaultSettingsFileName,
             [Option("f","force","delete target if already exists")] bool force = false,
             [Option("s","skip-errors","skip ant error if possible")] bool skipErrors = false,
-            [Option(null, "no-push", "don't perform an initial push of project repo")] bool noPush = false,
+            [Option(null, "no-init", "don't perform an initial init of remote repo")] bool noInitRemote = false,
             [Option("project template url", "modproj-tpl-url", "module project template url", true, true)] string url = moduleProjectTemplateRepositoryUrl,
             [Option(null,"preserve-curdir","preserve current dir")] bool preserveCurrentDir = false
             )
         {
             var o = context.Out;
             var c = context.ShellEnv.Colors;
+            string packageId = !string.IsNullOrWhiteSpace(repoUrl) ?
+                Path.GetFileNameWithoutExtension(repoUrl) : null;
+            string repoOwner = !string.IsNullOrWhiteSpace(repoUrl) ?
+                Path.GetFileName(Path.GetDirectoryName(repoUrl)) : null;
             output ??= new DirectoryPath(Environment.CurrentDirectory);
-            output = new DirectoryPath(Path.Combine(output.FullName, id));
+            output = new DirectoryPath(Path.Combine(output.FullName, packageId ?? id));
             var input = new FilePath(inputFile);
             var ectx = new EchoEvaluationContext(context);
             ectx.Options.LineBreak = true;
@@ -84,10 +88,7 @@ namespace OrbitalShell.Commands.Tools.Shell
             if (!input.CheckExists(context)) return new CommandVoidResult(ReturnCode.Error);
             o.Echoln(_subTitle($"set project template properties", $"'{id}'"));
 
-            string packageId = !string.IsNullOrWhiteSpace(repoUrl) ?
-                Path.GetFileNameWithoutExtension(repoUrl) : null;
-            string repoOwner = !string.IsNullOrWhiteSpace(repoUrl) ?
-                Path.GetFileName(Path.GetDirectoryName(repoUrl)) : null;
+            
 
             var settingsText = File.ReadAllText(input.FullName);
             var settings = JsonConvert
@@ -157,7 +158,13 @@ namespace OrbitalShell.Commands.Tools.Shell
             {
                 if (!ShellExec(context, skipErrors, "git", $"remote add origin {settings.ModuleRepositoryUrl}", out result)) return result;
                 // check this
-                if (!noPush && !ShellExec(context, skipErrors, "git", "push --set-upstream origin main", out result)) return result;
+                //if (!noPush && !ShellExec(context, skipErrors, "git", "push --set-upstream origin main", out result)) return result;
+                if (!noInitRemote && !ShellExec(context, skipErrors, "git", "fetch", out result)) return result;
+                if (!noInitRemote && !ShellExec(context, skipErrors, "git", "branch --set-upstream-to=origin/main main", out result)) return result;
+                if (!noInitRemote && !ShellExec(context, skipErrors, "git", "pull --allow-unrelated-histories", out result)) return result;
+                if (!noInitRemote && !ShellExec(context, skipErrors, "git", "add .", out result)) return result;
+                if (!noInitRemote && !ShellExec(context, skipErrors, "git", "commit -a -m \"initial commit\"", out result)) return result;
+                if (!noInitRemote && !ShellExec(context, skipErrors, "git", "push", out result)) return result;
             }
 
             #endregion

@@ -19,6 +19,11 @@ namespace OrbitalShell.Commands.Tools.Shell
         public string ModulePackageID;
 
         /// <summary>
+        /// OrbitalShell-Module-{ModulePackageID}
+        /// </summary>
+        public string ModuleLowerPackageID;
+
+        /// <summary>
         /// ModulePascalCaseID ::= moduleId != ModuleId (auto)
         /// </summary>
         public string ModulePascalCaseID;
@@ -123,8 +128,9 @@ namespace OrbitalShell.Commands.Tools.Shell
             ModuleID = moduleId;
             packageId ??= moduleId;
             ModulePackageID = packageId;
+            ModuleLowerPackageID = packageId?.ToLower();
             ModulePascalCaseID = char.ToLower(packageId[0]) + packageId.Substring(1);
-            ModuleLowerID = $"orbitalshell-module-{ModulePackageID.ToLower()}";
+            ModuleLowerID = $"orbitalshell-module-{ModuleID.ToLower()}";
             ModuleNamespace = $"env.com.{ModuleToolNamespace.ToLower()}";
 
             return this;
