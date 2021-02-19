@@ -27,6 +27,7 @@ using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Lib.FileSystem;
 using System.Text;
 using OrbitalShell.Lib.Process;
+using OrbitalShell.Component.Shell.Hook;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -174,9 +175,6 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
             context ??= new CommandEvaluationContext(
                 this,
-                /*settings.Out,
-                settings.In,
-                settings.Err,*/
                 Out,
                 In,
                 Err,
@@ -206,8 +204,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             var moduleSpecification = ModuleManager.RegisterModule(CommandEvaluationContext, a);
             Done(moduleSpecification.Info.GetDescriptor(context));
 
-            // can't reference by type an external module for which we have not a project reference
-            //a = Assembly.LoadWithPartialName(settings.KernelCommandsModuleAssemblyName);
+            // TODO: can't reference by type an external module for which we have not a project reference
             a = Assembly.Load(settings.KernelCommandsModuleAssemblyName);
             Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands module: '{a}' ... ", true, false);
             moduleSpecification = ModuleManager.RegisterModule(CommandEvaluationContext, a);
@@ -426,7 +423,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
             ModuleManager.ModuleHookManager.InvokeHooks(
                 CommandEvaluationContext,
-                Hooks.ShellInitialized);
+                Hooks.ShellInitialized,
+                HookTriggerMode.FirstTimeOnly
+                );
 
             _isInitialized = true;
         }
