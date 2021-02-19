@@ -1,1 +1,0 @@
-# this folder is a dedicated place to store team activity related assets, like images or other files that are integrated in 'Discussions' and 'Team forum' areas
