@@ -20,16 +20,13 @@
 ![codesize](https://img.shields.io/github/languages/code-size/orbitalshell/Orbital-Shell)
 ![reposize](https://img.shields.io/github/repo-size/orbitalshell/Orbital-Shell)
 <br>
-[![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) [read license](LICENSE)  
+[![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license)
 
 **NuGet packages**<br>
 
 OrbitalShell (CLI .NET - any plateform having **dotnet**) [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell.svg)](https://www.nuget.org/packages/OrbitalShell)
 ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell.svg)
 
-
-<br>
-<br>
 
 ## About the project
 
