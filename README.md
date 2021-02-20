@@ -28,7 +28,7 @@
 <td valign="top">
 OrbitalShell<br>
 OrbitalShell-Kernel<br>
-OrbitalShell-KernelCommands</td>
+OrbitalShell-Kernel-Commands</td>
  
 <td valign="top">
 CLI .NET - any plateform having <b>dotnet</b><br>
