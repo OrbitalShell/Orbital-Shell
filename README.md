@@ -45,13 +45,15 @@ OrbitalShell-Kernel-Commands</td>
  
 <td valign="top">
 C# class lib<br>
+C# class lib<br>
 C# class lib
 </td>
  
 <td valign="top">
 
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-.svg)](https://www.nuget.org/packages/OrbitalShell-ConsoleApp) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-ConsoleApp.svg)<br>
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel.svg)](https://www.nuget.org/packages/OrbitalShell-Kernel) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel.svg)<br>
-[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel-Commands.svg)](https://www.nuget.org/packages/OrbitalShell/OrbitalShell-Kernel-Commands) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel-Commands.svg)
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel-Commands.svg)](https://www.nuget.org/packages/OrbitalShell-Kernel-Commands) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel-Commands.svg)
 </td>
 
 </tr>
@@ -65,20 +67,30 @@ C# class lib
 <tr>
 <td valign="top">
 OrbitalShell<br>
-OrbitalShell-Kernel<br>
-OrbitalShell-Kernel-Commands</td>
+OrbitalShell-win-x64<br>
+OrbitalShell-linux-musl-x64<br>
+OrbitalShell-linux-x64<br>
+OrbitalShell-linux-armx64<br>
+OrbitalShell-osx-x64<br>
+</td>
  
 <td valign="top">
 CLI .NET - any plateform having <b>dotnet</b><br>
-C# class lib<br>
-C# class lib
+CLI WIN x86<br>
+CLI linux MUSL x64<br>
+CLI linux x64<br>
+CLI linux ARM x64<br>
+CLI OSX x64<br>
 </td>
  
 <td valign="top">
 
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell.svg)](https://www.nuget.org/packages/OrbitalShell) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell.svg)<br>
-[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel.svg)](https://www.nuget.org/packages/OrbitalShell-Kernel) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel.svg)<br>
-[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel-Commands.svg)](https://www.nuget.org/packages/OrbitalShell/OrbitalShell-Kernel-Commands) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel-Commands.svg)
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-win-x64.svg)](https://www.nuget.org/packages/OrbitalShell-win-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-win-x64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-musl-x64.svg)](https://www.nuget.org/packages/OrbitalShell-inux-musl-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-inux-musl-x64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-x64.svg)](https://www.nuget.org/packages/OrbitalShell-linux-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-x64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-armx64.svg)](https://www.nuget.org/packages/OrbitalShell-linux-armx64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-armx64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-osx-x64.svg)](https://www.nuget.org/packages/OrbitalShell-osx-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-osx-x64.svg)<br>
 </td>
 
 </tr>
