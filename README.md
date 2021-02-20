@@ -24,9 +24,27 @@
 
 **NuGet packages**<br>
 
-OrbitalShell (CLI .NET - any plateform having **dotnet**) [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell.svg)](https://www.nuget.org/packages/OrbitalShell)
-![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell.svg)
+<table border="0" ><tr>
+<td valign="top">
+OrbitalShell<br>
+OrbitalShell-Kernel<br>
+OrbitalShell-KernelCommands
+</td>
+ 
+<td valign="top">
+ CLI .NET - any plateform having <b>dotnet</b><br>
+C# class lib<br>
+C# class lib
+</td>
+ 
+<td valign="top">
 
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell.svg)](https://www.nuget.org/packages/OrbitalShell) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell.svg)](https://www.nuget.org/packages/OrbitalShell) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell.svg)](https://www.nuget.org/packages/OrbitalShell) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell.svg)<br>
+
+</td>
+</td></tr></table>
 
 ## About the project
 
