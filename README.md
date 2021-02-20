@@ -59,6 +59,30 @@ C# class lib
 
 </tr>
 
+<!-- modules -->
+
+<tr>
+ <th colspan="3" align="left">modules</th>
+</tr>
+
+<tr>
+<td valign="top">
+OrbitalShell-PromptGitInfo<br>
+OrbitalShell-DoomFireAlgo<br>
+ 
+<td valign="top">
+module .net core<br>
+module .net core
+</td>
+ 
+<td valign="top">
+
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Module-PromptGitInfo.svg)](https://www.nuget.org/packages/OrbitalShell-Module-PromptGitInfo) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Module-PromptGitInfo.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Module-DoomFireAlgo.svg)](https://www.nuget.org/packages/OrbitalShell-Module-DoomFireAlgo) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Module-DoomFireAlgo.svg)
+</td>
+
+</tr>
+
 <!-- binaries -->
 
 <tr>
