@@ -100,7 +100,7 @@ OrbitalShell-osx-x64<br>
 </td>
  
 <td valign="top">
-CLI .NET - <b>dotnet</b> platform<br>*
+CLI any <b>dotnet</b> platform<br>*
 CLI WIN x86<br>
 CLI linux MUSL x64<br>
 CLI linux x64<br>
