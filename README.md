@@ -40,6 +40,7 @@
 
 <tr>
 <td valign="top">
+OrbitalShell-ConsoleApp<br>
 OrbitalShell-Kernel<br>
 OrbitalShell-Kernel-Commands</td>
  
@@ -51,7 +52,7 @@ C# class lib
  
 <td valign="top">
 
-[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-.svg)](https://www.nuget.org/packages/OrbitalShell-ConsoleApp) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-ConsoleApp.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-ConsoleApp.svg)](https://www.nuget.org/packages/OrbitalShell-ConsoleApp) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-ConsoleApp.svg)<br>
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel.svg)](https://www.nuget.org/packages/OrbitalShell-Kernel) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel.svg)<br>
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel-Commands.svg)](https://www.nuget.org/packages/OrbitalShell-Kernel-Commands) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel-Commands.svg)
 </td>
