@@ -19,12 +19,21 @@
 <br>
 ![codesize](https://img.shields.io/github/languages/code-size/orbitalshell/Orbital-Shell)
 ![reposize](https://img.shields.io/github/repo-size/orbitalshell/Orbital-Shell)
+<br>
+[![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) [read license](LICENSE)  
 
-This shell integrates the <u>most usefull shell commands</u>, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (<u>scripts, functions, commands, aliases, settings, parametrization,...</u>). Having a strong <u>ANSI/VT-100-220-300-500</u> support, it provides structured and colorized display of data and information (support of <u>ASCII, Unicode and 24 bits colors</u>).
+**NuGet packages**<br>
 
+OrbitalShell (CLI .NET - any plateform having **dotnet**) [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell.svg)](https://www.nuget.org/packages/OrbitalShell)
+![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell.svg)
+
+
+<br>
 <br>
 
 ## About the project
+
+This shell integrates the <u>most usefull shell commands</u>, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (<u>scripts, functions, commands, aliases, settings, parametrization,...</u>). Having a strong <u>ANSI/VT-100-220-300-500</u> support, it provides structured and colorized display of data and information (support of <u>ASCII, Unicode and 24 bits colors</u>).
 
 Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://orbitalshell.github.io/Orbital-Shell/) 
 
@@ -32,7 +41,6 @@ Find any information and documentation about this project on the project's Web S
 
 Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://orbitalshell.github.io/Orbital-Shell/documentation) 
 
-> [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
 <br>
 
