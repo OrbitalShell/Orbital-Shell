@@ -19,12 +19,112 @@
 <br>
 ![codesize](https://img.shields.io/github/languages/code-size/orbitalshell/Orbital-Shell)
 ![reposize](https://img.shields.io/github/repo-size/orbitalshell/Orbital-Shell)
-
-This shell integrates the <u>most usefull shell commands</u>, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (<u>scripts, functions, commands, aliases, settings, parametrization,...</u>). Having a strong <u>ANSI/VT-100-220-300-500</u> support, it provides structured and colorized display of data and information (support of <u>ASCII, Unicode and 24 bits colors</u>).
-
 <br>
+[![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license)
+
+**NuGet packages**<br>
+
+<table border="0" >
+
+<!-- libraries -->
+
+<tr>
+ <th>package ID</th>
+ <th>type</th>
+ <th>NuGet verion ID</th>
+</tr>
+
+<tr>
+ <th colspan="3" align="left">libraries</th>
+</tr>
+
+<tr>
+<td valign="top">
+OrbitalShell-ConsoleApp<br>
+OrbitalShell-Kernel<br>
+OrbitalShell-Kernel-Commands</td>
+ 
+<td valign="top">
+C# class lib<br>
+C# class lib<br>
+C# class lib
+</td>
+ 
+<td valign="top">
+
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-ConsoleApp.svg)](https://www.nuget.org/packages/OrbitalShell-ConsoleApp) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-ConsoleApp.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel.svg)](https://www.nuget.org/packages/OrbitalShell-Kernel) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Kernel-Commands.svg)](https://www.nuget.org/packages/OrbitalShell-Kernel-Commands) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Kernel-Commands.svg)
+</td>
+
+</tr>
+
+<!-- modules -->
+
+<tr>
+ <th colspan="3" align="left">modules</th>
+</tr>
+
+<tr>
+<td valign="top">
+OrbitalShell-PromptGitInfo<br>
+OrbitalShell-DoomFireAlgo<br>
+ 
+<td valign="top">
+module .net core<br>
+module .net core
+</td>
+ 
+<td valign="top">
+
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Module-PromptGitInfo.svg)](https://www.nuget.org/packages/OrbitalShell-Module-PromptGitInfo) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Module-PromptGitInfo.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-Module-DoomFireAlgo.svg)](https://www.nuget.org/packages/OrbitalShell-Module-DoomFireAlgo) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-Module-DoomFireAlgo.svg)
+</td>
+
+</tr>
+
+<!-- binaries -->
+
+<tr>
+ <th colspan="3" align="left">binaries</th>
+</tr>
+
+<tr>
+<td valign="top">
+OrbitalShell<br>
+OrbitalShell-win-x64<br>
+OrbitalShell-linux-musl-x64<br>
+OrbitalShell-linux-x64<br>
+OrbitalShell-linux-armx64<br>
+OrbitalShell-osx-x64<br>
+</td>
+ 
+<td valign="top">
+CLI any <b>dotnet</b> platform*<br>
+CLI WIN x86<br>
+CLI linux MUSL x64<br>
+CLI linux x64<br>
+CLI linux ARM x64<br>
+CLI OSX x64<br>
+</td>
+ 
+<td valign="top">
+
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell.svg)](https://www.nuget.org/packages/OrbitalShell) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-win-x64.svg)](https://www.nuget.org/packages/OrbitalShell-win-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-win-x64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-musl-x64.svg)](https://www.nuget.org/packages/OrbitalShell-linux-musl-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-musl-x64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-x64.svg)](https://www.nuget.org/packages/OrbitalShell-linux-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-x64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-arm64.svg)](https://www.nuget.org/packages/OrbitalShell-linux-arm64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-arm64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-osx-x64.svg)](https://www.nuget.org/packages/OrbitalShell-osx-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-osx-x64.svg)<br>
+</td>
+
+</tr>
+
+</table>
 
 ## About the project
+
+This shell integrates the <u>most usefull shell commands</u>, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (<u>scripts, functions, commands, aliases, settings, parametrization,...</u>). Having a strong <u>ANSI/VT-100-220-300-500</u> support, it provides structured and colorized display of data and information (support of <u>ASCII, Unicode and 24 bits colors</u>).
 
 Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://orbitalshell.github.io/Orbital-Shell/) 
 
@@ -32,7 +132,6 @@ Find any information and documentation about this project on the project's Web S
 
 Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://orbitalshell.github.io/Orbital-Shell/documentation) 
 
-> [![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](license) This project is licensed under the terms of the MIT license: [LICENSE](LICENSE)  
 
 <br>
 
