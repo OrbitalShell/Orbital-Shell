@@ -3,7 +3,7 @@ name: Publish on Docker Hub
 on:
   workflow_run:
     workflows: [ '.NET Build & Test' ]
-    branches: [ master, dev ]
+    branches: [ master ]
     types: 
       - completed
 
