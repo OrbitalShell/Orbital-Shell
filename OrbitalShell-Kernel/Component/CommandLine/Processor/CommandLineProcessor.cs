@@ -35,10 +35,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
     {
         #region attributes
 
-        static object _logFileLock = new object();
-        bool _muteLogErrors;
-
-        public CommandLineProcessorSettings Settings { get; protected set; }
+        public CommandLineProcessorSettings Settings
+        {
+            get { return _settings; }
+            protected set { _settings = value; }
+        }
 
         public CancellationTokenSource CancellationTokenSource;
 
@@ -51,11 +52,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         string[] _args;
 
-        bool _isInitialized = false;
+        public bool IsInitialized = false;
 
         readonly SyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
 
-        public CommandsHistory CmdsHistory { get; protected set; }
+        public CommandsHistory CmdsHistory;
 
         public CommandsAlias CommandsAlias { get; protected set; } = new CommandsAlias();
 
@@ -89,7 +90,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public const string OPT_ENV = "--env";
         public const string OPT_NAME_VALUE_SEPARATOR = ":";
 
-        void SetArgs(
+        public void SetArgs(
             string[] args,
             CommandEvaluationContext context,
             List<string> appliedSettings)
@@ -160,20 +161,16 @@ namespace OrbitalShell.Component.CommandLine.Processor
         }
 
         /// <summary>
-        /// shell init actions sequence<br/>
-        /// use system in,out,err TODO: plugable to any stream - just add parameters
+        /// clp init
         /// </summary>
-        /// <param name="args">orbsh args</param>
-        /// <param name="settings">(launch) settings object</param>
-        /// <param name="context">shell default command evaluation context.Provides null to build a new one</param>
-        void ShellInit(
+        public void Init(
             string[] args,
             CommandLineProcessorSettings settings,
-            CommandEvaluationContext context = null)
+            CommandEvaluationContext context = null
+            )
         {
-            _muteLogErrors = true;
             _args = (string[])args?.Clone();
-            Settings = settings;
+            //Settings = settings;
 
             context ??= new CommandEvaluationContext(
                 this,
@@ -183,310 +180,14 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 null
             );
             CommandEvaluationContext = context;
-            Settings.Initialize(context);
-
-            // pre console init
-            if (DefaultForeground != null) cons.ForegroundColor = DefaultForeground.Value;
-
-            // apply orbsh command args -env:{varName}={varValue}
-            var appliedSettings = new List<string>();
-            SetArgs(args, CommandEvaluationContext, appliedSettings);
-
-            // init from settings
-            ShellInitFromSettings(settings);
-
-            ConsoleInit(CommandEvaluationContext);
-
-            if (settings.PrintInfo) PrintInfo(CommandEvaluationContext);
-
-            // load kernel modules
-
-            var a = Assembly.GetExecutingAssembly();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel module: '{a}' ... ", true, false);
-            var moduleSpecification = ModuleManager.RegisterModule(CommandEvaluationContext, a);
-            Done(moduleSpecification.Info.GetDescriptor(context));
-
-            // TODO: can't reference by type an external module for which we have not a project reference
-            a = Assembly.Load(settings.KernelCommandsModuleAssemblyName);
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands module: '{a}' ... ", true, false);
-            moduleSpecification = ModuleManager.RegisterModule(CommandEvaluationContext, a);
-            Done(moduleSpecification.Info.GetDescriptor(context));
-
-            var lbr = false;
-
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"init user profile from: '{Settings.AppDataFolderPath}' ... ", true, false);
-
-            lbr = InitUserProfileFolder(lbr);
-            _muteLogErrors = false;
-
-            Done();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{Settings.HistoryFilePath}' ... ", true, false);
-
-            lbr |= CreateRestoreUserHistoryFile(lbr);
-
-            Done();
-            Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"loading user aliases: '{Settings.CommandsAliasFilePath}' ... ", true, false);
-
-            lbr |= CreateRestoreUserAliasesFile(lbr);
-
-            Done();
-            if (appliedSettings.Count > 0) Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"shell args: {string.Join(" ", appliedSettings)}");
-
-            // end inits
-            if (lbr) Out.Echoln();
-
-            Out.Echoln();
-        }
-
-        void ShellInitFromSettings(CommandLineProcessorSettings settings)
-        {
-            var ctx = CommandEvaluationContext;
-            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor);
-            var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_prompt);
-            CommandLineReader.SetDefaultPrompt(prompt);
-
-            var pathexts = ctx.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.pathExt);
-            var pathextinit = ctx.ShellEnv.GetDataValue(ShellEnvironmentVar.pathExtInit);
-            var pathextinittext = (string)pathextinit.Value;
-            if (!string.IsNullOrWhiteSpace(pathextinittext)) pathextinittext += ShellEnvironment.SystemPathSeparator;
-            pathextinittext += settings.PathExtInit.Replace(";", ShellEnvironment.SystemPathSeparator);
-            pathextinit.SetValue(pathextinittext);
-            var exts = pathextinittext.Split(ShellEnvironment.SystemPathSeparator);
-            foreach (var ext in exts)
-                pathexts.AddUnique(ext);
-
-            ctx.ShellEnv.SetValue(ShellEnvironmentVar.settings_clp_shellExecBatchExt, settings.ShellExecBatchExt);
         }
 
         /// <summary>
-        /// init the console. basic init that generally occurs before any display
+        /// clp post init
         /// </summary>
-        void ConsoleInit(CommandEvaluationContext context)
+        public virtual void PostInit()
         {
-            var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowWidth);
-            var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowHeight);
-
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
-            {
-                oWinWidth.SetValue(2000);
-                oWinHeight.SetValue(2000);
-            }
-
-            var WinWidth = (int)oWinWidth.Value;
-            var winHeight = (int)oWinHeight.Value;
-            try
-            {
-                if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
-                if (winHeight > -1) System.Console.WindowHeight = winHeight;
-                System.Console.Clear();
-            }
-            catch { }
-        }
-
-        public bool CreateRestoreUserAliasesFile(bool lbr)
-        {
-            // create/restore user aliases
-            var createNewCommandsAliasFile = !File.Exists(Settings.CommandsAliasFilePath);
-            if (createNewCommandsAliasFile)
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands aliases file: '{Settings.CommandsAliasFilePath}' ... ",true, false);
-            try
-            {
-                if (createNewCommandsAliasFile)
-                {
-                    var defaultAliasFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.DefaultCommandsAliasFileName);
-                    File.Copy(defaultAliasFilePath, Settings.CommandsAliasFilePath);
-                    lbr |= true;
-                    Success();
-                }
-            }
-            catch (Exception createUserProfileFileException)
-            {
-                Fail(createUserProfileFileException);
-            }
-            return lbr;
-        }
-
-        public bool CreateRestoreUserHistoryFile(bool lbr)
-        {
-            // create/restore commands history
-            CmdsHistory = new CommandsHistory();
-            var createNewHistoryFile = !File.Exists(Settings.HistoryFilePath);
-            if (createNewHistoryFile)
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user commands history file: '{Settings.HistoryFilePath}' ... ", true, false);
-            try
-            {
-                if (createNewHistoryFile)
-#pragma warning disable CS0642 // Possibilité d'instruction vide erronée
-                    using (var fs = File.Create(Settings.HistoryFilePath)) ;
-#pragma warning restore CS0642 // Possibilité d'instruction vide erronée
-                CmdsHistory.Init(Settings.AppDataFolderPath, Settings.HistoryFileName);
-                if (createNewHistoryFile) Success();
-            }
-            catch (Exception createUserProfileFileException)
-            {
-                Fail(createUserProfileFileException);
-            }
-            lbr |= createNewHistoryFile;
-            return lbr;
-        }
-
-        public bool InitUserProfileFolder(bool lbr)
-        {
-            // assume the application folder ($Env.APPDATA/OrbitalShell) exists and is initialized
-
-            // creates user app data folders
-            if (!Directory.Exists(Settings.AppDataFolderPath))
-            {
-                Settings.LogAppendAllLinesErrorIsEnabled = false;
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user shell folder: '{Settings.AppDataFolderPath}' ... ", true, false);
-                try
-                {
-                    Directory.CreateDirectory(Settings.AppDataFolderPath);
-                    Success();
-                }
-                catch (Exception createAppDataFolderPathException)
-                {
-                    Fail(createAppDataFolderPathException);
-                }
-                lbr = true;
-            }
-
-            // initialize log file
-            if (!File.Exists(Settings.LogFilePath))
-            {
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating log file: '{Settings.LogFilePath}' ... ", true, false);
-                try
-                {
-                    var logError = Log($"file created on {System.DateTime.Now}");
-                    if (logError == null)
-                        Success();
-                    else
-                        throw logError;
-                }
-                catch (Exception createLogFileException)
-                {
-                    Settings.LogAppendAllLinesErrorIsEnabled = false;
-                    Fail(createLogFileException);
-                }
-                lbr = true;
-            }
-
-            // initialize user profile
-            if (!File.Exists(Settings.UserProfileFilePath))
-            {
-                Info(CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user profile file: '{Settings.UserProfileFilePath}' ... ", true, false);
-                try
-                {
-                    var defaultProfileFilePath = Path.Combine(Settings.DefaultsFolderPath, Settings.DefaultUserProfileFileName);
-                    File.Copy(defaultProfileFilePath, Settings.UserProfileFilePath);
-                    Success();
-                }
-                catch (Exception createUserProfileFileException)
-                {
-                    Fail(createUserProfileFileException);
-                }
-                lbr = true;
-            }
-
-            return lbr;
-        }
-
-        /// <summary>
-        /// perform kernel inits and run init scripts
-        /// </summary>
-        public void Initialize()
-        {
-            if (_isInitialized) return;
-
-            ShellInit(_args, _settings, _commandEvaluationContext);
-
-            // late init of settings from the context
-            _settings.Initialize(CommandEvaluationContext);
-
-            // run user profile
-            try
-            {
-                CommandBatchProcessor.RunBatch(CommandEvaluationContext, Settings.UserProfileFilePath);
-            }
-            catch (Exception ex)
-            {
-                Warning($"Run 'user profile file' skipped. Reason is : {ex.Message}");
-            }
-
-            // run user aliases
-            try
-            {
-                CommandsAlias.Init(CommandEvaluationContext, Settings.AppDataFolderPath, Settings.CommandsAliasFileName);
-            }
-            catch (Exception ex)
-            {
-                Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
-            }
-
-            ModuleManager.ModuleHookManager.InvokeHooks(
-                CommandEvaluationContext,
-                Hooks.ShellInitialized,
-                HookTriggerMode.FirstTimeOnly
-                );
-
-            _isInitialized = true;
-        }
-
-        #region log screeen + file methods
-
-        private string _LogMessage(string message, string prefix, string postfix = " : ")
-            => (string.IsNullOrWhiteSpace(prefix)) ? message : (prefix + (message == null ? "" : $"{postfix}{message}"));
-
-        void Success(string message = null, bool log = true, bool lineBreak = true, string prefix = "Success")
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message, prefix);
-            Out.Echoln(logMessage);
-            if (log) Log(logMessage);
-        }
-
-        void Done(string message = null, bool log = true, bool lineBreak = true, string prefix = "Done")
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message, prefix);
-            Out.Echoln(logMessage);
-            if (log) Log(logMessage);
-        }
-
-        void Info(string message, bool log = true, bool lineBreak = true, string prefix = "")
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Log + _LogMessage(message, prefix);
-            Out.Echo(logMessage, lineBreak);
-            if (log) Log(logMessage);
-        }
-
-        void Fail(string message = null, bool log = true, bool lineBreak = true, string prefix = "Fail")
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + _LogMessage(message, prefix, "");
-            Out.Echo(logMessage, lineBreak);
-            if (log) Log(logMessage);
-        }
-
-        void Warning(string message = null, bool log = true, bool lineBreak = true, string prefix = "Warning")
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Warning + _LogMessage(message, prefix);
-            Out.Echo(logMessage, lineBreak);
-            if (log) LogWarning(logMessage);
-        }
-
-        void Fail(Exception exception, bool log = true, bool lineBreak = true, string prefix = "Fail : ")
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + exception?.Message;
-            Out.Echo(logMessage, lineBreak);
-            if (log) LogError(logMessage);
-        }
-
-        void Error(string message = null, bool log = false, bool lineBreak = true, string prefix = "")
-        {
-            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + (message == null ? "" : $"{message}");
-            Out.Echo(logMessage, lineBreak);
-            if (log) LogError(logMessage);
-        }
-
-        #endregion
+        }        
 
         public void AssertCommandLineProcessorHasACommandLineReader()
         {
@@ -523,45 +224,15 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
         }
 
-        #region shell log operations
+        #region console trace operations
 
-        public Exception Log(string text)
+        public void Error(string message = null, bool log = false, bool lineBreak = true, string prefix = "")
         {
-            return LogInternal(text);
+            var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + (message == null ? "" : $"{message}");
+            Out.Echo(logMessage, lineBreak);
+            if (log) LogError(logMessage);
         }
-
-        public Exception LogError(string text)
-        {
-            return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Error + "ERR");
-        }
-
-        public Exception LogWarning(string text)
-        {
-            return LogInternal(text, CommandEvaluationContext.ShellEnv.Colors.Warning + "ERR");
-        }
-
-        Exception LogInternal(string text, string logPrefix = "INF")
-        {
-            var str = $"{logPrefix} [{Process.GetCurrentProcess().ProcessName}:{Process.GetCurrentProcess().Id},{Thread.CurrentThread.Name}:{Thread.CurrentThread.ManagedThreadId}] {System.DateTime.Now}.{System.DateTime.Now.Millisecond} | {text}";
-            lock (_logFileLock)
-            {
-                try
-                {
-                    File.AppendAllLines(Settings.LogFilePath, new List<string> { str });
-                    return null;
-                }
-                catch (Exception logAppendAllLinesException)
-                {
-                    if (!_muteLogErrors)
-                    {
-                        if (Settings.LogAppendAllLinesErrorIsEnabled)
-                            Errorln(logAppendAllLinesException.Message);
-                    }
-                    return logAppendAllLinesException;
-                }
-            }
-        }
-
+        
         #endregion
 
         #endregion

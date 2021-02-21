@@ -1,7 +1,6 @@
 ﻿using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Console;
 using System.IO;
-using System;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -9,6 +8,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
     {
         static int _instanceCounter = 1000;
         static object _instanceLock = new object();
+
+        public readonly Logger Logger;
 
         /// <summary>
         /// context id
@@ -83,6 +84,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 _instanceCounter++;
             }
 
+            Logger = new Logger(this);
             CommandLineProcessor = commandLineProcessor;
             SetStreams(@out, @in, err);
             InputData = inputData;

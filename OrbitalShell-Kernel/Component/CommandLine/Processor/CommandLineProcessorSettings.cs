@@ -89,6 +89,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public string CommandsAliasFileName = ".aliases";
         public string DefaultCommandsAliasFileName = "aliases";
         public string DefaultsFolderName = "Defaults";
+        public string ModulesInitFileName = ".modules";
 
         #endregion
 
@@ -97,12 +98,15 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <summary>
         /// shell app data folder name (application settings)
         /// </summary>
-        public string AppDataFolderName = "DotNetConsoleAppToolkit-Shell";
+        public string AppDataFolderName = "OrbitalShell";
+
         public string AppDataFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDataFolderName);
         public string UserProfileFilePath => Path.Combine(AppDataFolderPath, UserProfileFileName);
         public string LogFilePath => Path.Combine(AppDataFolderPath, LogFileName);
         public string HistoryFilePath => Path.Combine(AppDataFolderPath, HistoryFileName);
         public string CommandsAliasFilePath => Path.Combine(AppDataFolderPath, CommandsAliasFileName);
+
+        public string ModulesInitFilePath => Path.Combine(AppDataFolderPath, ModulesInitFileName);
 
         public string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public string BinFolderPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

@@ -3,6 +3,7 @@ using System;
 using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell
 {
@@ -12,12 +13,20 @@ namespace OrbitalShell
         {
             Out.Echo(ANSI.RIS);
             Out.ClearScreen();
+
             var commandLineProcessor = new CommandLineProcessor(
                 args,
-                new OrbitalShellCommandLineProcessorSettings());
+                new OrbitalShellCommandLineProcessorSettings()
+            );
+
             var commandLineReader = new CommandLineReader(
                 commandLineProcessor);
-            commandLineProcessor.Initialize();
+
+            var shellInitializer = new ShellInitializer(commandLineProcessor);
+
+            //commandLineProcessor.Initialize();
+            shellInitializer.Run(commandLineProcessor.CommandEvaluationContext);
+
             var returnCode = commandLineReader.ReadCommandLine();
             Environment.Exit(returnCode);
         }

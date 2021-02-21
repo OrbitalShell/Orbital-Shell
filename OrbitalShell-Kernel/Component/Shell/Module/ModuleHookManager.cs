@@ -89,7 +89,7 @@ namespace OrbitalShell.Component.Shell.Module
                     {
                         var m = $"hook '{hook.Owner}.{hook.Method}' has crashed: {ex.InnerException?.Message}";
                         context.Out.Errorln(m);
-                        context.CommandLineProcessor.LogError(m);
+                        context.Logger.LogError(m);
                     }
                 }
             }

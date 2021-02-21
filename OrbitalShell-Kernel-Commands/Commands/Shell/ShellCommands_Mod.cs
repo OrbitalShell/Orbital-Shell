@@ -180,7 +180,7 @@ namespace OrbitalShell.Commands.Shell
                                         {
                                             var modSpec = context.CommandLineProcessor.ModuleManager.RegisterModule(context, assembly);
                                         }
-                                        catch (Exception) { }
+                                        catch (Exception ex) { o.Errorln(ex.Message); }
                                     }
                                 }
                                 else

@@ -92,9 +92,9 @@ namespace OrbitalShell
 
 #region log methods
 
-        public static void LogError(Exception ex)
+        public static void LogError(Exception ex, bool enableForwardLogsToSystemDiagnostics = true)
         {
-            if (ForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(ex + "");
+            if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(ex + "");
             if (DumpExceptions)
                 LogException(ex);
             else
@@ -111,9 +111,9 @@ namespace OrbitalShell
             }
         }
 
-        public static void LogException(Exception ex, string message = "")
+        public static void LogException(Exception ex, string message = "", bool enableForwardLogsToSystemDiagnostics = true)
         {
-            if (ForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(message + _crlf + ex + "");
+            if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(message + _crlf + ex + "");
             var ls = new List<string>();
             if (DumpExceptions)
             {
@@ -127,25 +127,25 @@ namespace OrbitalShell
             Errorln(ls);
         }
 
-        public static void LogError(string s)
+        public static void LogError(string s, bool enableForwardLogsToSystemDiagnostics = true)
         {
-            if (ForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
+            if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
             var ls = (s + "").Split(_crlf, StringSplitOptions.None)
                 .Select(x => Colors.Error + x);
             Errorln(ls);
         }
 
-        public static void LogWarning(string s)
+        public static void LogWarning(string s, bool enableForwardLogsToSystemDiagnostics = true)
         {
-            if (ForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
+            if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
             var ls = (s + "").Split(_crlf, StringSplitOptions.None)
                 .Select(x => Colors.Warning + x);
             Errorln(ls);
         }
 
-        public static void Log(string s)
+        public static void Log(string s,bool enableForwardLogsToSystemDiagnostics = true)
         {
-            if (ForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
+            if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
             var ls = (s + "").Split(_crlf, StringSplitOptions.None)
                 .Select(x => Colors.Log + x);
             //Out.Echoln(ls);
