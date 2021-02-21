@@ -1,25 +1,46 @@
-name: .NET
+name: .NET Build & Test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, dev ]
+
   pull_request:
-    branches: [ master ]
+    branches: [ master, dev ]
+    types: [opened, synchronize, closed]
 
 jobs:
-  build:
+  build_test:
 
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest', 'windows-latest', 'macOs-latest' ]
+        dotnet-version: [ '3.1.x' ]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
+        dotnet-version: ${{ matrix.dotnet-version }}
+
+    - name: Clean Project
+      run: dotnet clean --configuration Release && dotnet nuget locals all --clear
+    
+    - name: Install dependencies
       run: dotnet restore
-    - name: Build
+
+    - name: Build Project
       run: dotnet build --no-restore
-    - name: Test
+
+    - name: Test Project
       run: dotnet test --no-build --verbosity normal
+
+    - name: Store Artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: Orbital Shell artifacts - ${{ matrix.os }}
+        path: ./OrbitalShell-CLI/bin/Debug/netcoreapp3.1/
