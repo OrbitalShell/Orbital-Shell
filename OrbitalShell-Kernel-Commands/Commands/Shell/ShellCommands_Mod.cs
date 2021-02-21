@@ -17,6 +17,8 @@ using System.Net.Http;
 using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Commands.NuGetServerApi;
 using System.IO.Compression;
+using OrbitalShell.Commands.FileSystem;
+using OrbitalShell.Lib.Data;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -46,6 +48,8 @@ namespace OrbitalShell.Commands.Shell
             ModuleSpecification moduleSpecification = null;
             var f = context.ShellEnv.Colors.Default.ToString();
             bool fetchInfo = fetchInfoName != null;
+            var clog = context.ShellEnv.Colors.Log;
+            var o = context.Out;
 
             if (loadModulePath == null && unloadModuleName == null && updateModuleName == null && installModuleName == null && uninstallModuleName == null
                 && !fetchList && !fetchInfo)
@@ -68,26 +72,26 @@ namespace OrbitalShell.Commands.Shell
                     var deps = (deps_attr.Count() == 0) ? "" : string.Join(",", deps_attr.Select(x => x.ModuleName + " " + x.ModuleMinVersion));
                     var sminv = kvp.Value.Assembly.GetCustomAttribute<ModuleShellMinVersionAttribute>()?.ShellMinVersion;
 
-                    context.Out.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description}");
+                    o.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description}");
 
                     if (!@short)
                     {
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}assembly     : (rdc){kvp.Value.Assembly.FullName}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}path         : (rdc){kvp.Value.Assembly.Location}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}version      : (rdc){ver}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}date         : (rdc){dat}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}target       : (rdc){target}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}dependencies : (rdc){deps}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}shell min ver: (rdc){sminv}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}company      : (rdc){comp}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}authors      : (rdc){aut}");
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{kvp.Value.Info.GetDescriptor(context)}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}assembly     : (rdc){kvp.Value.Assembly.FullName}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}path         : (rdc){kvp.Value.Assembly.Location}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}version      : (rdc){ver}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}date         : (rdc){dat}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}target       : (rdc){target}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}dependencies : (rdc){deps}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}shell min ver: (rdc){sminv}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}company      : (rdc){comp}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}authors      : (rdc){aut}");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{kvp.Value.Info.GetDescriptor(context)}");
                     }
                     else
                     {
-                        context.Out.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}version : {context.ShellEnv.Colors.HalfDark}{ver} (target {((target == null) ? "" : target + ", ")}created {dat}) {context.ShellEnv.Colors.Label}Company : (rdc){comp} ({aut}) ");
+                        o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}version : {context.ShellEnv.Colors.HalfDark}{ver} (target {((target == null) ? "" : target + ", ")}created {dat}) {context.ShellEnv.Colors.Label}Company : (rdc){comp} ({aut}) ");
                     }
-                    if (n < context.CommandLineProcessor.ModuleManager.Modules.Count) context.Out.Echoln();
+                    if (n < context.CommandLineProcessor.ModuleManager.Modules.Count) o.Echoln();
                     n++;
                 }
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
@@ -100,6 +104,17 @@ namespace OrbitalShell.Commands.Shell
                 if (installModuleName != null)
                 {
                     var lastVer = string.IsNullOrWhiteSpace(version);
+
+                    var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
+                    var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{installModuleName} -t 1",0);
+                    if (r0.EvalResultCode!=(int)ReturnCode.OK) return _ModuleErr(context, r0.ErrorReason);
+                    var queryRes = r0.Result as QueryResultRoot;
+                    if (queryRes==null) return _ModuleErr(context, "nuget query return a null result");
+                    if (queryRes.Data.Length==0) return _ModuleErr(context, "module id unknown");
+
+                    var packageId = queryRes.Data[0].Id;
+                    o.Echoln();
+
                     var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");                    
                     var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{installModuleName}", 0);
                     if (r.EvalResultCode==(int)ReturnCode.OK)
@@ -112,14 +127,17 @@ namespace OrbitalShell.Commands.Shell
                         if (lastVer)
                         {
                             version = vers.Versions.Last();
-                            context.Out.Echoln($"{context.ShellEnv.Colors.Log}select last package version: {version}(rdc)");
+                            o.Echoln($"{clog}select the last version of package: {version}(rdc)");
                         }
                         var dwnMethod = typeof(NuGetServerApiCommands).GetMethod("NugetDownload");
                         var output = context.CommandLineProcessor.Settings.ModulesFolderPath;
-                        var folderName = installModuleName.ToLower();
-                        var moduleLowerFullId = $"{folderName}.{version.ToLower()}";  // == module lower id
+                        var folderName = packageId.ToLower();
+                        var lowerVersion = version.ToLower();
+                        var moduleLowerFullId = $"{folderName}.{lowerVersion}";  // == module lower id
 
-                        if (context.CommandLineProcessor.ModuleManager.IsModuleInstalled(moduleLowerFullId) && !force)
+                        if (context.CommandLineProcessor.ModuleManager.IsModuleInstalled(
+                            context,folderName,version
+                            ) && !force)
                             // error already installed, !force
                             return _ModuleErr(context,$"module '{moduleLowerFullId}' is already installed (may try --force)");
 
@@ -130,15 +148,34 @@ namespace OrbitalShell.Commands.Shell
                         var rd = context.CommandLineProcessor.Eval(context, dwnMethod, $"{installModuleName} {version} -o {moduleFolder}", 0);
                         if (rd.EvalResultCode==(int)ReturnCode.OK)
                         {
-                            context.Out.Echo(context.ShellEnv.Colors.Log + $"extracting package... ");
+                            o.Echo(clog + "extracting package... ");
+
+                            var versionFolder = Path.Combine(moduleFolder, lowerVersion);
+                            if (!Directory.Exists(versionFolder)) Directory.CreateDirectory(versionFolder);
 
                             var nupkgFileName = (string)rd.Result;
-                            ZipFile.ExtractToDirectory(Path.Combine(moduleFolder, nupkgFileName),moduleFolder,true);
+                            ZipFile.ExtractToDirectory(Path.Combine(moduleFolder, nupkgFileName),versionFolder,true);
 
-                            context.Out.Echoln(" Done(rdc)");
-                            context.Out.Echo(ANSI.RSTXTA + ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
+                            o.Echoln(" Done(rdc)");
+                            o.Echo(ANSI.RSTXTA + ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
 
-                            context.Out.Echoln("module installed");
+                            // find modules dlls : find {folderName}/{lowerVersion}/lib -p *.dll
+                            var findMethod = typeof(FileSystemCommands).GetMethod("Find");
+                            var find = context.CommandLineProcessor.Eval(context, findMethod, $"{folderName}/{lowerVersion}/lib -p *.dll", 0);
+                            var nodllmess = "the module doesn't contain any dll in /lib";
+                            if (find.EvalResultCode != (int)ReturnCode.OK) return _ModuleErr(context, nodllmess);
+
+                            var findResult = ((List<FileSystemPath>, FindCounts))find.Result;
+                            foreach ( var dll in findResult.Item1 )
+                            {
+                                if (!context.CommandLineProcessor.ModuleManager.IsAssemblyLoaded(dll.FullName))
+                                {
+                                    // candidate assembly
+                                    o.Echoln(clog + $"importing dll: '{dll.Name}'");
+                                }
+                            }
+
+                            o.Echoln("module installed");
 
                         } else 
                             return _ModuleErr(context,rd.ErrorReason);
@@ -155,7 +192,7 @@ namespace OrbitalShell.Commands.Shell
                     {
                         var a = Assembly.LoadFrom(loadModulePath.FileSystemInfo.FullName);
                         moduleSpecification = context.CommandLineProcessor.ModuleManager.RegisterModule(context, a);
-                        if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($" Done : {moduleSpecification.Info.GetDescriptor(context)}");
+                        if (moduleSpecification != null && moduleSpecification.Info != null) o.Echoln($" Done : {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else
                         return _ModuleErr(null,null);
@@ -168,7 +205,7 @@ namespace OrbitalShell.Commands.Shell
                     if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == unloadModuleName))
                     {
                         moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, unloadModuleName);
-                        if (moduleSpecification != null && moduleSpecification.Info != null) context.Out.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
+                        if (moduleSpecification != null && moduleSpecification.Info != null) o.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else
                         return _ModuleErr(context, $"module '{unloadModuleName}' is not registered");
@@ -179,7 +216,7 @@ namespace OrbitalShell.Commands.Shell
                 // fetch mod repos
                 if (_GetModuleListFromRepositories(context, out var modRefs))
                 {
-                    context.Out.Echo(ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
+                    o.Echo(ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
 
                     if (modRefs.Count > 0)
                     {
@@ -194,7 +231,7 @@ namespace OrbitalShell.Commands.Shell
 
                             }
                             else
-                                context.Out.Errorln("no module having name '{fetchInfoName}' can be found in repostories");
+                                o.Errorln("no module having name '{fetchInfoName}' can be found in repostories");
                         }
 
                         if (fetchList)
@@ -210,7 +247,7 @@ namespace OrbitalShell.Commands.Shell
                                 tb.AddRow(modref.Name, modref.Version, modref.Description);
 
                             tb.Echo(new EchoEvaluationContext(
-                                context.Out,
+                                o,
                                 context,
                                 new TableFormattingOptions(
                                     context.ShellEnv.GetValue<TableFormattingOptions>(
@@ -219,7 +256,7 @@ namespace OrbitalShell.Commands.Shell
                         }
                     }
                     else
-                        context.Out.Errorln("module repository list doesn't contains any module reference");
+                        o.Errorln("module repository list doesn't contains any module reference");
                 }
             }
 

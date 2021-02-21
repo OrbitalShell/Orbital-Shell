@@ -24,6 +24,8 @@ namespace OrbitalShell.Component.Shell.Module
         public IReadOnlyDictionary<string, ModuleSpecification> Modules => new ReadOnlyDictionary<string, ModuleSpecification>(_modules);
 
         private List<string> _loadedModules = new List<string>();
+        
+        private List<string> _loadedAssemblies = new List<string>();
 
         readonly SyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
 
@@ -161,6 +163,7 @@ namespace OrbitalShell.Component.Shell.Module
                     )
                 ));
             _loadedModules.Add(_assemblyKey(assembly));
+            _loadedAssemblies.Add(assembly.Location.ToLower());
 
             // run module hook init
             ModuleHookManager.InvokeHooks(
@@ -183,9 +186,21 @@ namespace OrbitalShell.Component.Shell.Module
         /// <param name="version">module version id (= module nuget package version)</param>
         public string GetModuleLowerId(string id,string version) => id.ToLower()+"."+version.ToLower();
 
-        public bool IsModuleInstalled(string moduleLowerId) => _modules.ContainsKey(moduleLowerId);
+        public bool IsModuleInstalled(
+            CommandEvaluationContext context,
+            string moduleId,
+            string version)
+        {
+            var path = context.CommandLineProcessor.Settings.ModulesFolderPath;
+            path = Path.Combine(path, moduleId);
+            if (!Directory.Exists(path)) return false;
+            path = Path.Combine(path, version);
+            if (!Directory.Exists(path)) return false;
+            //path = Path.Combine(path, $"lib/{moduleId}.{version}.dll");
+            // return File.Exists(path);
+            return true;
+        }
 
-        public bool IsModuleInstalled(string id, string version) => IsModuleInstalled(GetModuleLowerId(id, version));
-        
+        public bool IsAssemblyLoaded(string path) => _loadedAssemblies.Contains(path.ToLower());
     }
 }
