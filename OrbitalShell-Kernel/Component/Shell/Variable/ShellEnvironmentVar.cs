@@ -369,6 +369,11 @@
         /// </summary>
         modules = 11003,
 
+        /// <summary>
+        /// shell profile
+        /// </summary>
+        profile = 11004,
+
         // traditional bash variables
 
         /// <summary>
