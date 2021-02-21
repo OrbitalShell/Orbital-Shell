@@ -1,4 +1,4 @@
 ﻿#!orbsh
-# this is the default orbsh user profile init script
+# this is the default orbital shell user profile init script
 
 prompt "(rdc)> "

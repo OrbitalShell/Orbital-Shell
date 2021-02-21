@@ -41,8 +41,14 @@ namespace OrbitalShell.Component.CommandLine.Processor
             protected set { _settings = value; }
         }
 
+        /// <summary>
+        /// warning: for the moment may be null (for example, during shell init phasis)
+        /// </summary>
         public CancellationTokenSource CancellationTokenSource;
 
+        /// <summary>
+        /// preferred way to check if cancellation is requested
+        /// </summary>
         public bool IsCancellationRequested => CancellationTokenSource != null && CancellationTokenSource.Token != null && CancellationTokenSource.Token.IsCancellationRequested;
 
         /// <summary>

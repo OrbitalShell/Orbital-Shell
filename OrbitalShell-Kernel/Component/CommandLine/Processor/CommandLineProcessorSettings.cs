@@ -73,9 +73,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
         #region product info
 
         public string AppName = "CommandLineProcessor";
-        public string AppLongName = "DotNetConsoleAppToolkit Component CommandLineProcessor";
-        public string AppEditor = "DotNetConsoleAppToolkit-Shell";
-        public string AppVersion = "AppVersion";
+        public string AppLongName = "Orbital Shell";
+        public string AppEditor = "(c) Orbital Shell 2020";
+        public string AppVersion = "0.0.0";
         public string AppLicense = "MIT";
 
         #endregion
@@ -89,7 +89,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public string CommandsAliasFileName = ".aliases";
         public string DefaultCommandsAliasFileName = "aliases";
         public string DefaultsFolderName = "Defaults";
-        public string ModulesInitFileName = ".modules";
+        public string ModulesInitFileName = "modules-init.json";
 
         #endregion
 
@@ -100,17 +100,20 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// </summary>
         public string AppDataFolderName = "OrbitalShell";
 
-        public string AppDataFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDataFolderName);
-        public string UserProfileFilePath => Path.Combine(AppDataFolderPath, UserProfileFileName);
-        public string LogFilePath => Path.Combine(AppDataFolderPath, LogFileName);
-        public string HistoryFilePath => Path.Combine(AppDataFolderPath, HistoryFileName);
-        public string CommandsAliasFilePath => Path.Combine(AppDataFolderPath, CommandsAliasFileName);
+        public string ShellAppDataPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), AppDataFolderName);
 
-        public string ModulesInitFilePath => Path.Combine(AppDataFolderPath, ModulesInitFileName);
+        public string AppDataRoamingUserFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDataFolderName);
+        public string UserProfileFilePath => Path.Combine(AppDataRoamingUserFolderPath, UserProfileFileName);
+        public string LogFilePath => Path.Combine(AppDataRoamingUserFolderPath, LogFileName);
+        public string HistoryFilePath => Path.Combine(AppDataRoamingUserFolderPath, HistoryFileName);
+        public string CommandsAliasFilePath => Path.Combine(AppDataRoamingUserFolderPath, CommandsAliasFileName);
+
+        public string ModulesInitFilePath => Path.Combine(ShellAppDataPath, ModulesInitFileName );
 
         public string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public string BinFolderPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public string ModulesFolderPath => Path.Combine(BinFolderPath, "Modules");
+
         public string DefaultsFolderPath
         {
             get

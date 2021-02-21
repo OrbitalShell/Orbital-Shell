@@ -31,14 +31,14 @@ namespace OrbitalShell.Component
         public void Success(string message = null, bool log = true, bool lineBreak = true, string prefix = "Success")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message, prefix);
-            CommandEvaluationContext.Out.Echoln(logMessage);
+            CommandEvaluationContext.Out.Echo(logMessage,lineBreak);
             if (log) Log(logMessage);
         }
 
         public void Done(string message = null, bool log = true, bool lineBreak = true, string prefix = "Done")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message, prefix);
-            CommandEvaluationContext.Out.Echoln(logMessage);
+            CommandEvaluationContext.Out.Echo(logMessage, lineBreak);
             if (log) Log(logMessage);
         }
 

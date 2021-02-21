@@ -74,4 +74,10 @@
     <Folder Include="Lib\Net\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Component\Shell\Module\modules-init.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -11,6 +11,7 @@ using System.Reflection;
 using static OrbitalShell.Lib.Str;
 using System.Collections.Generic;
 using System.Data;
+using OrbitalShell.Component.Shell.Module;
 
 namespace OrbitalShell.Component.Shell.Variable
 {
@@ -19,26 +20,32 @@ namespace OrbitalShell.Component.Shell.Variable
     /// </summary>
     public class ShellEnvironment : DataObject
     {
-
         public const string SystemPathSeparator = ";";
 
         public Variables Vars { get; protected set; }
+
         public ColorSettings Colors { get; protected set; }
 
         public TableFormattingOptions TableFormattingOptions => GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
+        
         public FileSystemPathFormattingOptions FileSystemPathFormattingOptions => GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.display_fileSystemPathFormattingOptions);
+
+        public readonly ModuleInitModel ModuleInitModel;
 
         public ShellEnvironment(string name) : base(name, false) { }
 
         /// <summary>
-        /// creates the standard shell env with known namespaces and values names
+        /// creates the standard shell<br/>
+        /// - add known namespaces and values names<br/>
+        /// - setup shell variables
         /// </summary>
         /// <param name="context"></param>
         public void Initialize(CommandEvaluationContext context)
-        {
+        {            
             Vars = context.Variables;
 
             // data objects
+
             foreach (var shellNs in Enum.GetValues(typeof(ShellEnvironmentNamespace)))
             {
                 var ns = (ShellEnvironmentNamespace)shellNs;
@@ -69,7 +76,7 @@ namespace OrbitalShell.Component.Shell.Variable
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true);
             AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), true);
             AddValue(ShellEnvironmentVar.modules, new DirectoryPath(context.CommandLineProcessor.Settings.ModulesFolderPath), true);
-            AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataFolderPath), true);
+            AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataRoamingUserFolderPath), true);
             var path = GetSystemPath();
             var pathExt = GetSystemPathExt();
             var pl = new List<DirectoryPath>();
@@ -120,6 +127,8 @@ namespace OrbitalShell.Component.Shell.Variable
             // @TODO: override settings from a config file .json (do also for CommandLineProcessorSettings)
         }
 
+        #region path util
+
         string GetSystemPath()
         {
             string s;
@@ -144,6 +153,8 @@ namespace OrbitalShell.Component.Shell.Variable
             if (t.Contains(s = "PATHEXT")) r = t[s];
             return (string)r;
         }
+
+        #endregion
 
         /// <summary>
         /// init shell env special vars
@@ -296,6 +307,8 @@ namespace OrbitalShell.Component.Shell.Variable
             if (j >= i) AddValue(ShellEnvironmentVar.sp__arg8, ""); j++;
             if (j >= i) AddValue(ShellEnvironmentVar.sp__arg9, ""); j++;
         }
+
+        #region operations on variables
 
         DataObject AddObject(ShellEnvironmentNamespace ns)
         {
@@ -453,5 +466,7 @@ namespace OrbitalShell.Component.Shell.Variable
                 isSpecialVar ? @namespace.Substring(SPECIAL_VAR_IMPL_PREFIX.Length) : @namespace
                 );
         }
+
+        #endregion
     }
 }
