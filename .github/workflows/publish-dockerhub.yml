@@ -1,0 +1,45 @@
+name: Publish on Docker Hub
+
+on:
+  workflow_run:
+    workflows: [ '.NET Build & Test' ]
+    branches: [ master ]
+    types: 
+      - completed
+
+jobs:
+  publish:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest' ]
+  
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{ secrets.GH_TOKEN }}
+        workflow: dotnet.yml
+        workflow_conclusion: success
+        branch: master
+        name: Orbital Shell artifacts - ${{ matrix.os }}
+        path: ./OrbitalShell-CLI/bin/Debug/netcoreapp3.1/   
+        repo: ${{ github.repository }}
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Build and push to Docker Hub
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: deploy/docker/Dockerfile-${{ matrix.os }}
+        push: true
+        tags: yobatman/orbital-shell:${{ matrix.os }}
