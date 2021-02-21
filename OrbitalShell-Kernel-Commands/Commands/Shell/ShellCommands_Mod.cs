@@ -42,6 +42,7 @@ namespace OrbitalShell.Commands.Shell
             [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module and output informations about it. the module is not installed", true, true)] string fetchInfoName = null,
             [Option("v", "version", "module version if applyable", true, true)] string version = null,
             [Option("s", "short", "output less informations", true)] bool @short = false,
+            [Option(null,"skip-load" , "do not load the module after having installed it",true)] bool skipLoad = false,
             [Option(null,"force","perform the requested operation even if already done, in case of it is meaningfull (example: -i --force constraint the command to reinstall a module)")] bool force = false
             )
         {
@@ -161,7 +162,7 @@ namespace OrbitalShell.Commands.Shell
 
                             // find modules dlls : find {folderName}/{lowerVersion}/lib -p *.dll
                             var findMethod = typeof(FileSystemCommands).GetMethod("Find");
-                            var find = context.CommandLineProcessor.Eval(context, findMethod, $"{folderName}/{lowerVersion}/lib -p *.dll", 0);
+                            var find = context.CommandLineProcessor.Eval(context, findMethod, $"{moduleFolder}/{lowerVersion}/lib -p *.dll", 0);
                             var nodllmess = "the module doesn't contain any dll in /lib";
                             if (find.EvalResultCode != (int)ReturnCode.OK) return _ModuleErr(context, nodllmess);
 
@@ -172,9 +173,21 @@ namespace OrbitalShell.Commands.Shell
                                 {
                                     // candidate assembly
                                     o.Echoln(clog + $"importing dll: '{dll.Name}'");
+                                    var assembly = Assembly.LoadFrom(dll.FullName);
+                                    if (!skipLoad)
+                                    {
+                                        try
+                                        {
+                                            var modSpec = context.CommandLineProcessor.ModuleManager.RegisterModule(context, assembly);
+                                        }
+                                        catch (Exception) { }
+                                    }
                                 }
+                                else
+                                    o.Errorln($"can't import the dll: '{dll.Name}' because it is in loaded state");
                             }
 
+                            // end
                             o.Echoln("module installed");
 
                         } else 
