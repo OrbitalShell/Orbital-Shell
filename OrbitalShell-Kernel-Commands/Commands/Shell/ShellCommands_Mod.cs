@@ -116,12 +116,12 @@ namespace OrbitalShell.Commands.Shell
                         }
                         var dwnMethod = typeof(NuGetServerApiCommands).GetMethod("NugetDownload");
                         var output = context.CommandLineProcessor.Settings.ModulesFolderPath;
-                        var moduleLowerId = $"{installModuleName.ToLower()}.{version.ToLower()}";  // == module lower id
-                        var folderName = moduleLowerId;
+                        var folderName = installModuleName.ToLower();
+                        var moduleLowerFullId = $"{folderName}.{version.ToLower()}";  // == module lower id
 
-                        if (context.CommandLineProcessor.ModuleManager.IsModuleInstalled(moduleLowerId) && !force)
+                        if (context.CommandLineProcessor.ModuleManager.IsModuleInstalled(moduleLowerFullId) && !force)
                             // error already installed, !force
-                            return _ModuleErr(context,$"module '{moduleLowerId}' is already installed (may try --force)");
+                            return _ModuleErr(context,$"module '{moduleLowerFullId}' is already installed (may try --force)");
 
                         var moduleFolder = Path.Combine( output, folderName );
                         if (!Directory.Exists(moduleFolder)) Directory.CreateDirectory(moduleFolder);

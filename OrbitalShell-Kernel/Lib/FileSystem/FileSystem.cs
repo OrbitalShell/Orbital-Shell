@@ -89,7 +89,7 @@ namespace OrbitalShell.Lib.FileSystem
             bool hasPattern = !string.IsNullOrWhiteSpace(pattern);
             bool hasContains = !string.IsNullOrWhiteSpace(contains);
 
-            if (context.CommandLineProcessor.CancellationTokenSource.Token.IsCancellationRequested)
+            if (context.CommandLineProcessor.IsCancellationRequested)
                 return items;
 
             try
@@ -166,7 +166,7 @@ namespace OrbitalShell.Lib.FileSystem
                             sitem = null;
                     }
 
-                    if (context.CommandLineProcessor.CancellationTokenSource.Token.IsCancellationRequested)
+                    if (context.CommandLineProcessor.IsCancellationRequested)
                         return items;
                 }
                 return items;

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.IO;
 using OrbitalShell.Component.CommandLine.Parsing;
 using System;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Shell.Module
 {
@@ -21,6 +22,8 @@ namespace OrbitalShell.Component.Shell.Module
         readonly ModuleSet _modules = new ModuleSet();
 
         public IReadOnlyDictionary<string, ModuleSpecification> Modules => new ReadOnlyDictionary<string, ModuleSpecification>(_modules);
+
+        private List<string> _loadedModules = new List<string>();
 
         readonly SyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
 
@@ -69,6 +72,16 @@ namespace OrbitalShell.Component.Shell.Module
             return null;
         }
 
+        string _assemblyKey(Assembly assembly) => assembly.Location+"."+assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        string _moduleKey(Assembly assembly,out string id,out string ver)
+        {
+            id = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title ??
+                throw new Exception($"module id missing in assembly '{assembly.ManifestModule.Name}' ('AssemblyTitle' attribute missing)");
+            ver = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ??
+                throw new Exception($"module version missing in assembly '{assembly.ManifestModule.Name}' ('AssemblyInformationalVersion' attribute missing)");
+            return GetModuleLowerId(id, ver);
+        }
+
         public ModuleSpecification RegisterModule(
             CommandEvaluationContext context,
             Assembly assembly)
@@ -82,11 +95,11 @@ namespace OrbitalShell.Component.Shell.Module
                 return ModuleSpecification.ModuleSpecificationNotDefined;
             }
 
-            var id = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? 
-                throw new Exception($"module id missing in assembly '{assembly.ManifestModule.Name}' ('AssemblyTitle' attribute missing)");
-            var ver = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? 
-                throw new Exception($"module version missing in assembly '{assembly.ManifestModule.Name}' ('AssemblyInformationalVersion' attribute missing)");
-            var modKey = GetModuleLowerId(id,ver);
+            // id is the name of the assembly (/!\ should not fit nuget packet id)
+
+            var modKey = _moduleKey(assembly, out var id, out var ver);
+            var assKey = _assemblyKey(assembly);
+            if (_loadedModules.Contains(assKey)) throw new Exception($"assembly already loaded: '{assKey}'");
 
             if (_modules.ContainsKey(modKey))
             {
@@ -147,6 +160,7 @@ namespace OrbitalShell.Component.Shell.Module
                         hooksCount
                     )
                 ));
+            _loadedModules.Add(_assemblyKey(assembly));
 
             // run module hook init
             ModuleHookManager.InvokeHooks(

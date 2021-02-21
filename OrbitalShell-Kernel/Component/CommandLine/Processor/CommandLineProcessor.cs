@@ -42,6 +42,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public CancellationTokenSource CancellationTokenSource;
 
+        public bool IsCancellationRequested => CancellationTokenSource != null && CancellationTokenSource.Token != null && CancellationTokenSource.Token.IsCancellationRequested;
+
         /// <summary>
         /// shell args
         /// </summary>
