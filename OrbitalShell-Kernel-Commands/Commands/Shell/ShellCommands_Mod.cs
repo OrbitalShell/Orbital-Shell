@@ -161,24 +161,42 @@ namespace OrbitalShell.Commands.Shell
                             o.Echo(ANSI.RSTXTA + ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
 
                             // find modules dlls : find {folderName}/{lowerVersion}/lib -p *.dll
+                            o.Echoln(clog + "scanning package... ");
                             var findMethod = typeof(FileSystemCommands).GetMethod("Find");
                             var find = context.CommandLineProcessor.Eval(context, findMethod, $"{moduleFolder}/{lowerVersion}/lib -p *.dll", 0);
                             var nodllmess = "the module doesn't contain any dll in /lib";
                             if (find.EvalResultCode != (int)ReturnCode.OK) return _ModuleErr(context, nodllmess);
 
                             var findResult = ((List<FileSystemPath>, FindCounts))find.Result;
+                            var nbImport = 0;
                             foreach ( var dll in findResult.Item1 )
                             {
-                                if (!context.CommandLineProcessor.ModuleManager.IsAssemblyLoaded(dll.FullName))
+                                if (!context.CommandLineProcessor.ModuleManager.IsModuleAssemblyLoaded(dll.FullName))
                                 {
                                     // candidate assembly
                                     o.Echoln(clog + $"importing dll: '{dll.Name}'");
                                     var assembly = Assembly.LoadFrom(dll.FullName);
-                                    if (!skipLoad)
+                                    if (ModuleUtil.IsAssemblyShellModule(assembly))
                                     {
                                         try
                                         {
-                                            var modSpec = context.CommandLineProcessor.ModuleManager.RegisterModule(context, assembly);
+                                            if (!skipLoad)
+                                                context.CommandLineProcessor.ModuleManager.RegisterModule(context, assembly);
+
+                                            o.Echoln(clog + $"register into module-init");
+                                            var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
+
+                                            var exMod = modInit.List.Where(x => x.Path == dll.FullName);
+                                            if (exMod.Count() > 0) throw new Exception("an module assembly with the same path is altready registered in module-init");
+
+                                            var mod = new ModuleInitItemModel()
+                                            {
+                                                Path = FileSystemPath.UnescapePathSeparators(dll.FullName),
+                                                IsEnabled = true
+                                            };
+                                            modInit.List = modInit.List.Append(mod).ToArray();
+                                            ModuleUtil.SaveModuleInitConfiguration(context, modInit);
+                                            nbImport++;
                                         }
                                         catch (Exception ex) { o.Errorln(ex.Message); }
                                     }
@@ -188,7 +206,10 @@ namespace OrbitalShell.Commands.Shell
                             }
 
                             // end
-                            o.Echoln("module installed");
+                            if (nbImport > 0)
+                                o.Echoln("module installed");
+                            else
+                                o.Errorln("no module assembly found in package");
 
                         } else 
                             return _ModuleErr(context,rd.ErrorReason);

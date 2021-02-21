@@ -10,7 +10,6 @@ using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib.FileSystem;
 using OrbitalShell.Component.Shell.Module;
-using Newtonsoft.Json;
 using System.Linq;
 
 namespace OrbitalShell.Component.Shell
@@ -119,7 +118,6 @@ namespace OrbitalShell.Component.Shell
             var moduleSpecification = _clp.ModuleManager.RegisterModule(_clp.CommandEvaluationContext, a);
             context.Logger.Done(moduleSpecification.Info.GetDescriptor(context));
 
-            // TODO: can't reference by type an external module for which we have not a project reference
             a = Assembly.Load(settings.KernelCommandsModuleAssemblyName);
             context.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"loading kernel commands module: '{a}' ... ", true, false);
             moduleSpecification = _clp.ModuleManager.RegisterModule(_clp.CommandEvaluationContext, a);
@@ -129,16 +127,18 @@ namespace OrbitalShell.Component.Shell
 
             _clp.CommandEvaluationContext.Logger.MuteLogErrors = false;
 
-            // --- load modules ---
+            #region -- load modules ---
 
             var mpath = _clp.Settings.ModulesInitFilePath;
             context.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"loading modules: '{FileSystemPath.UnescapePathSeparators(mpath)}' ... ", true, false);
             
-            ModulesInit(context,mpath);            
+            ModulesInit(context,mpath);
+            context.Logger.Done("modules loaded");
+
+            #endregion
 
             #region init from user profile
 
-            context.Logger.Done("modules loaded");
             context.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"init user profile from: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.AppDataRoamingUserFolderPath)}' ... ", true, false);
 
             InitUserProfileFolder();
@@ -188,16 +188,16 @@ namespace OrbitalShell.Component.Shell
 
             try
             {
-                LoadModulesFromConfig(context, moduleInitFilePath);
+                LoadModulesFromConfig(context);
             } catch (Exception loadModuleException)
             {
                 _clp.CommandEvaluationContext.Logger.Fail(loadModuleException);
             }
         }
 
-        void LoadModulesFromConfig(CommandEvaluationContext context,string moduleInitFilePath)
+        void LoadModulesFromConfig(CommandEvaluationContext context)
         {
-            var mods = JsonConvert.DeserializeObject<ModuleInitModel>(File.ReadAllText(moduleInitFilePath));
+            var mods = ModuleUtil.LoadModuleInitConfiguration(context);
             var enabledMods = mods.List.Where(x => x.IsEnabled);
             if (enabledMods.Count() == 0) return;
             var o = context.Out;
@@ -313,8 +313,6 @@ namespace OrbitalShell.Component.Shell
 
         public void InitUserProfileFolder()
         {
-            // assume the application folder ($Env.APPDATA/OrbitalShell) exists and is initialized
-
             // creates user app data folders
             if (!Directory.Exists(_clp.Settings.AppDataRoamingUserFolderPath))
             {

@@ -1,4 +1,10 @@
 using System;
+using System.IO;
+using System.Reflection;
+
+using Newtonsoft.Json;
+
+using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell.Component.Shell.Module
 {
@@ -20,5 +26,37 @@ namespace OrbitalShell.Component.Shell.Module
                 r = r.Substring(0, i);
             return r;
         }
+
+        /// <summary>
+        /// get module-init config
+        /// </summary>
+        /// <param name="context">command evaluation context</param>
+        /// <returns>ModuleInitModel</returns>
+        public static ModuleInitModel LoadModuleInitConfiguration(CommandEvaluationContext context)
+            => JsonConvert.DeserializeObject<ModuleInitModel>(
+                File.ReadAllText(
+                    context
+                        .CommandLineProcessor
+                        .Settings
+                        .ModulesInitFilePath
+                    ));
+
+        /// <summary>
+        /// save module-init config
+        /// </summary>
+        /// <param name="context">command evaluation context</param>
+        /// <param name="o">module-init model object</param>
+        public static void SaveModuleInitConfiguration(CommandEvaluationContext context,ModuleInitModel o)
+        {
+            File.WriteAllText(
+                context
+                    .CommandLineProcessor
+                    .Settings
+                    .ModulesInitFilePath,
+                JsonConvert.SerializeObject(o,Formatting.Indented));
+        }
+
+        public static bool IsAssemblyShellModule(Assembly o)
+            => o.GetCustomAttribute<ShellModuleAttribute>() != null;
     }
 }

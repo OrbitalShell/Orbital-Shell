@@ -201,6 +201,6 @@ namespace OrbitalShell.Component.Shell.Module
             return true;
         }
 
-        public bool IsAssemblyLoaded(string path) => _loadedAssemblies.Contains(path.ToLower());
+        public bool IsModuleAssemblyLoaded(string path) => _loadedAssemblies.Contains(path.ToLower());
     }
 }

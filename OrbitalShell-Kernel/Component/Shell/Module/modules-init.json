@@ -1,9 +1,4 @@
 ﻿{
-	"read-me": "modules list to be loaded by the kernel on init specified by absolute path, this file is populated by 'module -i', kernel modules are excluded from this file",
-	"list": [
-		/*{
-			"path": "C:/Users/franc/Documents/ORBITAL-SHELL/OrbitalShell/OrbitalShell-CLI/bin/Debug/netcoreapp3.1/Modules/orbitalshell-module-doomfirealgo/1.0.0/lib/netcoreapp3.1/OrbitalShell.Module.DoomFireAlgo.dll",
-			"isENabled": true
-		}*/
-	]
+	"readme": "modules list to be loaded by the kernel on init specified by absolute path, this file is populated by 'module -i', kernel modules are excluded from this file",
+	"list": []
 }
