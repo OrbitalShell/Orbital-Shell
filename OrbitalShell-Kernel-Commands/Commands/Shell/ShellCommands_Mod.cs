@@ -286,7 +286,7 @@ namespace OrbitalShell.Commands.Shell
                                             ModuleUtil.SaveModuleInitConfiguration(context, modInit);
                                             nbImport++;
 
-                                            o.Warningln("shell needs restart to load module update");
+                                            o.Warningln("shell may needs restart to load module assemblies");
                                         }
                                         catch (Exception ex) { o.Errorln(ex.Message); }
                                     }
