@@ -73,9 +73,10 @@ namespace OrbitalShell.Component.Shell.Module
         public ModuleSpecification
             UnregisterModuleCommands(
             CommandEvaluationContext context,
-            string moduleName)
+            string modulePackageId)
         {
-            var moduleSpecification = _modules.Values.Where(x => x.Name == moduleName).FirstOrDefault();
+            modulePackageId = modulePackageId?.ToLower();
+            var moduleSpecification = _modules.Values.Where(x => x.Key.ToLower() == modulePackageId).FirstOrDefault();
             if (moduleSpecification != null)
             {
                 foreach (var com in AllCommands)
@@ -85,7 +86,7 @@ namespace OrbitalShell.Component.Shell.Module
             }
             else
             {
-                context.Errorln($"commands module '{moduleName}' not registered");
+                context.Errorln($"commands module '{modulePackageId}' not registered");
                 return ModuleSpecification.ModuleSpecificationNotDefined;
             }
         }

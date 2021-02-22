@@ -330,11 +330,11 @@ namespace OrbitalShell.Commands.Shell
 
                 if (unloadModuleName != null)
                 {
-                    n = unloadModuleName;
-                    if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == n))
+                    n = unloadModuleName;                    
+                    if (context.CommandLineProcessor.ModuleManager.GetModuleByLowerPackageId(n.ToLower())!=null)
                     {
                         moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, n );
-                        if (moduleSpecification != null && moduleSpecification.Info != null) o.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
+                        if (moduleSpecification != null) o.Echoln($"unloaded: {n} {moduleSpecification.Info?.GetDescriptor(context)}");
                     }
                     else
                         return _ModuleErr(context, $"module '{n}' is not registered");
