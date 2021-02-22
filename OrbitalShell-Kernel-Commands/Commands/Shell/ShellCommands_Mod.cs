@@ -53,7 +53,8 @@ namespace OrbitalShell.Commands.Shell
             var o = context.Out;
             string n;
 
-            if (loadModulePath == null && unloadModuleName == null && updateModuleName == null && installModuleName == null && uninstallModuleName == null
+            if (loadModulePath == null && unloadModuleName == null && updateModuleName == null 
+                && installModuleName == null && uninstallModuleName == null
                 && !fetchList && !fetchInfo)
             {
                 // output reports on loaded modules
