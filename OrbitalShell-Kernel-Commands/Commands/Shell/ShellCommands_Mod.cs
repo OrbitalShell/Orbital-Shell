@@ -39,7 +39,7 @@ namespace OrbitalShell.Commands.Shell
             [Option("r", "remove", "uninstall a module and remove the module files", true, true)] string uninstallModuleName = null,
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
             [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool fetchList = false,
-            [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module and output informations about it. the module is not installed", true, true)] string fetchInfoName = null,
+            [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module info and output results. the module is not installed", true, true)] string fetchInfoName = null,
             [Option("v", "version", "module version if applyable", true, true)] string version = null,
             [Option("s", "short", "output less informations", true)] bool @short = false,
             [Option(null,"skip-load" , "do not load the module after having installed it",true)] bool skipLoad = false,
@@ -106,12 +106,16 @@ namespace OrbitalShell.Commands.Shell
                 {
                     var lastVer = string.IsNullOrWhiteSpace(version);
 
+                    #region fetch module info
+
                     var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
                     var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{installModuleName} -t 1",0);
                     if (r0.EvalResultCode!=(int)ReturnCode.OK) return _ModuleErr(context, r0.ErrorReason);
                     var queryRes = r0.Result as QueryResultRoot;
                     if (queryRes==null) return _ModuleErr(context, "nuget query return a null result");
                     if (queryRes.Data.Length==0) return _ModuleErr(context, "module id unknown");
+                    
+                    #endregion
 
                     var packageId = queryRes.Data[0].Id;
                     o.Echoln();
@@ -262,10 +266,19 @@ namespace OrbitalShell.Commands.Shell
                             if (modRef != null)
                             {
                                 // try to fetch the module : name[,version]->nuget
+                                #region fetch module info
 
+                                var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
+                                var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{modRef.Name} -t 1", 0);
+                                if (r0.EvalResultCode != (int)ReturnCode.OK) return _ModuleErr(context, r0.ErrorReason);
+                                var queryRes = r0.Result as QueryResultRoot;
+                                if (queryRes == null) return _ModuleErr(context, "nuget query return a null result");
+                                if (queryRes.Data.Length == 0) return _ModuleErr(context, "module id unknown");
+
+                                #endregion
                             }
                             else
-                                o.Errorln($"no module having name '{fetchInfoName}' can be found in repostories");
+                                o.Errorln($"no module having name '{fetchInfoName}' can be found in repositories");
                         }
 
                         if (fetchList)
