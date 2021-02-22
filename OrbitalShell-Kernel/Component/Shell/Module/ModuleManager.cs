@@ -77,11 +77,11 @@ namespace OrbitalShell.Component.Shell.Module
         string _assemblyKey(Assembly assembly) => assembly.Location+"."+assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         string _moduleKey(Assembly assembly,out string id,out string ver)
         {
-            id = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title ??
-                throw new Exception($"module id missing in assembly '{assembly.ManifestModule.Name}' ('AssemblyTitle' attribute missing)");
+            id = assembly.GetCustomAttribute<ShellModuleAttribute>()?.PackageId ??
+                throw new Exception($"module package id missing or null in assembly '{assembly.ManifestModule.Name}' ('ShellModule' attribute missing or has null value)");
             ver = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ??
                 throw new Exception($"module version missing in assembly '{assembly.ManifestModule.Name}' ('AssemblyInformationalVersion' attribute missing)");
-            return GetModuleLowerId(id, ver);
+            return id.ToLower();
         }
 
         public ModuleSpecification RegisterModule(
@@ -178,13 +178,6 @@ namespace OrbitalShell.Component.Shell.Module
 
             return moduleSpecification;
         }
-
-        /// <summary>
-        /// get the normalized lower module id (for nuget and orbsh)
-        /// </summary>
-        /// <param name="id">module id (= module nuget package id = assembly manifest module name )</param>
-        /// <param name="version">module version id (= module nuget package version)</param>
-        public string GetModuleLowerId(string id,string version) => id.ToLower()+"."+version.ToLower();
 
         public bool IsModuleAssemblyLoaded(string path) => _loadedAssemblies.Contains(path.ToLower());
     }

@@ -74,7 +74,7 @@ namespace OrbitalShell.Commands.Shell
                     var deps = (deps_attr.Count() == 0) ? "" : string.Join(",", deps_attr.Select(x => x.ModuleName + " " + x.ModuleMinVersion));
                     var sminv = kvp.Value.Assembly.GetCustomAttribute<ModuleShellMinVersionAttribute>()?.ShellMinVersion;
 
-                    o.Echoln($"{Darkcyan}{kvp.Value.Name.PadRight(col1length, ' ')}{f}{kvp.Value.Description}");
+                    o.Echoln($"{Darkcyan}{kvp.Value.Key.PadRight(col1length, ' ')}{f}{kvp.Value.Description}");
 
                     if (!@short)
                     {
