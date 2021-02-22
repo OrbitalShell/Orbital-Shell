@@ -30,6 +30,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
         public CommandResult<PackageVersions> NugetVer(
             CommandEvaluationContext context,
             [Parameter(0, "package (.nuget) ID")] string id,
+            [Option("q","quiet","mute output of result")] bool quiet = false,
             [Option("u", "get-url", "nuget server api query service template url", true, true)] string url = GetVerUrl
             )
         {
@@ -51,7 +52,8 @@ namespace OrbitalShell.Commands.NuGetServerApi
 
                 if (res != null && !string.IsNullOrWhiteSpace(res))
                 {
-                    context.Out.Echoln(res);
+                    if (!quiet)
+                        context.Out.Echoln(res);
 
                     var obj = JsonConvert.DeserializeObject<PackageVersions>(res);
 

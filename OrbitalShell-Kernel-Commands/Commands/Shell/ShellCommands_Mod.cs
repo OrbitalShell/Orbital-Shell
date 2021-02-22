@@ -121,7 +121,7 @@ namespace OrbitalShell.Commands.Shell
                             return _ModuleErr(context, $"module assembly file version attribute missing/empty/null");
 
                         var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");
-                        var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n}", 0);
+                        var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n} -q", 0);
                         if (r.EvalResultCode == (int)ReturnCode.OK)
                         {
                             var vers = ((PackageVersions)r.Result).Versions;
@@ -201,7 +201,7 @@ namespace OrbitalShell.Commands.Shell
                     o.Echoln();
 
                     var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");                    
-                    var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n}", 0);
+                    var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n} -q", 0);
                     if (r.EvalResultCode==(int)ReturnCode.OK)
                     {
                         var vers = (PackageVersions)r.Result;
