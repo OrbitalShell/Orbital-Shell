@@ -14,17 +14,21 @@ namespace OrbitalShell
             Out.Echo(ANSI.RIS);
             Out.ClearScreen();
 
+            // 1. build a clp
+
             var commandLineProcessor = new CommandLineProcessor(
                 args,
                 new OrbitalShellCommandLineProcessorSettings()
             );
 
+            // 2. build a clr associated to the clp
+
             var commandLineReader = new CommandLineReader(
                 commandLineProcessor);
 
-            var shellInitializer = new ShellInitializer(commandLineProcessor);
+            // 3. invoke a shell initializer to bootsrap an intractive shell env within the clp
 
-            //commandLineProcessor.Initialize();
+            var shellInitializer = new ShellInitializer(commandLineProcessor);
             shellInitializer.Run(commandLineProcessor.CommandEvaluationContext);
 
             var returnCode = commandLineReader.ReadCommandLine();

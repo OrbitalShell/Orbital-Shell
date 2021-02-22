@@ -130,6 +130,8 @@ namespace OrbitalShell.Commands.Shell
                                 // new version
                                 var lastVer = vers.Last();
                                 o.Echoln($"{context.ShellEnv.Colors.Highlight}a new version of '{n} {curPackVer}' is available: {lastVer}");
+
+                                // module -i 
                             }
                             else
                                 o.Echoln("no new version available");
