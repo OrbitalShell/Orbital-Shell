@@ -22,7 +22,7 @@ jobs:
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2
       with:
-        github_token: ${{ secrets.GH_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         workflow: dotnet.yml
         workflow_conclusion: success
         branch: master
@@ -42,4 +42,4 @@ jobs:
         context: .
         file: deploy/docker/Dockerfile-${{ matrix.os }}
         push: true
-        tags: yobatman/orbital-shell:${{ matrix.os }}
+        tags: orbitalshell/orbital-shell:${{ matrix.os }}
