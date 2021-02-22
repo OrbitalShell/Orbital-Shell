@@ -277,9 +277,20 @@ namespace OrbitalShell.Commands.Shell
                                             var exMod = modInit.List.Where(x => x.Path == dll.FullName);
                                             if (exMod.Count() > 0) throw new Exception("a module assembly with the same path is altready registered in module-init");
 
+                                            // remove others versions of the same module assembly
+                                            var exMods = modInit.List.Where(x => x.LowerPackageId == folderName);
+                                            foreach (var exMA in exMods)
+                                            {
+                                                var lst = modInit.List.ToList();
+                                                lst.Remove(exMA);
+                                                modInit.List = lst.ToArray();
+                                            }
+
                                             var mod = new ModuleInitItemModel()
                                             {
                                                 Path = FileSystemPath.UnescapePathSeparators(dll.FullName),
+                                                LowerPackageId = folderName,
+                                                LowerVersionId = lowerVersion,
                                                 IsEnabled = true
                                             };
                                             modInit.List = modInit.List.Append(mod).ToArray();
