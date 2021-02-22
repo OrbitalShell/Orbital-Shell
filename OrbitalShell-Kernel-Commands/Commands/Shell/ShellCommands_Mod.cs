@@ -36,7 +36,7 @@ namespace OrbitalShell.Commands.Shell
             [Option("l", "load", "load a module from the given path", true, true)] FilePath loadModulePath = null,
             [Option("n", "unload", "unload the module having the given name ", true, true)] string unloadModuleName = null,
             [Option("i", "install", "install a module from the nuget source", true, true)] string installModuleName = null,
-            [Option("r", "remove", "uninstall a module and remove the module files", true, true)] string uninstallModuleName = null,
+            [Option("r", "remove", "uninstall a module. module files are still available in $modules", true, true)] string uninstallModuleName = null,
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
             [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool fetchList = false,
             [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module info and output results. the module is not installed", true, true)] string fetchInfoName = null,
@@ -100,6 +100,35 @@ namespace OrbitalShell.Commands.Shell
 
             if (!fetchList && !fetchInfo)
             {
+                // uninstall module
+
+                if (uninstallModuleName!=null)
+                {
+                    var folderName = uninstallModuleName.ToLower();
+                    if (!ModuleUtil.IsModuleInstalled( context, folderName ))
+                        // error not installed
+                        return _ModuleErr(context, $"module '{uninstallModuleName}' is not installed");
+
+                    o.Echoln(clog + "removing potentially registered dlls:");
+                    var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
+                    var modInits = modInit.List.ToList();
+                    foreach ( var moduleAssemblyFilePath in ModuleUtil.GetModuleAssemblies(context,folderName) )
+                    {
+                        o.Echo(clog + moduleAssemblyFilePath.FullName + " ... ");
+                        var removableItems = modInits.Where(x => x.Path == FileSystemPath.UnescapePathSeparators(moduleAssemblyFilePath.FullName));
+                        if (removableItems.Count()>0)
+                        {
+                            removableItems.ToList().ForEach(x => modInits.Remove(x));
+                            o.Echoln("removed");
+                        }
+                        else
+                            o.Echoln(context.ShellEnv.Colors.Error + "not found");
+                    }
+                    modInit.List = modInits.ToArray();
+
+                    ModuleUtil.SaveModuleInitConfiguration(context, modInit);
+                }
+
                 // install module
 
                 if (installModuleName != null)
@@ -140,7 +169,7 @@ namespace OrbitalShell.Commands.Shell
                         var lowerVersion = version.ToLower();
                         var moduleLowerFullId = $"{folderName}.{lowerVersion}";  // == module lower id
 
-                        if (context.CommandLineProcessor.ModuleManager.IsModuleInstalled(
+                        if (ModuleUtil.IsModuleInstalled(
                             context,folderName,version
                             ) && !force)
                             // error already installed, !force

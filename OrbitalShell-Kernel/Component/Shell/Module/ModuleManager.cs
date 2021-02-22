@@ -186,21 +186,6 @@ namespace OrbitalShell.Component.Shell.Module
         /// <param name="version">module version id (= module nuget package version)</param>
         public string GetModuleLowerId(string id,string version) => id.ToLower()+"."+version.ToLower();
 
-        public bool IsModuleInstalled(
-            CommandEvaluationContext context,
-            string moduleId,
-            string version)
-        {
-            var path = context.CommandLineProcessor.Settings.ModulesFolderPath;
-            path = Path.Combine(path, moduleId);
-            if (!Directory.Exists(path)) return false;
-            path = Path.Combine(path, version);
-            if (!Directory.Exists(path)) return false;
-            //path = Path.Combine(path, $"lib/{moduleId}.{version}.dll");
-            // return File.Exists(path);
-            return true;
-        }
-
         public bool IsModuleAssemblyLoaded(string path) => _loadedAssemblies.Contains(path.ToLower());
     }
 }

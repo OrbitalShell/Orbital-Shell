@@ -198,6 +198,19 @@ namespace OrbitalShell.Component.Shell
         void LoadModulesFromConfig(CommandEvaluationContext context)
         {
             var mods = ModuleUtil.LoadModuleInitConfiguration(context);
+
+            if (mods==null)
+            {
+                // rebuild the module-init file - it is crashed
+                mods = new ModuleInitModel()
+                    {
+                        ReadMe = $"new file generated on {System.DateTime.Now}",
+                        List = new ModuleInitItemModel[] { }
+                    };
+                ModuleUtil.SaveModuleInitConfiguration(context, mods);
+                context.Errorln("a crashed version of module-init has been restored to initial state");
+            }
+                
             var enabledMods = mods.List.Where(x => x.IsEnabled);
             if (enabledMods.Count() == 0) return;
             var o = context.Out;
