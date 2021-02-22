@@ -99,7 +99,7 @@ namespace OrbitalShell.Component.Shell.Variable
 
             // shell settings (defaults)
 
-            AddValue(ShellEnvironmentVar.settings_module_providerUrls, new List<string> { "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/master/module-index-repository/module-list.txt" });
+            AddValue(ShellEnvironmentVar.settings_module_providerUrls, new List<string> { "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/master/module-index-repository/module-list" });
             AddValue(ShellEnvironmentVar.settings_console_prompt, ANSI.RSTXTA + "> ");        // prompt   
             AddValue(ShellEnvironmentVar.settings_console_initialWindowWidth, -1);
             AddValue(ShellEnvironmentVar.settings_console_initialWindowHeight, -1);
