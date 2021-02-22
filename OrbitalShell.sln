@@ -10,7 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		issues = issues
 		LICENSE.md = LICENSE.md
+		modules-index-repository\module-list.txt = modules-index-repository\module-list.txt
 		README.md = README.md
+		modules-index-repository\readme.txt = modules-index-repository\readme.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-ConsoleApp", "OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj", "{3357EBB3-2565-4390-A28B-8B837DA52BBC}"
@@ -20,6 +22,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-Kernel-Commands", "OrbitalShell-Kernel-Commands\OrbitalShell-Kernel-Commands.csproj", "{B46DB3C8-E040-44B6-87D6-B9744E5657D8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-CLI", "OrbitalShell-CLI\OrbitalShell-CLI.csproj", "{C2920F91-71BE-4B0F-8742-4C52F4A75D56}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "module-repository", "module-repository", "{27033D10-E732-47E6-A607-27A718CEF3EF}"
+	ProjectSection(SolutionItems) = preProject
+		modules-index-repository\module-list.txt = modules-index-repository\module-list.txt
+		modules-index-repository\readme.txt = modules-index-repository\readme.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +54,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{27033D10-E732-47E6-A607-27A718CEF3EF} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE827123-7F20-471E-B1BF-3E12AE9FFDC8}

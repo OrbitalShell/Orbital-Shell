@@ -265,7 +265,7 @@ namespace OrbitalShell.Commands.Shell
 
                             }
                             else
-                                o.Errorln("no module having name '{fetchInfoName}' can be found in repostories");
+                                o.Errorln($"no module having name '{fetchInfoName}' can be found in repostories");
                         }
 
                         if (fetchList)

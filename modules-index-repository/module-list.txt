@@ -4,4 +4,5 @@
 m;OrbitalShell-Module-PromptGitInfo;;Prompt git info adds infos about git repository to the orbital shell command line prompt
 m;OrbitalShell-Kernel;0.1.0.0;Orbital Shell kernel - Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core
 m;OrbitalShell-Kernel-Commands;0.1.0.0;Orbital Shell kernel commands module
+m;OrbitalShell-Module-DoomFireAlgo;;a simple module for orbital shell that add a command running the famous doom fire algorithm (C# ANSI version) 
 
