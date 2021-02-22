@@ -102,22 +102,37 @@ namespace OrbitalShell.Commands.Shell
 
             if (!fetchList && !fetchInfo)
             {
-                // update module name
+                // update module
 
                 if (updateModuleName!=null)
                 {
                     n = updateModuleName;
                     if (ModuleUtil.IsModuleInstalled(context, n))
                     {
-                        var modSpec = context.CommandLineProcessor.ModuleManager.GetModule(context, n);
+                        var modSpec = context.CommandLineProcessor.ModuleManager.GetModuleByLowerPackageId(n);
                         if (modSpec == null)
                             return _ModuleErr(context, $"module specification not found for module name '{n}'");
+
+                        // get the nupkg style version number
+                        var curPackVer = modSpec.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                        if (string.IsNullOrWhiteSpace(curPackVer))
+                            return _ModuleErr(context, $"module assembly file version attribute missing/empty/null");
 
                         var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");
                         var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n}", 0);
                         if (r.EvalResultCode == (int)ReturnCode.OK)
                         {
-                            var vers = (PackageVersions)r.Result;
+                            var vers = ((PackageVersions)r.Result).Versions;
+                            var lastPackageIndex = vers.Length-1;
+                            var curPackageIndex = Array.IndexOf(vers, curPackVer);
+                            if (lastPackageIndex > curPackageIndex)
+                            {
+                                // new version
+                                var lastVer = vers.Last();
+                                o.Echoln($"a new version of '{n} {curPackVer}' is available: {lastVer}");
+                            }
+                            else
+                                o.Echoln("no new version available");
                         }
                         else
                             return _ModuleErr(context, $"module id '{n}' not found at NuGet");
@@ -299,7 +314,7 @@ namespace OrbitalShell.Commands.Shell
                     n = unloadModuleName;
                     if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == n))
                     {
-                        moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, n);
+                        moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, n );
                         if (moduleSpecification != null && moduleSpecification.Info != null) o.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else

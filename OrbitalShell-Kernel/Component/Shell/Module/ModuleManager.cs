@@ -58,18 +58,27 @@ namespace OrbitalShell.Component.Shell.Module
             CommandEvaluationContext context,
             string moduleName)
         {
-            var moduleSpecification = GetModule(context, moduleName);
+            moduleName = moduleName?.ToLower() ?? throw new ArgumentNullException(nameof(moduleName));
+            var moduleSpecification = GetModuleByLowerPackageId( moduleName);
             if (moduleSpecification == null) return null;
             var r = ModuleCommandManager.UnregisterModuleCommands(context, moduleName);
             _modules.Remove(moduleSpecification.Key);
             return r;
         }
 
-        public ModuleSpecification GetModule(
-            CommandEvaluationContext context,
+        public ModuleSpecification GetModuleByName(
             string moduleName)
         {
             var moduleSpecification = _modules.Values.Where(x => x.Name == moduleName).FirstOrDefault();
+            if (moduleSpecification != null) return moduleSpecification;
+            return null;
+        }
+
+        public ModuleSpecification GetModuleByLowerPackageId(
+            string lowerPackareId)
+        {
+            lowerPackareId = lowerPackareId?.ToLower() ?? throw new ArgumentNullException(nameof(lowerPackareId));
+            var moduleSpecification = _modules.Values.Where(x => x.Key == lowerPackareId).FirstOrDefault();
             if (moduleSpecification != null) return moduleSpecification;
             return null;
         }
@@ -88,93 +97,100 @@ namespace OrbitalShell.Component.Shell.Module
             CommandEvaluationContext context,
             Assembly assembly)
         {
-            ModuleSpecification moduleSpecification;
+            ModuleSpecification moduleSpecification = null;
 
-            var moduleAttr = assembly.GetCustomAttribute<ShellModuleAttribute>();
-            if (moduleAttr == null)
+            try
             {
-                context.Errorln($"assembly is not a shell module: '{assembly.FullName}'");
-                return ModuleSpecification.ModuleSpecificationNotDefined;
-            }
-
-            // id is the name of the assembly (/!\ should not fit nuget packet id)
-
-            var modKey = _moduleKey(assembly, out var id, out var ver);
-            var assKey = _assemblyKey(assembly);
-            if (_loadedModules.Contains(assKey)) throw new Exception($"assembly already loaded: '{assKey}'");
-
-            if (_modules.ContainsKey(modKey))
-            {
-                context.Errorln($"module already registered: {modKey} (path={assembly.FullName})");
-                return ModuleSpecification.ModuleSpecificationNotDefined;
-            }
-
-            var typesCount = 0;
-            var comTotCount = 0;
-            var hooksCount = 0;
-
-            foreach (var type in assembly.GetTypes())
-            {
-                // register hooks
-
-                var hookAttr = type.GetCustomAttribute<HooksAttribute>();
-                if (hookAttr != null)
+                var moduleAttr = assembly.GetCustomAttribute<ShellModuleAttribute>();
+                if (moduleAttr == null)
                 {
-                    // module,class owns hooks
-                    foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+                    context.Errorln($"assembly is not a shell module: '{assembly.FullName}'");
+                    return ModuleSpecification.ModuleSpecificationNotDefined;
+                }
+
+                // id is the name of the assembly (/!\ should not fit nuget packet id)
+
+                var modKey = _moduleKey(assembly, out var id, out var ver);
+                var assKey = _assemblyKey(assembly);
+                if (_loadedModules.Contains(assKey)) throw new Exception($"assembly already loaded: '{assKey}'");
+
+                if (_modules.ContainsKey(modKey))
+                {
+                    context.Errorln($"module already registered: {modKey} (path={assembly.FullName})");
+                    return ModuleSpecification.ModuleSpecificationNotDefined;
+                }
+
+                var typesCount = 0;
+                var comTotCount = 0;
+                var hooksCount = 0;
+
+                foreach (var type in assembly.GetTypes())
+                {
+                    // register hooks
+
+                    var hookAttr = type.GetCustomAttribute<HooksAttribute>();
+                    if (hookAttr != null)
                     {
-                        var hook = mi.GetCustomAttribute<HookAttribute>();
-                        if (hook != null)
+                        // module,class owns hooks
+                        foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                         {
-                            ModuleHookManager.RegisterHook(context, hook.HookName, mi);
-                            hooksCount++;
+                            var hook = mi.GetCustomAttribute<HookAttribute>();
+                            if (hook != null)
+                            {
+                                ModuleHookManager.RegisterHook(context, hook.HookName, mi);
+                                hooksCount++;
+                            }
                         }
                     }
+
+                    // register commands
+
+                    var comsAttr = type.GetCustomAttribute<CommandsAttribute>();
+
+                    var comCount = 0;
+                    if (comsAttr != null && type.GetInterface(typeof(ICommandsDeclaringType).FullName) != null)
+                        comCount = ModuleCommandManager.RegisterCommandClass(context, type, false);
+                    if (comCount > 0)
+                        typesCount++;
+                    comTotCount += comCount;
+
                 }
 
-                // register commands
+                // register module
 
-                var comsAttr = type.GetCustomAttribute<CommandsAttribute>();
-
-                var comCount = 0;
-                if (comsAttr != null && type.GetInterface(typeof(ICommandsDeclaringType).FullName) != null)
-                    comCount = ModuleCommandManager.RegisterCommandClass(context, type, false);
-                if (comCount > 0)
-                    typesCount++;
-                comTotCount += comCount;
-
-            }
-
-            // register module
-
-            var descAttr = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
-            var description = (descAttr != null) ? descAttr.Description : "";
-            _modules.Add(
-                modKey,
-                moduleSpecification = new ModuleSpecification(
+                var descAttr = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
+                var description = (descAttr != null) ? descAttr.Description : "";
+                _modules.Add(
                     modKey,
-                    Path.GetFileNameWithoutExtension(assembly.Location),
-                    description,
-                    assembly,
-                    new ModuleInfo(
-                        typesCount,
-                        comTotCount,
-                        hooksCount
-                    )
-                ));
-            _loadedModules.Add(_assemblyKey(assembly));
-            _loadedAssemblies.Add(assembly.Location.ToLower());
+                    moduleSpecification = new ModuleSpecification(
+                        modKey,
+                        Path.GetFileNameWithoutExtension(assembly.Location),
+                        description,
+                        assembly,
+                        new ModuleInfo(
+                            typesCount,
+                            comTotCount,
+                            hooksCount
+                        )
+                    ));
+                _loadedModules.Add(_assemblyKey(assembly));
+                _loadedAssemblies.Add(assembly.Location.ToLower());
 
-            // run module hook init
-            ModuleHookManager.InvokeHooks(
-                context,
-                Hooks.ModuleInit,
-                HookTriggerMode.FirstTimeOnly,
-                (o) =>
-                {
-                    moduleSpecification.IsInitialized = true;
-                }
-            );
+                // run module hook init
+                ModuleHookManager.InvokeHooks(
+                    context,
+                    Hooks.ModuleInit,
+                    HookTriggerMode.FirstTimeOnly,
+                    (o) =>
+                    {
+                        moduleSpecification.IsInitialized = true;
+                    }
+                );
+
+            } catch (Exception ex)
+            {
+                throw new Exception($"register module assembly '{assembly.FullName}' failed due to error: '{ex.Message}'", ex);
+            }
 
             return moduleSpecification;
         }
