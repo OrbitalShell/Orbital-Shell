@@ -4,9 +4,9 @@ using OrbitalShell.Lib;
 /// <summary>
 /// declare a shell module
 /// </summary>
-[assembly: ShellModule()]
+[assembly: ShellModule("OrbitalShell-Kernel-Commands")]
 [assembly: ModuleTargetPlateform(TargetPlatform.Any)]
-[assembly: ModuleShellMinVersion("1.0.1-beta4")]
+[assembly: ModuleShellMinVersion("1.0.6")]
 [assembly: ModuleAuthors("Orbital Shell team")]
 namespace OrbitalShell.Kernel.Commands
 {

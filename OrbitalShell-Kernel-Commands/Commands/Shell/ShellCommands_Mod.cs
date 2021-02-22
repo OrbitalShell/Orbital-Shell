@@ -51,6 +51,7 @@ namespace OrbitalShell.Commands.Shell
             bool fetchInfo = fetchInfoName != null;
             var clog = context.ShellEnv.Colors.Log;
             var o = context.Out;
+            string n;
 
             if (loadModulePath == null && unloadModuleName == null && updateModuleName == null && installModuleName == null && uninstallModuleName == null
                 && !fetchList && !fetchInfo)
@@ -58,7 +59,7 @@ namespace OrbitalShell.Commands.Shell
                 // output reports on loaded modules
 
                 var col1length = context.CommandLineProcessor.ModuleManager.Modules.Values.Select(x => x.Name.Length).Max() + 1;
-                int n = 1;
+                int i = 1;
                 foreach (var kvp in context.CommandLineProcessor.ModuleManager.Modules)
                 {
                     var ver = kvp.Value.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
@@ -92,22 +93,46 @@ namespace OrbitalShell.Commands.Shell
                     {
                         o.Echoln($"{"".PadRight(col1length, ' ')}{context.ShellEnv.Colors.Label}version : {context.ShellEnv.Colors.HalfDark}{ver} (target {((target == null) ? "" : target + ", ")}created {dat}) {context.ShellEnv.Colors.Label}Company : (rdc){comp} ({aut}) ");
                     }
-                    if (n < context.CommandLineProcessor.ModuleManager.Modules.Count) o.Echoln();
-                    n++;
+                    if (i < context.CommandLineProcessor.ModuleManager.Modules.Count) o.Echoln();
+                    i++;
                 }
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
             }
 
             if (!fetchList && !fetchInfo)
             {
+                // update module name
+
+                if (updateModuleName!=null)
+                {
+                    n = updateModuleName;
+                    if (ModuleUtil.IsModuleInstalled(context, n))
+                    {
+                        var modSpec = context.CommandLineProcessor.ModuleManager.GetModule(context, n);
+                        if (modSpec == null)
+                            return _ModuleErr(context, $"module specification not found for module name '{n}'");
+
+                        var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");
+                        var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n}", 0);
+                        if (r.EvalResultCode == (int)ReturnCode.OK)
+                        {
+                            var vers = (PackageVersions)r.Result;
+                        }
+                        else
+                            return _ModuleErr(context, $"module id '{n}' not found at NuGet");
+                    } else 
+                        return _ModuleErr(context, $"module '{n}' is not installed");
+                }
+
                 // uninstall module
 
                 if (uninstallModuleName!=null)
                 {
-                    var folderName = uninstallModuleName.ToLower();
+                    n = uninstallModuleName;
+                    var folderName = n.ToLower();
                     if (!ModuleUtil.IsModuleInstalled( context, folderName ))
                         // error not installed
-                        return _ModuleErr(context, $"module '{uninstallModuleName}' is not installed");
+                        return _ModuleErr(context, $"module '{n}' is not installed");
 
                     o.Echoln(clog + "removing potentially registered dlls:");
                     var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
@@ -133,12 +158,13 @@ namespace OrbitalShell.Commands.Shell
 
                 if (installModuleName != null)
                 {
+                    n = installModuleName;
                     var lastVer = string.IsNullOrWhiteSpace(version);
 
                     #region fetch module info
 
                     var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
-                    var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{installModuleName} -t 1",0);
+                    var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{n} -t 1",0);
                     if (r0.EvalResultCode!=(int)ReturnCode.OK) return _ModuleErr(context, r0.ErrorReason);
                     var queryRes = r0.Result as QueryResultRoot;
                     if (queryRes==null) return _ModuleErr(context, "nuget query return a null result");
@@ -150,7 +176,7 @@ namespace OrbitalShell.Commands.Shell
                     o.Echoln();
 
                     var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");                    
-                    var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{installModuleName}", 0);
+                    var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n}", 0);
                     if (r.EvalResultCode==(int)ReturnCode.OK)
                     {
                         var vers = (PackageVersions)r.Result;
@@ -179,7 +205,7 @@ namespace OrbitalShell.Commands.Shell
                         if (!Directory.Exists(moduleFolder)) Directory.CreateDirectory(moduleFolder);
 
                         moduleFolder = FileSystemPath.UnescapePathSeparators(moduleFolder);
-                        var rd = context.CommandLineProcessor.Eval(context, dwnMethod, $"{installModuleName} {version} -o {moduleFolder}", 0);
+                        var rd = context.CommandLineProcessor.Eval(context, dwnMethod, $"{n} {version} -o {moduleFolder}", 0);
                         if (rd.EvalResultCode==(int)ReturnCode.OK)
                         {
                             o.Echo(clog + "extracting package... ");
@@ -265,17 +291,18 @@ namespace OrbitalShell.Commands.Shell
                         return _ModuleErr(null,null);
                 }
 
-                // unload module
+                // unload module (unregistered in session)
 
                 if (unloadModuleName != null)
                 {
-                    if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == unloadModuleName))
+                    n = unloadModuleName;
+                    if (context.CommandLineProcessor.ModuleManager.Modules.Values.Any(x => x.Name == n))
                     {
-                        moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, unloadModuleName);
+                        moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, n);
                         if (moduleSpecification != null && moduleSpecification.Info != null) o.Echoln($"unloaded: {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else
-                        return _ModuleErr(context, $"module '{unloadModuleName}' is not registered");
+                        return _ModuleErr(context, $"module '{n}' is not registered");
                 }
             }
             else

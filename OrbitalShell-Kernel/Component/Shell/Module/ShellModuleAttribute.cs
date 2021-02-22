@@ -8,6 +8,12 @@ namespace OrbitalShell.Component.Shell.Module
     [AttributeUsage(AttributeTargets.Assembly)]
     public class ShellModuleAttribute : Attribute
     {
-        public ShellModuleAttribute() { }
+        public readonly string PackageId;
+
+        /// <summary>
+        /// declare the assembly beeing a shell module having the specified package ID (must match PackageID in .csproj)
+        /// </summary>
+        /// <param name="packageId"></param>
+        public ShellModuleAttribute(string packageId) { PackageId = packageId; }
     }
 }
