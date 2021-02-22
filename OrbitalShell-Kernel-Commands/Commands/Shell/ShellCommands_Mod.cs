@@ -129,7 +129,7 @@ namespace OrbitalShell.Commands.Shell
                             {
                                 // new version
                                 var lastVer = vers.Last();
-                                o.Echoln($"a new version of '{n} {curPackVer}' is available: {lastVer}");
+                                o.Echoln($"{context.ShellEnv.Colors.Highlight}a new version of '{n} {curPackVer}' is available: {lastVer}");
                             }
                             else
                                 o.Echoln("no new version available");
@@ -262,7 +262,7 @@ namespace OrbitalShell.Commands.Shell
                                             var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
 
                                             var exMod = modInit.List.Where(x => x.Path == dll.FullName);
-                                            if (exMod.Count() > 0) throw new Exception("an module assembly with the same path is altready registered in module-init");
+                                            if (exMod.Count() > 0) throw new Exception("a module assembly with the same path is altready registered in module-init");
 
                                             var mod = new ModuleInitItemModel()
                                             {
