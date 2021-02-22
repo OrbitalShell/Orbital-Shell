@@ -19,6 +19,8 @@ using OrbitalShell.Commands.NuGetServerApi;
 using System.IO.Compression;
 using OrbitalShell.Commands.FileSystem;
 using OrbitalShell.Lib.Data;
+using System.Security.Policy;
+using System.Runtime.Loader;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -111,7 +113,7 @@ namespace OrbitalShell.Commands.Shell
                     {
                         var modSpec = context.CommandLineProcessor.ModuleManager.GetModuleByLowerPackageId(n);
                         if (modSpec == null)
-                            return _ModuleErr(context, $"module specification not found for module name '{n}'");
+                            return _ModuleErr(context, $"module specification not found for module name '{n}' (module is nor installed nor loaded)");
 
                         // get the nupkg style version number
                         var curPackVer = modSpec.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
@@ -131,7 +133,12 @@ namespace OrbitalShell.Commands.Shell
                                 var lastVer = vers.Last();
                                 o.Echoln($"{context.ShellEnv.Colors.Highlight}a new version of '{n} {curPackVer}' is available: {lastVer}");
 
-                                // module -i 
+                                // module -i {modulePackageId} --force --skip-load
+                                var installUpdateRes = Module(context: context, installModuleName: n, force: true, skipLoad: true);
+                                if (installUpdateRes.ReturnCode != (int)ReturnCode.OK)
+                                    return _ModuleErr(context, $"module update failed due to error: {installUpdateRes.ExecErrorText}");
+
+                                o.Echoln($"module '{n}' has been updated from version '{curPackVer}' to version '{lastVer}'");
                             }
                             else
                                 o.Echoln("no new version available");
@@ -252,7 +259,11 @@ namespace OrbitalShell.Commands.Shell
                                 {
                                     // candidate assembly
                                     o.Echoln(clog + $"importing dll: '{dll.Name}'");
-                                    var assembly = Assembly.LoadFrom(dll.FullName);
+
+                                    // must load assembly in another app domain (not .core) to avoid conflict with any loaded dll ==> use a new assembly load context
+                                    var alc = new AssemblyLoadContext($"module assembly load context",true);
+                                    var assembly = alc.LoadFromAssemblyPath(dll.FullName);
+
                                     if (ModuleUtil.IsAssemblyShellModule(assembly))
                                     {
                                         try
@@ -274,9 +285,15 @@ namespace OrbitalShell.Commands.Shell
                                             modInit.List = modInit.List.Append(mod).ToArray();
                                             ModuleUtil.SaveModuleInitConfiguration(context, modInit);
                                             nbImport++;
+
+                                            o.Warningln("shell needs restart to load module update");
                                         }
                                         catch (Exception ex) { o.Errorln(ex.Message); }
                                     }
+
+                                    // destroy the alc
+                                    alc.Unload();
+                                    alc = null;
                                 }
                                 else
                                     o.Errorln($"can't import the dll: '{dll.Name}' because it is in loaded state");
