@@ -168,7 +168,7 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
   - dedicated repositories are used to get known modules list <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
   - modules are versioned and delivered throught **nupkg** packets, currently hosted at **NuGet** <br> ![done](https://img.shields.io/badge/done-green?style=plastic)
   - modules are installed into the binaries of the shell <br> ![done](https://img.shields.io/badge/done-green?style=plastic) ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/5)
-  - modules to be loaded are loaded by the shell kernel on user session startup <br> ![todo](https://img.shields.io/badge/todo-orange?style=plastic) ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/6)
+  - modules to be loaded are loaded by the shell kernel on user session startup <br> ![done](https://img.shields.io/badge/done-green?style=plastic) ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/6)
 - _The shell command engine implements:_
   - A **command line reader** with:
     - usual input keyboard shortcuts <br> ![issue](https://img.shields.io/github/issues/detail/state/orbitalshell/Orbital-Shell/4)
