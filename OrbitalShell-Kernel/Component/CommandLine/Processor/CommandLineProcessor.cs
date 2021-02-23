@@ -268,7 +268,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CommandEvaluationContext context,
             MethodInfo commandMethodInfo,
             string args,
-            int outputX,
+            int outputX = 0,
             string postAnalysisPreExecOutput = null)    // TODO: an Eval options object could be nice
         {
             var comSpec = ModuleManager.ModuleCommandManager.GetCommandSpecification(commandMethodInfo);
@@ -299,7 +299,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public ExpressionEvaluationResult Eval(
             CommandEvaluationContext context,
             string expr,
-            int outputX,
+            int outputX = 0,
             string postAnalysisPreExecOutput = null)        // TODO: an eval options object would be nice
         {
             try

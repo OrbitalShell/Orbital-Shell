@@ -89,6 +89,9 @@ namespace OrbitalShell.Component.Shell.Module
             return true;
         }
 
+        public static List<string> GetInstalledModulesLowerPackageId(CommandEvaluationContext context)
+            => Directory.GetDirectories(context.CommandLineProcessor.Settings.ModulesFolderPath).Select(x => Path.GetFileName(x)).ToList();
+        
         public static List<FilePath> GetModuleAssemblies(CommandEvaluationContext context,string moduleId)
         {
             var r = new List<FilePath>();

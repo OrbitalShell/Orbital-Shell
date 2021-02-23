@@ -42,6 +42,7 @@ namespace OrbitalShell.Commands.Shell
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
             [Option(null, "check-only", "do not install update, just check if an update exists", true)] bool checkOnly = false,
             [Option(null,"update-all", "try to update all installed modules from the nuget source")] bool updateAll = false,
+            [Option(null, "register-update-only", "do not add new entries to module-init, simply update existing entries")] bool registerUpdateOnly = false,
             [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool fetchList = false,
             [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module info and output results. the module is not installed", true, true)] string fetchInfoName = null,
             [Option("v", "version", "module version if applyable", true, true)] string version = null,
@@ -110,7 +111,11 @@ namespace OrbitalShell.Commands.Shell
 
                 if (updateAll)
                 {
-
+                    var ids = ModuleUtil.GetInstalledModulesLowerPackageId(context);
+                    foreach (var id in ids)
+                    {
+                        var installRes = Module(context: context, updateModuleName: id, checkOnly: checkOnly, registerUpdateOnly:true);
+                    }
                 }
 
                 // update module
@@ -122,10 +127,10 @@ namespace OrbitalShell.Commands.Shell
                     {
                         // find the right module assembly
 
-                        (AssemblyLoadContext assemblyLoadContext, Assembly moduleAssembly) modAss = ModuleUtil.GetModuleAssembly(context, n);
+                        (AssemblyLoadContext assemblyLoadContext, Assembly moduleAssembly) = ModuleUtil.GetModuleAssembly(context, n);
 
                         // get the nupkg style version number
-                        var curPackVer = modAss.moduleAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                        var curPackVer = moduleAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
                         if (string.IsNullOrWhiteSpace(curPackVer))
                             return _ModuleErr(context, $"module assembly file version attribute missing/empty/null");
 
@@ -145,7 +150,7 @@ namespace OrbitalShell.Commands.Shell
                                 if (!checkOnly)
                                 {
                                     // module -i {modulePackageId} --force --skip-load
-                                    var installUpdateRes = Module(context: context, installModuleName: n, force: true, skipLoad: true);
+                                    var installUpdateRes = Module(context: context, installModuleName: n, force: true, skipLoad: true, registerUpdateOnly:registerUpdateOnly);
                                     if (installUpdateRes.ReturnCode != (int)ReturnCode.OK)
                                         return _ModuleErr(context, $"module update failed due to error: {installUpdateRes.ExecErrorText}");
 
@@ -153,7 +158,7 @@ namespace OrbitalShell.Commands.Shell
                                 }
                             }
                             else
-                                o.Echoln("no new version available");
+                                o.Echoln($"{n} ({curPackVer}) : no new version available");
                         }
                         else
                             return _ModuleErr(context, $"module id '{n}' not found at NuGet");
@@ -283,18 +288,17 @@ namespace OrbitalShell.Commands.Shell
                                             if (!skipLoad)
                                                 context.CommandLineProcessor.ModuleManager.RegisterModule(context, assembly);
 
-                                            o.Echoln(clog + $"register into module-init");
+                                            o.Echoln(clog + (registerUpdateOnly? "update module-init" : "register into module-init") );
                                             var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
 
-                                            var exMod = modInit.List.Where(x => x.Path == dll.FullName);
-                                            if (exMod.Count() > 0) throw new Exception("a module assembly with the same path is altready registered in module-init");
-
                                             // remove others versions of the same module assembly
+                                            bool oldVersionExists = false;
                                             var exMods = modInit.List.Where(x => x.LowerPackageId == folderName);
                                             foreach (var exMA in exMods)
                                             {
                                                 var lst = modInit.List.ToList();
                                                 lst.Remove(exMA);
+                                                oldVersionExists = true;
                                                 modInit.List = lst.ToArray();
                                             }
 
@@ -305,7 +309,10 @@ namespace OrbitalShell.Commands.Shell
                                                 LowerVersionId = lowerVersion,
                                                 IsEnabled = true
                                             };
-                                            modInit.List = modInit.List.Append(mod).ToArray();
+                                            
+                                            if (!registerUpdateOnly || oldVersionExists)
+                                                modInit.List = modInit.List.Append(mod).ToArray();
+
                                             ModuleUtil.SaveModuleInitConfiguration(context, modInit);
                                             nbImport++;
 
