@@ -1,18 +1,24 @@
 ﻿using OrbitalShell.Component.CommandLine.Reader;
 using System;
-using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace OrbitalShell
 {
     class Program
     {
-        static void Main(string[] args)
+        static Task Main(string[] args)
         {
-            Out.Echo(ANSI.RIS);
-            Out.ClearScreen();
+            App.Bootstrap();
+            using IHost host = App.Host;
+            var cons = host.Services.GetRequiredService<IDotNetConsole>();
+
+            cons.Out.Echo(ANSI.RIS);
+            cons.Out.ClearScreen();
 
             // 1. build a clp
 
@@ -32,7 +38,10 @@ namespace OrbitalShell
             shellInitializer.Run(commandLineProcessor.CommandEvaluationContext);
 
             var returnCode = commandLineReader.ReadCommandLine();
-            Environment.Exit(returnCode);
+            
+            //Environment.Exit(returnCode);
+
+            return host.RunAsync();
         }
     }
 }

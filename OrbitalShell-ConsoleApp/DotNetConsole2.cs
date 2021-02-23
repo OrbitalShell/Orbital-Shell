@@ -23,76 +23,76 @@ namespace OrbitalShell
     /// - the .net core make use of interop for each console method call in windows (ConsolePal.Windows.cs)
     /// </para>
     /// </summary>
-    public static class DotNetConsole
+    public class DotNetConsole2 : IDotNetConsole
     {
         #region attributes
 
         #region streams : entry points to DotNetConsole output operations
 
-        public static ConsoleTextWriterWrapper Out = new ConsoleTextWriterWrapper(sc.Out);
-        public static TextWriterWrapper Err = new TextWriterWrapper(sc.Error);
-        public static TextReader In = System.Console.In;
+        public ConsoleTextWriterWrapper Out { get; set; } = new ConsoleTextWriterWrapper(sc.Out);
+        public TextWriterWrapper Err { get; set; } = new TextWriterWrapper(sc.Error);
+        public TextReader In { get; set; } = System.Console.In;
 
         #endregion
 
         #region work area settings
 
-        static WorkArea _workArea = new WorkArea();
-        public static WorkArea WorkArea => new WorkArea(_workArea);
-        public static bool InWorkArea => !_workArea.Rect.IsEmpty;
-        public static EventHandler ViewSizeChanged;
-        public static EventHandler<WorkAreaScrollEventArgs> WorkAreaScrolled;
-        public static bool EnableConstraintConsolePrintInsideWorkArea = false;
+        WorkArea _workArea = new WorkArea();
+        public WorkArea WorkArea => new WorkArea(_workArea);
+        public bool InWorkArea => !_workArea.Rect.IsEmpty;
+        public EventHandler ViewSizeChanged;
+        public EventHandler<WorkAreaScrollEventArgs> WorkAreaScrolled;
+        public bool EnableConstraintConsolePrintInsideWorkArea = false;
 
         #endregion
 
-        public static bool IsErrorRedirected = false;
-        public static bool IsOutputRedirected = false;
+        public bool IsErrorRedirected { get; set; } = false;
+        public bool IsOutputRedirected { get; set; } = false;
 
-        //public static int UIWatcherThreadDelay = 500;
-        //public static ViewResizeStrategy ViewResizeStrategy = ViewResizeStrategy.FitViewSize;
-        public static bool ClearOnViewResized = true;      // false not works properly in Windows Terminal + fit view size
+        //public int UIWatcherThreadDelay = 500;
+        //public ViewResizeStrategy ViewResizeStrategy = ViewResizeStrategy.FitViewSize;
+        public bool ClearOnViewResized = true;      // false not works properly in Windows Terminal + fit view size
 
-        public static bool SaveColors = /*true*/ false; /*bug fix*/ // TODO: remove
+        public bool SaveColors = /*true*/ false; /*bug fix*/ // TODO: remove
 
-        public static bool TraceCommandErrors = true;
+        public bool TraceCommandErrors { get; set; } = true;
 
-        public static bool DumpExceptions = true;
-        public static ConsoleColor? DefaultForeground;
-        public static ConsoleColor? DefaultBackground;
+        public bool DumpExceptions { get; set; } = true;
+        public ConsoleColor? DefaultForeground { get; set; }
+        public ConsoleColor? DefaultBackground { get; set; }
 
-        public static char CommandBlockBeginChar = '(';
-        public static char CommandBlockEndChar = ')';
-        public static char CommandSeparatorChar = ',';
-        public static char CommandValueAssignationChar = '=';
-        public static string CodeBlockBegin = "[[";
-        public static string CodeBlockEnd = "]]";
+        public char CommandBlockBeginChar { get; set; } = '(';
+        public char CommandBlockEndChar { get; set; } = ')';
+        public char CommandSeparatorChar { get; set; } = ',';
+        public char CommandValueAssignationChar { get; set; } = '=';
+        public string CodeBlockBegin { get; set; } = "[[";
+        public string CodeBlockEnd { get; set; } = "]]";
 
-        public static bool ForwardLogsToSystemDiagnostics = true;
-        public static int TabLength = 7;
+        public bool ForwardLogsToSystemDiagnostics { get; set; } = true;
+        public int TabLength { get; set; } = 7;
 
-        static TextWriter _errorWriter;
-        static StreamWriter _errorStreamWriter;
-        static FileStream _errorFileStream;
-        static TextWriter _outputWriter;
-        static StreamWriter _outputStreamWriter;
-        static FileStream _outputFileStream;
+        TextWriter _errorWriter;
+        StreamWriter _errorStreamWriter;
+        FileStream _errorFileStream;
+        TextWriter _outputWriter;
+        StreamWriter _outputStreamWriter;
+        FileStream _outputFileStream;
 
-        static string[] _crlf = { Environment.NewLine };
+        string[] _crlf = { Environment.NewLine };
 
-        public static object ConsoleLock => Out.Lock;
+        public object ConsoleLock => Out.Lock;
 
-        //static Thread _watcherThread;
-        //static readonly Dictionary<int, UIElement> _uielements = new Dictionary<int, UIElement>();
-        public static bool RedrawUIElementsEnabled = true;
+        //Thread _watcherThread;
+        //readonly Dictionary<int, UIElement> _uielements = new Dictionary<int, UIElement>();
+        public bool RedrawUIElementsEnabled = true;
 
-        public static ColorSettings Colors = new ColorSettings();
+        public ColorSettings Colors { get; set; } = new ColorSettings();
 
         #endregion
 
         #region log methods
 
-        public static void LogError(Exception ex, bool enableForwardLogsToSystemDiagnostics = true)
+        public void LogError(Exception ex, bool enableForwardLogsToSystemDiagnostics = true)
         {
             if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(ex + "");
             if (DumpExceptions)
@@ -111,7 +111,7 @@ namespace OrbitalShell
             }
         }
 
-        public static void LogException(Exception ex, string message = "", bool enableForwardLogsToSystemDiagnostics = true)
+        public void LogException(Exception ex, string message = "", bool enableForwardLogsToSystemDiagnostics = true)
         {
             if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(message + _crlf + ex + "");
             var ls = new List<string>();
@@ -127,7 +127,7 @@ namespace OrbitalShell
             Errorln(ls);
         }
 
-        public static void LogError(string s, bool enableForwardLogsToSystemDiagnostics = true)
+        public void LogError(string s, bool enableForwardLogsToSystemDiagnostics = true)
         {
             if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
             var ls = (s + "").Split(_crlf, StringSplitOptions.None)
@@ -135,7 +135,7 @@ namespace OrbitalShell
             Errorln(ls);
         }
 
-        public static void LogWarning(string s, bool enableForwardLogsToSystemDiagnostics = true)
+        public void LogWarning(string s, bool enableForwardLogsToSystemDiagnostics = true)
         {
             if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
             var ls = (s + "").Split(_crlf, StringSplitOptions.None)
@@ -143,7 +143,7 @@ namespace OrbitalShell
             Errorln(ls);
         }
 
-        public static void Log(string s, bool enableForwardLogsToSystemDiagnostics = true)
+        public void Log(string s, bool enableForwardLogsToSystemDiagnostics = true)
         {
             if (ForwardLogsToSystemDiagnostics && enableForwardLogsToSystemDiagnostics) System.Diagnostics.Debug.WriteLine(s);
             var ls = (s + "").Split(_crlf, StringSplitOptions.None)
@@ -154,11 +154,13 @@ namespace OrbitalShell
 
         #endregion
 
-        public static void Error(string s = "") => Error(s, false);
-        public static void Errorln(string s = "") => Error(s, true);
-        public static void Errorln(IEnumerable<string> ls) { foreach (var s in ls) Errorln(s); }
-        public static void Error(IEnumerable<string> ls) { foreach (var s in ls) Error(s); }
-        public static void Error(string s, bool lineBreak = false)
+        #region operations
+
+        public void Error(string s = "") => Error(s, false);
+        public void Errorln(string s = "") => Error(s, true);
+        public void Errorln(IEnumerable<string> ls) { foreach (var s in ls) Errorln(s); }
+        public void Error(IEnumerable<string> ls) { foreach (var s in ls) Error(s); }
+        public void Error(string s, bool lineBreak = false)
         {
             lock (Out.Lock)
             {
@@ -168,11 +170,11 @@ namespace OrbitalShell
             }
         }
 
-        public static void Warning(string s = "") => Warning(s, false);
-        public static void Warningln(string s = "") => Warning(s, true);
-        public static void Warningln(IEnumerable<string> ls) { foreach (var s in ls) Errorln(s); }
-        public static void Warning(IEnumerable<string> ls) { foreach (var s in ls) Error(s); }
-        public static void Warning(string s, bool lineBreak = false)
+        public void Warning(string s = "") => Warning(s, false);
+        public void Warningln(string s = "") => Warning(s, true);
+        public void Warningln(IEnumerable<string> ls) { foreach (var s in ls) Errorln(s); }
+        public void Warning(IEnumerable<string> ls) { foreach (var s in ls) Error(s); }
+        public void Warning(string s, bool lineBreak = false)
         {
             lock (Out.Lock)
             {
@@ -180,7 +182,7 @@ namespace OrbitalShell
             }
         }
 
-        public static string Readln(string prompt = null)
+        public string Readln(string prompt = null)
         {
             lock (Out.Lock)
             {
@@ -189,7 +191,7 @@ namespace OrbitalShell
             return sc.ReadLine();
         }
 
-        public static void Infos()
+        public void Infos()
         {
             lock (Out.Lock)
             {
@@ -199,9 +201,7 @@ namespace OrbitalShell
                 Out.Echoln($"{White}default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
                 if (RuntimeEnvironment.OSType == OSPlatform.Windows)
                 {
-#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
                     Out.Echoln($"number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");
-#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
                     Out.Echoln($"cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");
                 }
             };
@@ -211,25 +211,27 @@ namespace OrbitalShell
         /// terminates current process
         /// </summary>
         /// <param name="r">return code</param>
-        public static void Exit(int r = 0) => Environment.Exit(r);
+        public void Exit(int r = 0) => Environment.Exit(r);
+
+        #endregion
 
         #region work area operations
 
         /// <summary>
         /// this setting limit wide of lines (available width -1) to prevent sys console to automatically put a line break when reaching end of line (console bug ?)
         /// </summary>
-        public static bool AvoidConsoleAutoLineBreakAtEndOfLine = false;
+        public bool AvoidConsoleAutoLineBreakAtEndOfLine = false;
 
         /// <summary>
         /// true until the contrary is detected (exception in GetCoords : sc.WindowLeft)
         /// </summary>
-        public static bool IsConsoleGeometryEnabled = true;
+        public bool IsConsoleGeometryEnabled { get; protected set; } = true;
 
         /// <summary>
         /// update the IsConsoleGeometryEnabled field
         /// </summary>
         /// <returns>value of the field</returns>
-        public static bool CheckConsoleHasGeometry()
+        public bool CheckConsoleHasGeometry()
         {
             try
             {
@@ -243,7 +245,7 @@ namespace OrbitalShell
             return true;
         }
 
-        public static (int x, int y, int w, int h) GetCoords(int x, int y, int w, int h, bool fitToVisibleArea = true)
+        public (int x, int y, int w, int h) GetCoords(int x, int y, int w, int h, bool fitToVisibleArea = true)
         {
             // (1) dos console (eg. vs debug consolehep) set WindowTop as y scroll position. WSL console doesn't (still 0)
             // scroll -> native dos console set WindowTop and WindowLeft as base scroll coordinates
@@ -275,7 +277,7 @@ namespace OrbitalShell
             }
         }
 
-        public static ActualWorkArea ActualWorkArea(bool fitToVisibleArea = true)
+        public ActualWorkArea ActualWorkArea(bool fitToVisibleArea = true)
         {
             var x0 = _workArea.Rect.IsEmpty ? 0 : _workArea.Rect.X;
             var y0 = _workArea.Rect.IsEmpty ? 0 : _workArea.Rect.Y;
@@ -287,7 +289,7 @@ namespace OrbitalShell
 
 
 
-        public static void SetCursorAtWorkAreaTop()
+        public void SetCursorAtWorkAreaTop()
         {
             if (_workArea.Rect.IsEmpty) return;     // TODO: set cursor even if workarea empty?
             lock (Out.Lock)
@@ -300,7 +302,7 @@ namespace OrbitalShell
 
         #region UI operations
 
-        public static void FixCoords(ref int x, ref int y)
+        public void FixCoords(ref int x, ref int y)
         {
             lock (ConsoleLock)
             {
@@ -313,7 +315,7 @@ namespace OrbitalShell
 
         #region stream methods
 
-        public static void RedirectOut(StreamWriter sw)
+        public void RedirectOut(StreamWriter sw)
         {
             if (sw != null)
             {
@@ -331,7 +333,7 @@ namespace OrbitalShell
             }
         }
 
-        public static void RedirectErr(TextWriter sw)
+        public void RedirectErr(TextWriter sw)
         {
             if (sw != null)
             {
@@ -349,7 +351,7 @@ namespace OrbitalShell
             }
         }
 
-        public static void RedirectOut(string filepath = null)
+        public void RedirectOut(string filepath = null)
         {
             if (filepath != null)
             {
@@ -370,7 +372,7 @@ namespace OrbitalShell
             }
         }
 
-        public static void RedirectErr(string filepath = null)
+        public void RedirectErr(string filepath = null)
         {
             if (filepath != null)
             {
@@ -393,15 +395,9 @@ namespace OrbitalShell
 
         #endregion
 
-        #region folders
-
-        //public static string TempPath => Path.Combine( Environment.CurrentDirectory , "Temp" );
-
-        #endregion
-
         #region implementation methods
 
-        public static int GetCursorX(object x)
+        public int GetCursorX(object x)
         {
             if (x != null && x is string s && !string.IsNullOrWhiteSpace(s)
                 && int.TryParse(s, out var v))
@@ -413,7 +409,7 @@ namespace OrbitalShell
             }
         }
 
-        public static int GetCursorY(object x)
+        public int GetCursorY(object x)
         {
             if (x != null && x is string s && !string.IsNullOrWhiteSpace(s)
                 && int.TryParse(s, out var v))
@@ -426,8 +422,6 @@ namespace OrbitalShell
         }
 
         #endregion
-
-
 
     }
 }

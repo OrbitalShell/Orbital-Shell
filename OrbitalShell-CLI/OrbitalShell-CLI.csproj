@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     
     <!--<TargetFramework>net5.0</TargetFramework>-->    
-    <TargetFramework>netcoreapp3.1</TargetFramework>  
+    <TargetFramework>net5.0</TargetFramework>  
 	  
     <RootNamespace>OrbitalShell</RootNamespace>    
     <AssemblyName>orbsh</AssemblyName>
