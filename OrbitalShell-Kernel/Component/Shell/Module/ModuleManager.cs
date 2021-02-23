@@ -25,7 +25,7 @@ namespace OrbitalShell.Component.Shell.Module
 
         private List<string> _loadedModules = new List<string>();
         
-        private List<string> _loadedAssemblies = new List<string>();
+        private Dictionary<string,Assembly> _loadedAssemblies = new Dictionary<string,Assembly>();
 
         readonly SyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
 
@@ -174,7 +174,7 @@ namespace OrbitalShell.Component.Shell.Module
                         )
                     ));
                 _loadedModules.Add(_assemblyKey(assembly));
-                _loadedAssemblies.Add(assembly.Location.ToLower());
+                _loadedAssemblies.Add(assembly.Location.ToLower(),assembly);
 
                 // run module hook init
                 ModuleHookManager.InvokeHooks(
@@ -195,6 +195,8 @@ namespace OrbitalShell.Component.Shell.Module
             return moduleSpecification;
         }
 
-        public bool IsModuleAssemblyLoaded(string path) => _loadedAssemblies.Contains(path.ToLower());
+        public bool IsModuleAssemblyLoaded(string path) => _loadedAssemblies.ContainsKey(path.ToLower());
+
+        public Assembly GetLoadedModuleAssembly(string path) => _loadedAssemblies[path.ToLower()];
     }
 }

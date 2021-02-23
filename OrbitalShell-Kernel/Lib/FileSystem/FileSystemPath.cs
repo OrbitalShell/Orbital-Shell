@@ -32,15 +32,24 @@ namespace OrbitalShell.Lib.FileSystem
 
         public FileSystemInfo FileSystemInfo { get; protected set; }
         public string Name => FileSystemInfo.Name;
-        public string FullName => FileSystemInfo.FullName;
+
+        /// <summary>
+        /// default unescape path separators (\ are transformed to /)
+        /// </summary>
+        public string FullName => FileSystemPath.UnescapePathSeparators(FileSystemInfo.FullName);
+
+        /// <summary>
+        /// default unescape path separators (\ are transformed to /)
+        /// </summary>
         public string PrintableFullName
         {
             get
             {
                 var quote = FullName.Contains(' ') ? "\"" : "";
-                return $"{quote}{FullName}{quote}";
+                return $"{quote}{FileSystemPath.UnescapePathSeparators(FullName)}{quote}";
             }
         }
+
         public string PrintableName
         {
             get

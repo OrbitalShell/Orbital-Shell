@@ -40,6 +40,8 @@ namespace OrbitalShell.Commands.Shell
             [Option("i", "install", "install a module from the nuget source", true, true)] string installModuleName = null,
             [Option("r", "remove", "uninstall a module. module files are still available in $modules", true, true)] string uninstallModuleName = null,
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
+            [Option(null, "check-only", "do not install update, just check if an update exists", true)] bool checkOnly = false,
+            [Option(null,"update-all", "try to update all installed modules from the nuget source")] bool updateAll = false,
             [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool fetchList = false,
             [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module info and output results. the module is not installed", true, true)] string fetchInfoName = null,
             [Option("v", "version", "module version if applyable", true, true)] string version = null,
@@ -56,7 +58,7 @@ namespace OrbitalShell.Commands.Shell
             string n;
 
             if (loadModulePath == null && unloadModuleName == null && updateModuleName == null 
-                && installModuleName == null && uninstallModuleName == null
+                && installModuleName == null && uninstallModuleName == null && !updateAll
                 && !fetchList && !fetchInfo)
             {
                 // output reports on loaded modules
@@ -104,6 +106,13 @@ namespace OrbitalShell.Commands.Shell
 
             if (!fetchList && !fetchInfo)
             {
+                // update all
+
+                if (updateAll)
+                {
+
+                }
+
                 // update module
 
                 if (updateModuleName!=null)
@@ -111,12 +120,12 @@ namespace OrbitalShell.Commands.Shell
                     n = updateModuleName;
                     if (ModuleUtil.IsModuleInstalled(context, n))
                     {
-                        var modSpec = context.CommandLineProcessor.ModuleManager.GetModuleByLowerPackageId(n);
-                        if (modSpec == null)
-                            return _ModuleErr(context, $"module specification not found for module name '{n}' (module is nor installed nor loaded)");
+                        // find the right module assembly
+
+                        (AssemblyLoadContext assemblyLoadContext, Assembly moduleAssembly) modAss = ModuleUtil.GetModuleAssembly(context, n);
 
                         // get the nupkg style version number
-                        var curPackVer = modSpec.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                        var curPackVer = modAss.moduleAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
                         if (string.IsNullOrWhiteSpace(curPackVer))
                             return _ModuleErr(context, $"module assembly file version attribute missing/empty/null");
 
@@ -133,12 +142,15 @@ namespace OrbitalShell.Commands.Shell
                                 var lastVer = vers.Last();
                                 o.Echoln($"{context.ShellEnv.Colors.Highlight}a new version of '{n} {curPackVer}' is available: {lastVer}");
 
-                                // module -i {modulePackageId} --force --skip-load
-                                var installUpdateRes = Module(context: context, installModuleName: n, force: true, skipLoad: true);
-                                if (installUpdateRes.ReturnCode != (int)ReturnCode.OK)
-                                    return _ModuleErr(context, $"module update failed due to error: {installUpdateRes.ExecErrorText}");
+                                if (!checkOnly)
+                                {
+                                    // module -i {modulePackageId} --force --skip-load
+                                    var installUpdateRes = Module(context: context, installModuleName: n, force: true, skipLoad: true);
+                                    if (installUpdateRes.ReturnCode != (int)ReturnCode.OK)
+                                        return _ModuleErr(context, $"module update failed due to error: {installUpdateRes.ExecErrorText}");
 
-                                o.Echoln($"module '{n}' has been updated from version '{curPackVer}' to version '{lastVer}'");
+                                    o.Echoln($"module '{n}' has been updated from version '{curPackVer}' to version '{lastVer}'");
+                                }
                             }
                             else
                                 o.Echoln("no new version available");
