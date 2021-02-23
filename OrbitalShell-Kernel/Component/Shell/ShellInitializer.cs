@@ -16,8 +16,8 @@ namespace OrbitalShell.Component.Shell
 {
     public class ShellInitializer
     {
-        CommandLineProcessor _clp;
-        IDotNetConsole Console;
+        readonly CommandLineProcessor _clp;
+        readonly IDotNetConsole Console;
 
         public ShellInitializer(CommandLineProcessor clp)
         {
@@ -25,9 +25,11 @@ namespace OrbitalShell.Component.Shell
             Console = clp.Console;
         }
 
+
         /// <summary>
         /// perform kernel inits and run init scripts
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:remove the parameter not used", Justification = "maybe in future change - waiting impl.")]
         public void Run(
             CommandEvaluationContext context
             )
@@ -178,7 +180,7 @@ namespace OrbitalShell.Component.Shell
                 try
                 {
                     File.Copy(
-                        Path.Combine(_clp.Settings.BinFolderPath, "Component", "Shell", "Module", _clp.Settings.ModulesInitFileName),
+                        Path.Combine(CommandLineProcessorSettings.BinFolderPath, "Component", "Shell", "Module", _clp.Settings.ModulesInitFileName),
                         _clp.Settings.ModulesInitFilePath
                     );
                     _clp.CommandEvaluationContext.Logger.Success("",true,false);                    
@@ -208,14 +210,14 @@ namespace OrbitalShell.Component.Shell
                 mods = new ModuleInitModel()
                     {
                         ReadMe = $"new file generated on {System.DateTime.Now}",
-                        List = new ModuleInitItemModel[] { }
-                    };
+                        List = Array.Empty<ModuleInitItemModel>()
+                };
                 ModuleUtil.SaveModuleInitConfiguration(context, mods);
                 context.Errorln("a crashed version of module-init has been restored to initial state");
             }
                 
             var enabledMods = mods.List.Where(x => x.IsEnabled);
-            if (enabledMods.Count() == 0) return;
+            if (!enabledMods.Any()) return;
             var o = context.Out;
             o.Echoln();
             foreach ( var mod in enabledMods)
@@ -261,7 +263,7 @@ namespace OrbitalShell.Component.Shell
         /// <summary>
         /// init the console. these init occurs before any display
         /// </summary>
-        void ConsoleInit(CommandEvaluationContext context)
+        static void ConsoleInit(CommandEvaluationContext context)
         {
             var oWinWidth = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowWidth);
             var oWinHeight = context.ShellEnv.GetDataValue(ShellEnvironmentVar.settings_console_initialWindowHeight);
@@ -276,8 +278,12 @@ namespace OrbitalShell.Component.Shell
             var winHeight = (int)oWinHeight.Value;
             try
             {
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
                 if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
                 if (winHeight > -1) System.Console.WindowHeight = winHeight;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
                 System.Console.Clear();
             }
             catch { }

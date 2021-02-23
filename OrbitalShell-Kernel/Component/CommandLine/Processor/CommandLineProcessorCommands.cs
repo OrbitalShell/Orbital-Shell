@@ -55,9 +55,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             [Option("s", "short", "suppress file attributes in output")] bool @short
         )
         {
-            if (context
-                .CommandLineProcessor
-                .FindInPath(
+            if (CommandLineProcessor.FindInPath(
                     context,
                     fileName,
                     out var list,

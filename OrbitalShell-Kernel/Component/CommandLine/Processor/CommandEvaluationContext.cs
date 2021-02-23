@@ -7,7 +7,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
     public class CommandEvaluationContext
     {
         static int _instanceCounter = 1000;
-        static object _instanceLock = new object();
+        readonly static object _instanceLock = new object();
 
         public readonly Logger Logger;
 

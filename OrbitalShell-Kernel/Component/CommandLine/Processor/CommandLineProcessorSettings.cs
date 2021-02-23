@@ -117,16 +117,16 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public string ModulesInitFilePath => Path.Combine(ShellAppDataPath, ModulesInitFileName );
 
-        public string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        public string BinFolderPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public string ModulesFolderPath => Path.Combine(BinFolderPath, "Modules");
+        public static string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        public static string BinFolderPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static string ModulesFolderPath => Path.Combine(BinFolderPath, "Modules");
 
         public string DefaultsFolderPath
         {
             get
             {
                 var segs = this.GetType().FullName.Replace("CommandLine", "Shell").Split('.');
-                var splits = segs.AsSpan(1, segs.Count() - 3);
+                var splits = segs.AsSpan(1, segs.Length - 3);
                 var path = BinFolderPath;
                 foreach (var split in splits)
                     path = Path.Combine(path, split);

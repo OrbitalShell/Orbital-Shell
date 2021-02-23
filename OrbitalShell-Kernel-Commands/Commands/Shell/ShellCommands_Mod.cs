@@ -233,7 +233,7 @@ namespace OrbitalShell.Commands.Shell
                             o.Echoln($"{clog}select the last version of package: {version}(rdc)");
                         }
                         var dwnMethod = typeof(NuGetServerApiCommands).GetMethod("NugetDownload");
-                        var output = context.CommandLineProcessor.Settings.ModulesFolderPath;
+                        var output = CommandLineProcessorSettings.ModulesFolderPath;
                         var folderName = packageId.ToLower();
                         var lowerVersion = version.ToLower();
                         var moduleLowerFullId = $"{folderName}.{lowerVersion}";  // == module lower id

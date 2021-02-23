@@ -49,7 +49,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <summary>
         /// preferred way to check if cancellation is requested
         /// </summary>
+#pragma warning disable CS8073 // Le résultat de l'expression est toujours le même, car une valeur de ce type n'est jamais égale à 'null'
         public bool IsCancellationRequested => CancellationTokenSource != null && CancellationTokenSource.Token != null && CancellationTokenSource.Token.IsCancellationRequested;
+#pragma warning restore CS8073 // Le résultat de l'expression est toujours le même, car une valeur de ce type n'est jamais égale à 'null'
 
         /// <summary>
         /// shell args
@@ -74,7 +76,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         CommandLineProcessorSettings _settings;
 
-        CommandEvaluationContext _commandEvaluationContext = null;
+        //readonly CommandEvaluationContext _commandEvaluationContext = null;
 
         public readonly CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension;
 
@@ -156,23 +158,25 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public CommandLineProcessor(
             string[] args,
             IDotNetConsole console,
-            CommandLineProcessorSettings settings = null,
-            CommandEvaluationContext commandEvaluationContext = null
+            CommandLineProcessorSettings settings = null
+            //CommandEvaluationContext commandEvaluationContext = null
             )
         {
             Console = console;
             CommandLineProcessorExternalParserExtension = new CommandLineProcessorExternalParserExtension(this);
             ModuleManager = new ModuleManager(_syntaxAnalyzer);
             _args = args;
-            _commandEvaluationContext = commandEvaluationContext;
+            //_commandEvaluationContext = commandEvaluationContext;
             settings ??= new CommandLineProcessorSettings();
             _settings = settings;
             CommandBatchProcessor = new CommandBatchProcessor();
         }
 
+
         /// <summary>
         /// clp init
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:remove the parameter that is not used", Justification = "public API - waiting impl.")]
         public void Init(
             string[] args,
             IDotNetConsole console,            
@@ -316,7 +320,13 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 foreach (var pipelineParseResult in pipelineParseResults)
                 {
                     allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
-                    var evalParse = AnalysisPipelineParseResult(context, pipelineParseResult, expr, outputX, pipelineParseResult.ParseResult);
+                    var evalParse = AnalysisPipelineParseResult(
+                        context, 
+                        pipelineParseResult, 
+                        expr, 
+                        outputX, 
+                        pipelineParseResult.ParseResult
+                    );
 
                     evalParses.Add(evalParse);
                 }
@@ -349,7 +359,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
         }
 
-        ReturnCode GetReturnCode(ExpressionEvaluationResult expr)
+        static ReturnCode GetReturnCode(ExpressionEvaluationResult expr)
         {
             var r = ReturnCode.Error;
             try
@@ -368,7 +378,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <param name="cmdName">command name</param>
         /// <param name="filePath">matching file path</param>
         /// <returns>the first matching file according to search paths order</returns>
-        public bool ExistsInPath(
+        public static bool ExistsInPath(
             CommandEvaluationContext context,
             string cmdName,
             out string filePath)
@@ -405,7 +415,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             return false;
         }
 
-        public bool FindInPath(
+        public static bool FindInPath(
                     CommandEvaluationContext context,
                     string cmdName,
                     out List<FilePath> filePath,
@@ -580,7 +590,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     RedirectStandardError = true,
                     RedirectStandardInput = false,
                     RedirectStandardOutput = true,
-                    LoadUserProfile = true,
+                    //LoadUserProfile = true,       // windows only
                     CreateNoWindow = true,
                     FileName = comPath,
                     Arguments = args,
@@ -646,6 +656,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             }
         }
 
+
         /// <summary>
         /// react after parse within a parse work unit result
         /// </summary>
@@ -654,6 +665,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <param name="outputX">begin cursor x output</param>
         /// <param name="parseResult">parse resul</param>
         /// <returns>expression evaluation context</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:remove the parameter not used", Justification = "maybe in future change - waiting impl.")]
         ExpressionEvaluationResult AnalysisPipelineParseResult(
             CommandEvaluationContext context,
             PipelineParseResult pipelineParseResult,
@@ -764,7 +776,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             return r;
         }
 
-        object InvokeCommand(
+        static object InvokeCommand(
             CommandEvaluationContext context,
             CommandSpecification commandSpecification,
             MatchingParameters matchingParameters)

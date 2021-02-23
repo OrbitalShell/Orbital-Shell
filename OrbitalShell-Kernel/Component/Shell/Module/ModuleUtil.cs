@@ -71,7 +71,7 @@ namespace OrbitalShell.Component.Shell.Module
             string moduleId,
             string version)
         {
-            var path = context.CommandLineProcessor.Settings.ModulesFolderPath;
+            var path = CommandLineProcessorSettings.ModulesFolderPath;
             path = Path.Combine(path, moduleId);
             if (!Directory.Exists(path)) return false;
             path = Path.Combine(path, version);
@@ -83,19 +83,19 @@ namespace OrbitalShell.Component.Shell.Module
             CommandEvaluationContext context,
             string moduleId)
         {
-            var path = context.CommandLineProcessor.Settings.ModulesFolderPath;
+            var path = CommandLineProcessorSettings.ModulesFolderPath;
             path = Path.Combine(path, moduleId);
             if (!Directory.Exists(path)) return false;
             return true;
         }
 
         public static List<string> GetInstalledModulesLowerPackageId(CommandEvaluationContext context)
-            => Directory.GetDirectories(context.CommandLineProcessor.Settings.ModulesFolderPath).Select(x => Path.GetFileName(x)).ToList();
+            => Directory.GetDirectories(CommandLineProcessorSettings.ModulesFolderPath).Select(x => Path.GetFileName(x)).ToList();
         
         public static List<FilePath> GetModuleAssemblies(CommandEvaluationContext context,string moduleId)
         {
             var r = new List<FilePath>();
-            var path = context.CommandLineProcessor.Settings.ModulesFolderPath;
+            var path = CommandLineProcessorSettings.ModulesFolderPath;
             var lowerModuleId = moduleId?.ToLower() ?? throw new Exception("module id should not be empty or null");
             path = Path.Combine(path, lowerModuleId);
             if (!Directory.Exists(path)) throw new Exception($"no module folder found for module '{moduleId}' in '{FileSystemPath.UnescapePathSeparators(path)}'");

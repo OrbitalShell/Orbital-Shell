@@ -75,7 +75,7 @@ namespace OrbitalShell.Component.Shell.Variable
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor, true);
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true);
             AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), true);
-            AddValue(ShellEnvironmentVar.modules, new DirectoryPath(context.CommandLineProcessor.Settings.ModulesFolderPath), true);
+            AddValue(ShellEnvironmentVar.modules, new DirectoryPath(CommandLineProcessorSettings.ModulesFolderPath), true);
             AddValue(ShellEnvironmentVar.init, new DirectoryPath(context.CommandLineProcessor.Settings.ShellAppDataPath), true);
             AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataRoamingUserFolderPath), true);
             var path = GetSystemPath();

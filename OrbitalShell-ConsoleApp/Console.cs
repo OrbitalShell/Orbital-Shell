@@ -24,7 +24,7 @@ namespace OrbitalShell
     /// - the .net core make use of interop for each console method call in windows (ConsolePal.Windows.cs)
     /// </para>
     /// </summary>
-    public class DotNetConsole2 : IDotNetConsole
+    public class Console : IDotNetConsole
     {
         #region attributes
 
@@ -38,7 +38,7 @@ namespace OrbitalShell
 
         #region work area settings
 
-        WorkArea _workArea = new WorkArea();
+        readonly WorkArea _workArea = new WorkArea();
         public WorkArea WorkArea => new WorkArea(_workArea);
         public bool InWorkArea => !_workArea.Rect.IsEmpty;
 
@@ -81,7 +81,7 @@ namespace OrbitalShell
         StreamWriter _outputStreamWriter;
         FileStream _outputFileStream;
 
-        string[] _crlf = { Environment.NewLine };
+        readonly string[] _crlf = { Environment.NewLine };
 
         public object ConsoleLock => Out.Lock;
 
@@ -93,7 +93,7 @@ namespace OrbitalShell
 
         #endregion
 
-        public DotNetConsole2()
+        public Console()
         {
             Out = new ConsoleTextWriterWrapper(this, sc.Out);       // INFINITE LOOP
             Colors = new ColorSettings(this);

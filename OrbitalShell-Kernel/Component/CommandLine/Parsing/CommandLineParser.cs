@@ -18,7 +18,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public static class CommandLineParser
     {
-        public static StringComparison SyntaxMatchingRule = StringComparison.InvariantCultureIgnoreCase;
+        public static StringComparison SyntaxMatchingRule { get; set; } = StringComparison.InvariantCultureIgnoreCase;
 
         /// <summary>
         /// parse top level syntax of a command line
@@ -31,7 +31,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             string expr
             )
         {
-            if (expr == null) return new StringSegment[] { };
+            if (expr == null) return Array.Empty<StringSegment>();
 
             var splits = new List<StringSegment>();
             var t = expr.Trim().ToCharArray();
@@ -184,9 +184,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         /// <param name="context"></param>
         /// <param name="expr"></param>
         /// <returns></returns>
-        public static (string expr, Dictionary<string, object> references) SubstituteVariables(
-            CommandEvaluationContext context,
-            string expr
+        public static 
+            (string expr, Dictionary<string, object> references) 
+            SubstituteVariables(
+                CommandEvaluationContext context,
+                string expr
             )
         {
             Dictionary<string, object> references = new Dictionary<string, object>();
@@ -232,7 +234,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 foreach (var vr in vars)
                 {
                     lastvr = vr;
-                    nexpr.Append(expr.Substring(x, vr.X - x));
+                    //nexpr.Append(expr.Substring(x, vr.X - x));
+                    nexpr.Append(expr[x..vr.X]);
                     try
                     {
                         context.Variables.Get(vr.Text, out var value);
@@ -271,7 +274,8 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 }
                 if (lastvr != null)
                 {
-                    nexpr.Append(expr.Substring(x));
+                    //nexpr.Append(expr.Substring(x));
+                    nexpr.Append(expr[x..]);
                 }
                 expr = nexpr.ToString();
             }
