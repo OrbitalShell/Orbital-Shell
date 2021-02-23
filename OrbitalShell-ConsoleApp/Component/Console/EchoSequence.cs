@@ -1,5 +1,4 @@
 ﻿using System;
-using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.EchoDirective;
 
 namespace OrbitalShell.Component.Console
@@ -13,7 +12,10 @@ namespace OrbitalShell.Component.Console
         public readonly string Text;
         public int Length => LastIndex - FirstIndex + 1;
 
+        IDotNetConsole Console;
+
         public EchoSequence(
+            IDotNetConsole console,
             EchoDirectives? printDirective,
             int firstIndex,
             int lastIndex,
@@ -21,6 +23,7 @@ namespace OrbitalShell.Component.Console
             string text,
             int relIndex=0)
         {
+            Console = console;
             PrintDirective = printDirective;
             FirstIndex = firstIndex + relIndex;
             LastIndex = lastIndex + relIndex;
@@ -29,6 +32,7 @@ namespace OrbitalShell.Component.Console
         }
 
         public EchoSequence(
+            IDotNetConsole console,
             string printDirective,
             int firstIndex,
             int lastIndex,
@@ -36,6 +40,7 @@ namespace OrbitalShell.Component.Console
             string text,
             int relIndex=0)
         {
+            Console = console;
             if (printDirective != null)
                 if (Enum.TryParse<EchoDirectives>(printDirective, out var pr))
                     PrintDirective = pr;
@@ -50,11 +55,11 @@ namespace OrbitalShell.Component.Console
         {
             var s = "";
             if (PrintDirective.HasValue && Value == null)
-                s += $"{CommandBlockBeginChar}{PrintDirective}{CommandBlockEndChar}";
+                s += $"{Console.CommandBlockBeginChar}{PrintDirective}{Console.CommandBlockEndChar}";
             else
             {
                 if (PrintDirective.HasValue && Value != null)
-                    s += $"{CommandBlockBeginChar}{PrintDirective}{CommandValueAssignationChar}{Value}{CommandBlockEndChar}";
+                    s += $"{Console.CommandBlockBeginChar}{PrintDirective}{Console.CommandValueAssignationChar}{Value}{Console.CommandBlockEndChar}";
                 else
                     s += Text;
             }

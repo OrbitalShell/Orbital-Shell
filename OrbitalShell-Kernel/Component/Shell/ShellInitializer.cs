@@ -4,23 +4,25 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using static OrbitalShell.DotNetConsole;
 using cons = System.Console;
 using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib.FileSystem;
 using OrbitalShell.Component.Shell.Module;
 using System.Linq;
+using OrbitalShell.Component.Console;
 
 namespace OrbitalShell.Component.Shell
 {
     public class ShellInitializer
     {
-        CommandLineProcessor _clp;        
+        CommandLineProcessor _clp;
+        IDotNetConsole Console;
 
         public ShellInitializer(CommandLineProcessor clp)
         {
             _clp = clp;
+            Console = clp.Console;
         }
 
         /// <summary>
@@ -32,7 +34,7 @@ namespace OrbitalShell.Component.Shell
         {
             if (_clp.IsInitialized) return;
 
-            ShellInit( _clp.Args, _clp.Settings, _clp.CommandEvaluationContext);
+            ShellInit( _clp.Args, Console, _clp.Settings, _clp.CommandEvaluationContext);
 
             // late init of settings from the context
             _clp.Settings.Initialize(_clp.CommandEvaluationContext);
@@ -46,7 +48,7 @@ namespace OrbitalShell.Component.Shell
             }
             catch (Exception ex)
             {
-                Warning($"Run 'user profile file' skipped. Reason is : {ex.Message}");
+                Console.Warning($"Run 'user profile file' skipped. Reason is : {ex.Message}");
             }
 
             // run user aliases
@@ -59,7 +61,7 @@ namespace OrbitalShell.Component.Shell
             }
             catch (Exception ex)
             {
-                Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
+                Console.Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
             }
 
             _clp.ModuleManager.ModuleHookManager.InvokeHooks(
@@ -80,11 +82,12 @@ namespace OrbitalShell.Component.Shell
         /// <param name="context">shell default command evaluation context.Provides null to build a new one</param>
         public void ShellInit(
             string[] args,
+            IDotNetConsole console,
             CommandLineProcessorSettings settings,
             CommandEvaluationContext context = null
             )
         {
-            _clp.Init(args,settings,context);
+            _clp.Init(args,console,settings,context);
 
             // get final clp command evaluation context
             context = _clp.CommandEvaluationContext;
@@ -93,7 +96,7 @@ namespace OrbitalShell.Component.Shell
             _clp.Settings.Initialize(context);
 
             // pre console init
-            if (DefaultForeground != null) cons.ForegroundColor = DefaultForeground.Value;
+            if (console.DefaultForeground != null) cons.ForegroundColor = console.DefaultForeground.Value;
 
             // apply orbsh command args -env:{varName}={varValue}
             var appliedSettings = new List<string>();
@@ -162,7 +165,7 @@ namespace OrbitalShell.Component.Shell
             if (appliedSettings.Count > 0) context.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"shell args: {string.Join(" ", appliedSettings)}");
 
             // end inits
-            Out.Echoln();
+            console.Out.Echoln();
 
             _clp.PostInit();
         }
@@ -237,7 +240,7 @@ namespace OrbitalShell.Component.Shell
             )
         {
             var ctx = clp.CommandEvaluationContext;
-            Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor);
+            Console.Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor);
             var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_prompt);
             clp.CommandLineReader.SetDefaultPrompt(prompt);
 

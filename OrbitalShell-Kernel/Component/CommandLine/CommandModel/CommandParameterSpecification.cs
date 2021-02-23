@@ -3,13 +3,13 @@
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.Console;
 using System.Reflection;
-using static OrbitalShell.DotNetConsole;
 #if printDefaultValueInSyntax
 using static OrbitalShell.Lib.Str;
 #endif
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using OrbitalShell.Lib;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace OrbitalShell.Component.CommandLine.CommandModel
 {
@@ -89,7 +89,9 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
 
         public string ToColorizedString(ColorSettings colors, bool grammarSymbolsVisible = true)
         {
-            var f = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
+            var console = App.Host.Services.GetRequiredService<IDotNetConsole>();
+
+            var f = GetCmd(EchoDirectives.f + "", console.DefaultForeground.ToString().ToLower());
             var r = $"{colors.ParameterName}{ParameterName}{f}";
             if (IsOption)
             {

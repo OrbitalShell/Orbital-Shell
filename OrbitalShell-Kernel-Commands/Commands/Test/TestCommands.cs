@@ -49,8 +49,12 @@ namespace OrbitalShell.Commands.Test
             [Parameter(0, "width")] int w,
             [Parameter(1, "height")] int h)
         {
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
             System.Console.WindowWidth = w;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
             System.Console.WindowHeight = h;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
             return CommandVoidResult.Instance;
         }
 
@@ -60,8 +64,12 @@ namespace OrbitalShell.Commands.Test
             [Parameter(0, "width")] int w,
             [Parameter(1, "height")] int h)
         {
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
             System.Console.WindowWidth = w;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
             System.Console.WindowHeight = h;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
             return CommandVoidResult.Instance;
         }
 

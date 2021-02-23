@@ -3,7 +3,6 @@ using OrbitalShell.Lib.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static OrbitalShell.DotNetConsole;
 
 namespace OrbitalShell.Component.Shell
 {

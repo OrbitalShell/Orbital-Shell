@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.Console;
 using System;
 using System.Text;
@@ -20,12 +19,14 @@ namespace OrbitalShell.Component.EchoDirective
         public readonly ConsoleTextWriterWrapper Writer;
         public readonly CommandMap CommandMap;
 
+        IDotNetConsole Console;
 
         public EchoDirectiveProcessor(
             ConsoleTextWriterWrapper writer,
             CommandMap commandMap
         )
         {
+            Console = writer.Console;
             Writer = writer;
             this.CommandMap = commandMap;
         }
@@ -49,11 +50,11 @@ namespace OrbitalShell.Component.EchoDirective
 
                 while (cmd == null && i < n)
                 {
-                    if (s[i] == CommandBlockBeginChar)
+                    if (s[i] == Console.CommandBlockBeginChar)
                     {
                         foreach (var ccmd in CommandMap.Map)
                         {
-                            if (s.IndexOf(CommandBlockBeginChar + ccmd.Key, i) == i)
+                            if (s.IndexOf(Console.CommandBlockBeginChar + ccmd.Key, i) == i)
                             {
                                 cmd = ccmd;
                                 cmdindex = i;
@@ -76,7 +77,7 @@ namespace OrbitalShell.Component.EchoDirective
                 {
                     Writer.ConsolePrint(/*tmps*/stmps, false);
 
-                    printSequences?.Add(new EchoSequence((string)null, 0, i - 1, null, /*tmps*/stmps, startIndex));
+                    printSequences?.Add(new EchoSequence(Console,(string)null, 0, i - 1, null, /*tmps*/stmps, startIndex));
                     return;
                 }
                 else i = cmdindex;
@@ -85,7 +86,7 @@ namespace OrbitalShell.Component.EchoDirective
                 {
                     Writer.ConsolePrint(/*tmps*/stmps);
 
-                    printSequences?.Add(new EchoSequence((string)null, 0, i - 1, null, /*tmps*/stmps, startIndex));
+                    printSequences?.Add(new EchoSequence(Console,(string)null, 0, i - 1, null, /*tmps*/stmps, startIndex));
                 }
 
                 tmpsb.Clear();
@@ -96,27 +97,27 @@ namespace OrbitalShell.Component.EchoDirective
                 string value = null;
                 if (isAssignation)
                 {
-                    firstCommandEndIndex = s.IndexOf(CommandValueAssignationChar, i + 1);
+                    firstCommandEndIndex = s.IndexOf(Console.CommandValueAssignationChar, i + 1);
                     if (firstCommandEndIndex > -1)
                     {
                         firstCommandEndIndex++;
                         var subs = s.Substring(firstCommandEndIndex);
-                        if (subs.StartsWith(CodeBlockBegin))
+                        if (subs.StartsWith(Console.CodeBlockBegin))
                         {
-                            firstCommandEndIndex += CodeBlockBegin.Length;
-                            k = s.IndexOf(CodeBlockEnd, firstCommandEndIndex);
+                            firstCommandEndIndex += Console.CodeBlockBegin.Length;
+                            k = s.IndexOf(Console.CodeBlockEnd, firstCommandEndIndex);
                             if (k > -1)
                             {
 #pragma warning disable IDE0057
                                 value = s.Substring(firstCommandEndIndex, k - firstCommandEndIndex);
 #pragma warning restore IDE0057
-                                k += CodeBlockEnd.Length;
+                                k += Console.CodeBlockEnd.Length;
                             }
                             else
                             {
                                 Writer.ConsolePrint(s);
 
-                                printSequences?.Add(new EchoSequence((string)null, i, s.Length - 1, null, s, startIndex));
+                                printSequences?.Add(new EchoSequence(Console,(string)null, i, s.Length - 1, null, s, startIndex));
                                 return;
                             }
                         }
@@ -128,19 +129,19 @@ namespace OrbitalShell.Component.EchoDirective
                 int firstCommandSeparatorCharIndex = -1;
                 while (j < s.Length)
                 {
-                    if (inCmt && s.IndexOf(CodeBlockEnd, j) == j)
+                    if (inCmt && s.IndexOf(Console.CodeBlockEnd, j) == j)
                     {
                         inCmt = false;
-                        j += CodeBlockEnd.Length - 1;
+                        j += Console.CodeBlockEnd.Length - 1;
                     }
-                    if (!inCmt && s.IndexOf(CodeBlockBegin, j) == j)
+                    if (!inCmt && s.IndexOf(Console.CodeBlockBegin, j) == j)
                     {
                         inCmt = true;
-                        j += CodeBlockBegin.Length - 1;
+                        j += Console.CodeBlockBegin.Length - 1;
                     }
-                    if (!inCmt && s.IndexOf(CommandSeparatorChar, j) == j && firstCommandSeparatorCharIndex == -1)
+                    if (!inCmt && s.IndexOf(Console.CommandSeparatorChar, j) == j && firstCommandSeparatorCharIndex == -1)
                         firstCommandSeparatorCharIndex = j;
-                    if (!inCmt && s.IndexOf(CommandBlockEndChar, j) == j)
+                    if (!inCmt && s.IndexOf(Console.CommandBlockEndChar, j) == j)
                         break;
                     j++;
                 }
@@ -148,7 +149,7 @@ namespace OrbitalShell.Component.EchoDirective
                 {
                     Writer.ConsolePrint(s);
 
-                    printSequences?.Add(new EchoSequence((string)null, i, j, null, s, startIndex));
+                    printSequences?.Add(new EchoSequence(Console,(string)null, i, j, null, s, startIndex));
                     return;
                 }
 
@@ -161,7 +162,7 @@ namespace OrbitalShell.Component.EchoDirective
                 {
                     if (value == null)
                     {
-                        var t = cmdtxt.Split(CommandValueAssignationChar);
+                        var t = cmdtxt.Split(Console.CommandValueAssignationChar);
                         value = t[1];
                     }
 
@@ -178,7 +179,7 @@ namespace OrbitalShell.Component.EchoDirective
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (TraceCommandErrors) Error(ex.Message);
+                                    if (Console.TraceCommandErrors) Console.Error(ex.Message);
                                 }
                             }
                             else
@@ -189,7 +190,7 @@ namespace OrbitalShell.Component.EchoDirective
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (TraceCommandErrors) Error(ex.Message);
+                                    if (Console.TraceCommandErrors) Console.Error(ex.Message);
                                 }
                             }
                         }
@@ -202,7 +203,7 @@ namespace OrbitalShell.Component.EchoDirective
                             }
                             catch (Exception ex)
                             {
-                                if (TraceCommandErrors) Error(ex.Message);
+                                if (Console.TraceCommandErrors) Console.Error(ex.Message);
                             }
                             result = null;
                         }
@@ -211,9 +212,9 @@ namespace OrbitalShell.Component.EchoDirective
                     // <--
 
                     if (Writer.FileEchoDebugEnabled && Writer.FileEchoDebugCommands)
-                        Writer.EchoDebug(CommandBlockBeginChar + cmd.Value.Key + value + CommandBlockEndChar);
+                        Writer.EchoDebug(Console.CommandBlockBeginChar + cmd.Value.Key + value + Console.CommandBlockEndChar);
 
-                    printSequences?.Add(new EchoSequence(cmd.Value.Key.Substring(0, cmd.Value.Key.Length - 1), i, j, value, null, startIndex));
+                    printSequences?.Add(new EchoSequence(Console,cmd.Value.Key.Substring(0, cmd.Value.Key.Length - 1), i, j, value, null, startIndex));
                 }
                 else
                 {
@@ -228,7 +229,7 @@ namespace OrbitalShell.Component.EchoDirective
                             }
                             catch (Exception ex)
                             {
-                                if (TraceCommandErrors) Error(ex.Message);
+                                if (Console.TraceCommandErrors) Console.Error(ex.Message);
                             }
                         }
                         else
@@ -241,7 +242,7 @@ namespace OrbitalShell.Component.EchoDirective
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (TraceCommandErrors) Error(ex.Message);
+                                    if (Console.TraceCommandErrors) Console.Error(ex.Message);
                                 }
                                 result = null;
                             }
@@ -251,16 +252,16 @@ namespace OrbitalShell.Component.EchoDirective
                     // <--
 
                     if (Writer.FileEchoDebugEnabled && Writer.FileEchoDebugCommands)
-                        Writer.EchoDebug(CommandBlockBeginChar + cmd.Value.Key + CommandBlockEndChar);
+                        Writer.EchoDebug(Console.CommandBlockBeginChar + cmd.Value.Key + Console.CommandBlockEndChar);
 
-                    printSequences?.Add(new EchoSequence(cmd.Value.Key, i, j, value, null, startIndex));
+                    printSequences?.Add(new EchoSequence(Console,cmd.Value.Key, i, j, value, null, startIndex));
                 }
                 if (result != null)
                     Writer.Echo(result, false);    // recurse
 
                 if (firstCommandSeparatorCharIndex > -1)
                 {
-                    s = CommandBlockBeginChar + s.Substring(firstCommandSeparatorCharIndex + 1 /*+ i*/ );
+                    s = Console.CommandBlockBeginChar + s.Substring(firstCommandSeparatorCharIndex + 1 /*+ i*/ );
                     startIndex += firstCommandSeparatorCharIndex + 1;
                 }
                 else

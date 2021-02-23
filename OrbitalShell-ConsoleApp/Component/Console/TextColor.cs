@@ -1,7 +1,7 @@
 ﻿using System;
-using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace OrbitalShell.Component.Console
 {
@@ -10,14 +10,18 @@ namespace OrbitalShell.Component.Console
         ConsoleColor? _foreground;
         public ConsoleColor? Foreground
         {
-            get { return _foreground.HasValue?_foreground.Value:DefaultForeground; }
+            get {
+                var console = App.Host.Services.GetRequiredService<IDotNetConsole>();
+                return _foreground.HasValue?_foreground.Value:console.DefaultForeground; }
             set { _foreground = value; }
         }
 
         ConsoleColor? _background;
         public ConsoleColor? Background
         {
-            get { return _background.HasValue?_background.Value:DefaultBackground;  }
+            get {
+                var console = App.Host.Services.GetRequiredService<IDotNetConsole>();
+                return _background.HasValue?_background.Value:console.DefaultBackground;  }
             set { _background = value; }
         }
 
@@ -62,14 +66,14 @@ namespace OrbitalShell.Component.Console
         /// parse a 4 bit color
         /// </summary>
         /// <param name="c">text of color name</param>
-        public static ConsoleColor? ParseColor(object c)
+        public static ConsoleColor? ParseColor(IDotNetConsole console,object c)
         {
             if (c==null) return null;
             var s = (string)c;
             if (string.IsNullOrWhiteSpace(s)) return null;
             if (Enum.TryParse(s, true, out ConsoleColor r))
                 return r;
-            if (TraceCommandErrors) Error($"invalid color name: {c}");
+            if (console.TraceCommandErrors) console.Error($"invalid color name: {c}");
             return ConsoleColor.Black;
         }
 
@@ -78,11 +82,11 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         /// <param name="c">string representing an integer in range 0..255 (included)</param>
         /// <returns></returns>
-        public static int Parse8BitColor(object c)
+        public static int Parse8BitColor(IDotNetConsole console, object c)
         {
             if (int.TryParse((string)c, out int r) && r>=0 && r<=255)            
                 return r;
-            if (TraceCommandErrors) Error($"invalid 8 bit color number: {c}");
+            if (console.TraceCommandErrors) console.Error($"invalid 8 bit color number: {c}");
             return 255;
         }
 
@@ -91,7 +95,7 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         /// <param name="c">string of format: r:g:b where 0<=r,g,b<=255</param>
         /// <returns></returns>
-        public static (int r,int g,int b) Parse24BitColor(object c)
+        public static (int r,int g,int b) Parse24BitColor(IDotNetConsole console, object c)
         {
             var s = (string)c;
             var t = s.Split(':');
@@ -102,7 +106,7 @@ namespace OrbitalShell.Component.Console
                     && int.TryParse(t[2], out int b) && b >= 0 && b <= 255)
                     return (r, g, b);
             }
-            if (TraceCommandErrors) Error($"invalid 24 bit color: {c}");
+            if (console.TraceCommandErrors) console.Error($"invalid 24 bit color: {c}");
             return (255, 255, 255);
         }
 

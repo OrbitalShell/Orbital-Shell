@@ -63,7 +63,7 @@ namespace OrbitalShell.Component.Shell.Variable
 
             AddValue(ShellEnvironmentVar.display_fileSystemPathFormattingOptions, new FileSystemPathFormattingOptions());
             AddValue(ShellEnvironmentVar.display_tableFormattingOptions, new TableFormattingOptions());
-            var o = AddValue(ShellEnvironmentVar.display_colors_colorSettings, new ColorSettings());
+            var o = AddValue(ShellEnvironmentVar.display_colors_colorSettings, new ColorSettings(context.CommandLineProcessor.Console));
             Colors = (ColorSettings)o.Value;
 
             // bash vars (extended)

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using OrbitalShell.Component.UI;
 
 namespace OrbitalShell.Component.Console
 {
     public interface IDotNetConsole
     {
+        public EventHandler ViewSizeChanged { get; set; }
+        public EventHandler<WorkAreaScrollEventArgs> WorkAreaScrolled { get; set; }
+        bool EnableConstraintConsolePrintInsideWorkArea { get; set; }
         string CodeBlockBegin { get; set; }
         string CodeBlockEnd { get; set; }
         ColorSettings Colors { get; set; }

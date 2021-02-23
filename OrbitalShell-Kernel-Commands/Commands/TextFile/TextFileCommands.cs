@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using static OrbitalShell.Component.CommandLine.Reader.Interaction;
-using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.TextFileReader;
 using static OrbitalShell.Lib.Str;
 using sc = System.Console;
@@ -96,7 +95,7 @@ namespace OrbitalShell.Commands.TextFile
             var nblines = lines.Length;
 
             var infos = $"    ({Plur("line", nblines)},encoding={(fileEncoding != null ? fileEncoding.EncodingName : "?")},eol={filePlatform})";
-            var n = file.Name.Length + cons.TabLength + infos.Length;
+            var n = file.Name.Length + context.CommandLineProcessor.Console.TabLength + infos.Length;
             var sep = "".PadRight(n + 1, '-');
             context.Out.Echoln($"{context.ShellEnv.Colors.TitleBar}{sep}");
             context.Out.Echoln($"{context.ShellEnv.Colors.TitleBar} {file.Name}{context.ShellEnv.Colors.TitleDarkText}{infos.PadRight(n - file.Name.Length, ' ')}");
@@ -107,7 +106,7 @@ namespace OrbitalShell.Commands.TextFile
             var pos = 0;
             bool end = false;
             int y = 0, x = 0;
-            var actualWorkArea = DotNetConsole.ActualWorkArea();
+            var actualWorkArea = context.CommandLineProcessor.Console.ActualWorkArea();
             int maxk = actualWorkArea.Bottom - actualWorkArea.Top + 1;
             int k = maxk;
             bool endReached = false;
@@ -146,7 +145,8 @@ namespace OrbitalShell.Commands.TextFile
                     }
                 var inputText = $"--more--({percent}%)";
 
-                var action = end ? quit : InputBar(inputText, inputMaps);
+                var action = end ? quit : InputBar(context, inputText, inputMaps);
+
                 end = (string)action == quit;
 
                 var oldpos = pos;

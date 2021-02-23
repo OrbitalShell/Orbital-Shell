@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static OrbitalShell.Component.CommandLine.Processor.CommandLineProcessor;
-using static OrbitalShell.DotNetConsole;
 using sc = System.Console;
 using OrbitalShell.Component.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
@@ -41,6 +40,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         public Action<IAsyncResult> InputProcessor { get; set; }
 
+        public IDotNetConsole Console;
+
         #endregion
 
         #region initialization operations
@@ -50,6 +51,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
             string prompt = null,
             ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
         {
+            Console = commandLineProcessor.Console;
             CommandLineProcessor = commandLineProcessor;
             if (CommandLineProcessor != null && CommandLineProcessor != null) CommandLineProcessor.CommandLineReader = this;
             _defaultPrompt = prompt ?? $"> ";
@@ -156,7 +158,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
             {
                 if (outputStartNextLine)
                 {
-                    Out.LineBreak();
+                    Console.Out.LineBreak();
                 }
                 ExpressionEvaluationResult expressionEvaluationResult = null;
 
@@ -164,14 +166,14 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 {
                     sc.CancelKeyPress += CancelKeyPress;
                     CommandLineProcessor.CancellationTokenSource = new CancellationTokenSource();
-                    Out.IsModified = false;
-                    Err.IsModified = false;
+                    Console.Out.IsModified = false;
+                    Console.Err.IsModified = false;
 
                     var task = Task.Run<ExpressionEvaluationResult>(
                         () => evalCommandDelegate(
                                 CommandLineProcessor.CommandEvaluationContext,
                                 commandLine,
-                                _prompt == null ? 0 : Out.GetPrint(_prompt).Length,        // TODO has no sens with multi line prompt !!!
+                                _prompt == null ? 0 : Console.Out.GetPrint(_prompt).Length,        // TODO has no sens with multi line prompt !!!
                                 (enablePrePostComOutput && CommandLineProcessor != null) ?
                                     CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput) : ""),
                             CommandLineProcessor.CancellationTokenSource.Token
@@ -193,24 +195,24 @@ namespace OrbitalShell.Component.CommandLine.Reader
                     {
                         //var res = task.Result;
                         expressionEvaluationResult = task.Result;
-                        Out.Warningln($"command canceled: {commandLine}");
+                        Console.Out.Warningln($"command canceled: {commandLine}");
                     }
                     finally { }
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex);
+                    Console.LogError(ex);
                 }
                 finally
                 {
                     if (enablePrePostComOutput && CommandLineProcessor != null)
                     {
-                        if (Out.IsModified || Err.IsModified)
+                        if (Console.Out.IsModified || Console.Err.IsModified)
                         {
-                            if (!(Out.CursorLeft == 0 && Out.CursorTop == 0))
-                                Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
+                            if (!(Console.Out.CursorLeft == 0 && Console.Out.CursorTop == 0))
+                                Console.Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
                         }
-                        Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
+                        Console.Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
                     }
 
                     CommandLineProcessor.CancellationTokenSource.Dispose();
@@ -266,7 +268,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
             _waitForReaderExited = waitForReaderExited;
             prompt ??= _defaultPrompt;
             _prompt = prompt;
-            bool noWorkArea = !InWorkArea;
+            bool noWorkArea = !Console.InWorkArea;
             Point? lastInputPos = null;
             var hm = CommandLineProcessor?.ModuleManager?.ModuleHookManager;
             var context = CommandLineProcessor?.CommandEvaluationContext;
@@ -283,22 +285,22 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         _inputReaderStringBuilder ??= new StringBuilder();
                         if (!_readingStarted)
                         {
-                            lock (ConsoleLock)
+                            lock (Console.ConsoleLock)
                             {
                                 hm?.InvokeHooks(context, Hooks.PromptOutputBegin);
 
-                                var _beginPromptPos = Out.CursorPos;
-                                Out.Echo(prompt);
+                                var _beginPromptPos = Console.Out.CursorPos;
+                                Console.Out.Echo(prompt);
 
                                 hm?.InvokeHooks(context, Hooks.PromptOutputEnd);
 
-                                _beginOfLineCurPos = Out.CursorPos;
+                                _beginOfLineCurPos = Console.Out.CursorPos;
                                 lastInputPos = _beginOfLineCurPos;
-                                Out.ConsoleCursorPosBackup();
+                                Console.Out.ConsoleCursorPosBackup();
 
 #if FIX_LOW_ANSI    // TODO only if compatibility mode is enabled OR never (check the best)
                                 Thread.Sleep(25);
-                                Out.ConsoleCursorPosRestore();
+                                Console.Out.ConsoleCursorPosRestore();
 #endif
                                 _readingStarted = true;
                             }
@@ -313,7 +315,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                 ConsoleKeyInfo c;
                                 var printed = false;
                                 string printedStr = "";
-                                var (id, left, top, right, bottom) = ActualWorkArea();
+                                var (id, left, top, right, bottom) = Console.ActualWorkArea();
 
                                 if (sc.IsInputRedirected)
                                 {
@@ -332,7 +334,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                     if (!_ignoreNextKey)
                                     {
                                         // normally the cursor has moved of 1 character right or left
-                                        var cPos = Out.CursorPos;
+                                        var cPos = Console.Out.CursorPos;
                                         if (lastInputPos.HasValue
                                             && lastInputPos.Value != cPos)
                                         {
@@ -341,16 +343,16 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                             if (dx > 1 || dy > 1)
                                             {
                                                 // restore the good position
-                                                Out.CursorPos =
+                                                Console.Out.CursorPos =
                                                 new Point(
                                                     lastInputPos.Value.X + 1,
                                                     lastInputPos.Value.Y);
                                             }
                                         }
 
-                                        lastInputPos = Out.CursorPos;
+                                        lastInputPos = Console.Out.CursorPos;
 
-                                        (id, left, top, right, bottom) = ActualWorkArea();
+                                        (id, left, top, right, bottom) = Console.ActualWorkArea();
 
                                         switch (c.Key)
                                         {
@@ -375,9 +377,9 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                             /// HOME : set cursor position at begin of input (just after prompt) 
                                             /// </summary>
                                             case ConsoleKey.Home:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
-                                                    Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
+                                                    Console.Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
                                                     lastInputPos = _beginOfLineCurPos;
                                                 }
                                                 break;
@@ -386,166 +388,166 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                             /// END : set cursor position at end of input
                                             /// </summary>
                                             case ConsoleKey.End:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
-                                                    var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos);
+                                                    var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos);
                                                     var sline = slines.Splits.Last();
-                                                    Out.SetCursorPosConstraintedInWorkArea(sline.X + sline.Length, sline.Y);
-                                                    lastInputPos = Out.CursorPos;
+                                                    Console.Out.SetCursorPosConstraintedInWorkArea(sline.X + sline.Length, sline.Y);
+                                                    lastInputPos = Console.Out.CursorPos;
                                                 }
                                                 break;
 
                                             case ConsoleKey.Tab:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
-                                                    printedStr = "".PadLeft(TabLength, ' ');
+                                                    printedStr = "".PadLeft(Console.TabLength, ' ');
                                                     printed = true;
                                                 }
                                                 break;
 
                                             case ConsoleKey.LeftArrow:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
-                                                    var p = Out.CursorPos;
+                                                    var p = Console.Out.CursorPos;
                                                     if (p.Y == _beginOfLineCurPos.Y)
                                                     {
                                                         if (p.X > _beginOfLineCurPos.X)
-                                                            Out.CursorLeft = p.X - 1;
+                                                            Console.Out.CursorLeft = p.X - 1;
                                                     }
                                                     else
                                                     {
                                                         var x = p.X - 1;
                                                         if (x < left)
-                                                            Out.SetCursorPosConstraintedInWorkArea(right - 1, p.Y - 1);
+                                                            Console.Out.SetCursorPosConstraintedInWorkArea(right - 1, p.Y - 1);
                                                         else
-                                                            Out.CursorLeft = x;
+                                                            Console.Out.CursorLeft = x;
                                                     }
                                                 }
                                                 break;
 
                                             case ConsoleKey.RightArrow:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
                                                     var txt = _inputReaderStringBuilder.ToString();
-                                                    var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos);
+                                                    var index = Console.Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Console.Out.CursorPos);
                                                     if (index < txt.Length)
-                                                        Out.SetCursorPosConstraintedInWorkArea(Out.CursorLeft + 1, Out.CursorTop);
+                                                        Console.Out.SetCursorPosConstraintedInWorkArea(Console.Out.CursorLeft + 1, Console.Out.CursorTop);
                                                 }
                                                 break;
 
                                             case ConsoleKey.Backspace:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
                                                     var txt = _inputReaderStringBuilder.ToString();
-                                                    var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos) - 1;
-                                                    var x = Out.CursorLeft - 1;
-                                                    var y = Out.CursorTop;
+                                                    var index = Console.Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Console.Out.CursorPos) - 1;
+                                                    var x = Console.Out.CursorLeft - 1;
+                                                    var y = Console.Out.CursorTop;
                                                     if (index >= 0)
                                                     {
                                                         _inputReaderStringBuilder.Remove(index, 1);
                                                         _inputReaderStringBuilder.Append(" ");
-                                                        Out.HideCur();
-                                                        Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
-                                                        var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
-                                                        var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
-                                                        EnableConstraintConsolePrintInsideWorkArea = false;
+                                                        Console.Out.HideCur();
+                                                        Console.Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
+                                                        var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
+                                                        var enableConstraintConsolePrintInsideWorkArea = Console.EnableConstraintConsolePrintInsideWorkArea;
+                                                        Console.EnableConstraintConsolePrintInsideWorkArea = false;
                                                         foreach (var sline in slines)
                                                             if (sline.Y >= top && sline.Y <= bottom)
                                                             {
-                                                                Out.SetCursorPos(sline.X, sline.Y);
-                                                                Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
-                                                                Out.SetCursorPos(sline.X, sline.Y);
-                                                                Out.ConsolePrint(sline.Text);
+                                                                Console.Out.SetCursorPos(sline.X, sline.Y);
+                                                                Console.Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
+                                                                Console.Out.SetCursorPos(sline.X, sline.Y);
+                                                                Console.Out.ConsolePrint(sline.Text);
                                                             }
                                                         _inputReaderStringBuilder.Remove(_inputReaderStringBuilder.Length - 1, 1);
-                                                        EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
-                                                        Out.SetCursorPos(x, y);
-                                                        Out.ShowCur();
+                                                        Console.EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
+                                                        Console.Out.SetCursorPos(x, y);
+                                                        Console.Out.ShowCur();
                                                     }
                                                 }
                                                 break;
 
                                             case ConsoleKey.Delete:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
                                                     var txt = _inputReaderStringBuilder.ToString();
-                                                    var index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Out.CursorPos);
-                                                    var x = Out.CursorLeft;
-                                                    var y = Out.CursorTop;
+                                                    var index = Console.Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, Console.Out.CursorPos);
+                                                    var x = Console.Out.CursorLeft;
+                                                    var y = Console.Out.CursorTop;
                                                     if (index >= 0 && index < txt.Length)
                                                     {
                                                         _inputReaderStringBuilder.Remove(index, 1);
                                                         _inputReaderStringBuilder.Append(" ");
-                                                        Out.HideCur();
-                                                        Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
-                                                        var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
-                                                        var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
-                                                        EnableConstraintConsolePrintInsideWorkArea = false;
+                                                        Console.Out.HideCur();
+                                                        Console.Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
+                                                        var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
+                                                        var enableConstraintConsolePrintInsideWorkArea = Console.EnableConstraintConsolePrintInsideWorkArea;
+                                                        Console.EnableConstraintConsolePrintInsideWorkArea = false;
                                                         foreach (var sline in slines)
                                                             if (sline.Y >= top && sline.Y <= bottom)
                                                             {
-                                                                Out.SetCursorPos(sline.X, sline.Y);
-                                                                Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
-                                                                Out.SetCursorPos(sline.X, sline.Y);
-                                                                Out.ConsolePrint(sline.Text);
+                                                                Console.Out.SetCursorPos(sline.X, sline.Y);
+                                                                Console.Out.ConsolePrint("".PadLeft(right - sline.X, ' '));
+                                                                Console.Out.SetCursorPos(sline.X, sline.Y);
+                                                                Console.Out.ConsolePrint(sline.Text);
                                                             }
                                                         _inputReaderStringBuilder.Remove(_inputReaderStringBuilder.Length - 1, 1);
-                                                        EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
-                                                        Out.SetCursorPos(x, y);
-                                                        Out.ShowCur();
+                                                        Console.EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
+                                                        Console.Out.SetCursorPos(x, y);
+                                                        Console.Out.ShowCur();
                                                     }
                                                 }
                                                 break;
 
                                             case ConsoleKey.UpArrow:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
-                                                    if (Out.CursorTop == _beginOfLineCurPos.Y)
+                                                    if (Console.Out.CursorTop == _beginOfLineCurPos.Y)
                                                     {
                                                         var h = CommandLineProcessor.CmdsHistory.GetBackwardHistory();
                                                         if (h != null)
                                                         {
-                                                            Out.HideCur();
+                                                            Console.Out.HideCur();
                                                             CleanUpReadln();
                                                             _inputReaderStringBuilder.Append(h);
-                                                            Out.ConsolePrint(h);
-                                                            lastInputPos = Out.CursorPos;
-                                                            Out.ShowCur();
+                                                            Console.Out.ConsolePrint(h);
+                                                            lastInputPos = Console.Out.CursorPos;
+                                                            Console.Out.ShowCur();
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        Out.SetCursorPosConstraintedInWorkArea(
-                                                            (Out.CursorTop - 1) == _beginOfLineCurPos.Y ?
-                                                                Math.Max(_beginOfLineCurPos.X, Out.CursorLeft) : Out.CursorLeft,
-                                                            Out.CursorTop - 1);
+                                                        Console.Out.SetCursorPosConstraintedInWorkArea(
+                                                            (Console.Out.CursorTop - 1) == _beginOfLineCurPos.Y ?
+                                                                Math.Max(_beginOfLineCurPos.X, Console.Out.CursorLeft) : Console.Out.CursorLeft,
+                                                            Console.Out.CursorTop - 1);
                                                     }
                                                 }
                                                 break;
 
                                             case ConsoleKey.DownArrow:
-                                                lock (ConsoleLock)
+                                                lock (Console.ConsoleLock)
                                                 {
-                                                    var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
-                                                    if (Out.CursorTop == slines.Max(o => o.Y))
+                                                    var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
+                                                    if (Console.Out.CursorTop == slines.Max(o => o.Y))
                                                     {
                                                         var fh = CommandLineProcessor.CmdsHistory.GetForwardHistory();
                                                         if (fh != null)
                                                         {
-                                                            Out.HideCur();
+                                                            Console.Out.HideCur();
                                                             CleanUpReadln();
                                                             _inputReaderStringBuilder.Append(fh);
-                                                            Out.ConsolePrint(fh);
-                                                            lastInputPos = Out.CursorPos;
-                                                            Out.ShowCur();
+                                                            Console.Out.ConsolePrint(fh);
+                                                            lastInputPos = Console.Out.CursorPos;
+                                                            Console.Out.ShowCur();
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        var sline = slines.Where(o => o.Y == Out.CursorTop + 1).FirstOrDefault();
+                                                        var sline = slines.Where(o => o.Y == Console.Out.CursorTop + 1).FirstOrDefault();
                                                         // BUG: ici sline est null
                                                         if (sline.Text != null)
-                                                            Out.SetCursorPosConstraintedInWorkArea(Math.Min(Out.CursorLeft, sline.X + sline.Length), Out.CursorTop + 1);
+                                                            Console.Out.SetCursorPosConstraintedInWorkArea(Math.Min(Console.Out.CursorLeft, sline.X + sline.Length), Console.Out.CursorTop + 1);
                                                     }
                                                 }
                                                 break;
@@ -574,39 +576,39 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                 {
                                     var index = 0;
                                     var insert = false;
-                                    lock (ConsoleLock)
+                                    lock (Console.ConsoleLock)
                                     {
-                                        var x0 = Out.CursorLeft;
-                                        var y0 = Out.CursorTop;
+                                        var x0 = Console.Out.CursorLeft;
+                                        var y0 = Console.Out.CursorTop;
                                         var txt = _inputReaderStringBuilder.ToString();
-                                        index = Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, x0, y0);
+                                        index = Console.Out.GetIndexInWorkAreaConstraintedString(txt, _beginOfLineCurPos, x0, y0);
                                         insert = index - txt.Length < 0;
 
                                         if (insert)
                                         {
-                                            Out.HideCur();
+                                            Console.Out.HideCur();
                                             var x = x0;
                                             var y = y0;
-                                            Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
+                                            Console.Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
                                             _inputReaderStringBuilder.Insert(index, printedStr);
-                                            var slines = Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
-                                            var enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
-                                            EnableConstraintConsolePrintInsideWorkArea = false;
+                                            var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
+                                            var enableConstraintConsolePrintInsideWorkArea = Console.EnableConstraintConsolePrintInsideWorkArea;
+                                            Console.EnableConstraintConsolePrintInsideWorkArea = false;
                                             foreach (var sline in slines)
                                                 if (sline.Y >= top && sline.Y <= bottom)
                                                 {
-                                                    Out.SetCursorPos(sline.X, sline.Y);
-                                                    Out.ConsolePrint(sline.Text);
+                                                    Console.Out.SetCursorPos(sline.X, sline.Y);
+                                                    Console.Out.ConsolePrint(sline.Text);
                                                 }
-                                            EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
+                                            Console.EnableConstraintConsolePrintInsideWorkArea = enableConstraintConsolePrintInsideWorkArea;
                                             x += printedStr.Length;
-                                            Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
-                                            Out.ShowCur();
+                                            Console.Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
+                                            Console.Out.ShowCur();
                                         }
                                         if (!insert)
                                         {
                                             _inputReaderStringBuilder.Append(printedStr);
-                                            Out.ConsolePrint(printedStr, false);
+                                            Console.Out.ConsolePrint(printedStr, false);
                                         }
                                     }
                                 }
@@ -628,25 +630,25 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         // put the cursor at the end of the input
                         try
                         {
-                            var slines = Out.GetWorkAreaStringSplits(s, _beginOfLineCurPos).Splits;
+                            var slines = Console.Out.GetWorkAreaStringSplits(s, _beginOfLineCurPos).Splits;
                             if (slines.Count() > 0)
                             {
                                 var sline = slines.Last();
-                                Out.CursorPos = new Point( /*(sline.Text.Length==0)?0:*/sline.Text.Length + sline.X, sline.Y);
+                                Console.Out.CursorPos = new Point( /*(sline.Text.Length==0)?0:*/sline.Text.Length + sline.X, sline.Y);
                             }
                         }
                         catch (Exception) { }
 
-                        var _enableConstraintConsolePrintInsideWorkArea = EnableConstraintConsolePrintInsideWorkArea;
+                        var _enableConstraintConsolePrintInsideWorkArea = Console.EnableConstraintConsolePrintInsideWorkArea;
                         if (noWorkArea)
-                            EnableConstraintConsolePrintInsideWorkArea = false;
+                            Console.EnableConstraintConsolePrintInsideWorkArea = false;
 
                         asyncCallback?.Invoke(
                             new BeginReadlnAsyncResult(s)
                             );
 
                         if (noWorkArea)
-                            EnableConstraintConsolePrintInsideWorkArea = _enableConstraintConsolePrintInsideWorkArea;
+                            Console.EnableConstraintConsolePrintInsideWorkArea = _enableConstraintConsolePrintInsideWorkArea;
 
                         _readingStarted = false;
                         if (_nextPrompt != null)
@@ -662,7 +664,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 }
                 catch (Exception inputStreamReaderThreadException)
                 {
-                    LogException(inputStreamReaderThreadException, "input stream reader crashed");
+                    Console.LogException(inputStreamReaderThreadException, "input stream reader crashed");
                 }
             })
             {
@@ -682,15 +684,15 @@ namespace OrbitalShell.Component.CommandLine.Reader
         {
             if (_inputReaderThread != null)
             {
-                lock (ConsoleLock)
+                lock (Console.ConsoleLock)
                 {
                     //Out.ConsoleCursorPosRestore();    // both works
-                    Out.CursorPos = _beginOfLineCurPos;
+                    Console.Out.CursorPos = _beginOfLineCurPos;
                     if (CommandLineProcessor.CommandEvaluationContext.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
                         /* 💥 */ // ED p0 clean up screen in ConPty
-                        Out.Write(ANSI.EL(ANSI.ELParameter.p0));    // minimum compatible
+                        Console.Out.Write(ANSI.EL(ANSI.ELParameter.p0));    // minimum compatible
                     else
-                        Out.Write(ANSI.ED(ANSI.EDParameter.p0));  // not in compatibility mode ( TODO: check)
+                        Console.Out.Write(ANSI.ED(ANSI.EDParameter.p0));  // not in compatibility mode ( TODO: check)
                     _inputReaderStringBuilder.Clear();
                 }
             }

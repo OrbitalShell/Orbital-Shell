@@ -23,7 +23,7 @@ namespace OrbitalShell
     /// - the .net core make use of interop for each console method call in windows (ConsolePal.Windows.cs)
     /// </para>
     /// </summary>
-    public static class DotNetConsole
+    public static class DotNetConsole0
     {
         #region attributes
 
@@ -86,9 +86,14 @@ namespace OrbitalShell
         //static readonly Dictionary<int, UIElement> _uielements = new Dictionary<int, UIElement>();
         public static bool RedrawUIElementsEnabled = true;
 
-        public static ColorSettings Colors = new ColorSettings();
+        public static ColorSettings Colors;// = new ColorSettings();
 
         #endregion
+
+        /*public DotNetConsole()
+        {
+            Colors = new ColorSettings(this);
+        }*/
 
         #region log methods
 

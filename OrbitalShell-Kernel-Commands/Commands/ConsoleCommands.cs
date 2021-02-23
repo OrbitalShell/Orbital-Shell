@@ -263,8 +263,16 @@ current print directives are:
             var WinWidth = (int)oWinWidth.Value;
             var winHeight = (int)oWinHeight.Value;
 
-            if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
-            if (winHeight > -1) System.Console.WindowHeight = winHeight;
+            try
+            {
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
+                if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
+                if (winHeight > -1) System.Console.WindowHeight = winHeight;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
+            }
+            catch (Exception) { }
 
             System.Console.Clear();
             //context.Out.Echo(ANSI.RIS);

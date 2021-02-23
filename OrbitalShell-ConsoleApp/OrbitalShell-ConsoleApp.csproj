@@ -32,6 +32,10 @@
 		
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="DotNetConsole.cs" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<None Remove="assets\robotazteque.png" />
 		<None Include="assets\robotazteque.png">

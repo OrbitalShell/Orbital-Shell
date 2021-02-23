@@ -1,7 +1,7 @@
-﻿using OrbitalShell.Component.Console;
+﻿using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
 using System;
 using System.Collections.Generic;
-using static OrbitalShell.DotNetConsole;
 using sc = System.Console;
 
 namespace OrbitalShell.Component.CommandLine.Reader
@@ -9,14 +9,14 @@ namespace OrbitalShell.Component.CommandLine.Reader
     /// <summary>
     /// TODO: move to Component.UI.Input
     /// </summary>
-    public static class Interaction
+    public class Interaction
     {
         /// <summary>
         /// ask a question, read input to enter. returns true if input is 'y' or 'Y'
         /// </summary>
         /// <param name="question"></param>
         /// <returns>returns true if input is 'y' or 'Y'</returns>
-        public static bool Confirm(string question)
+        public static bool Confirm(CommandEvaluationContext context,string question)
         {
             var r = false;
             void endReadln(IAsyncResult result)
@@ -25,7 +25,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
             }
             var cmdlr = new CommandLineReader(null, question + "? ", null);
             cmdlr.BeginReadln(endReadln, null, true, false);
-            Out.Echoln();
+            context.Out.Echoln();
             return r;
         }
 
@@ -35,10 +35,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
         /// <param name="text"></param>
         /// <param name="inputMap"></param>
         /// <returns></returns>
-        public static object InputBar(string text, List<InputMap> inputMaps)
+        public static object InputBar(CommandEvaluationContext context, string text, List<InputMap> inputMaps)
         {
             object r = null;
-            Out.Echo($"{Colors.InteractionBar}{text}{ANSI.RSTXTA}");
+            context.Out.Echo($"{context.ShellEnv.Colors.InteractionBar}{text}{ANSI.RSTXTA}");
             bool end = false;
             string input = "";
             while (!end)

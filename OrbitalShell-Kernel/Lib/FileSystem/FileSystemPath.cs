@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using static OrbitalShell.Lib.Str;
-using static OrbitalShell.DotNetConsole;
 using System.Globalization;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.CommandLine.Processor;
@@ -177,8 +176,8 @@ namespace OrbitalShell.Lib.FileSystem
                 return;
             }
 
-            var bg = GetCmd(EchoDirectives.b + "", DefaultBackground.ToString().ToLower());
-            var fg = GetCmd(EchoDirectives.f + "", DefaultForeground.ToString().ToLower());
+            var bg = GetCmd(EchoDirectives.b + "", ctx.CommandEvaluationContext.CommandLineProcessor.Console.DefaultBackground.ToString().ToLower());
+            var fg = GetCmd(EchoDirectives.f + "", ctx.CommandEvaluationContext.CommandLineProcessor.Console.DefaultForeground.ToString().ToLower());
             var color = (IsDirectory) ? NormalDirectoryColorization : FileColorization;
             if (!IsSystem && IsDirectory && !IsReadOnly) color += WritableDirectoryColorization;
             if (IsSystem && !IsDirectory) color += SystemColorization + bg;

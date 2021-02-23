@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell.Component.CommandLine.Parsing

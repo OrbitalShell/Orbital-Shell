@@ -20,7 +20,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineParser;
-using static OrbitalShell.DotNetConsole;
 using cmdlr = OrbitalShell.Component.CommandLine.Reader;
 using cons = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
@@ -28,6 +27,7 @@ using OrbitalShell.Lib.FileSystem;
 using System.Text;
 using OrbitalShell.Lib.Process;
 using OrbitalShell.Component.Shell.Hook;
+using OrbitalShell.Component.Console;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -79,6 +79,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public readonly CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension;
 
         public readonly ModuleManager ModuleManager;
+
+        public IDotNetConsole Console { get; protected set; }
 
         #endregion
 
@@ -153,10 +155,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public CommandLineProcessor(
             string[] args,
+            IDotNetConsole console,
             CommandLineProcessorSettings settings = null,
             CommandEvaluationContext commandEvaluationContext = null
             )
         {
+            Console = console;
             CommandLineProcessorExternalParserExtension = new CommandLineProcessorExternalParserExtension(this);
             ModuleManager = new ModuleManager(_syntaxAnalyzer);
             _args = args;
@@ -171,18 +175,18 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// </summary>
         public void Init(
             string[] args,
+            IDotNetConsole console,            
             CommandLineProcessorSettings settings,
             CommandEvaluationContext context = null
             )
         {
             _args = (string[])args?.Clone();
-            //Settings = settings;
 
             context ??= new CommandEvaluationContext(
                 this,
-                Out,
-                In,
-                Err,
+                console.Out,
+                console.In,
+                console.Err,
                 null
             );
             CommandEvaluationContext = context;
@@ -235,8 +239,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public void Error(string message = null, bool log = false, bool lineBreak = true, string prefix = "")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + (message == null ? "" : $"{message}");
-            Out.Echo(logMessage, lineBreak);
-            if (log) LogError(logMessage);
+            Console.Out.Echo(logMessage, lineBreak);
+            if (log) Console.LogError(logMessage);
         }
         
         #endregion

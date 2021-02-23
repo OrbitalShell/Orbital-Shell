@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell.Lib.FileSystem

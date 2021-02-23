@@ -16,7 +16,7 @@ namespace OrbitalShell.Component.Console
             CommandEvaluationContext commandEvaluationContext,
             TextWriter textWriter,
             CSharpScriptEngine cSharpScriptEngine = null
-            ) : base(textWriter,cSharpScriptEngine)
+            ) : base(commandEvaluationContext.CommandLineProcessor.Console,textWriter,cSharpScriptEngine)
         {
             CommandEvaluationContext = commandEvaluationContext;
         }

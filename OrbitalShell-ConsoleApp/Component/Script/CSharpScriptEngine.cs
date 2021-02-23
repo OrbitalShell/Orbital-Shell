@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.Extensions.DependencyInjection;
 
 using OrbitalShell.Component.Console;
 
@@ -16,19 +17,20 @@ namespace OrbitalShell.Component.Script
         
         public ScriptOptions DefaultScriptOptions;
 
-        public CSharpScriptEngine() { _Init(); }
+        public CSharpScriptEngine(IDotNetConsole console) { _Init(console); }
 
-        public CSharpScriptEngine(ScriptOptions defaultScriptOptions)
+        public CSharpScriptEngine(IDotNetConsole console,ScriptOptions defaultScriptOptions)
         {
             DefaultScriptOptions = defaultScriptOptions;
-            _Init();
+            _Init(console);
         }
 
-        private void _Init() {
+        private void _Init(IDotNetConsole console) {
+            
             DefaultScriptOptions ??= ScriptOptions.Default;
             DefaultScriptOptions = DefaultScriptOptions
                 .AddImports("System")
-                .AddReferences(typeof(DotNetConsole).Assembly);
+                .AddReferences(console.GetType().Assembly);
         }
 
         public object ExecCSharp(

@@ -11,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using OrbitalShell.Component.Shell;
@@ -205,7 +204,7 @@ namespace OrbitalShell.Commands.Shell
             if (maxnslength == -1) maxnslength = com.Namespace.Length + 1;
             if (maxcmdtypelength == -1) maxcmdtypelength = com.DeclaringTypeShortName.Length + 1;
             var col = singleout ? "" : "".PadRight(maxcnamelength, ' ');
-            var f = GetCmd(EchoDirectives.f + "", cons.DefaultForeground.ToString().ToLower());
+            var f = GetCmd(EchoDirectives.f + "", context.CommandLineProcessor.Console.DefaultForeground.ToString().ToLower());
             if (list)
             {
                 if (!shortView)
@@ -243,7 +242,7 @@ namespace OrbitalShell.Commands.Shell
                 {
                     if (!shortView)
                     {
-                        var mpl = (com.ParametersCount > 0 ? com.ParametersSpecifications.Values.Select(x => x.Dump(false).Length).Max() : 0) + cons.TabLength;
+                        var mpl = (com.ParametersCount > 0 ? com.ParametersSpecifications.Values.Select(x => x.Dump(false).Length).Max() : 0) + context.CommandLineProcessor.Console.TabLength;
                         foreach (var p in com.ParametersSpecifications.Values)
                         {
                             var ptype = (!p.IsOption && p.HasValue) ? $"of type: {context.ShellEnv.Colors.TypeName}{p.ParameterInfo.ParameterType.UnmangledName()}{f}" : "";

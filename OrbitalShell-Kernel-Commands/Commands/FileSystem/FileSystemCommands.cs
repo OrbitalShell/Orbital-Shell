@@ -187,7 +187,7 @@ namespace OrbitalShell.Commands.FileSystem
                         maxitlength = Math.Max(item.Name.Length, maxitlength);
                     }
                     maxitlength += 4;
-                    var (id, left, top, right, bottom) = DotNetConsole.ActualWorkArea();
+                    var (id, left, top, right, bottom) = context.CommandLineProcessor.Console.ActualWorkArea();
                     var nbcols = Math.Floor((double)(right - left + 1) / (double)maxitlength);
 
                     int nocol = 0;
@@ -372,7 +372,7 @@ namespace OrbitalShell.Commands.FileSystem
                             {
                                 if (interactive)
                                 {
-                                    if (Confirm("rm: remove file " + item.GetPrintableName(recurse)) && !simulate)
+                                    if (Confirm(context,"rm: remove file " + item.GetPrintableName(recurse)) && !simulate)
                                     {
                                         if (!simulate) item.FileSystemInfo.Delete();
                                         deleted = true;
@@ -463,7 +463,7 @@ namespace OrbitalShell.Commands.FileSystem
                             foreach (var item in items)
                             {
                                 var msg = $"move {item.GetPrintableName()} to {target.GetPrintableName()}";
-                                if (!interactive || Confirm("mv: " + msg))
+                                if (!interactive || Confirm(context, "mv: " + msg))
                                 {
                                     if (source.IsFile)
                                     {
@@ -491,7 +491,7 @@ namespace OrbitalShell.Commands.FileSystem
                         {
                             // move one source to dest
                             var msg = $"move {source.GetPrintableNameWithWlidCard()} to {target.GetPrintableName()}";
-                            if (!interactive || Confirm("mv: " + msg))
+                            if (!interactive || Confirm(context, "mv: " + msg))
                             {
                                 if (source.IsFile)
                                 {
@@ -512,7 +512,7 @@ namespace OrbitalShell.Commands.FileSystem
                         {
                             // rename source (file) to dest (overwrite dest)
                             var msg = $"rename {source.GetPrintableNameWithWlidCard()} to {target.GetPrintableName()}";
-                            if (!interactive || Confirm("mv: " + msg))
+                            if (!interactive || Confirm(context, "mv: " + msg))
                             {
                                 target.FileSystemInfo.Delete();
                                 File.Move(source.FullNameWithWildcard, target.FullName);
@@ -525,7 +525,7 @@ namespace OrbitalShell.Commands.FileSystem
                     {
                         // rename source to dest
                         var msg = $"rename {source.GetPrintableNameWithWlidCard()} to {target.GetPrintableName()}";
-                        if (!interactive || Confirm("mv: " + msg))
+                        if (!interactive || Confirm(context, "mv: " + msg))
                         {
                             if (source.IsFile)
                             {
@@ -561,7 +561,7 @@ namespace OrbitalShell.Commands.FileSystem
             var r = new List<FileSystemPath>();
             verbose |= simulate;
             if (cancellationTokenSource.IsCancellationRequested) return r;
-            if (dir.IsEmpty || Confirm("rm: descend " + dir.GetPrintableName(fullname)))
+            if (dir.IsEmpty || Confirm(context, "rm: descend " + dir.GetPrintableName(fullname)))
             {
                 foreach (var subdir in dir.DirectoryInfo.EnumerateDirectories())
                     r.Merge(RecurseInteractiveDeleteDir(context, new DirectoryPath(subdir.FullName), simulate, noattributes, verbose, cancellationTokenSource));
@@ -572,14 +572,14 @@ namespace OrbitalShell.Commands.FileSystem
                 foreach (var subfile in dir.DirectoryInfo.EnumerateFiles())
                 {
                     var subfi = new FilePath(subfile.FullName);
-                    if (Confirm("rm: remove file " + subfi.GetPrintableName(fullname)))
+                    if (Confirm(context, "rm: remove file " + subfi.GetPrintableName(fullname)))
                     {
                         if (!simulate) subfi.FileSystemInfo.Delete();
                         if (verbose) subfi.Echo(echoContext);
                         r.Add(subfi);
                     }
                 }
-                if (Confirm("rm: remove directory " + dir.GetPrintableName(fullname)))
+                if (Confirm(context, "rm: remove directory " + dir.GetPrintableName(fullname)))
                 {
                     if (!simulate) dir.DirectoryInfo.Delete(true);
                     if (verbose) dir.Echo(echoContext);

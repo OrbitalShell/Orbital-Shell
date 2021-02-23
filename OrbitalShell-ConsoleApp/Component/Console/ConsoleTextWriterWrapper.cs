@@ -8,8 +8,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using itpsrv = System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using static OrbitalShell.DotNetConsole;
-using cons = OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.Str;
 using sc = System.Console;
 using static OrbitalShell.Component.Console.ANSI;
@@ -24,7 +22,9 @@ namespace OrbitalShell.Component.Console
 
         public bool RedirecToErr = false;
 
-        public ColorSettings ColorSettings = Colors;
+        public IDotNetConsole Console;
+
+        public ColorSettings ColorSettings;
 
         protected int _cursorLeftBackup;
         protected int _cursorTopBackup;
@@ -71,24 +71,25 @@ namespace OrbitalShell.Component.Console
 
         #region init
 
-        public ConsoleTextWriterWrapper() : base() { Init(); }
+        public ConsoleTextWriterWrapper(IDotNetConsole console) : base() { Init(console); }
 
-        public ConsoleTextWriterWrapper(TextWriter textWriter) : base(textWriter) { Init(); }
+        public ConsoleTextWriterWrapper(IDotNetConsole console,TextWriter textWriter) : base(textWriter) { Init(console); }
 
-        public ConsoleTextWriterWrapper(CSharpScriptEngine cSharpScriptEngine) : base() { Init(cSharpScriptEngine); }
+        public ConsoleTextWriterWrapper(IDotNetConsole console,CSharpScriptEngine cSharpScriptEngine) : base() { Init(console,cSharpScriptEngine); }
 
-        public ConsoleTextWriterWrapper(TextWriter textWriter, CSharpScriptEngine cSharpScriptEngine) : base(textWriter) { Init(cSharpScriptEngine); }
+        public ConsoleTextWriterWrapper(IDotNetConsole console,TextWriter textWriter, CSharpScriptEngine cSharpScriptEngine) : base(textWriter) { Init(console,cSharpScriptEngine); }
 
         /// <summary>
         /// shell init
         /// </summary>
-        void Init(CSharpScriptEngine cSharpScriptEngine = null)
+        void Init(IDotNetConsole console,CSharpScriptEngine cSharpScriptEngine = null)
         {
-            CSharpScriptEngine = cSharpScriptEngine ?? new CSharpScriptEngine();
+            Console = console;
+            CSharpScriptEngine = cSharpScriptEngine ?? new CSharpScriptEngine(console);
 
             // TIP: dot not affect background color throught System.Console.Background to preserve terminal console background transparency
-            DefaultForeground = sc.ForegroundColor;
-            _cachedForegroundColor = DefaultForeground;
+            Console.DefaultForeground = sc.ForegroundColor;
+            _cachedForegroundColor = Console.DefaultForeground;
 
             InitEchoDirectives();
         }
@@ -376,34 +377,34 @@ namespace OrbitalShell.Component.Console
             return null;
         }
 
-        object _Exit(object x) { Exit(); return null; }
-        object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(x)); return null; }
-        object _SetForegroundParse8BitColor(object x) { SetForeground(TextColor.Parse8BitColor(x)); return null; }
-        object _SetForegroundParse24BitColor(object x) { SetForeground(TextColor.Parse24BitColor(x)); return null; }
+        object _Exit(object x) { Console.Exit(); return null; }
+        object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(Console,x)); return null; }
+        object _SetForegroundParse8BitColor(object x) { SetForeground(TextColor.Parse8BitColor(Console, x)); return null; }
+        object _SetForegroundParse24BitColor(object x) { SetForeground(TextColor.Parse24BitColor(Console, x)); return null; }
 
         object _SetBackgroundColor(object x)
         {
-            var c = TextColor.ParseColor(x);
+            var c = TextColor.ParseColor(Console, x);
             if (c.HasValue) SetBackground(c.Value);
             return null;
         }
 
-        object _SetBackgroundParse8BitColor(object x) { SetBackground(TextColor.Parse8BitColor(x)); return null; }
-        object _SetBackgroundParse24BitColor(object x) { SetBackground(TextColor.Parse24BitColor(x)); return null; }
+        object _SetBackgroundParse8BitColor(object x) { SetBackground(TextColor.Parse8BitColor(Console, x)); return null; }
+        object _SetBackgroundParse24BitColor(object x) { SetBackground(TextColor.Parse24BitColor(Console, x)); return null; }
         object _SetDefaultForeground(object x)
         {
-            var c = TextColor.ParseColor(x);
+            var c = TextColor.ParseColor(Console, x);
             if (c.HasValue) SetDefaultForeground(c.Value);
             return null;
         }
         object _SetDefaultBackground(object x)
         {
-            var c = TextColor.ParseColor(x);
+            var c = TextColor.ParseColor(Console, x);
             if (c.HasValue) SetDefaultBackground(c.Value);
             return null;
         }
-        object _SetCursorX(object x) { CursorLeft = GetCursorX(x); return null; }
-        object _SetCursorY(object x) { CursorTop = GetCursorY(x); return null; }
+        object _SetCursorX(object x) { CursorLeft = Console.GetCursorX(x); return null; }
+        object _SetCursorY(object x) { CursorTop = Console.GetCursorY(x); return null; }
         object _ExecCSharp(object x) { return CSharpScriptEngine.ExecCSharp((string)x,this); }
         void _MoveCursorTop() { MoveCursorTop(1); }
         void _MoveCursorDown() { MoveCursorDown(1); }
@@ -458,18 +459,24 @@ namespace OrbitalShell.Component.Console
 
         #region console output operations
 
-        public static void Infos()
+        public void Infos()
         {
-            lock (Out.Lock)
+            var @out = Console.Out;
+            var colors = Console.Colors;
+            lock (@out.Lock)
             {
-                Out.Echoln($"OS={Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "64" : "32")}bits plateform={RuntimeEnvironment.OSType}");
-                Out.Echoln($"{Bkf}{Colors.HighlightIdentifier}window:{Rsf} left={Colors.Numeric}{sc.WindowLeft}{Rsf},top={Colors.Numeric}{sc.WindowTop}{Rsf},width={Colors.Numeric}{sc.WindowWidth}{Rsf},height={Colors.Numeric}{sc.WindowHeight}{Rsf},largest width={Colors.Numeric}{sc.LargestWindowWidth}{Rsf},largest height={Colors.Numeric}{sc.LargestWindowHeight}{Rsf}");
-                Out.Echoln($"{Colors.HighlightIdentifier}buffer:{Rsf} width={Colors.Numeric}{sc.BufferWidth}{Rsf},height={Colors.Numeric}{sc.BufferHeight}{Rsf} | input encoding={Colors.Numeric}{sc.InputEncoding.EncodingName}{Rsf} | output encoding={Colors.Numeric}{sc.OutputEncoding.EncodingName}{Rsf}");
-                Out.Echoln($"default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
+                @out.Echoln($"OS={Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "64" : "32")}bits plateform={RuntimeEnvironment.OSType}");
+                @out.Echoln($"{Bkf}{colors.HighlightIdentifier}window:{Rsf} left={colors.Numeric}{sc.WindowLeft}{Rsf},top={colors.Numeric}{sc.WindowTop}{Rsf},width={colors.Numeric}{sc.WindowWidth}{Rsf},height={colors.Numeric}{sc.WindowHeight}{Rsf},largest width={colors.Numeric}{sc.LargestWindowWidth}{Rsf},largest height={colors.Numeric}{sc.LargestWindowHeight}{Rsf}");
+                @out.Echoln($"{colors.HighlightIdentifier}buffer:{Rsf} width={colors.Numeric}{sc.BufferWidth}{Rsf},height={colors.Numeric}{sc.BufferHeight}{Rsf} | input encoding={colors.Numeric}{sc.InputEncoding.EncodingName}{Rsf} | output encoding={colors.Numeric}{sc.OutputEncoding.EncodingName}{Rsf}");
+                @out.Echoln($"default background color={Bkf}{colors.KeyWord}{Console.DefaultBackground}{Rsf} | default foreground color={colors.KeyWord}{Console.DefaultForeground}{Rsf}");
                 if (RuntimeEnvironment.OSType == itpsrv.OSPlatform.Windows)
                 {
-                    Out.Echoln($"{Bkf}number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");
-                    Out.Echo($"{Bkf}cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
+                    @out.Echoln($"{Bkf}number lock={colors.Numeric}{sc.NumberLock}{Rsf} | capslock={colors.Numeric}{sc.CapsLock}{Rsf}");
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
+                    @out.Echo($"{Bkf}cursor visible={colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={colors.Numeric}{sc.CursorSize}");
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
                 }
             };
         }
@@ -587,12 +594,12 @@ namespace OrbitalShell.Component.Console
 
         public void RestoreForeground()
         {
-            lock (Lock) { SetForeground(DefaultForeground); }
+            lock (Lock) { SetForeground(Console.DefaultForeground); }
         }
 
         public void RestoreBackground()
         {
-            lock (Lock) { SetBackground(DefaultBackground); }
+            lock (Lock) { SetBackground(Console.DefaultBackground); }
         }
 
         /// <summary>
@@ -681,7 +688,7 @@ namespace OrbitalShell.Component.Console
         {
             lock (Lock)
             {
-                DefaultForeground = c; sc.ForegroundColor = c;
+                Console.DefaultForeground = c; sc.ForegroundColor = c;
             }
         }
 
@@ -689,7 +696,7 @@ namespace OrbitalShell.Component.Console
         {
             lock (Lock)
             {
-                DefaultBackground = c; sc.BackgroundColor = c;
+                Console.DefaultBackground = c; sc.BackgroundColor = c;
             };
         }
 
@@ -710,9 +717,9 @@ namespace OrbitalShell.Component.Console
             lock (Lock)
             {
                 Write(ANSI.RSTXTA);
-                SetForeground(DefaultForeground);
-                SetBackground(DefaultBackground);
-                if (DefaultForeground.HasValue) sc.ForegroundColor = DefaultForeground.Value;
+                SetForeground(Console.DefaultForeground);
+                SetBackground(Console.DefaultBackground);
+                if (Console.DefaultForeground.HasValue) sc.ForegroundColor = Console.DefaultForeground.Value;
             }
         }
 
@@ -721,9 +728,9 @@ namespace OrbitalShell.Component.Console
             get
             {
                 var r = ANSI.RSTXTA;
-                if (DefaultForeground.HasValue) r += Set4BitsColorsForeground(To4BitColorNum(DefaultForeground.Value));
-                if (DefaultBackground.HasValue) r += Set4BitsColorsBackground(To4BitColorNum(DefaultBackground.Value));
-                if (DefaultForeground.HasValue) sc.ForegroundColor = DefaultForeground.Value;
+                if (Console.DefaultForeground.HasValue) r += Set4BitsColorsForeground(To4BitColorNum(Console.DefaultForeground.Value));
+                if (Console.DefaultBackground.HasValue) r += Set4BitsColorsBackground(To4BitColorNum(Console.DefaultBackground.Value));
+                if (Console.DefaultForeground.HasValue) sc.ForegroundColor = Console.DefaultForeground.Value;
                 return r;
             }
         }
@@ -732,7 +739,7 @@ namespace OrbitalShell.Component.Console
         {
             get
             {
-                return Set4BitsColors(To4BitColorNum(DefaultForeground), To4BitColorNum(DefaultBackground));
+                return Set4BitsColors(To4BitColorNum(Console.DefaultForeground), To4BitColorNum(Console.DefaultBackground));
             }
         }
 
@@ -909,7 +916,7 @@ namespace OrbitalShell.Component.Console
             {
                 var x = p.X;
                 var y = p.Y;
-                FixCoords(ref x, ref y);
+                Console.FixCoords(ref x, ref y);
                 if (IsBufferEnabled)
                 {
                     _cachedCursorPosition.X = x;
@@ -930,7 +937,7 @@ namespace OrbitalShell.Component.Console
         {
             lock (Lock)
             {
-                FixCoords(ref x, ref y);
+                Console.FixCoords(ref x, ref y);
                 if (IsBufferEnabled)
                 {
                     _cachedCursorPosition.X = x;
@@ -940,7 +947,9 @@ namespace OrbitalShell.Component.Console
             }
         }
 
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
         public bool CursorVisible => sc.CursorVisible;
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
 
         public void HideCur()
         {
@@ -975,9 +984,9 @@ namespace OrbitalShell.Component.Console
                 if (string.IsNullOrWhiteSpace(s)) return s;
                 var ms = new MemoryStream(s.Length * 4);
                 var sw = new StreamWriter(ms);
-                cons.RedirectOut(sw);
-                var e = EnableConstraintConsolePrintInsideWorkArea;
-                EnableConstraintConsolePrintInsideWorkArea = false;
+                Console.RedirectOut(sw);
+                var e = Console.EnableConstraintConsolePrintInsideWorkArea;
+                Console.EnableConstraintConsolePrintInsideWorkArea = false;
                 if (!ignorePrintDirectives)
                 {
                     // directives are removed
@@ -989,13 +998,13 @@ namespace OrbitalShell.Component.Console
                     // directives are keeped
                     Echo(s, lineBreak, false, false, true, printSequences, false, false);
                 }
-                EnableConstraintConsolePrintInsideWorkArea = e;
+                Console.EnableConstraintConsolePrintInsideWorkArea = e;
                 sw.Flush();
                 ms.Position = 0;
                 var rw = new StreamReader(ms);
                 var txt = rw.ReadToEnd();
                 rw.Close();
-                cons.RedirectOut((StreamWriter)null);
+                Console.RedirectOut((StreamWriter)null);
                 return txt;
             }
         }
@@ -1007,17 +1016,17 @@ namespace OrbitalShell.Component.Console
                 if (string.IsNullOrWhiteSpace(s)) return s;
                 var ms = new MemoryStream(s.Length * 4);
                 var sw = new StreamWriter(ms);
-                cons.RedirectOut(sw);
-                var e = EnableConstraintConsolePrintInsideWorkArea;
-                EnableConstraintConsolePrintInsideWorkArea = false;
+                Console.RedirectOut(sw);
+                var e = Console.EnableConstraintConsolePrintInsideWorkArea;
+                Console.EnableConstraintConsolePrintInsideWorkArea = false;
                 Echo(s, lineBreak);
-                EnableConstraintConsolePrintInsideWorkArea = e;
+                Console.EnableConstraintConsolePrintInsideWorkArea = e;
                 sw.Flush();
                 ms.Position = 0;
                 var rw = new StreamReader(ms);
                 var txt = rw.ReadToEnd();
                 rw.Close();
-                cons.RedirectOut((StreamWriter)null);
+                Console.RedirectOut((StreamWriter)null);
                 return txt;
             }
         }
@@ -1077,7 +1086,7 @@ namespace OrbitalShell.Component.Console
             {
                 if (IsReplicationEnabled)
                     _replicateStreamWriter.Write(s);
-                Err.Write(s);
+                Console.Err.Write(s);
             }
             else
                 base.Write(s);
@@ -1153,24 +1162,24 @@ namespace OrbitalShell.Component.Console
 
         public void Warningln(string s) => Warning(s, true);
 
-        public void Warning(string s, bool lineBreak = true) => Out.Echo($"{Colors.Warning}{s}{Colors.Default}", lineBreak);
+        public void Warning(string s, bool lineBreak = true) => Console.Out.Echo($"{Console.Colors.Warning}{s}{Console.Colors.Default}", lineBreak);
 
         public void Errorln(string s) => Error(s, true);
 
         public void Error(string s, bool lineBreak = true)
         {
-            Out.RedirecToErr = true;
-            Out.Echo($"{Colors.Error}{s}{Colors.Default}", lineBreak);
-            Out.RedirecToErr = false;
+            Console.Out.RedirecToErr = true;
+            Console.Out.Echo($"{Console.Colors.Error}{s}{Console.Colors.Default}", lineBreak);
+            Console.Out.RedirecToErr = false;
         }
 
         void ConsoleSubPrint(string s, bool lineBreak = false)
         {
             lock (Lock)
             {
-                if (EnableConstraintConsolePrintInsideWorkArea)
+                if (Console.EnableConstraintConsolePrintInsideWorkArea)
                 {
-                    var (id, x, y, w, h) = ActualWorkArea();
+                    var (id, x, y, w, h) = Console.ActualWorkArea();
                     var x0 = CursorLeft;
                     var y0 = CursorTop;
 
@@ -1269,7 +1278,7 @@ namespace OrbitalShell.Component.Console
                 if (!EnableFillLineFromCursor) return;
                 var f = _cachedForegroundColor;
                 var b = _cachedForegroundColor;
-                var aw = ActualWorkArea();
+                var aw = Console.ActualWorkArea();
                 var nb = Math.Max(0, Math.Max(aw.Right, _cachedBufferSize.Width - 1) - CursorLeft - 1);
                 var x = CursorLeft;
                 var y = CursorTop;
@@ -1389,7 +1398,7 @@ namespace OrbitalShell.Component.Console
             lock (Lock)
             {
                 int index = -1;
-                var (id, x, y, w, h) = ActualWorkArea(fitToVisibleArea);
+                var (id, x, y, w, h) = Console.ActualWorkArea(fitToVisibleArea);
                 var x0 = origin.X;
                 var y0 = origin.Y;
 
@@ -1511,7 +1520,7 @@ namespace OrbitalShell.Component.Console
             if (!doNotEvaluatePrintDirectives)
             {
                 printSequences = new EchoSequenceList();
-                printSequences.Add(new EchoSequence((string)null, 0, originalString.Length - 1, null, originalString));
+                printSequences.Add(new EchoSequence(Console,(string)null, 0, originalString.Length - 1, null, originalString));
             }
 
             return new LineSplitList(r, printSequences, cursorIndex, cursorLineIndex);
@@ -1542,9 +1551,9 @@ namespace OrbitalShell.Component.Console
                 int dx = 0;
                 int dy = 0;
 
-                if (EnableConstraintConsolePrintInsideWorkArea || forceEnableConstraintInWorkArea)
+                if (Console.EnableConstraintConsolePrintInsideWorkArea || forceEnableConstraintInWorkArea)
                 {
-                    var (id, left, top, right, bottom) = ActualWorkArea(fitToVisibleArea);
+                    var (id, left, top, right, bottom) = Console.ActualWorkArea(fitToVisibleArea);
                     if (cx < left)
                     {
                         cx = right - 1;
@@ -1561,11 +1570,13 @@ namespace OrbitalShell.Component.Console
                         dy = top - cy;
                         cy += dy;
                         if (top + 1 <= bottom)
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
                             sc.MoveBufferArea(      // TODO: not supported on linux (ubuntu 18.04 wsl)
                                 left, top, right, bottom - top,
                                 left, top + 1,
                                 ' ',
-                                DefaultForeground ?? ConsoleColor.White, DefaultBackground ?? ConsoleColor.Black);
+                                Console.DefaultForeground ?? ConsoleColor.White, Console.DefaultBackground ?? ConsoleColor.Black);
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
                     }
 
                     if (enableOutput && cy > bottom /*- 1*/)
@@ -1575,11 +1586,13 @@ namespace OrbitalShell.Component.Console
                         var nh = bottom - top + dy + 1;
                         if (nh > 0)
                         {
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
                             sc.MoveBufferArea(      // TODO: not supported on linux (ubuntu 18.04 wsl)
                                 left, top - dy, right, nh,
                                 left, top,
                                 ' ',
-                                DefaultForeground ?? ConsoleColor.White, DefaultBackground ?? ConsoleColor.Black);
+                                Console.DefaultForeground ?? ConsoleColor.White, Console.DefaultBackground ?? ConsoleColor.Black);
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
                         }
                     }
                 }
@@ -1588,7 +1601,7 @@ namespace OrbitalShell.Component.Console
                 {
                     SetCursorPos(cx, cy);
                     if (dx != 0 || dy != 0)
-                        WorkAreaScrolled?.Invoke(null, new WorkAreaScrollEventArgs(0, dy));
+                        Console.WorkAreaScrolled?.Invoke(null, new WorkAreaScrollEventArgs(0, dy));
                 }
             }
         }

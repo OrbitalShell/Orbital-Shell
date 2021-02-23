@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-using static OrbitalShell.DotNetConsole;
 using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell.Lib.FileSystem
@@ -31,7 +30,7 @@ namespace OrbitalShell.Lib.FileSystem
             if (!Directory.Exists(Path.GetDirectoryName(FullName)))
             {
                 if (dumpError)
-                    Errorln($"the directory of the file doesn't exists: {this}");
+                    context.Errorln($"the directory of the file doesn't exists: {this}");
                 return false;
             }
             return true;

@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using RuntimeEnvironment = OrbitalShell.Lib.RuntimeEnvironment;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.EchoDirective;
 
 namespace OrbitalShell
 {
@@ -29,7 +30,7 @@ namespace OrbitalShell
 
         #region streams : entry points to DotNetConsole output operations
 
-        public ConsoleTextWriterWrapper Out { get; set; } = new ConsoleTextWriterWrapper(sc.Out);
+        public ConsoleTextWriterWrapper Out { get; set; }
         public TextWriterWrapper Err { get; set; } = new TextWriterWrapper(sc.Error);
         public TextReader In { get; set; } = System.Console.In;
 
@@ -40,9 +41,11 @@ namespace OrbitalShell
         WorkArea _workArea = new WorkArea();
         public WorkArea WorkArea => new WorkArea(_workArea);
         public bool InWorkArea => !_workArea.Rect.IsEmpty;
-        public EventHandler ViewSizeChanged;
-        public EventHandler<WorkAreaScrollEventArgs> WorkAreaScrolled;
-        public bool EnableConstraintConsolePrintInsideWorkArea = false;
+
+        public EventHandler ViewSizeChanged { get; set; }
+        public EventHandler<WorkAreaScrollEventArgs> WorkAreaScrolled { get; set; }
+
+        public bool EnableConstraintConsolePrintInsideWorkArea { get; set; } = false;
 
         #endregion
 
@@ -86,9 +89,16 @@ namespace OrbitalShell
         //readonly Dictionary<int, UIElement> _uielements = new Dictionary<int, UIElement>();
         public bool RedrawUIElementsEnabled = true;
 
-        public ColorSettings Colors { get; set; } = new ColorSettings();
+        public ColorSettings Colors { get; set; }
 
         #endregion
+
+        public DotNetConsole2()
+        {
+            Out = new ConsoleTextWriterWrapper(this, sc.Out);       // INFINITE LOOP
+            Colors = new ColorSettings(this);
+            Shortcuts.Initialize(this);
+        }
 
         #region log methods
 
@@ -201,8 +211,12 @@ namespace OrbitalShell
                 Out.Echoln($"{White}default background color={Bkf}{Colors.KeyWord}{DefaultBackground}{Rsf} | default foreground color={Colors.KeyWord}{DefaultForeground}{Rsf}");
                 if (RuntimeEnvironment.OSType == OSPlatform.Windows)
                 {
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
                     Out.Echoln($"number lock={Colors.Numeric}{sc.NumberLock}{Rsf} | capslock={Colors.Numeric}{sc.CapsLock}{Rsf}");
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
+#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
                     Out.Echoln($"cursor visible={Colors.Numeric}{sc.CursorVisible}{Rsf} | cursor size={Colors.Numeric}{sc.CursorSize}");
+#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
                 }
             };
         }

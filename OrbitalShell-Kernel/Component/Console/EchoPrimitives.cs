@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.EchoDirective;
 using System.Collections;
@@ -758,7 +757,7 @@ namespace OrbitalShell.Component.Console
                 var arr = row.ItemArray;
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    if (!options.NoBorders && i == 0) Out.Echo(colsep);
+                    if (!options.NoBorders && i == 0) @out.Echo(colsep);
 
                     var txt = (arr[i] == null) ? "" : arr[i].ToString();
                     var fvalue = fhv(table.Columns[i].ColumnName, txt);

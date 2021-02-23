@@ -2,7 +2,6 @@
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
-using cons = OrbitalShell.DotNetConsole;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -18,7 +17,7 @@ namespace OrbitalShell.Commands.Shell
             CommandEvaluationContext context
             )
         {
-            cons.Exit();
+            context.CommandLineProcessor.Console.Exit();
             return new CommandResult<int>(0);
         }
 

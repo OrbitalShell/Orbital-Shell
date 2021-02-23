@@ -19,13 +19,19 @@ namespace OrbitalShell
         public static IHostBuilder HostBuilder { get; private set; }
         public static IHost Host { get; private set; }
 
-        public static void Bootstrap(string[] args = null)
+        public static IHostBuilder InitializeServices(string[] args = null)
         {
             args ??= Array.Empty<string>();
-            HostBuilder = hosting.Host.CreateDefaultBuilder(args)
-                .ConfigureServices((_, services) =>
-                    services.AddSingleton<IDotNetConsole,DotNetConsole2>())
-                ;
+            HostBuilder = 
+                hosting.Host
+                    .CreateDefaultBuilder(args)
+                    .ConfigureServices((_, services) =>
+                        services.AddSingleton<IDotNetConsole,DotNetConsole2>());                        
+            return HostBuilder;
+        }
+
+        public static void EndInitializeServices()
+        {
             Host = HostBuilder.Build();
         }
     }

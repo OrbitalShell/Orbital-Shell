@@ -14,9 +14,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
-using static OrbitalShell.DotNetConsole;
 using static OrbitalShell.Lib.Str;
-using cons = OrbitalShell.DotNetConsole;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.Shell;
@@ -49,6 +47,7 @@ namespace OrbitalShell.Commands.TextEditor
         Encoding _fileEncoding;
         OSPlatform? _fileEOL;
         string _eolSeparator;
+        IDotNetConsole Console;
         string FileEOL
         {
             get
@@ -84,10 +83,10 @@ namespace OrbitalShell.Commands.TextEditor
             [Parameter("path of an existing or of a new file. the path directory must exists", true)] FilePath filePath
             )
         {
-            Context = context;
+            Context = context;            
             if (filePath == null || filePath.CheckPathExists(context))
             {
-                Init();
+                Init(context);
                 InitEditor();
                 if (filePath != null && filePath.FileSystemInfo.Exists)
                     LoadFile(filePath);
@@ -101,13 +100,14 @@ namespace OrbitalShell.Commands.TextEditor
             return new CommandVoidResult();
         }
 
-        void Init()
+        void Init(CommandEvaluationContext context)
         {
+            Console = context.CommandLineProcessor.Console;
             _rawMode = false;
             _exitAll = false;
             _errorStream = new MemoryStream();
             _errorStreamWriter = new StreamWriter(_errorStream);
-            RedirectErr(_errorStreamWriter);
+            context.CommandLineProcessor.Console.RedirectErr(_errorStreamWriter);
         }
 
         void InitEditor(bool clearEditorBackups = true, bool forgetCurrentFile = true)
@@ -144,7 +144,7 @@ namespace OrbitalShell.Commands.TextEditor
         {
             try
             {
-                lock (ConsoleLock)
+                lock (Console.ConsoleLock)
                 {
                     Context.Out.HideCur();
                     Context.Out.ClearScreen();
@@ -161,7 +161,7 @@ namespace OrbitalShell.Commands.TextEditor
             }
             catch (Exception ex)
             {
-                Errorln(ex + "");
+                Context.Errorln(ex + "");
             }
         }
 
@@ -173,14 +173,14 @@ namespace OrbitalShell.Commands.TextEditor
             {
                 var c = sc.ReadKey(true);
                 _lastKeyInfo = c;
-                var (id, left, top, right, bottom) = cons.ActualWorkArea(false);
+                var (id, left, top, right, bottom) = Console.ActualWorkArea(false);
 
                 var printable = false;
                 bool printOnlyCursorInfo = true;
                 switch (c.Key)
                 {
                     case ConsoleKey.LeftArrow:
-                        lock (ConsoleLock)
+                        lock (Console.ConsoleLock)
                         {
                             var p = Context.Out.CursorPos;
                             if (_splitedLineIndex == 0)
@@ -205,7 +205,7 @@ namespace OrbitalShell.Commands.TextEditor
                         break;
 
                     case ConsoleKey.RightArrow:
-                        lock (ConsoleLock)
+                        lock (Console.ConsoleLock)
                         {
                             var line = _text[_currentLine];
                             var spl = Context.Out.GetIndexLineSplitsInWorkAreaConstraintedString(line, _beginOfLineCurPos, Context.Out.CursorPos.X, Context.Out.CursorPos.Y, true, false, !_rawMode);
@@ -220,7 +220,7 @@ namespace OrbitalShell.Commands.TextEditor
                         break;
 
                     case ConsoleKey.DownArrow:
-                        lock (ConsoleLock)
+                        lock (Console.ConsoleLock)
                         {
                             if (_currentLine < _text.Count - 1)
                             {
@@ -261,7 +261,7 @@ namespace OrbitalShell.Commands.TextEditor
                         break;
 
                     case ConsoleKey.UpArrow:
-                        lock (ConsoleLock)
+                        lock (Console.ConsoleLock)
                         {
                             if (_currentLine > 0 || _splitedLineIndex > 0)
                             {
@@ -352,7 +352,7 @@ namespace OrbitalShell.Commands.TextEditor
                                 _statusText = null;
                                 _cmdInput = false;
                                 printOnlyCursorInfo = false;
-                                lock (ConsoleLock)
+                                lock (Console.ConsoleLock)
                                 {
                                     BackupCursorPos();
                                     EmptyInfoBar();
@@ -448,7 +448,7 @@ namespace OrbitalShell.Commands.TextEditor
                     }
                 }
 
-                lock (ConsoleLock)
+                lock (Console.ConsoleLock)
                 {
                     BackupCursorPos();
                     DisplayInfoBar(false, printOnlyCursorInfo);
@@ -483,7 +483,7 @@ namespace OrbitalShell.Commands.TextEditor
 
         void RefreshEditor()
         {
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 BackupCursorPos();
                 DisplayEditor();
@@ -493,7 +493,7 @@ namespace OrbitalShell.Commands.TextEditor
 
         bool SaveFile()
         {
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 BackupCursorPos();
                 try
@@ -520,7 +520,7 @@ namespace OrbitalShell.Commands.TextEditor
         {
             if (_barVisible && _cmdInput && _statusText == null)
             {
-                lock (ConsoleLock)
+                lock (Console.ConsoleLock)
                 {
                     BackupCursorPos();
                     DisplayInfoBar();
@@ -531,7 +531,7 @@ namespace OrbitalShell.Commands.TextEditor
 
         void Error(string text)
         {
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 var bVis = ShowEmptyBar();
                 PrintBarMessage(Bred + text + ". Press a key to continue..." + Context.ShellEnv.Colors.Default);
@@ -555,7 +555,7 @@ namespace OrbitalShell.Commands.TextEditor
 
         bool Confirm(string text)
         {
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 var bVis = ShowEmptyBar();
                 PrintBarMessage(text + " ? [Y|y|N|n]: ");
@@ -576,7 +576,7 @@ namespace OrbitalShell.Commands.TextEditor
         {
             Context.Out.SetCursorPos(1, _barY);
             //Context.Out.EnableInvert();
-            Context.Out.Echo(Out.ColorSettings.InteractionPanel);
+            Context.Out.Echo(Context.Out.ColorSettings.InteractionPanel);
             Context.Out.Echo(text);
             //Context.Out.DisableTextDecoration();
         }
@@ -592,7 +592,7 @@ namespace OrbitalShell.Commands.TextEditor
         void OpenHelp()
         {
             _editorBackups.Push(GetCurrentEditorBackup());
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 InitEditor(false);
                 if (LoadFile(new FilePath(Path.Combine(
@@ -623,7 +623,7 @@ namespace OrbitalShell.Commands.TextEditor
 
         void ClearCurrentEditor(bool newFile = false)
         {
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 InitEditor(false, newFile);
                 _fileModified = !newFile;
@@ -675,7 +675,7 @@ namespace OrbitalShell.Commands.TextEditor
             System.Diagnostics.Debug.WriteLine($"PRE: _lastVisibleLineIndex={_lastVisibleLineIndex} _splitedLastVisibleLineIndex={_splitedLastVisibleLineIndex} line={_text[_lastVisibleLineIndex]}");
 #endif
             var setVisible = false;
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 if (_barVisible)
                 {
@@ -737,7 +737,7 @@ namespace OrbitalShell.Commands.TextEditor
             ComputeBarVisible();
             if (setVisible)
             {
-                lock (ConsoleLock)
+                lock (Console.ConsoleLock)
                 {
                     BackupCursorPos();
                     DisplayInfoBar();
@@ -770,9 +770,9 @@ namespace OrbitalShell.Commands.TextEditor
         void Scroll(int dy)
         {
             if (dy == 0) return;
-            if (cons.WorkArea.IsEmpty)
+            if (Console.WorkArea.IsEmpty)
             {
-                lock (ConsoleLock)
+                lock (Console.ConsoleLock)
                 {
                     BackupCursorPos();
                     Context.Out.HideCur();
@@ -820,7 +820,7 @@ namespace OrbitalShell.Commands.TextEditor
         void Exit()
         {
             Context.Out.ClearScreen();
-            RedirectErr((TextWriter)null);
+            Console.RedirectErr((TextWriter)null);
             _errorStream = null;
             _errorStreamWriter = null;
         }
@@ -858,7 +858,7 @@ namespace OrbitalShell.Commands.TextEditor
 
         void DisplayFile()
         {
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 int index = _firstLine;
                 int y = 0;
@@ -905,7 +905,7 @@ namespace OrbitalShell.Commands.TextEditor
         (bool atBottom, int splitedLineIndex, List<StringSegment> slines) PrintLine(int index, int subIndex = 0, int maxY = -1)
         {
             if (maxY == -1) maxY = _barY;
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 var y = Context.Out.CursorTop;
                 var line = _text[index];
@@ -946,19 +946,19 @@ namespace OrbitalShell.Commands.TextEditor
         void EmptyInfoBar()
         {
             if (!_barVisible) return;
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
                 // all these remarks for 'auto line break' console mode
                 // /!\ cursor visible leads to erase some characters (blank) in inverted mode and force ignore Tdoff !!
                 // conclusion: invert mode switched is system bugged on windows -- avoid it
                 Context.Out.SetCursorPos(0, _barY);
 
-                Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
+                Context.Out.Echo(Context.Out.ColorSettings.InteractionPanel + "");
                 Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
 
                 Context.Out.SetCursorPos(0, _barY + 1);
 
-                Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
+                Context.Out.Echo(Context.Out.ColorSettings.InteractionPanel + "");
                 Context.Out.Echo(ANSI.EL(ANSI.ELParameter.p0));
 
                 Context.Out.SetCursorPos(0, _barY + 1);
@@ -969,9 +969,9 @@ namespace OrbitalShell.Commands.TextEditor
         void DisplayInfoBar(bool showCursor = true, bool onlyCursorInfo = false)
         {
             if (!_barVisible) return;
-            lock (ConsoleLock)
+            lock (Console.ConsoleLock)
             {
-                var r = ActualWorkArea(false);
+                var r = Console.ActualWorkArea(false);
                 Context.Out.CropX = r.Right - 2;
                 Context.Out.HideCur();
 
@@ -979,7 +979,7 @@ namespace OrbitalShell.Commands.TextEditor
                 {
                     Context.Out.SetCursorPos(0, _barY);
 
-                    Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
+                    Context.Out.Echo(Context.Out.ColorSettings.InteractionPanel + "");
 
                     if (_statusText == null)
                     {
@@ -990,20 +990,20 @@ namespace OrbitalShell.Commands.TextEditor
                     {
                         EmptyInfoBar();
                         Context.Out.SetCursorPos(1, _barY);
-                        Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
+                        Context.Out.Echo(Console.Out.ColorSettings.InteractionPanel + "");
                         Context.Out.Echo(_statusText);
                     }
 
                     if (_cmdInput)
                     {
                         Context.Out.SetCursorPos(0, _barY + 1);
-                        Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
+                        Context.Out.Echo(Console.Out.ColorSettings.InteractionPanel + "");
                         var cmdinf = GetCmdsInfo();
                         Context.Out.Echo(cmdinf);
                     }
                 }
 
-                Context.Out.Echo(Out.ColorSettings.InteractionPanel + "");
+                Context.Out.Echo(Console.Out.ColorSettings.InteractionPanel + "");
 
                 if (!_cmdInput) PrintCursorInfo();
 

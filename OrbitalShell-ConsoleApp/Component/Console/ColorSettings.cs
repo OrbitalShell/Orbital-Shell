@@ -1,17 +1,23 @@
 ﻿using System;
-using static OrbitalShell.DotNetConsole;
 
 namespace OrbitalShell.Component.Console
 {
     public class ColorSettings
     {
+        IDotNetConsole Console;
+
+        public ColorSettings(IDotNetConsole console)
+        {
+            Console = console;
+        }
+
         /// <summary>
         /// defaults shell foreground and background - if is setted. designed to preserve console default background transparency
         /// </summary>
         /// <returns></returns>
-        public TextColor Default => new TextColor(DefaultForeground, DefaultBackground, ANSI.RSTXTA);
+        public TextColor Default => new TextColor(Console.DefaultForeground, Console.DefaultBackground, ANSI.RSTXTA);
 
-        public TextColor Inverted => new TextColor(DefaultBackground, DefaultForeground);
+        public TextColor Inverted => new TextColor(Console.DefaultBackground, Console.DefaultForeground);
 
         // states colors
 
