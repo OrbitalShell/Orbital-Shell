@@ -370,9 +370,9 @@
         modules = 11003,
 
         /// <summary>
-        /// shell profile
+        /// shell init path
         /// </summary>
-        profile = 11004,
+        init = 11004,
 
         // traditional bash variables
 
