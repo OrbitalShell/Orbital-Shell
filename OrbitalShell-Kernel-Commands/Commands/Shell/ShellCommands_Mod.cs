@@ -112,10 +112,11 @@ namespace OrbitalShell.Commands.Shell
                 if (updateAll)
                 {
                     var ids = ModuleUtil.GetInstalledModulesLowerPackageId(context);
-                    foreach (var id in ids)
-                    {
-                        var installRes = Module(context: context, updateModuleName: id, checkOnly: checkOnly, registerUpdateOnly:true);
-                    }
+                    if (ids.Count == 0) 
+                        o.Echoln("nothing to update");
+                    else
+                        foreach (var id in ids)
+                            Module(context: context, updateModuleName: id, checkOnly: checkOnly, registerUpdateOnly:true);
                 }
 
                 // update module
