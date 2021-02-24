@@ -32,6 +32,26 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	  
 	<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+	  
+	<Platforms>AnyCPU;x86</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
 	 
@@ -78,6 +98,12 @@
     <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel-Commands\OrbitalShell-Kernel-Commands.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Scripts\publish-cli-release.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
