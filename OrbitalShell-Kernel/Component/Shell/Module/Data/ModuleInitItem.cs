@@ -1,6 +1,6 @@
-﻿namespace OrbitalShell.Component.Shell.Module
+﻿namespace OrbitalShell.Component.Shell.Module.Data
 {
-    public class ModuleInitItemModel
+    public class ModuleInitItem
     {
         public string Path;
         public bool IsEnabled = true;

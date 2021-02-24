@@ -14,8 +14,8 @@
     <Product>Orbital Shell - Kernel</Product>
     <Description>Orbital Shell kernel - Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>1.0.6</Version>
-    <InformationalVersion>1.0.6</InformationalVersion>
+    <Version>1.0.7</Version>
+    <InformationalVersion>1.0.7</InformationalVersion>
 
 	<PackageReleaseNotes>milestone 1</PackageReleaseNotes>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -25,7 +25,7 @@
 	<PackageTags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</PackageTags>	
 	<PackageIcon>content\assets\robotazteque.png</PackageIcon>
 
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
 	<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
 
@@ -48,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DBG_DI_INSTANCE</DefineConstants>
+    <DefineConstants>TRACE;DBG_DI_INSTANCE_disabled</DefineConstants>
   </PropertyGroup>
 
 	<ItemGroup>

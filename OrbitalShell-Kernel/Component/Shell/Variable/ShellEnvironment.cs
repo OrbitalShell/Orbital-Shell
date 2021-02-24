@@ -11,7 +11,7 @@ using System.Reflection;
 using static OrbitalShell.Lib.Str;
 using System.Collections.Generic;
 using System.Data;
-using OrbitalShell.Component.Shell.Module;
+using OrbitalShell.Component.Shell.Module.Data;
 
 namespace OrbitalShell.Component.Shell.Variable
 {
@@ -30,7 +30,7 @@ namespace OrbitalShell.Component.Shell.Variable
         
         public FileSystemPathFormattingOptions FileSystemPathFormattingOptions => GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.display_fileSystemPathFormattingOptions);
 
-        public readonly ModuleInitModel ModuleInitModel;
+        public readonly ModuleInit ModuleInitModel;
 
         public ShellEnvironment(string name) : base(name, false) { }
 
@@ -97,9 +97,10 @@ namespace OrbitalShell.Component.Shell.Variable
             AddValue(ShellEnvironmentVar.pathExt, plx);
             AddValue(ShellEnvironmentVar.pathExtInit, "");
 
-            // shell settings (defaults)
+            // shell settings (defaults) TODO: --> put in ICommandLineProcessorSettings mapped to json
 
-            AddValue(ShellEnvironmentVar.settings_module_providerUrls, new List<string> { "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/master/module-index-repository/module-list" });
+            AddValue(ShellEnvironmentVar.settings_module_providerUrls, new List<string> { 
+                "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/dev/module-index-repository/module-list.json" });
             AddValue(ShellEnvironmentVar.settings_console_prompt, ANSI.RSTXTA + "> ");        // prompt   
             AddValue(ShellEnvironmentVar.settings_console_initialWindowWidth, -1);
             AddValue(ShellEnvironmentVar.settings_console_initialWindowHeight, -1);
@@ -118,8 +119,9 @@ namespace OrbitalShell.Component.Shell.Variable
                         nameof(CommandLineProcessor),
                         "banner-4.txt"));
             AddValue(ShellEnvironmentVar.settings_console_banner_isEnabled, true);
-            AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex, 202);// 167);
-            AddValue(ShellEnvironmentVar.settings_console_banner_colorIndexStep, 1);// 167);
+            AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex, 21); // 202);// 167);
+            AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex2, 49); // 202);// 167);
+            AddValue(ShellEnvironmentVar.settings_console_banner_colorIndexStep, 6); // 1);// 167);
 
             InitializeSpecialVars(context);
 

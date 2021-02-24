@@ -145,7 +145,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         #region command engine operations
 
         public CommandLineProcessor(
-            IServiceProviderScope scope,
+            //IServiceProviderScope scope,
             IDotNetConsole console,
             ICommandBatchProcessor cbp,
             ICommandsAlias cal,
@@ -164,7 +164,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
             parserExt.CommandLineProcessor = this;
             SyntaxAnalyzer = sa;
             ModuleManager = modManager;
-            _settings = settings ?? scope.ServiceProvider.GetRequiredService<ICommandLineProcessorSettings>();
+            _settings = settings;
+            //_settings = settings ?? scope.ServiceProvider.GetRequiredService<ICommandLineProcessorSettings>();
             CommandBatchProcessor = cbp;
             CommandsAlias = cal;            
         }
@@ -214,18 +215,28 @@ namespace OrbitalShell.Component.CommandLine.Processor
             {
                 try
                 {
+                    // todo: use a simple banner command !
                     var banner =
                         File.ReadAllLines(
                             context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_banner_path)
                         );
                     int c = context.ShellEnv.GetValue<int>(ShellEnvironmentVar.settings_console_banner_startColorIndex);
+                    int n = 1;
+                    var stp = context.ShellEnv.GetValue<int>(ShellEnvironmentVar.settings_console_banner_colorIndexStep);
                     foreach (var line in banner)
                     {
                         context.Out.SetForeground(c);
                         context.Out.Echoln(line);
-                        c += context.ShellEnv.GetValue<int>(ShellEnvironmentVar.settings_console_banner_colorIndexStep); ;
+                        c += stp;
+                        n++;
+                        if (n == 6)
+                        {
+                            //c -= 5;
+                            c = context.ShellEnv.GetValue<int>(ShellEnvironmentVar.settings_console_banner_startColorIndex2);
+                            stp *= -1;
+                        }
                     }
-                    context.Out.Echoln();
+                    //context.Out.Echoln();
                 }
                 catch (Exception ex)
                 {

@@ -19,16 +19,22 @@ using OrbitalShell.Commands.NuGetServerApi;
 using System.IO.Compression;
 using OrbitalShell.Commands.FileSystem;
 using OrbitalShell.Lib.Data;
-using System.Security.Policy;
 using System.Runtime.Loader;
+using Newtonsoft.Json;
+using OrbitalShell.Component.Shell.Module.Data;
 
 namespace OrbitalShell.Commands.Shell
 {
     /// <summary>
-    /// ShellCommands_Help.cs
+    /// ShellCommands_Mod.cs
     /// </summary>
     public partial class ShellCommands
     {
+        static List<string> _kernelModuleIds = new List<string>
+        {
+            "orbitalshell-kernel" , "orbitalshell-kernel-commands"
+        };
+
         [Command("output a report of loaded modules if no option is specified, else allows to load/unload/install/remove/update modules and get informations from repositories of modules")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.module)]
         [CommandAlias("mod", "module")]
@@ -77,7 +83,7 @@ namespace OrbitalShell.Commands.Shell
                     var target = kvp.Value.Assembly.GetCustomAttribute<ModuleTargetPlateformAttribute>()?.TargetPlateform;
                     target ??= TargetPlatform.Unspecified;
                     var deps_attr = kvp.Value.Assembly.GetCustomAttributes<ModuleDependencyAttribute>();
-                    var deps = (deps_attr.Count() == 0) ? "" : string.Join(",", deps_attr.Select(x => x.ModuleName + " " + x.ModuleMinVersion));
+                    var deps = (!deps_attr.Any()) ? "" : string.Join(",", deps_attr.Select(x => x.ModuleName + " " + x.ModuleMinVersion));
                     var sminv = kvp.Value.Assembly.GetCustomAttribute<ModuleShellMinVersionAttribute>()?.ShellMinVersion;
 
                     o.Echoln($"{Darkcyan}{kvp.Value.Key.PadRight(col1length, ' ')}{f}{kvp.Value.Description}");
@@ -105,6 +111,11 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
             }
 
+            static void _checkIsNotAKernelModule(string n) {
+                if (_kernelModuleIds.Contains(n.ToLower()))
+                    throw new Exception($"the kernel module '{n}' can't be handled by the module command. Please refers to kernel update documentation");
+            }
+
             if (!fetchList && !fetchInfo)
             {
                 // update all
@@ -126,6 +137,8 @@ namespace OrbitalShell.Commands.Shell
                     n = updateModuleName;
                     if (ModuleUtil.IsModuleInstalled(context, n))
                     {
+                        _checkIsNotAKernelModule(n);
+
                         // find the right module assembly
 
                         (AssemblyLoadContext assemblyLoadContext, Assembly moduleAssembly) = ModuleUtil.GetModuleAssembly(context, n);
@@ -173,6 +186,11 @@ namespace OrbitalShell.Commands.Shell
                 {
                     n = uninstallModuleName;
                     var folderName = n.ToLower();
+
+                    _checkIsNotAKernelModule(n);
+
+                    if (_kernelModuleIds.Contains(n)) _checkIsNotAKernelModule(n); 
+
                     if (!ModuleUtil.IsModuleInstalled( context, folderName ))
                         // error not installed
                         return _ModuleErr(context, $"module '{n}' is not installed");
@@ -184,7 +202,7 @@ namespace OrbitalShell.Commands.Shell
                     {
                         o.Echo(clog + moduleAssemblyFilePath.FullName + " ... ");
                         var removableItems = modInits.Where(x => x.Path == FileSystemPath.UnescapePathSeparators(moduleAssemblyFilePath.FullName));
-                        if (removableItems.Count()>0)
+                        if (removableItems.Any())
                         {
                             removableItems.ToList().ForEach(x => modInits.Remove(x));
                             o.Echoln("removed");
@@ -202,6 +220,9 @@ namespace OrbitalShell.Commands.Shell
                 if (installModuleName != null)
                 {
                     n = installModuleName;
+
+                    _checkIsNotAKernelModule(n);
+
                     var lastVer = string.IsNullOrWhiteSpace(version);
 
                     #region fetch module info
@@ -239,7 +260,7 @@ namespace OrbitalShell.Commands.Shell
                         var moduleLowerFullId = $"{folderName}.{lowerVersion}";  // == module lower id
 
                         if (ModuleUtil.IsModuleInstalled(
-                            context,folderName,version
+                            folderName,version
                             ) && !force)
                             // error already installed, !force
                             return _ModuleErr(context,$"module '{moduleLowerFullId}' is already installed (may try --force)");
@@ -303,7 +324,7 @@ namespace OrbitalShell.Commands.Shell
                                                 modInit.List = lst.ToArray();
                                             }
 
-                                            var mod = new ModuleInitItemModel()
+                                            var mod = new ModuleInitItem()
                                             {
                                                 Path = FileSystemPath.UnescapePathSeparators(dll.FullName),
                                                 LowerPackageId = folderName,
@@ -361,7 +382,10 @@ namespace OrbitalShell.Commands.Shell
 
                 if (unloadModuleName != null)
                 {
-                    n = unloadModuleName;                    
+                    n = unloadModuleName;
+
+                    _checkIsNotAKernelModule(n);
+
                     if (context.CommandLineProcessor.ModuleManager.GetModuleByLowerPackageId(n.ToLower())!=null)
                     {
                         moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, n );
@@ -384,14 +408,14 @@ namespace OrbitalShell.Commands.Shell
 
                         if (fetchInfo)
                         {
-                            var modRef = modRefs.Where(x => x.Name == fetchInfoName).FirstOrDefault();
+                            var modRef = modRefs.Where(x => x.ModuleId == fetchInfoName).FirstOrDefault();
                             if (modRef != null)
                             {
                                 // try to fetch the module : name[,version]->nuget
                                 #region fetch module info
 
                                 var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
-                                var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{modRef.Name} -t 1", 0);
+                                var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{modRef.ModuleId} -t 1", 0);
                                 if (r0.EvalResultCode != (int)ReturnCode.OK) return _ModuleErr(context, r0.ErrorReason);
                                 var queryRes = r0.Result as QueryResultRoot;
                                 if (queryRes == null) return _ModuleErr(context, "nuget query return a null result");
@@ -413,7 +437,7 @@ namespace OrbitalShell.Commands.Shell
                                 ("description", typeof(string))
                             );
                             foreach (var modref in modRefs)
-                                tb.AddRow(modref.Name, modref.Version, modref.Description);
+                                tb.AddRow(modref.ModuleId, modref.Version, modref.Description);
 
                             tb.Echo(new EchoEvaluationContext(
                                 o,
@@ -443,7 +467,7 @@ namespace OrbitalShell.Commands.Shell
 
         #region util
 
-        bool _GetModuleListFromRepositories(CommandEvaluationContext context, out List<ModuleReference> modulesReferences)
+        static bool _GetModuleListFromRepositories(CommandEvaluationContext context, out List<ModuleReference> modulesReferences)
         {
             modulesReferences = null;
 
@@ -455,11 +479,12 @@ namespace OrbitalShell.Commands.Shell
             else
             {
                 context.Out.Echo(context.ShellEnv.Colors.Log + " fetching data from repositories ... ");
+
+                var modList = new ModuleList();
                 foreach (var repo in repoList)
                 {
                     try
                     {
-                        var modLists = new List<string>();
                         using (var httpClient = new HttpClient())
                         {
                             using (var request = new HttpRequestMessage(new HttpMethod("GET"), repo))
@@ -468,38 +493,43 @@ namespace OrbitalShell.Commands.Shell
                                 var result = tsk.Result;
                                 if (result.IsSuccessStatusCode)
                                 {
-                                    modLists.Add(result.Content.ReadAsStringAsync().Result);
+                                    try
+                                    {
+                                        var modListJson = result.Content.ReadAsStringAsync().Result;
+                                        var modRefs = JsonConvert.DeserializeObject<ModuleList>(modListJson);
+                                        modList.Merge(modRefs);
+                                    } catch (Exception getModListError)
+                                    {
+                                        context.Errorln($"failed to handle module list from repo '{repo}' due to errror: {getModListError.Message}");
+                                    }
                                 }
                                 else
                                     context.Out.Errorln($"fetch list fail from '{repo}' due to error: {result.ReasonPhrase}");
                             }
                         }
-                        context.Out.Echoln(context.ShellEnv.Colors.Log + "Done");
-
-                        var modRefs = new List<ModuleReference>();
-                        foreach (var modList in modLists)
-                            modRefs.AddRange(_ParseModuleList(modList));
-
-                        modulesReferences = modRefs;
-                        return true;
                     }
                     catch (Exception repoAccessError)
                     {
                         context.Out.Errorln($"fetch list fail from '{repo}' due to error: {repoAccessError.Message}");
                     }
                 }
+
+                modulesReferences = modList.Modules;
+                context.Out.Echoln(context.ShellEnv.Colors.Log + "Done");
+                return true;
             }
             return false;
         }
 
-        List<ModuleReference> _ParseModuleList(string modList)
+        [Obsolete]
+        List<ModuleReference> _ParseModuleList(string repoModulesList)
         {
             var r = new List<ModuleReference>();
-            var lines = modList.Split("\n");
+            var lines = repoModulesList.Split("\n");
             foreach (var s in lines)
             {
                 var ts = s.Trim();
-                if (!string.IsNullOrWhiteSpace(s) && !s.StartsWith(";"))
+                if (!string.IsNullOrWhiteSpace(s) && !ts.StartsWith(";"))
                 {
                     var t = s.Split(";");
                     if (t.Length == 4)

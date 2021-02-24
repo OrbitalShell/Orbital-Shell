@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		issues = issues
 		LICENSE.md = LICENSE.md
-		modules-index-repository\module-list = modules-index-repository\module-list
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -24,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-CLI", "Orbital
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "module-index-repository", "module-index-repository", "{27033D10-E732-47E6-A607-27A718CEF3EF}"
 	ProjectSection(SolutionItems) = preProject
-		module-index-repository\module-list = module-index-repository\module-list
+		module-index-repository\module-list.json = module-index-repository\module-list.json
 		module-index-repository\readme.txt = module-index-repository\readme.txt
 	EndProjectSection
 EndProject

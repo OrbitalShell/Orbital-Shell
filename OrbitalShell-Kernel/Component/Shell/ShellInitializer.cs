@@ -11,6 +11,7 @@ using OrbitalShell.Lib.FileSystem;
 using OrbitalShell.Component.Shell.Module;
 using System.Linq;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell.Module.Data;
 
 namespace OrbitalShell.Component.Shell
 {
@@ -207,10 +208,10 @@ namespace OrbitalShell.Component.Shell
             if (mods==null)
             {
                 // rebuild the module-init file - it is crashed
-                mods = new ModuleInitModel()
+                mods = new ModuleInit()
                     {
                         ReadMe = $"new file generated on {System.DateTime.Now}",
-                        List = Array.Empty<ModuleInitItemModel>()
+                        List = Array.Empty<ModuleInitItem>()
                 };
                 ModuleUtil.SaveModuleInitConfiguration(context, mods);
                 context.Errorln("a crashed version of module-init has been restored to initial state");

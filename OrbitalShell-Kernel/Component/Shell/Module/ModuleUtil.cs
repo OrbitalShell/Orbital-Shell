@@ -11,6 +11,7 @@ using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib.FileSystem;
 using OrbitalShell.Lib;
 using OrbitalShell.Lib.Data;
+using OrbitalShell.Component.Shell.Module.Data;
 
 namespace OrbitalShell.Component.Shell.Module
 {
@@ -38,8 +39,8 @@ namespace OrbitalShell.Component.Shell.Module
         /// </summary>
         /// <param name="context">command evaluation context</param>
         /// <returns>ModuleInitModel</returns>
-        public static ModuleInitModel LoadModuleInitConfiguration(CommandEvaluationContext context)
-            => JsonConvert.DeserializeObject<ModuleInitModel>(
+        public static ModuleInit LoadModuleInitConfiguration(CommandEvaluationContext context)
+            => JsonConvert.DeserializeObject<ModuleInit>(
                 File.ReadAllText(
                     context
                         .CommandLineProcessor
@@ -52,7 +53,7 @@ namespace OrbitalShell.Component.Shell.Module
         /// </summary>
         /// <param name="context">command evaluation context</param>
         /// <param name="o">module-init model object</param>
-        public static void SaveModuleInitConfiguration(CommandEvaluationContext context,ModuleInitModel o)
+        public static void SaveModuleInitConfiguration(CommandEvaluationContext context,ModuleInit o)
         {
             File.WriteAllText(
                 context
@@ -67,7 +68,6 @@ namespace OrbitalShell.Component.Shell.Module
 
 
         public static bool IsModuleInstalled(
-            CommandEvaluationContext context,
             string moduleId,
             string version)
         {

@@ -12,7 +12,7 @@ using OrbitalShell.Component.Shell;
 namespace OrbitalShell.Commands.Shell
 {
     /// <summary>
-    /// ShellCommands_Help.cs
+    /// ShellCommands_Hist.cs
     /// </summary>
     public partial class ShellCommands
     {

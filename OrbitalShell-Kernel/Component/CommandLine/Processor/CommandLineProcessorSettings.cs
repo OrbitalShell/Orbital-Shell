@@ -48,14 +48,13 @@ namespace OrbitalShell.Component.CommandLine.Processor
             );
 
             /*  
-                it can exists only one wrapper for out,
+                /!\ it can exists only one wrapper for out,
                 between the command evaluation context and dot net console
             */
 
 
             commandEvaluationContext.CommandLineProcessor.Console.Out = Out;
             //DotNetConsole.Out = Out;
-
             Err = commandEvaluationContext.CommandLineProcessor.Console.Err;
             //Err = DotNetConsole.Err;
             In = commandEvaluationContext.CommandLineProcessor.Console.In;
