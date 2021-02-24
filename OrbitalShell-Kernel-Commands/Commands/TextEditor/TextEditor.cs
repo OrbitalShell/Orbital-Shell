@@ -83,20 +83,20 @@ namespace OrbitalShell.Commands.TextEditor
             [Parameter("path of an existing or of a new file. the path directory must exists", true)] FilePath filePath
             )
         {
-            Context = context;            
+            Context = context;
+            Init(context);
             if (filePath == null || filePath.CheckPathExists(context))
             {
-                Init(context);
                 InitEditor();
                 if (filePath != null && filePath.FileSystemInfo.Exists)
                     LoadFile(filePath);
                 else
                 {
                     _filePath = filePath;
-                }
-                DisplayEditor();
-                WaitAndProcessKeyPress();
+                }                
             }
+            DisplayEditor();
+            WaitAndProcessKeyPress();
             return new CommandVoidResult();
         }
 
@@ -576,8 +576,8 @@ namespace OrbitalShell.Commands.TextEditor
         {
             Context.Out.SetCursorPos(1, _barY);
             //Context.Out.EnableInvert();
-            Context.Out.Echo(Context.Out.ColorSettings.InteractionPanel);
-            Context.Out.Echo(text);
+            Context.Out.Echo(Context.Out.ColorSettings.InteractionPanel+text);
+            //Context.Out.Echo(text);
             //Context.Out.DisableTextDecoration();
         }
 

@@ -16,10 +16,10 @@ namespace OrbitalShell.Component.Shell
 {
     public class ShellInitializer
     {
-        readonly CommandLineProcessor _clp;
+        readonly ICommandLineProcessor _clp;
         readonly IDotNetConsole Console;
 
-        public ShellInitializer(CommandLineProcessor clp)
+        public ShellInitializer(ICommandLineProcessor clp)
         {
             _clp = clp;
             Console = clp.Console;
@@ -85,11 +85,11 @@ namespace OrbitalShell.Component.Shell
         public void ShellInit(
             string[] args,
             IDotNetConsole console,
-            CommandLineProcessorSettings settings,
+            ICommandLineProcessorSettings settings,
             CommandEvaluationContext context = null
             )
         {
-            _clp.Init(args,console,settings,context);
+            _clp.Init(args,settings,context);
 
             // get final clp command evaluation context
             context = _clp.CommandEvaluationContext;
@@ -237,8 +237,8 @@ namespace OrbitalShell.Component.Shell
         }
 
         void ShellInitFromSettings(
-            CommandLineProcessor clp,
-            CommandLineProcessorSettings settings
+            ICommandLineProcessor clp,
+            ICommandLineProcessorSettings settings
             )
         {
             var ctx = clp.CommandEvaluationContext;

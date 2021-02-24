@@ -5,7 +5,7 @@ using System;
 
 namespace OrbitalShell.Component.CommandLine.Batch
 {
-    public class CommandBatchProcessor
+    public class CommandBatchProcessor : ICommandBatchProcessor
     {
         public int RunBatch(CommandEvaluationContext context, string path)
         {

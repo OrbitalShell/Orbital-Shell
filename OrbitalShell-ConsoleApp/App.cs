@@ -17,7 +17,10 @@ namespace OrbitalShell
     public static class App
     {
         public static IHostBuilder HostBuilder { get; private set; }
+
         public static IHost Host { get; private set; }
+
+        public static IServiceProvider ServiceProvider => Host.Services ?? throw new Exception("host is not initialized");
 
         public static IHostBuilder InitializeServices(string[] args = null)
         {

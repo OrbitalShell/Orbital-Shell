@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--<TargetFramework>net5.0</TargetFramework>-->
-    <TargetFramework>net5.0</TargetFramework>
-	  
+	<TargetFramework>net5.0</TargetFramework>
+
     <RootNamespace>OrbitalShell</RootNamespace>
     <AssemblyName>OrbitalShell-Kernel</AssemblyName>
     <NeutralLanguage>en-US</NeutralLanguage>
@@ -29,7 +28,27 @@
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
 	<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+
+	<Platforms>AnyCPU;x86</Platforms>
 	  
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;DBG_DI_INSTANCE</DefineConstants>
   </PropertyGroup>
 
 	<ItemGroup>

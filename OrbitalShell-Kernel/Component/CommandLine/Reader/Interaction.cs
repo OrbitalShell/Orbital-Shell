@@ -23,7 +23,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
             {
                 r = result.AsyncState?.ToString()?.ToLower() == "y";
             }
-            var cmdlr = new CommandLineReader(null, question + "? ", null);
+            var cmdlr = new CommandLineReader( );
+            cmdlr.Initialize(question + "? ");
             cmdlr.BeginReadln(endReadln, null, true, false);
             context.Out.Echoln();
             return r;

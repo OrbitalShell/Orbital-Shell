@@ -130,7 +130,7 @@ namespace OrbitalShell.Component.Shell.Variable
 
         #region path util
 
-        string GetSystemPath()
+        static string GetSystemPath()
         {
             string s;
             object r = null;
@@ -141,7 +141,7 @@ namespace OrbitalShell.Component.Shell.Variable
             return (string)r;
         }
 
-        string GetSystemPathExt()
+        static string GetSystemPathExt()
         {
             string s;
             object r = null;
@@ -179,7 +179,7 @@ namespace OrbitalShell.Component.Shell.Variable
             o = AddValue(ShellEnvironmentVar.sp__lastCommandErrorText, new StringWrapper());
             AddValue(ShellEnvironmentVar.lastComErrorText, o.Value);
 
-            o = AddValue(ShellEnvironmentVar.sp__activeShellPID, System.Diagnostics.Process.GetCurrentProcess().Id, true);
+            o = AddValue(ShellEnvironmentVar.sp__activeShellPID, Environment.ProcessId, true);
             AddValue(ShellEnvironmentVar.activeShellPID, o.Value, true);
 
             o = AddValue(ShellEnvironmentVar.sp__activeShellThreadID, System.Threading.Thread.CurrentThread.ManagedThreadId, true);
@@ -373,8 +373,6 @@ namespace OrbitalShell.Component.Shell.Variable
 
         public DataValue SetValue(ShellEnvironmentVar var, object value)
         {
-            var path = Nsp(var);
-            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
             if (!HasValue(var))
                 return AddValue(var, value);
             var o = GetDataValue(var);
@@ -385,7 +383,6 @@ namespace OrbitalShell.Component.Shell.Variable
         public DataValue SetValue(string varPath, string varName, object value)
         {
             var path = Nsp(varPath, varName);
-            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
             if (!HasValue(path))
                 return AddValue(path, value);
             var o = GetDataValue(path);
@@ -419,12 +416,12 @@ namespace OrbitalShell.Component.Shell.Variable
 
         #endregion
 
-        string Nsp(string @namespace, string key) => ToAbsNsp(@namespace + CommandLineSyntax.VariableNamePathSeparator + key);
-        string Nsp(params string[] key) => ToAbsNsp(string.Join(CommandLineSyntax.VariableNamePathSeparator, key));
-        string Nsp(ShellEnvironmentNamespace @namespace, params string[] key) => ToAbsNsp(ToNsp(@namespace) + (key.Length == 0 ? "" : (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join(CommandLineSyntax.VariableNamePathSeparator, key)));
-        string Nsp(ShellEnvironmentVar @var, params string[] key) =>
+        static string Nsp(string @namespace, string key) => ToAbsNsp(@namespace + CommandLineSyntax.VariableNamePathSeparator + key);
+        static string Nsp(params string[] key) => ToAbsNsp(string.Join(CommandLineSyntax.VariableNamePathSeparator, key));
+        static string Nsp(ShellEnvironmentNamespace @namespace, params string[] key) => ToAbsNsp(ToNsp(@namespace) + (key.Length == 0 ? "" : (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join(CommandLineSyntax.VariableNamePathSeparator, key)));
+        static string Nsp(ShellEnvironmentVar @var, params string[] key) =>
 
-            ToAbsNsp(ToNsp(@var) + (key.Length == 0 ? "" : (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join(CommandLineSyntax.VariableNamePathSeparator, key)));
+        ToAbsNsp(ToNsp(@var) + (key.Length == 0 ? "" : (CommandLineSyntax.VariableNamePathSeparator + "") + string.Join(CommandLineSyntax.VariableNamePathSeparator, key)));
 
         static string ToNsp(ShellEnvironmentVar @var) => ToNsp(ToStr(@var));
 
@@ -459,12 +456,13 @@ namespace OrbitalShell.Component.Shell.Variable
                 s = s.Replace("_", CommandLineSyntax.VariableNamePathSeparator + "");
             return s.Replace("¤", "_");
         }
-        string ToAbsNsp(string @namespace)
+
+        static string ToAbsNsp(string @namespace)
         {
             var isSpecialVar = IsSpecialVar(@namespace);
             return Variables.Nsp(
                 ("" + (isSpecialVar ? VariableNamespace._ : VariableNamespace.env)),
-                isSpecialVar ? @namespace.Substring(SPECIAL_VAR_IMPL_PREFIX.Length) : @namespace
+                isSpecialVar ? @namespace[SPECIAL_VAR_IMPL_PREFIX.Length..] : @namespace
                 );
         }
 

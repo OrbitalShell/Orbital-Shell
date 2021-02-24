@@ -8,7 +8,7 @@ using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Shell
 {
-    public class CommandsAlias
+    public class CommandsAlias : ICommandsAlias
     {
         public string FileName { get; protected set; }
         public string Folder { get; protected set; }

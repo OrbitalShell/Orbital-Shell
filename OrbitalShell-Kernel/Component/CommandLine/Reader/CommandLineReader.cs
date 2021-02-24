@@ -1,60 +1,70 @@
 ﻿//#define dbg
 #define FIX_LOW_ANSI
 
-using OrbitalShell.Component.CommandLine.Processor;
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static OrbitalShell.Component.CommandLine.Processor.CommandLineProcessor;
-using sc = System.Console;
+
+using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Variable;
+
+using sc = System.Console;
 
 namespace OrbitalShell.Component.CommandLine.Reader
 {
-    public class CommandLineReader
+    public class CommandLineReader : ICommandLineReader
     {
         #region attributes
 
-        public delegate ExpressionEvaluationResult ExpressionEvaluationCommandDelegate(
-            CommandEvaluationContext context, string com, int outputX, string postAnalysisPreExecOutput = null);
+        //public delegate ExpressionEvaluationResult ExpressionEvaluationCommandDelegate(
+        //    CommandEvaluationContext context, string com, int outputX, string postAnalysisPreExecOutput = null);
 
         Thread _inputReaderThread;
-
         string _prompt;
         StringBuilder _inputReaderStringBuilder;
         Point _beginOfLineCurPos;
-        ExpressionEvaluationCommandDelegate _evalCommandDelegate;
+        Delegates.ExpressionEvaluationCommandDelegate _evalCommandDelegate;
         string _sentInput = null;
         bool _waitForReaderExited;
         bool _readingStarted;
         string _nextPrompt = null;
         string _defaultPrompt = null;
-        readonly CommandLineProcessor CommandLineProcessor;
+        ICommandLineProcessor CommandLineProcessor;
         bool _ignoreNextKey = false;
 
         public Action<IAsyncResult> InputProcessor { get; set; }
 
-        public IDotNetConsole Console;
+        public IDotNetConsole Console { get; set; }
+
+        static int _InstanceId = 0;
 
         #endregion
 
         #region initialization operations
 
-        public CommandLineReader(
-            CommandLineProcessor commandLineProcessor = null,
+        public CommandLineReader( )
+        {            
+            _InstanceId++;
+#if DBG_DI_INSTANCE
+            System.Console.Out.WriteLine($"new CLR #{_InstanceId}");
+#endif                        
+        }
+
+        public void Initialize(
             string prompt = null,
-            ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
+            ICommandLineProcessor clp = null,
+            Delegates.ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
         {
-            Console = commandLineProcessor.Console;
-            CommandLineProcessor = commandLineProcessor;
-            if (CommandLineProcessor != null && CommandLineProcessor != null) CommandLineProcessor.CommandLineReader = this;
             _defaultPrompt = prompt ?? $"> ";
+            Console = clp.Console;
+            CommandLineProcessor = clp;
+            if (CommandLineProcessor != null && CommandLineProcessor != null) 
+                CommandLineProcessor.CommandLineReader = this;
             Initialize(evalCommandDelegate);
         }
 
@@ -77,7 +87,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         public string GetPrompt() => _prompt;
 
-        void Initialize(ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
+        void Initialize(Delegates.ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
         {
             if (evalCommandDelegate == null && CommandLineProcessor != null) _evalCommandDelegate = CommandLineProcessor.Eval;
 
@@ -149,7 +159,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         public void ProcessCommandLine(
             string commandLine,
-            ExpressionEvaluationCommandDelegate evalCommandDelegate,
+            Delegates.ExpressionEvaluationCommandDelegate evalCommandDelegate,
             bool outputStartNextLine = false,
             bool enableHistory = false,
             bool enablePrePostComOutput = true)
@@ -445,7 +455,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                     if (index >= 0)
                                                     {
                                                         _inputReaderStringBuilder.Remove(index, 1);
-                                                        _inputReaderStringBuilder.Append(" ");
+                                                        _inputReaderStringBuilder.Append(' ');
                                                         Console.Out.HideCur();
                                                         Console.Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
                                                         var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
@@ -477,7 +487,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                     if (index >= 0 && index < txt.Length)
                                                     {
                                                         _inputReaderStringBuilder.Remove(index, 1);
-                                                        _inputReaderStringBuilder.Append(" ");
+                                                        _inputReaderStringBuilder.Append(' ');
                                                         Console.Out.HideCur();
                                                         Console.Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
                                                         var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
@@ -617,9 +627,9 @@ namespace OrbitalShell.Component.CommandLine.Reader
                             }
 
                         }
-                        catch /*(Exception inputProcessingException)*/
+                        catch
                         {
-                            // input processing crashed : re-engage prompt, mute error
+                            // input processing crashed : mute error, re-engage prompt
                         }
 
                         // process input
@@ -631,7 +641,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         try
                         {
                             var slines = Console.Out.GetWorkAreaStringSplits(s, _beginOfLineCurPos).Splits;
-                            if (slines.Count() > 0)
+                            if (slines.Count > 0)
                             {
                                 var sline = slines.Last();
                                 Console.Out.CursorPos = new Point( /*(sline.Text.Length==0)?0:*/sline.Text.Length + sline.X, sline.Y);

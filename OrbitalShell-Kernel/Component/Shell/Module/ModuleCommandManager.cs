@@ -15,7 +15,7 @@ namespace OrbitalShell.Component.Shell.Module
     /// <summary>
     /// module command manager
     /// </summary>
-    public class ModuleCommandManager
+    public class ModuleCommandManager : IModuleCommandManager
     {
         #region attributes
 
@@ -41,15 +41,15 @@ namespace OrbitalShell.Component.Shell.Module
             }
         }
 
-        readonly ModuleSet _modules;
+        readonly IModuleSet _modules;
 
-        readonly SyntaxAnalyser _syntaxAnalyzer;
+        readonly ISyntaxAnalyser _syntaxAnalyzer;
 
         #endregion
 
         public ModuleCommandManager(
-            SyntaxAnalyser syntaxAnalyser,
-            ModuleSet modules
+            ISyntaxAnalyser syntaxAnalyser,
+            IModuleSet modules
             )
         {
             _syntaxAnalyzer = syntaxAnalyser;
@@ -273,7 +273,7 @@ namespace OrbitalShell.Component.Shell.Module
                                     (cmdNameAttr != null && cmdNameAttr.Name != null) ?
                                         cmdNameAttr.Name
                                         : (cmd.Name ?? method.Name));
-                            
+
                             bool registered = true;
                             CommandSpecification cmdspec = null;
 
@@ -290,7 +290,8 @@ namespace OrbitalShell.Component.Shell.Module
                                     cmdAliases,
                                     paramspecs);
 
-                            } catch (Exception ex)
+                            }
+                            catch (Exception ex)
                             {
                                 context.Errorln($"error in command '{cmdName}' specification: {ex.Message}");
                             }
