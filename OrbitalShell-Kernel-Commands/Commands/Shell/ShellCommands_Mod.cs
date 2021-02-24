@@ -19,13 +19,13 @@ using OrbitalShell.Commands.NuGetServerApi;
 using System.IO.Compression;
 using OrbitalShell.Commands.FileSystem;
 using OrbitalShell.Lib.Data;
-using System.Security.Policy;
 using System.Runtime.Loader;
+using Newtonsoft.Json;
 
 namespace OrbitalShell.Commands.Shell
 {
     /// <summary>
-    /// ShellCommands_Help.cs
+    /// ShellCommands_Mod.cs
     /// </summary>
     public partial class ShellCommands
     {
@@ -239,7 +239,7 @@ namespace OrbitalShell.Commands.Shell
                         var moduleLowerFullId = $"{folderName}.{lowerVersion}";  // == module lower id
 
                         if (ModuleUtil.IsModuleInstalled(
-                            context,folderName,version
+                            folderName,version
                             ) && !force)
                             // error already installed, !force
                             return _ModuleErr(context,$"module '{moduleLowerFullId}' is already installed (may try --force)");
@@ -384,14 +384,14 @@ namespace OrbitalShell.Commands.Shell
 
                         if (fetchInfo)
                         {
-                            var modRef = modRefs.Where(x => x.Name == fetchInfoName).FirstOrDefault();
+                            var modRef = modRefs.Where(x => x.ModuleId == fetchInfoName).FirstOrDefault();
                             if (modRef != null)
                             {
                                 // try to fetch the module : name[,version]->nuget
                                 #region fetch module info
 
                                 var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
-                                var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{modRef.Name} -t 1", 0);
+                                var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{modRef.ModuleId} -t 1", 0);
                                 if (r0.EvalResultCode != (int)ReturnCode.OK) return _ModuleErr(context, r0.ErrorReason);
                                 var queryRes = r0.Result as QueryResultRoot;
                                 if (queryRes == null) return _ModuleErr(context, "nuget query return a null result");
@@ -413,7 +413,7 @@ namespace OrbitalShell.Commands.Shell
                                 ("description", typeof(string))
                             );
                             foreach (var modref in modRefs)
-                                tb.AddRow(modref.Name, modref.Version, modref.Description);
+                                tb.AddRow(modref.ModuleId, modref.Version, modref.Description);
 
                             tb.Echo(new EchoEvaluationContext(
                                 o,
@@ -455,11 +455,12 @@ namespace OrbitalShell.Commands.Shell
             else
             {
                 context.Out.Echo(context.ShellEnv.Colors.Log + " fetching data from repositories ... ");
+
+                var modList = new ModuleList();
                 foreach (var repo in repoList)
                 {
                     try
                     {
-                        var modLists = new List<string>();
                         using (var httpClient = new HttpClient())
                         {
                             using (var request = new HttpRequestMessage(new HttpMethod("GET"), repo))
@@ -468,34 +469,39 @@ namespace OrbitalShell.Commands.Shell
                                 var result = tsk.Result;
                                 if (result.IsSuccessStatusCode)
                                 {
-                                    modLists.Add(result.Content.ReadAsStringAsync().Result);
+                                    try
+                                    {
+                                        var modListJson = result.Content.ReadAsStringAsync().Result;
+                                        var modRefs = JsonConvert.DeserializeObject<ModuleList>(modListJson);
+                                        modList.Merge(modRefs);
+                                    } catch (Exception getModListError)
+                                    {
+                                        context.Errorln($"failed to handle module list from repo '{repo}' due to errror: {getModListError.Message}");
+                                    }
                                 }
                                 else
                                     context.Out.Errorln($"fetch list fail from '{repo}' due to error: {result.ReasonPhrase}");
                             }
                         }
-                        context.Out.Echoln(context.ShellEnv.Colors.Log + "Done");
-
-                        var modRefs = new List<ModuleReference>();
-                        foreach (var modList in modLists)
-                            modRefs.AddRange(_ParseModuleList(modList));
-
-                        modulesReferences = modRefs;
-                        return true;
                     }
                     catch (Exception repoAccessError)
                     {
                         context.Out.Errorln($"fetch list fail from '{repo}' due to error: {repoAccessError.Message}");
                     }
                 }
+
+                modulesReferences = modList.Modules;
+                context.Out.Echoln(context.ShellEnv.Colors.Log + "Done");
+                return true;
             }
             return false;
         }
 
-        List<ModuleReference> _ParseModuleList(string modList)
+        [Obsolete]
+        List<ModuleReference> _ParseModuleList(string repoModulesList)
         {
             var r = new List<ModuleReference>();
-            var lines = modList.Split("\n");
+            var lines = repoModulesList.Split("\n");
             foreach (var s in lines)
             {
                 var ts = s.Trim();

@@ -35,6 +35,11 @@ alias mf "find $modules --top --fullname --dir"
 
 alias dirs "dir -r -d"
 
-# add usefull variables to shell envuronment
+# add usefull variables to shell environment
 
 set scripts $shell/scripts
+
+# advice(s)
+
+echo "TIP: try module -f to list available modules, module -i {moduleId} to install a module in the shell, module -u {moduleId} to update an installed module, module --update-all [--check-only] to check/update all modules"
+echo ""

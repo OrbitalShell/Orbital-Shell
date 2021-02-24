@@ -270,6 +270,11 @@
         settings_console_banner_startColorIndex = 10204,
 
         /// <summary>
+        /// banner start color index 2 (if any banner)
+        /// </summary>
+        settings_console_banner_startColorIndex2 = 10207,
+
+        /// <summary>
         /// banner start color index step (if any banner)
         /// </summary>
         settings_console_banner_colorIndexStep = 10205,

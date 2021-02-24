@@ -67,7 +67,6 @@ namespace OrbitalShell.Component.Shell.Module
 
 
         public static bool IsModuleInstalled(
-            CommandEvaluationContext context,
             string moduleId,
             string version)
         {

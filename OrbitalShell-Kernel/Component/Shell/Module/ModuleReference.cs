@@ -5,22 +5,32 @@ namespace OrbitalShell.Component.Shell.Module
     /// </summary>
     public class ModuleReference
     {
-        public readonly string Name;
+        public readonly string Type;
 
-        public ModuleVersion Version;
+        public readonly string ModuleId;
+
+        public ModuleVersion Version
+            => new ModuleVersion(LastKnownVersion);
+
+        public string LastKnownVersion;
 
         public string Description;
 
-        public ModuleReference(string name, string version, string description)
+        public ModuleReference() { }
+
+        public ModuleReference(
+            string moduleId, 
+            string version, 
+            string description)
         {
-            Name = name;
+            ModuleId = moduleId;
             Description = description;
-            Version = new ModuleVersion(version);
+            LastKnownVersion = version;
         }
 
         public override string ToString()
         {
-            return $"{Name} - {Description} - Version = {Version}";
+            return $"{ModuleId} - {Description} - Version = {Version}";
         }
     }
 }
