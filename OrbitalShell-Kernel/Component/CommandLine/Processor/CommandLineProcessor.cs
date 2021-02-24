@@ -145,7 +145,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         #region command engine operations
 
         public CommandLineProcessor(
-            IServiceProviderScope scope,
+            //IServiceProviderScope scope,
             IDotNetConsole console,
             ICommandBatchProcessor cbp,
             ICommandsAlias cal,
@@ -164,7 +164,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
             parserExt.CommandLineProcessor = this;
             SyntaxAnalyzer = sa;
             ModuleManager = modManager;
-            _settings = settings ?? scope.ServiceProvider.GetRequiredService<ICommandLineProcessorSettings>();
+            _settings = settings;
+            //_settings = settings ?? scope.ServiceProvider.GetRequiredService<ICommandLineProcessorSettings>();
             CommandBatchProcessor = cbp;
             CommandsAlias = cal;            
         }

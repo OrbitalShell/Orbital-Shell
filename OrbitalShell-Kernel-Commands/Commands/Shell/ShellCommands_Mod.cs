@@ -30,6 +30,11 @@ namespace OrbitalShell.Commands.Shell
     /// </summary>
     public partial class ShellCommands
     {
+        static List<string> _kernelModuleIds = new List<string>
+        {
+            "orbitalshell-kernel" , "orbitalshell-kernel-commands"
+        };
+
         [Command("output a report of loaded modules if no option is specified, else allows to load/unload/install/remove/update modules and get informations from repositories of modules")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.module)]
         [CommandAlias("mod", "module")]
@@ -106,6 +111,11 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
             }
 
+            static void _checkIsNotAKernelModule(string n) {
+                if (_kernelModuleIds.Contains(n.ToLower()))
+                    throw new Exception($"the kernel module '{n}' can't be handled by the module command. Please refers to kernel update documentation");
+            }
+
             if (!fetchList && !fetchInfo)
             {
                 // update all
@@ -127,6 +137,8 @@ namespace OrbitalShell.Commands.Shell
                     n = updateModuleName;
                     if (ModuleUtil.IsModuleInstalled(context, n))
                     {
+                        _checkIsNotAKernelModule(n);
+
                         // find the right module assembly
 
                         (AssemblyLoadContext assemblyLoadContext, Assembly moduleAssembly) = ModuleUtil.GetModuleAssembly(context, n);
@@ -174,6 +186,11 @@ namespace OrbitalShell.Commands.Shell
                 {
                     n = uninstallModuleName;
                     var folderName = n.ToLower();
+
+                    _checkIsNotAKernelModule(n);
+
+                    if (_kernelModuleIds.Contains(n)) _checkIsNotAKernelModule(n); 
+
                     if (!ModuleUtil.IsModuleInstalled( context, folderName ))
                         // error not installed
                         return _ModuleErr(context, $"module '{n}' is not installed");
@@ -203,6 +220,9 @@ namespace OrbitalShell.Commands.Shell
                 if (installModuleName != null)
                 {
                     n = installModuleName;
+
+                    _checkIsNotAKernelModule(n);
+
                     var lastVer = string.IsNullOrWhiteSpace(version);
 
                     #region fetch module info
@@ -362,7 +382,10 @@ namespace OrbitalShell.Commands.Shell
 
                 if (unloadModuleName != null)
                 {
-                    n = unloadModuleName;                    
+                    n = unloadModuleName;
+
+                    _checkIsNotAKernelModule(n);
+
                     if (context.CommandLineProcessor.ModuleManager.GetModuleByLowerPackageId(n.ToLower())!=null)
                     {
                         moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, n );
