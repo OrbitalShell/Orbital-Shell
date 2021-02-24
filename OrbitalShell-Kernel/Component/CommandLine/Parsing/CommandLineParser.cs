@@ -285,7 +285,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
         public static PipelineParseResults ParseCommandLine(
             CommandEvaluationContext context,
-            SyntaxAnalyser syntaxAnalyzer,
+            ISyntaxAnalyser syntaxAnalyzer,
             string expr,
             ICommandLineParserExtension commandLineParserExtension
             )
@@ -386,7 +386,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         /// <returns></returns>
         public static ParseResult ParseCmdSplits(
             CommandEvaluationContext context,
-            SyntaxAnalyser syntaxAnalyzer,
+            ISyntaxAnalyser syntaxAnalyzer,
             ICommandLineParserExtension commandLineParserExtension,
             string expr,
             PipelineWorkUnit workUnit,

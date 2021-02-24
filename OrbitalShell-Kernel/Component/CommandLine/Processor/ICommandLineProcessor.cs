@@ -16,17 +16,17 @@ namespace OrbitalShell.Component.CommandLine.Processor
         string[] Args { get; }
         CancellationTokenSource CancellationTokenSource { get; set; }
         CommandsHistory CmdsHistory { get; set; }
-        CommandBatchProcessor CommandBatchProcessor { get; }
+        ICommandBatchProcessor CommandBatchProcessor { get; }
         CommandEvaluationContext CommandEvaluationContext { get; }
         CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension { get; }
         CommandLineReader CommandLineReader { get; set; }
-        CommandsAlias CommandsAlias { get; }
+        ICommandsAlias CommandsAlias { get; }
         IDotNetConsole Console { get; }
         bool IsCancellationRequested { get; }
         bool IsInitialized { get; set; }
-        ModuleManager ModuleManager { get; }
+        IModuleManager ModuleManager { get; }
         ICommandLineProcessorSettings Settings { get; }
-        SyntaxAnalyser SyntaxAnalyzer { get; }
+        ISyntaxAnalyser SyntaxAnalyzer { get; }
 
         void AssertCommandLineProcessorHasACommandLineReader();
         void Error(string message = null, bool log = false, bool lineBreak = true, string prefix = "");

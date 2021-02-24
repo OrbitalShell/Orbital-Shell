@@ -58,21 +58,21 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 
         public bool IsInitialized { get; set; } = false;
 
-        public SyntaxAnalyser SyntaxAnalyzer { get; protected set; } = new SyntaxAnalyser();
+        public ISyntaxAnalyser SyntaxAnalyzer { get; protected set; }
 
         public CommandsHistory CmdsHistory { get; set; }
 
-        public CommandsAlias CommandsAlias { get; protected set; } = new CommandsAlias();
+        public ICommandsAlias CommandsAlias { get; protected set; }
 
         public cmdlr.CommandLineReader CommandLineReader { get; set; }
 
         public CommandEvaluationContext CommandEvaluationContext { get; protected set; }
 
-        public CommandBatchProcessor CommandBatchProcessor { get; protected set; }
+        public ICommandBatchProcessor CommandBatchProcessor { get; protected set; }
 
         public CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension { get; protected set; }
 
-        public ModuleManager ModuleManager { get; protected set; }
+        public IModuleManager ModuleManager { get; protected set; }
 
         public IDotNetConsole Console { get; protected set; }
 
@@ -145,14 +145,20 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public CommandLineProcessor(
             IServiceProviderScope scope,
             IDotNetConsole console,
+            ICommandBatchProcessor cbp,
+            ICommandsAlias cal,
+            ISyntaxAnalyser sa,
+            IModuleManager modManager,
             ICommandLineProcessorSettings settings = null
             )
         {
             Console = console;
             CommandLineProcessorExternalParserExtension = new CommandLineProcessorExternalParserExtension(this);
-            ModuleManager = new ModuleManager(SyntaxAnalyzer);
+            SyntaxAnalyzer = sa;
+            ModuleManager = modManager; // new ModuleManager(SyntaxAnalyzer);
             _settings = settings ?? scope.ServiceProvider.GetRequiredService<ICommandLineProcessorSettings>();
-            CommandBatchProcessor = new CommandBatchProcessor();
+            CommandBatchProcessor = cbp;
+            CommandsAlias = cal;            
         }
 
         public void SetArgs(string[] args) => _args = args;

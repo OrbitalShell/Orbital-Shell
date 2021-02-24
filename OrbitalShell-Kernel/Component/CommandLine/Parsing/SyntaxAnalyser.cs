@@ -6,7 +6,7 @@ using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {
-    public class SyntaxAnalyser
+    public class SyntaxAnalyser : ISyntaxAnalyser
     {
         readonly Dictionary<string, List<CommandSyntax>> _syntaxes
             = new Dictionary<string, List<CommandSyntax>>();

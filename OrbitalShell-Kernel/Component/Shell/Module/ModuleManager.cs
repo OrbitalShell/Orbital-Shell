@@ -15,33 +15,39 @@ namespace OrbitalShell.Component.Shell.Module
     /// <summary>
     /// manage the shell modules
     /// </summary>
-    public class ModuleManager
+    public class ModuleManager : IModuleManager
     {
         #region attributes
 
-        readonly ModuleSet _modules = new ModuleSet();
+        readonly IModuleSet _modules;
 
         public IReadOnlyDictionary<string, ModuleSpecification> Modules => new ReadOnlyDictionary<string, ModuleSpecification>(_modules);
 
         private List<string> _loadedModules = new List<string>();
-        
-        private Dictionary<string,Assembly> _loadedAssemblies = new Dictionary<string,Assembly>();
 
-        readonly SyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
+        private Dictionary<string, Assembly> _loadedAssemblies = new Dictionary<string, Assembly>();
 
-        public readonly ModuleCommandManager ModuleCommandManager;
+        readonly ISyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
 
-        public readonly ModuleHookManager ModuleHookManager;
+        public IModuleCommandManager ModuleCommandManager { get; protected set; }
+
+        public IModuleHookManager ModuleHookManager { get; protected set; }
 
         #endregion
 
         #region init
 
-        public ModuleManager(SyntaxAnalyser syntaxAnalyser)
+        public ModuleManager(            
+            //ISyntaxAnalyser syntaxAnalyser,
+            IModuleCommandManager modComManager,
+            IModuleHookManager modHookManager,
+            IModuleSet moduleSet
+            )
         {
-            _syntaxAnalyzer = syntaxAnalyser;
-            ModuleCommandManager = new ModuleCommandManager(_syntaxAnalyzer, _modules);
-            ModuleHookManager = new ModuleHookManager(_modules);
+            _modules = moduleSet;
+            //_syntaxAnalyzer = syntaxAnalyser;
+            ModuleCommandManager = modComManager; // new ModuleCommandManager(_syntaxAnalyzer, _modules);
+            ModuleHookManager = modHookManager; // new ModuleHookManager(_modules);
         }
 
         #endregion
@@ -59,7 +65,7 @@ namespace OrbitalShell.Component.Shell.Module
             string moduleName)
         {
             moduleName = moduleName?.ToLower() ?? throw new ArgumentNullException(nameof(moduleName));
-            var moduleSpecification = GetModuleByLowerPackageId( moduleName);
+            var moduleSpecification = GetModuleByLowerPackageId(moduleName);
             if (moduleSpecification == null) return null;
             var r = ModuleCommandManager.UnregisterModuleCommands(context, moduleName);
             _modules.Remove(moduleSpecification.Key);
@@ -83,8 +89,8 @@ namespace OrbitalShell.Component.Shell.Module
             return null;
         }
 
-        string _assemblyKey(Assembly assembly) => assembly.Location+"."+assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        string _moduleKey(Assembly assembly,out string id,out string ver)
+        string _assemblyKey(Assembly assembly) => assembly.Location + "." + assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        string _moduleKey(Assembly assembly, out string id, out string ver)
         {
             id = assembly.GetCustomAttribute<ShellModuleAttribute>()?.PackageId ??
                 throw new Exception($"module package id missing or null in assembly '{assembly.ManifestModule.Name}' ('ShellModule' attribute missing or has null value)");
@@ -174,7 +180,7 @@ namespace OrbitalShell.Component.Shell.Module
                         )
                     ));
                 _loadedModules.Add(_assemblyKey(assembly));
-                _loadedAssemblies.Add(assembly.Location.ToLower(),assembly);
+                _loadedAssemblies.Add(assembly.Location.ToLower(), assembly);
 
                 // run module hook init
                 ModuleHookManager.InvokeHooks(
@@ -187,7 +193,8 @@ namespace OrbitalShell.Component.Shell.Module
                     }
                 );
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception($"register module assembly '{assembly.FullName}' failed due to error: '{ex.Message}'", ex);
             }

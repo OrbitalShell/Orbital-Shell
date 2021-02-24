@@ -15,7 +15,7 @@ namespace OrbitalShell.Component.Console
 
         public bool IsRedirected { get; protected set; }
         public bool IsBufferEnabled { get; protected set; }
-        public static int InitialBufferCapacity = 16384;
+        public static int InitialBufferCapacity = 163840;
         public object Lock => _textWriter;
 
         public int TextWriterInitialCapacity = 163840;

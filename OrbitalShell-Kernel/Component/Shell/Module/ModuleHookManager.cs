@@ -11,15 +11,15 @@ namespace OrbitalShell.Component.Shell.Module
     /// <summary>
     /// modules hooks manager
     /// </summary>
-    public class ModuleHookManager
+    public class ModuleHookManager : IModuleHookManager
     {
-        readonly ModuleSet _modules;
+        readonly IModuleSet _modules;
 
         Dictionary<string, List<HookSpecification>> _hooks = new Dictionary<string, List<HookSpecification>>();
 
         Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 
-        public ModuleHookManager(ModuleSet modules)
+        public ModuleHookManager(IModuleSet modules)
         {
             _modules = modules;
         }
@@ -79,7 +79,7 @@ namespace OrbitalShell.Component.Shell.Module
                             break;
                         HooksTriggerState.AddOrReplace(triggerStateKey, hookTriggerMode);
 
-                        if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace)) 
+                        if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace))
                             context.Out.Echo(context.ShellEnv.Colors.Log + $"[hook '{hook.Name}' handled by: '{hook.Owner}.{hook.Method}'](rdc) ");
 
                         hook.Method.Invoke(hook.Owner, new object[] { context });

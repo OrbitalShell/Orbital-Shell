@@ -3,7 +3,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using OrbitalShell.Component.CommandLine.Batch;
+using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Lib.Sys;
 
 namespace OrbitalShell
@@ -25,6 +29,20 @@ namespace OrbitalShell
                             serviceProvider => 
                                 new ServiceProviderScope(ScopedServiceProvider)
                         )
+                    .AddScoped
+                        <ICommandsAlias,CommandsAlias>()
+                    .AddScoped
+                        <IModuleSet,ModuleSet>()
+                    .AddScoped
+                        <ICommandBatchProcessor,CommandBatchProcessor>()
+                    .AddScoped
+                        <ISyntaxAnalyser,SyntaxAnalyser>()
+                    .AddScoped
+                        <IModuleManager,ModuleManager>()
+                    .AddScoped
+                        <IModuleCommandManager,ModuleCommandManager>()
+                    .AddScoped
+                        <IModuleHookManager,ModuleHookManager>()
                     );
         }
     }
