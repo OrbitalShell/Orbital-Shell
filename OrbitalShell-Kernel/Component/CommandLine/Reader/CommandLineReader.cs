@@ -35,7 +35,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
         bool _readingStarted;
         string _nextPrompt = null;
         string _defaultPrompt = null;
-        readonly CommandLineProcessor CommandLineProcessor;
+        readonly ICommandLineProcessor CommandLineProcessor;
         bool _ignoreNextKey = false;
 
         public Action<IAsyncResult> InputProcessor { get; set; }
@@ -47,7 +47,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
         #region initialization operations
 
         public CommandLineReader(
-            CommandLineProcessor commandLineProcessor = null,
+            ICommandLineProcessor commandLineProcessor = null,
             string prompt = null,
             ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
         {
@@ -445,7 +445,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                     if (index >= 0)
                                                     {
                                                         _inputReaderStringBuilder.Remove(index, 1);
-                                                        _inputReaderStringBuilder.Append(" ");
+                                                        _inputReaderStringBuilder.Append(' ');
                                                         Console.Out.HideCur();
                                                         Console.Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
                                                         var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
@@ -477,7 +477,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                     if (index >= 0 && index < txt.Length)
                                                     {
                                                         _inputReaderStringBuilder.Remove(index, 1);
-                                                        _inputReaderStringBuilder.Append(" ");
+                                                        _inputReaderStringBuilder.Append(' ');
                                                         Console.Out.HideCur();
                                                         Console.Out.SetCursorPosConstraintedInWorkArea(ref x, ref y);
                                                         var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
@@ -617,9 +617,9 @@ namespace OrbitalShell.Component.CommandLine.Reader
                             }
 
                         }
-                        catch /*(Exception inputProcessingException)*/
+                        catch
                         {
-                            // input processing crashed : re-engage prompt, mute error
+                            // input processing crashed : mute error, re-engage prompt
                         }
 
                         // process input
@@ -631,7 +631,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         try
                         {
                             var slines = Console.Out.GetWorkAreaStringSplits(s, _beginOfLineCurPos).Splits;
-                            if (slines.Count() > 0)
+                            if (slines.Count > 0)
                             {
                                 var sline = slines.Last();
                                 Console.Out.CursorPos = new Point( /*(sline.Text.Length==0)?0:*/sline.Text.Length + sline.X, sline.Y);

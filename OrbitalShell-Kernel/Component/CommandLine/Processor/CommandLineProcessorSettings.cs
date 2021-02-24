@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 using Microsoft.CodeAnalysis.Scripting;
@@ -13,7 +12,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
     /// <summary>
     /// orbital shell kernel settings
     /// </summary>
-    public class CommandLineProcessorSettings
+    public class CommandLineProcessorSettings : ICommandLineProcessorSettings
     {
         public CommandLineProcessorSettings()
         {
@@ -71,32 +70,32 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public ConsoleTextWriterWrapper Out { get; protected set; }
 
-        public TextWriterWrapper Err;
+        public TextWriterWrapper Err { get; protected set; }
 
-        public TextReader In;
+        public TextReader In { get; protected set; }
 
         #endregion
 
         #region product info
 
-        public string AppName = "CommandLineProcessor";
-        public string AppLongName = "Orbital Shell";
-        public string AppEditor = "(c) Orbital Shell 2020";
-        public string AppVersion = "0.0.0";
-        public string AppLicense = "MIT";
+        public string AppName { get; set; } = "CommandLineProcessor";
+        public string AppLongName { get; set; } = "Orbital Shell";
+        public string AppEditor { get; set; } = "(c) Orbital Shell 2020";
+        public string AppVersion { get; set; } = "0.0.0";
+        public string AppLicense { get; set; } = "MIT";
 
         #endregion
 
         #region official files names
 
-        public string UserProfileFileName = ".profile";
-        public string DefaultUserProfileFileName = "profile";
-        public string LogFileName = "log";
-        public string HistoryFileName = ".history";
-        public string CommandsAliasFileName = ".aliases";
-        public string DefaultCommandsAliasFileName = "aliases";
-        public string DefaultsFolderName = "Defaults";
-        public string ModulesInitFileName = "modules-init.json";
+        public string UserProfileFileName { get; set; } = ".profile";
+        public string DefaultUserProfileFileName { get; set; } = "profile";
+        public string LogFileName { get; set; } = "log";
+        public string HistoryFileName { get; set; } = ".history";
+        public string CommandsAliasFileName { get; set; } = ".aliases";
+        public string DefaultCommandsAliasFileName { get; set; } = "aliases";
+        public string DefaultsFolderName { get; set; } = "Defaults";
+        public string ModulesInitFileName { get; set; } = "modules-init.json";
 
         #endregion
 
@@ -105,7 +104,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <summary>
         /// shell app data folder name (application settings)
         /// </summary>
-        public string AppDataFolderName = "OrbitalShell";
+        public string AppDataFolderName { get; set; } = "OrbitalShell";
 
         public string ShellAppDataPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), AppDataFolderName);
 
@@ -115,7 +114,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public string HistoryFilePath => Path.Combine(AppDataRoamingUserFolderPath, HistoryFileName);
         public string CommandsAliasFilePath => Path.Combine(AppDataRoamingUserFolderPath, CommandsAliasFileName);
 
-        public string ModulesInitFilePath => Path.Combine(ShellAppDataPath, ModulesInitFileName );
+        public string ModulesInitFilePath => Path.Combine(ShellAppDataPath, ModulesInitFileName);
 
         public static string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string BinFolderPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -138,19 +137,19 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         #region settings    TODO: check real useless / move to good location
 
-        public string PathExtInit = "sh;init;";
+        public string PathExtInit { get; set; } = "sh;init;";
 
-        public string ShellExecBatchExt = ".sh";
+        public string ShellExecBatchExt { get; set; } = ".sh";
 
-        public bool LogAppendAllLinesErrorIsEnabled = true;
+        public bool LogAppendAllLinesErrorIsEnabled { get; set; } = true;
 
-        public bool PrintInfo = true;
+        public bool PrintInfo { get; set; } = true;
 
-        public char ErrorPositionMarker = '^';
+        public char ErrorPositionMarker { get; set; } = '^';
 
-        public string KernelCommandsModuleAssemblyName = "OrbitalShell-Kernel-Commands";
+        public string KernelCommandsModuleAssemblyName { get; set; } = "OrbitalShell-Kernel-Commands";
 
-        public string KernelCommandsRootNamespace = "Commands";
+        public string KernelCommandsRootNamespace { get; set; } = "Commands";
 
         #endregion
     }

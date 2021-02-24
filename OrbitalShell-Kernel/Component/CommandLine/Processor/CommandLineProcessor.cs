@@ -1,6 +1,4 @@
-﻿//#define enable_test_commands
-
-using OrbitalShell.Component.CommandLine.Batch;
+﻿using OrbitalShell.Component.CommandLine.Batch;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.Shell;
@@ -21,21 +19,21 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineParser;
 using cmdlr = OrbitalShell.Component.CommandLine.Reader;
-using cons = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Lib.FileSystem;
 using System.Text;
 using OrbitalShell.Lib.Process;
-using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Component.Console;
+using Microsoft.Extensions.DependencyInjection;
+using OrbitalShell.Lib.Sys;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
-    public class CommandLineProcessor
+    public class CommandLineProcessor : ICommandLineProcessor
     {
         #region attributes
 
-        public CommandLineProcessorSettings Settings
+        public ICommandLineProcessorSettings Settings
         {
             get { return _settings; }
             protected set { _settings = value; }
@@ -44,7 +42,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <summary>
         /// warning: for the moment may be null (for example, during shell init phasis)
         /// </summary>
-        public CancellationTokenSource CancellationTokenSource;
+        public CancellationTokenSource CancellationTokenSource { get; set; }
 
         /// <summary>
         /// preferred way to check if cancellation is requested
@@ -57,14 +55,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// shell args
         /// </summary>
         public string[] Args => (string[])_args?.Clone();
+                
+        public bool IsInitialized { get; set; } = false;
 
-        string[] _args;
+        public SyntaxAnalyser SyntaxAnalyzer { get; protected set; } = new SyntaxAnalyser();
 
-        public bool IsInitialized = false;
-
-        readonly SyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
-
-        public CommandsHistory CmdsHistory;
+        public CommandsHistory CmdsHistory { get; set; }
 
         public CommandsAlias CommandsAlias { get; protected set; } = new CommandsAlias();
 
@@ -74,28 +70,19 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public CommandBatchProcessor CommandBatchProcessor { get; protected set; }
 
-        CommandLineProcessorSettings _settings;
+        public CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension { get; protected set; }
 
-        //readonly CommandEvaluationContext _commandEvaluationContext = null;
-
-        public readonly CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension;
-
-        public readonly ModuleManager ModuleManager;
+        public ModuleManager ModuleManager { get; protected set; }
 
         public IDotNetConsole Console { get; protected set; }
+
+        string[] _args;
+
+        ICommandLineProcessorSettings _settings;
 
         #endregion
 
         #region cli methods
-
-        public string Arg(int n)
-        {
-            if (_args == null) return null;
-            if (_args.Length <= n) return null;
-            return _args[n];
-        }
-
-        public bool HasArgs => _args != null && _args.Length > 0;
 
         public const string OPT_ENV = "--env";
         public const string OPT_NAME_VALUE_SEPARATOR = ":";
@@ -156,41 +143,36 @@ namespace OrbitalShell.Component.CommandLine.Processor
         #region command engine operations
 
         public CommandLineProcessor(
-            string[] args,
+            IServiceProviderScope scope,
             IDotNetConsole console,
-            CommandLineProcessorSettings settings = null
-            //CommandEvaluationContext commandEvaluationContext = null
+            ICommandLineProcessorSettings settings = null
             )
         {
             Console = console;
             CommandLineProcessorExternalParserExtension = new CommandLineProcessorExternalParserExtension(this);
-            ModuleManager = new ModuleManager(_syntaxAnalyzer);
-            _args = args;
-            //_commandEvaluationContext = commandEvaluationContext;
-            settings ??= new CommandLineProcessorSettings();
-            _settings = settings;
+            ModuleManager = new ModuleManager(SyntaxAnalyzer);
+            _settings = settings ?? scope.ServiceProvider.GetRequiredService<ICommandLineProcessorSettings>();
             CommandBatchProcessor = new CommandBatchProcessor();
         }
 
+        public void SetArgs(string[] args) => _args = args;
 
         /// <summary>
         /// clp init
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:remove the parameter that is not used", Justification = "public API - waiting impl.")]
         public void Init(
             string[] args,
-            IDotNetConsole console,            
-            CommandLineProcessorSettings settings,
+            ICommandLineProcessorSettings settings,
             CommandEvaluationContext context = null
             )
         {
-            _args = (string[])args?.Clone();
+            _args = args;
 
             context ??= new CommandEvaluationContext(
                 this,
-                console.Out,
-                console.In,
-                console.Err,
+                Console.Out,
+                Console.In,
+                Console.Err,
                 null
             );
             CommandEvaluationContext = context;
@@ -201,7 +183,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// </summary>
         public virtual void PostInit()
         {
-        }        
+        }
 
         public void AssertCommandLineProcessorHasACommandLineReader()
         {
@@ -246,7 +228,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             Console.Out.Echo(logMessage, lineBreak);
             if (log) Console.LogError(logMessage);
         }
-        
+
         #endregion
 
         #endregion
@@ -312,7 +294,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         {
             try
             {
-                var pipelineParseResults = ParseCommandLine(context, _syntaxAnalyzer, expr, CommandLineProcessorExternalParserExtension);
+                var pipelineParseResults = ParseCommandLine(context, SyntaxAnalyzer, expr, CommandLineProcessorExternalParserExtension);
                 bool allValid = true;
                 var evalParses = new List<ExpressionEvaluationResult>();
 
@@ -321,10 +303,10 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 {
                     allValid &= pipelineParseResult.ParseResult.ParseResultType == ParseResultType.Valid;
                     var evalParse = AnalysisPipelineParseResult(
-                        context, 
-                        pipelineParseResult, 
-                        expr, 
-                        outputX, 
+                        context,
+                        pipelineParseResult,
+                        expr,
+                        outputX,
                         pipelineParseResult.ParseResult
                     );
 
@@ -475,7 +457,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
            out CommandVoidResult returnCommandResult)
         {
             var returnCode = ShellExec(
-                context, com, args, out var output, 
+                context, com, args, out var output,
                 true
                 );
             var success = (returnCode == (int)ReturnCode.OK);
@@ -551,7 +533,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     waitForExit,
                     isStreamsEchoEnabled,
                     isOutputCaptureEnabled,
-                    mergeErrorStreamIntoOutput                
+                    mergeErrorStreamIntoOutput
                 );
 
         /// <summary>
@@ -577,7 +559,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             bool isOutputCaptureEnabled = true,
             bool mergeErrorStreamIntoOutput = true
             )
-        {            
+        {
             try
             {
                 output = null;

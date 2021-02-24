@@ -948,7 +948,7 @@ namespace OrbitalShell.Component.Console
         }
 
 #pragma warning disable CA1416 // Valider la compatibilité de la plateforme
-        public bool CursorVisible => sc.CursorVisible;
+        public static bool CursorVisible => sc.CursorVisible;
 #pragma warning restore CA1416 // Valider la compatibilité de la plateforme
 
         public void HideCur()
@@ -1437,7 +1437,7 @@ namespace OrbitalShell.Component.Console
                                         var left = currentLine.Substring(0, currentLine.Length - (xr - xm));
                                         currentLine = currentLine.Substring(currentLine.Length - (xr - xm), xr - xm);
 
-                                        var truncLeft = left.Substring(lastIndex);
+                                        var truncLeft = left[lastIndex..];
                                         lineSegments.Add(truncLeft);
                                         croppedLines.Add(new StringSegment(string.Join("", lineSegments), 0, 0, lastIndex + truncLeft.Length));
                                         lineSegments.Clear();
@@ -1453,7 +1453,7 @@ namespace OrbitalShell.Component.Console
                                 }
                                 else
                                 {
-                                    lineSegments.Add(currentLine.Substring(lastIndex));
+                                    lineSegments.Add(currentLine[lastIndex..]);
                                     lastIndex = currentLine.Length;
                                 }
                             }
@@ -1461,7 +1461,7 @@ namespace OrbitalShell.Component.Console
 
                         if (lineSegments.Count > 0)
                         {
-                            var truncLeft = currentLine.Substring(lastIndex);
+                            var truncLeft = currentLine[lastIndex..];
                             lineSegments.Add(truncLeft);
                             croppedLines.Add(new StringSegment(string.Join("", lineSegments), 0, 0, lastIndex + truncLeft.Length));
                             lineSegments.Clear();
@@ -1519,8 +1519,10 @@ namespace OrbitalShell.Component.Console
 
             if (!doNotEvaluatePrintDirectives)
             {
-                printSequences = new EchoSequenceList();
-                printSequences.Add(new EchoSequence(Console,(string)null, 0, originalString.Length - 1, null, originalString));
+                printSequences = new EchoSequenceList
+                {
+                    new EchoSequence(Console, (string)null, 0, originalString.Length - 1, null, originalString)
+                };
             }
 
             return new LineSplitList(r, printSequences, cursorIndex, cursorLineIndex);

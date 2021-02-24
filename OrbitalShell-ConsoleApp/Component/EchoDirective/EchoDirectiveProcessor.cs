@@ -18,8 +18,7 @@ namespace OrbitalShell.Component.EchoDirective
         public delegate void SimpleCommandDelegate();
         public readonly ConsoleTextWriterWrapper Writer;
         public readonly CommandMap CommandMap;
-
-        IDotNetConsole Console;
+        readonly IDotNetConsole Console;
 
         public EchoDirectiveProcessor(
             ConsoleTextWriterWrapper writer,
@@ -30,6 +29,8 @@ namespace OrbitalShell.Component.EchoDirective
             Writer = writer;
             this.CommandMap = commandMap;
         }
+
+        readonly StringBuilder tmpsb = new StringBuilder(100000);
 
         public void ParseTextAndApplyCommands(
             string s,
@@ -46,7 +47,10 @@ namespace OrbitalShell.Component.EchoDirective
                 int n = s.Length;
                 bool isAssignation = false;
                 int cmdindex = -1;
-                var tmpsb = new StringBuilder(tmps, s.Length * 2);
+
+                //var tmpsb = new StringBuilder(tmps, s.Length * 20);
+                tmpsb.Clear();
+                tmpsb.Append(tmps);
 
                 while (cmd == null && i < n)
                 {
@@ -90,7 +94,7 @@ namespace OrbitalShell.Component.EchoDirective
                 }
 
                 tmpsb.Clear();
-                tmpsb = null;
+                //tmpsb = null;
 
                 int firstCommandEndIndex = 0;
                 int k = -1;
@@ -101,16 +105,15 @@ namespace OrbitalShell.Component.EchoDirective
                     if (firstCommandEndIndex > -1)
                     {
                         firstCommandEndIndex++;
-                        var subs = s.Substring(firstCommandEndIndex);
+                        var subs = s[firstCommandEndIndex..];
                         if (subs.StartsWith(Console.CodeBlockBegin))
                         {
                             firstCommandEndIndex += Console.CodeBlockBegin.Length;
                             k = s.IndexOf(Console.CodeBlockEnd, firstCommandEndIndex);
                             if (k > -1)
                             {
-#pragma warning disable IDE0057
-                                value = s.Substring(firstCommandEndIndex, k - firstCommandEndIndex);
-#pragma warning restore IDE0057
+                                value = s[firstCommandEndIndex..k];
+                                //value = s.Substring(firstCommandEndIndex, k - firstCommandEndIndex);
                                 k += Console.CodeBlockEnd.Length;
                             }
                             else
@@ -214,7 +217,7 @@ namespace OrbitalShell.Component.EchoDirective
                     if (Writer.FileEchoDebugEnabled && Writer.FileEchoDebugCommands)
                         Writer.EchoDebug(Console.CommandBlockBeginChar + cmd.Value.Key + value + Console.CommandBlockEndChar);
 
-                    printSequences?.Add(new EchoSequence(Console,cmd.Value.Key.Substring(0, cmd.Value.Key.Length - 1), i, j, value, null, startIndex));
+                    printSequences?.Add(new EchoSequence(Console,cmd.Value.Key[0..^1], i, j, value, null, startIndex));
                 }
                 else
                 {
@@ -261,14 +264,14 @@ namespace OrbitalShell.Component.EchoDirective
 
                 if (firstCommandSeparatorCharIndex > -1)
                 {
-                    s = Console.CommandBlockBeginChar + s.Substring(firstCommandSeparatorCharIndex + 1 /*+ i*/ );
+                    s = Console.CommandBlockBeginChar + s[(firstCommandSeparatorCharIndex + 1) /*+ i*/ ..];
                     startIndex += firstCommandSeparatorCharIndex + 1;
                 }
                 else
                 {
                     if (j + 1 < s.Length)
                     {
-                        s = s.Substring(j + 1);
+                        s = s[(j + 1)..];
                         startIndex += j + 1;
                     }
                     else
