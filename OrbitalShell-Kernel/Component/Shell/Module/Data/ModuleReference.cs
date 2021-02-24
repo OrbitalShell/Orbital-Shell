@@ -1,13 +1,13 @@
-namespace OrbitalShell.Component.Shell.Module
+namespace OrbitalShell.Component.Shell.Module.Data
 {
     /// <summary>
     /// reference of a module in a repository
     /// </summary>
     public class ModuleReference
     {
-        public readonly string Type;
+        public string Type;
 
-        public readonly string ModuleId;
+        public string ModuleId;
 
         public ModuleVersion Version
             => new ModuleVersion(LastKnownVersion);

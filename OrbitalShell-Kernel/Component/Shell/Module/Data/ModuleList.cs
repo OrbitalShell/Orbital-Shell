@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace OrbitalShell.Component.Shell.Module
+namespace OrbitalShell.Component.Shell.Module.Data
 {
     public class ModuleList
     {

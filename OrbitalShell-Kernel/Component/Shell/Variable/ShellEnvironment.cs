@@ -11,7 +11,7 @@ using System.Reflection;
 using static OrbitalShell.Lib.Str;
 using System.Collections.Generic;
 using System.Data;
-using OrbitalShell.Component.Shell.Module;
+using OrbitalShell.Component.Shell.Module.Data;
 
 namespace OrbitalShell.Component.Shell.Variable
 {
@@ -30,7 +30,7 @@ namespace OrbitalShell.Component.Shell.Variable
         
         public FileSystemPathFormattingOptions FileSystemPathFormattingOptions => GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.display_fileSystemPathFormattingOptions);
 
-        public readonly ModuleInitModel ModuleInitModel;
+        public readonly ModuleInit ModuleInitModel;
 
         public ShellEnvironment(string name) : base(name, false) { }
 

@@ -23,10 +23,11 @@ namespace OrbitalShell.Component.Shell.Module
 
         public IReadOnlyDictionary<string, ModuleSpecification> Modules => new ReadOnlyDictionary<string, ModuleSpecification>(_modules);
 
-        private List<string> _loadedModules = new List<string>();
+        private readonly List<string> _loadedModules = new List<string>();
 
-        private Dictionary<string, Assembly> _loadedAssemblies = new Dictionary<string, Assembly>();
-
+        private readonly Dictionary<string, Assembly> _loadedAssemblies = new Dictionary<string, Assembly>();
+        
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:remove not read private member", Justification = "<Wait future impl.>")]
         readonly ISyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
 
         public IModuleCommandManager ModuleCommandManager { get; protected set; }
@@ -89,8 +90,9 @@ namespace OrbitalShell.Component.Shell.Module
             return null;
         }
 
-        string _assemblyKey(Assembly assembly) => assembly.Location + "." + assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        string _moduleKey(Assembly assembly, out string id, out string ver)
+        static string _assemblyKey(Assembly assembly) => assembly.Location + "." + assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+        private static string _moduleKey(Assembly assembly, out string id, out string ver)
         {
             id = assembly.GetCustomAttribute<ShellModuleAttribute>()?.PackageId ??
                 throw new Exception($"module package id missing or null in assembly '{assembly.ManifestModule.Name}' ('ShellModule' attribute missing or has null value)");

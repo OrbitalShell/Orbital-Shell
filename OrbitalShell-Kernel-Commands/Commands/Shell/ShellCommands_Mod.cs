@@ -21,6 +21,7 @@ using OrbitalShell.Commands.FileSystem;
 using OrbitalShell.Lib.Data;
 using System.Runtime.Loader;
 using Newtonsoft.Json;
+using OrbitalShell.Component.Shell.Module.Data;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -77,7 +78,7 @@ namespace OrbitalShell.Commands.Shell
                     var target = kvp.Value.Assembly.GetCustomAttribute<ModuleTargetPlateformAttribute>()?.TargetPlateform;
                     target ??= TargetPlatform.Unspecified;
                     var deps_attr = kvp.Value.Assembly.GetCustomAttributes<ModuleDependencyAttribute>();
-                    var deps = (deps_attr.Count() == 0) ? "" : string.Join(",", deps_attr.Select(x => x.ModuleName + " " + x.ModuleMinVersion));
+                    var deps = (!deps_attr.Any()) ? "" : string.Join(",", deps_attr.Select(x => x.ModuleName + " " + x.ModuleMinVersion));
                     var sminv = kvp.Value.Assembly.GetCustomAttribute<ModuleShellMinVersionAttribute>()?.ShellMinVersion;
 
                     o.Echoln($"{Darkcyan}{kvp.Value.Key.PadRight(col1length, ' ')}{f}{kvp.Value.Description}");
@@ -184,7 +185,7 @@ namespace OrbitalShell.Commands.Shell
                     {
                         o.Echo(clog + moduleAssemblyFilePath.FullName + " ... ");
                         var removableItems = modInits.Where(x => x.Path == FileSystemPath.UnescapePathSeparators(moduleAssemblyFilePath.FullName));
-                        if (removableItems.Count()>0)
+                        if (removableItems.Any())
                         {
                             removableItems.ToList().ForEach(x => modInits.Remove(x));
                             o.Echoln("removed");
@@ -303,7 +304,7 @@ namespace OrbitalShell.Commands.Shell
                                                 modInit.List = lst.ToArray();
                                             }
 
-                                            var mod = new ModuleInitItemModel()
+                                            var mod = new ModuleInitItem()
                                             {
                                                 Path = FileSystemPath.UnescapePathSeparators(dll.FullName),
                                                 LowerPackageId = folderName,
@@ -443,7 +444,7 @@ namespace OrbitalShell.Commands.Shell
 
         #region util
 
-        bool _GetModuleListFromRepositories(CommandEvaluationContext context, out List<ModuleReference> modulesReferences)
+        static bool _GetModuleListFromRepositories(CommandEvaluationContext context, out List<ModuleReference> modulesReferences)
         {
             modulesReferences = null;
 
@@ -505,7 +506,7 @@ namespace OrbitalShell.Commands.Shell
             foreach (var s in lines)
             {
                 var ts = s.Trim();
-                if (!string.IsNullOrWhiteSpace(s) && !s.StartsWith(";"))
+                if (!string.IsNullOrWhiteSpace(s) && !ts.StartsWith(";"))
                 {
                     var t = s.Split(";");
                     if (t.Length == 4)
