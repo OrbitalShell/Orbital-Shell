@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using OrbitalShell.Component.CommandLine.Batch;
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.CommandLine.Reader;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Lib.Sys;
@@ -28,7 +29,7 @@ namespace OrbitalShell
                         <IServiceProviderScope, ServiceProviderScope>(
                             serviceProvider => 
                                 new ServiceProviderScope(ScopedServiceProvider)
-                        )
+                            )
                     .AddScoped
                         <ICommandsAlias,CommandsAlias>()
                     .AddScoped
@@ -43,6 +44,18 @@ namespace OrbitalShell
                         <IModuleCommandManager,ModuleCommandManager>()
                     .AddScoped
                         <IModuleHookManager,ModuleHookManager>()
+                    .AddScoped
+                        <IExternalParserExtension, CommandLineProcessorExternalParserExtension>()
+                    .AddScoped
+                        <ICommandLineReader,CommandLineReader>(
+                            serviceProvider =>
+                            {
+                                var clr = new CommandLineReader();
+                                clr.Initialize(
+                                    null,
+                                    serviceProvider.GetRequiredService<ICommandLineProcessor>());
+                                return clr;
+                            })
                     );
         }
     }

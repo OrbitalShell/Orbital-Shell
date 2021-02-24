@@ -3,24 +3,25 @@ using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace OrbitalShell
 {
     public class Shell
     {
-        public static int Startup(string[] args)
+        public static int Startup(IServiceProvider serviceProvider,string[] args)
         {
-            var cons = App.ServiceProvider.GetRequiredService<IDotNetConsole>();
+            var cons = serviceProvider.GetRequiredService<IDotNetConsole>();
 
             // 2. build a clp
 
-            var clp = App.ServiceProvider.GetRequiredService<ICommandLineProcessor>();
+            var clp = serviceProvider.GetRequiredService<ICommandLineProcessor>();
 
             clp.SetArgs(args);
 
             // 3. build a clr associated to the clp
 
-            var clr = new CommandLineReader(clp);
+            var clr = serviceProvider.GetRequiredService<ICommandLineReader>();
 
             // 4 . prepare console
 

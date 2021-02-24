@@ -4,14 +4,21 @@ using OrbitalShell.Component.CommandLine.Parsing;
 namespace OrbitalShell.Component.CommandLine.Processor
 {
     public class CommandLineProcessorExternalParserExtension
-        : ICommandLineParserExtension
+        : IExternalParserExtension
     {
-        public readonly CommandLineProcessor CommandLineProcessor;
+        public ICommandLineProcessor CommandLineProcessor { get; set; }
 
-        public CommandLineProcessorExternalParserExtension(CommandLineProcessor commandLineProcessor)
+        /// <summary>
+        /// this instance is not initialized (no parameter commandLineProcessor) and thus can't be used before further init
+        /// </summary>
+        public CommandLineProcessorExternalParserExtension()
+        {
+        }
+
+        /*public CommandLineProcessorExternalParserExtension(ICommandLineProcessor commandLineProcessor)
         {
             CommandLineProcessor = commandLineProcessor;
-        }
+        }*/
 
         public bool TryGetCommandSpecificationFromExternalToken(
             ExternalParserExtensionContext externalParserExtensionContext,

@@ -18,7 +18,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         CommandsHistory CmdsHistory { get; set; }
         ICommandBatchProcessor CommandBatchProcessor { get; }
         CommandEvaluationContext CommandEvaluationContext { get; }
-        CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension { get; }
+        IExternalParserExtension ExternalParserExtension { get; }
         CommandLineReader CommandLineReader { get; set; }
         ICommandsAlias CommandsAlias { get; }
         IDotNetConsole Console { get; }
@@ -28,6 +28,10 @@ namespace OrbitalShell.Component.CommandLine.Processor
         ICommandLineProcessorSettings Settings { get; }
         ISyntaxAnalyser SyntaxAnalyzer { get; }
 
+        bool ExistsInPath(
+            CommandEvaluationContext context,
+            string cmdName,
+            out string filePath);
         void AssertCommandLineProcessorHasACommandLineReader();
         void Error(string message = null, bool log = false, bool lineBreak = true, string prefix = "");
         ExpressionEvaluationResult Eval(CommandEvaluationContext context, MethodInfo commandMethodInfo, string args, int outputX = 0, string postAnalysisPreExecOutput = null);

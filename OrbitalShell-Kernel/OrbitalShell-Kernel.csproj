@@ -47,6 +47,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;DBG_DI_INSTANCE</DefineConstants>
   </PropertyGroup>
 
 	<ItemGroup>

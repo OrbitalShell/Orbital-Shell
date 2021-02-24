@@ -18,7 +18,7 @@ namespace OrbitalShell
             var scope = App.Host.Services.CreateScope();
             si.ScopedServiceProvider = scope.ServiceProvider;
 
-            var returnCode = Shell.Startup(args);
+            var returnCode = Shell.Startup(scope.ServiceProvider,args);
 
             App.Host.RunAsync().Wait();
 

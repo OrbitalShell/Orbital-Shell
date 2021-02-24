@@ -70,7 +70,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public ICommandBatchProcessor CommandBatchProcessor { get; protected set; }
 
-        public CommandLineProcessorExternalParserExtension CommandLineProcessorExternalParserExtension { get; protected set; }
+        public IExternalParserExtension ExternalParserExtension { get; protected set; }
 
         public IModuleManager ModuleManager { get; protected set; }
 
@@ -79,6 +79,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         string[] _args;
 
         ICommandLineProcessorSettings _settings;
+        
+        static int _InstanceId = 0;
 
         #endregion
 
@@ -149,13 +151,19 @@ namespace OrbitalShell.Component.CommandLine.Processor
             ICommandsAlias cal,
             ISyntaxAnalyser sa,
             IModuleManager modManager,
+            IExternalParserExtension parserExt,
             ICommandLineProcessorSettings settings = null
             )
         {
+            _InstanceId++;
+#if DBG_DI_INSTANCE
+            System.Console.Out.WriteLine($"new CLP #{_InstanceId}");
+#endif
             Console = console;
-            CommandLineProcessorExternalParserExtension = new CommandLineProcessorExternalParserExtension(this);
+            ExternalParserExtension = parserExt;
+            parserExt.CommandLineProcessor = this;
             SyntaxAnalyzer = sa;
-            ModuleManager = modManager; // new ModuleManager(SyntaxAnalyzer);
+            ModuleManager = modManager;
             _settings = settings ?? scope.ServiceProvider.GetRequiredService<ICommandLineProcessorSettings>();
             CommandBatchProcessor = cbp;
             CommandsAlias = cal;            
@@ -300,7 +308,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         {
             try
             {
-                var pipelineParseResults = ParseCommandLine(context, SyntaxAnalyzer, expr, CommandLineProcessorExternalParserExtension);
+                var pipelineParseResults = ParseCommandLine(context, SyntaxAnalyzer, expr, ExternalParserExtension);
                 bool allValid = true;
                 var evalParses = new List<ExpressionEvaluationResult>();
 
@@ -366,7 +374,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// <param name="cmdName">command name</param>
         /// <param name="filePath">matching file path</param>
         /// <returns>the first matching file according to search paths order</returns>
-        public static bool ExistsInPath(
+        public bool ExistsInPath(
             CommandEvaluationContext context,
             string cmdName,
             out string filePath)
