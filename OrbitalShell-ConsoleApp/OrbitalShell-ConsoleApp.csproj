@@ -25,7 +25,7 @@
 	<PackageTags>prompt git git-branch git-status bash linux shell interactive csharp netcore5 netstandard21 netcore31 cli command-line-tool command-line-parser command-line-interface</PackageTags>
 	<PackageIcon>content\assets\robotazteque.png</PackageIcon>
 	  
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
 	<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
 

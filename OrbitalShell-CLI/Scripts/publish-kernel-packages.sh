@@ -1,4 +1,4 @@
-﻿#!porbsh
+﻿#!orbsh
 # build/publish orbital shell kernel packages
 
 set version 1.0.7.nupkg
