@@ -140,15 +140,15 @@ sections:
         Orbital Shell GitHub 
         offical repository pages
       icon: fab fa-github
-      url: https://github.com/franck-gaspoz/orbital-shell
+      url: https://github.com/OrbitalShell/orbital-shell
       new_window: true
     - title: Orbital Shell GitHub documentation pages
       icon: fab fa-github
-      url: https://github.com/franck-gaspoz/orbital-shell/tree/master/Doc
+      url: https://github.com/OrbitalShell/orbital-shell/tree/master/Doc
       new_window: true
     - title: Orbital Shell project on GitHub project
       icon: fab fa-github
-      url: https://github.com/users/franck-gaspoz/projects/1
+      url: https://github.com/orgs/OrbitalShell/projects/1
       new_window: true
       
 ---
