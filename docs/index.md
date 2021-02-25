@@ -138,15 +138,24 @@ sections:
       url: mailto:franck.gaspoz@gmail.com
     - title: >+
         Orbital Shell GitHub 
-        offical repository pages
+        project repository
       icon: fab fa-github
       url: https://github.com/OrbitalShell/orbital-shell
       new_window: true
-    - title: Orbital Shell GitHub documentation pages
+    - title: >+
+        Orbital Shell Organisation Page
+        all repositories
       icon: fab fa-github
-      url: https://github.com/OrbitalShell/orbital-shell/tree/master/Doc
+      url: https://github.com/OrbitalShell
+    - title: >+ 
+        Orbital Shell Team page 
+        join the team!
+      icon: fab fa-github
+      url: https://github.com/orgs/OrbitalShell/teams/orbitalshell-team
       new_window: true
-    - title: Orbital Shell project on GitHub project
+    - title: >+ 
+        Orbital Shell project board
+        peek an issue!
       icon: fab fa-github
       url: https://github.com/orgs/OrbitalShell/projects/1
       new_window: true
