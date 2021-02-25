@@ -13,22 +13,21 @@ namespace OrbitalShell.Component.Shell.Module
     /// </summary>
     public class ModuleHookManager : IModuleHookManager
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Supprimer les membres privés non lus", Justification = "<En attente>")]
         readonly IModuleSet _modules;
-
-        Dictionary<string, List<HookSpecification>> _hooks = new Dictionary<string, List<HookSpecification>>();
-
-        Dictionary<Type, object> _instances = new Dictionary<Type, object>();
+        readonly Dictionary<string, List<HookSpecification>> _hooks = new Dictionary<string, List<HookSpecification>>();
+        readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 
         public ModuleHookManager(IModuleSet modules)
         {
             _modules = modules;
         }
 
-        object _GetInstance(Type type)
+        object GetInstance(Type type)
         {
             if (_instances.TryGetValue(type, out var o))
                 return o;
-            o = Activator.CreateInstance(type, new object[] { });
+            o = Activator.CreateInstance(type, Array.Empty<object>());
             _instances.Add(type, o);
             return o;
         }
@@ -44,12 +43,12 @@ namespace OrbitalShell.Component.Shell.Module
 
             MethodInfo mi)
         {
-            object owner = _GetInstance(mi.DeclaringType);      // TODO: having no instance, we MUST use DI to share INSTANCES
+            object owner = GetInstance(mi.DeclaringType);      // TODO: having no instance, we MUST use DI to share INSTANCES
             var hs = new HookSpecification(name, owner, mi);
             _hooks.AddOrReplace(name, hs);
         }
 
-        readonly Dictionary<string, HookTriggerMode> HooksTriggerState = new Dictionary<string, HookTriggerMode>();
+        readonly Dictionary<string, HookTriggerMode> _hooksTriggerState = new Dictionary<string, HookTriggerMode>();
 
         /// <summary>
         /// invoke hooks having the given name
@@ -75,9 +74,9 @@ namespace OrbitalShell.Component.Shell.Module
                     try
                     {
                         var triggerStateKey = hook.Owner.ToString() + hookTriggerMode;
-                        if (HooksTriggerState.ContainsKey(triggerStateKey) && hookTriggerMode == HookTriggerMode.FirstTimeOnly)
+                        if (_hooksTriggerState.ContainsKey(triggerStateKey) && hookTriggerMode == HookTriggerMode.FirstTimeOnly)
                             break;
-                        HooksTriggerState.AddOrReplace(triggerStateKey, hookTriggerMode);
+                        _hooksTriggerState.AddOrReplace(triggerStateKey, hookTriggerMode);
 
                         if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace))
                             context.Out.Echo(context.ShellEnv.Colors.Log + $"[hook '{hook.Name}' handled by: '{hook.Owner}.{hook.Method}'](rdc) ");

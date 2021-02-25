@@ -24,8 +24,6 @@ using OrbitalShell.Lib.FileSystem;
 using System.Text;
 using OrbitalShell.Lib.Process;
 using OrbitalShell.Component.Console;
-using Microsoft.Extensions.DependencyInjection;
-using OrbitalShell.Lib.Sys;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -80,7 +78,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         ICommandLineProcessorSettings _settings;
         
-        static int _InstanceId = 0;
+        static int _instanceId = 0;
 
         #endregion
 
@@ -155,7 +153,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             ICommandLineProcessorSettings settings = null
             )
         {
-            _InstanceId++;
+            _instanceId++;
 #if DBG_DI_INSTANCE
             System.Console.Out.WriteLine($"new CLP #{_InstanceId}");
 #endif

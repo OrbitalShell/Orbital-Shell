@@ -30,7 +30,7 @@ namespace OrbitalShell.Commands.Shell
     /// </summary>
     public partial class ShellCommands
     {
-        static List<string> _kernelModuleIds = new List<string>
+        static readonly List<string> _kernelModuleIds = new List<string>
         {
             "orbitalshell-kernel" , "orbitalshell-kernel-commands"
         };
@@ -146,7 +146,7 @@ namespace OrbitalShell.Commands.Shell
                         // get the nupkg style version number
                         var curPackVer = moduleAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
                         if (string.IsNullOrWhiteSpace(curPackVer))
-                            return _ModuleErr(context, $"module assembly file version attribute missing/empty/null");
+                            return ModuleErr(context, $"module assembly file version attribute missing/empty/null");
 
                         var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");
                         var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n} -q", 0);
@@ -166,7 +166,7 @@ namespace OrbitalShell.Commands.Shell
                                     // module -i {modulePackageId} --force --skip-load
                                     var installUpdateRes = Module(context: context, installModuleName: n, force: true, skipLoad: true, registerUpdateOnly:registerUpdateOnly);
                                     if (installUpdateRes.ReturnCode != (int)ReturnCode.OK)
-                                        return _ModuleErr(context, $"module update failed due to error: {installUpdateRes.ExecErrorText}");
+                                        return ModuleErr(context, $"module update failed due to error: {installUpdateRes.ExecErrorText}");
 
                                     o.Echoln($"module '{n}' has been updated from version '{curPackVer}' to version '{lastVer}'");
                                 }
@@ -175,9 +175,9 @@ namespace OrbitalShell.Commands.Shell
                                 o.Echoln($"{n} ({curPackVer}) : no new version available");
                         }
                         else
-                            return _ModuleErr(context, $"module id '{n}' not found at NuGet");
+                            return ModuleErr(context, $"module id '{n}' not found at NuGet");
                     } else 
-                        return _ModuleErr(context, $"module '{n}' is not installed");
+                        return ModuleErr(context, $"module '{n}' is not installed");
                 }
 
                 // uninstall module
@@ -193,7 +193,7 @@ namespace OrbitalShell.Commands.Shell
 
                     if (!ModuleUtil.IsModuleInstalled( context, folderName ))
                         // error not installed
-                        return _ModuleErr(context, $"module '{n}' is not installed");
+                        return ModuleErr(context, $"module '{n}' is not installed");
 
                     o.Echoln(clog + "removing potentially registered dlls:");
                     var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
@@ -229,10 +229,9 @@ namespace OrbitalShell.Commands.Shell
 
                     var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
                     var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{n} -t 1",0);
-                    if (r0.EvalResultCode!=(int)ReturnCode.OK) return _ModuleErr(context, r0.ErrorReason);
-                    var queryRes = r0.Result as QueryResultRoot;
-                    if (queryRes==null) return _ModuleErr(context, "nuget query return a null result");
-                    if (queryRes.Data.Length==0) return _ModuleErr(context, "module id unknown");
+                    if (r0.EvalResultCode!=(int)ReturnCode.OK) return ModuleErr(context, r0.ErrorReason);
+                    if (r0.Result is not QueryResultRoot queryRes) return ModuleErr(context, "nuget query return a null result");
+                    if (queryRes.Data.Length==0) return ModuleErr(context, "module id unknown");
                     
                     #endregion
 
@@ -246,7 +245,7 @@ namespace OrbitalShell.Commands.Shell
                         var vers = (PackageVersions)r.Result;
 
                         if (!lastVer && !vers.Versions.Contains(version))                        
-                            return _ModuleErr(context,$"module version '{version}' not found");
+                            return ModuleErr(context,$"module version '{version}' not found");
                         
                         if (lastVer)
                         {
@@ -263,7 +262,7 @@ namespace OrbitalShell.Commands.Shell
                             folderName,version
                             ) && !force)
                             // error already installed, !force
-                            return _ModuleErr(context,$"module '{moduleLowerFullId}' is already installed (may try --force)");
+                            return ModuleErr(context,$"module '{moduleLowerFullId}' is already installed (may try --force)");
 
                         var moduleFolder = Path.Combine( output, folderName );
                         if (!Directory.Exists(moduleFolder)) Directory.CreateDirectory(moduleFolder);
@@ -288,7 +287,7 @@ namespace OrbitalShell.Commands.Shell
                             var findMethod = typeof(FileSystemCommands).GetMethod("Find");
                             var find = context.CommandLineProcessor.Eval(context, findMethod, $"{moduleFolder}/{lowerVersion}/lib -p *.dll", 0);
                             var nodllmess = "the module doesn't contain any dll in /lib";
-                            if (find.EvalResultCode != (int)ReturnCode.OK) return _ModuleErr(context, nodllmess);
+                            if (find.EvalResultCode != (int)ReturnCode.OK) return ModuleErr(context, nodllmess);
 
                             var findResult = ((List<FileSystemPath>, FindCounts))find.Result;
                             var nbImport = 0;
@@ -358,10 +357,10 @@ namespace OrbitalShell.Commands.Shell
                                 o.Errorln("no module assembly found in package");
 
                         } else 
-                            return _ModuleErr(context,rd.ErrorReason);
+                            return ModuleErr(context,rd.ErrorReason);
                     } 
                     else 
-                        return _ModuleErr(context,"module id is required");
+                        return ModuleErr(context,"module id is required");
                 }
 
                 // load/init module
@@ -375,7 +374,7 @@ namespace OrbitalShell.Commands.Shell
                         if (moduleSpecification != null && moduleSpecification.Info != null) o.Echoln($" Done : {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else
-                        return _ModuleErr(null,null);
+                        return ModuleErr(null,null);
                 }
 
                 // unload module (unregistered in session)
@@ -392,13 +391,13 @@ namespace OrbitalShell.Commands.Shell
                         if (moduleSpecification != null) o.Echoln($"unloaded: {n} {moduleSpecification.Info?.GetDescriptor(context)}");
                     }
                     else
-                        return _ModuleErr(context, $"module '{n}' is not registered");
+                        return ModuleErr(context, $"module '{n}' is not registered");
                 }
             }
             else
             {
                 // fetch mod repos
-                if (_GetModuleListFromRepositories(context, out var modRefs))
+                if (GetModuleListFromRepositories(context, out var modRefs))
                 {
                     o.Echo(ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
 
@@ -416,10 +415,9 @@ namespace OrbitalShell.Commands.Shell
 
                                 var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
                                 var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{modRef.ModuleId} -t 1", 0);
-                                if (r0.EvalResultCode != (int)ReturnCode.OK) return _ModuleErr(context, r0.ErrorReason);
-                                var queryRes = r0.Result as QueryResultRoot;
-                                if (queryRes == null) return _ModuleErr(context, "nuget query return a null result");
-                                if (queryRes.Data.Length == 0) return _ModuleErr(context, "module id unknown");
+                                if (r0.EvalResultCode != (int)ReturnCode.OK) return ModuleErr(context, r0.ErrorReason);
+                                if (r0.Result is not QueryResultRoot queryRes) return ModuleErr(context, "nuget query return a null result");
+                                if (queryRes.Data.Length == 0) return ModuleErr(context, "module id unknown");
 
                                 #endregion
                             }
@@ -459,7 +457,7 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { });
         }
 
-        CommandResult<List<ModuleSpecification>> _ModuleErr(CommandEvaluationContext context,string reason)
+        static CommandResult<List<ModuleSpecification>> ModuleErr(CommandEvaluationContext context,string reason)
         {
             context?.Errorln(reason);
             return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error, reason);
@@ -467,7 +465,7 @@ namespace OrbitalShell.Commands.Shell
 
         #region util
 
-        static bool _GetModuleListFromRepositories(CommandEvaluationContext context, out List<ModuleReference> modulesReferences)
+        static bool GetModuleListFromRepositories(CommandEvaluationContext context, out List<ModuleReference> modulesReferences)
         {
             modulesReferences = null;
 
@@ -485,28 +483,25 @@ namespace OrbitalShell.Commands.Shell
                 {
                     try
                     {
-                        using (var httpClient = new HttpClient())
+                        using var httpClient = new HttpClient();
+                        using var request = new HttpRequestMessage(new HttpMethod("GET"), repo);
+                        var tsk = httpClient.SendAsync(request);
+                        var result = tsk.Result;
+                        if (result.IsSuccessStatusCode)
                         {
-                            using (var request = new HttpRequestMessage(new HttpMethod("GET"), repo))
+                            try
                             {
-                                var tsk = httpClient.SendAsync(request);
-                                var result = tsk.Result;
-                                if (result.IsSuccessStatusCode)
-                                {
-                                    try
-                                    {
-                                        var modListJson = result.Content.ReadAsStringAsync().Result;
-                                        var modRefs = JsonConvert.DeserializeObject<ModuleList>(modListJson);
-                                        modList.Merge(modRefs);
-                                    } catch (Exception getModListError)
-                                    {
-                                        context.Errorln($"failed to handle module list from repo '{repo}' due to errror: {getModListError.Message}");
-                                    }
-                                }
-                                else
-                                    context.Out.Errorln($"fetch list fail from '{repo}' due to error: {result.ReasonPhrase}");
+                                var modListJson = result.Content.ReadAsStringAsync().Result;
+                                var modRefs = JsonConvert.DeserializeObject<ModuleList>(modListJson);
+                                modList.Merge(modRefs);
+                            }
+                            catch (Exception getModListError)
+                            {
+                                context.Errorln($"failed to handle module list from repo '{repo}' due to errror: {getModListError.Message}");
                             }
                         }
+                        else
+                            context.Out.Errorln($"fetch list fail from '{repo}' due to error: {result.ReasonPhrase}");
                     }
                     catch (Exception repoAccessError)
                     {
@@ -522,7 +517,7 @@ namespace OrbitalShell.Commands.Shell
         }
 
         [Obsolete]
-        List<ModuleReference> _ParseModuleList(string repoModulesList)
+        List<ModuleReference> ParseModuleList(string repoModulesList)
         {
             var r = new List<ModuleReference>();
             var lines = repoModulesList.Split("\n");
