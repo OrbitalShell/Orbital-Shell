@@ -95,15 +95,15 @@ sections:
       - title: Franck Gaspoz
         text: Designer developer
         image: assets/img/members/franckgaspoz.gif
-        url: '#'
+        url: 'https://github.com/franck-gaspoz'
       - title: YoBatman
         text: Designer developer
         image: assets/img/members/-person2%20(2).jpg
-        url: '#'
+        url: 'https://github.com/orgs/OrbitalShell/people/Yobatman38'
       - title: Gaspard Moyrand
         text: Designer developer
         image: assets/img/members/person2.jpg
-        url: '#'
+        url: 'https://github.com/Gaspard-Moyrand'
 
   - type: timeline.html
     section_id: timeline
