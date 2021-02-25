@@ -96,7 +96,7 @@ sections:
         text: Designer developer
         image: assets/img/members/franckgaspoz.gif
         url: '#'
-      - title: YoBatman38
+      - title: YoBatman
         text: Designer developer
         image: assets/img/members/-person2%20(2).jpg
         url: '#'
