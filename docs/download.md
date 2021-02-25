@@ -104,7 +104,7 @@ sections:
 
     <pre data-enlighter-language="shell" data-enlighter-theme="site.data.settings.enjs_shell_theme" data-enlighter-linenumbers="false">
     cd MyProjects
-    git clone https://github.com/franck-gaspoz/orbital-shell.git
+    git clone https://github.com/OrbitalShell/orbital-shell.git
     cd ./orbital-shell
     </pre>
 
@@ -120,7 +120,7 @@ sections:
     <p></p>
     <pre data-enlighter-language="shell" data-enlighter-theme="site.data.settings.enjs_shell_theme" data-enlighter-linenumbers="false">
     cd ~
-    git clone https://github.com/franck-gaspoz/orbital-shell.git
+    git clone https://github.com/OrbitalShell/orbital-shell.git
     cd ./orbital-shell
     dotnet build OrbitalShell.sln
     cd .OrbitalShell-CLI/bin/Debug/netcoreapp3.1

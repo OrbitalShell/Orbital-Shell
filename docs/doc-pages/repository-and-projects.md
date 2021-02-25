@@ -7,7 +7,7 @@ doctitle: Repository and Projects
 Use **PowerShell** and **git** to get a clone of the Orbital Shell repository in the folder **orbital-shell** :
 <pre data-enlighter-language="shell" data-enlighter-theme="{{site.data.settings.enjs_shell_theme}}" data-enlighter-linenumbers="false">
 cd ~
-git clone https://github.com/franck-gaspoz/orbital-shell.git
+git clone https://github.com/OrbitalShell/orbital-shell.git
 cd ./orbital-shell
 dir
 </pre>
@@ -49,15 +49,15 @@ Let's watch to these folders in detail:
 
 <h4 class="doc-subtitle" id="docs"><i class="fas fa-folder ico-yellow marginrighthalf"></i> docs<span class="text-tech">(web jekyll)</span></h4>
 
-These is the **gh-pages** folder, containing the files for the **GitHub** pages of [Orbital Shell GitHub Project Pages](https://franck-gaspoz.github.io/orbital-shell/) (this web site){: target="_blank"}
+These is the **gh-pages** folder, containing the files for the **GitHub** pages of [Orbital Shell GitHub Project Pages](https://OrbitalShell.github.io/orbital-shell/) (this web site){: target="_blank"}
 
 This is the content of a **Jekyll** static web site generated - based on **Liquid**, **kramdown**, **Ruby**
 
-Browse in repository: [https://github.com/franck-gaspoz/orbital-shell/tree/master/docs](https://github.com/franck-gaspoz/orbital-shell/tree/master/docs){: target="_blank"}
+Browse in repository: [https://github.com/OrbitalShell/orbital-shell/tree/master/docs](https://github.com/OrbitalShell/orbital-shell/tree/master/docs){: target="_blank"}
 
 <h4 class="doc-subtitle" id="apptlk"><i class="fas fa-folder ico-yellow marginrighthalf"></i> OrbitalShell-ConsoleApp<span class="text-tech">(NetCore Standard 2.1)</span></h4>
 
-Library that provides support for developing console applications (ANSI support). Named **DotNetConsoleAppToolkit** in the past (having it's own repository, now closed: [https://github.com/franck-gaspoz/dotnet-console-app-toolkit](https://github.com/franck-gaspoz/dotnet-console-app-toolkit)), this project has been integrated in the Orbital Shell repository, for convenience.
+Library that provides support for developing console applications (ANSI support). Named **DotNetConsoleAppToolkit** in the past (having it's own repository, now closed: [https://github.com/OrbitalShell/dotnet-console-app-toolkit](https://github.com/OrbitalShell/dotnet-console-app-toolkit)), this project has been integrated in the Orbital Shell repository, for convenience.
 
 > *provided namespaces*:<br><br>
 > * **OrbitalShell**
@@ -67,7 +67,7 @@ Library that provides support for developing console applications (ANSI support)
 >   * Lib
 {:.block-text}
 
-Browse in repository: [https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-ConsoleApp](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-ConsoleApp){: target="_blank"}
+Browse in repository: [https://github.com/OrbitalShell/orbital-shell/tree/master/OrbitalShell-ConsoleApp](https://github.com/OrbitalShell/orbital-shell/tree/master/OrbitalShell-ConsoleApp){: target="_blank"}
 
 <h4 class="doc-subtitle" id="apptlkshell"><i class="fas fa-folder ico-yellow marginrighthalf"></i> OrbitalShell-Kernel<span class="text-tech">(NetCore Standard 2.1)</span></h4>
 
@@ -100,7 +100,7 @@ Library extending **OrbitalShell-AppConsole** that provides features for buildin
 >       * TestCommands
 {:.block-text}
 
-Browse in repository: [https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-Kernel](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-Kernel){: target="_blank"}
+Browse in repository: [https://github.com/OrbitalShell/orbital-shell/tree/master/OrbitalShell-Kernel](https://github.com/OrbitalShell/orbital-shell/tree/master/OrbitalShell-Kernel){: target="_blank"}
 
 <h4 class="doc-subtitle" id="orbsh"><i class="fas fa-folder ico-yellow marginrighthalf"></i> OrbitalShell-CLI<span class="text-tech">(.Net Core 3.1)</span></h4>
 
@@ -114,4 +114,4 @@ This console project provides the Orbital Shell executable, but is also a build 
 >       * Processor
 {:.block-text}
 
-Browse in repository: [https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-CLI](https://github.com/franck-gaspoz/orbital-shell/tree/master/OrbitalShell-CLI){: target="_blank"}
+Browse in repository: [https://github.com/OrbitalShell/orbital-shell/tree/master/OrbitalShell-CLI](https://github.com/OrbitalShell/orbital-shell/tree/master/OrbitalShell-CLI){: target="_blank"}
