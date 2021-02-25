@@ -1,4 +1,5 @@
-﻿using OrbitalShell.Component.Console;
+﻿using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
 using OrbitalShell.Lib.FileSystem;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace OrbitalShell.Component.Shell
             Folder = folderPath;
             FileName = fileName;
             var lines = File.ReadAllLines(FilePath.FullName);
-            foreach (var line in lines) HistoryAppend(line);
+            foreach (var line in lines) HistoryAppend(null,line);
         }
 
         public FilePath FilePath
@@ -63,10 +64,11 @@ namespace OrbitalShell.Component.Shell
 
         public bool HistoryContains(string s) => _history.Contains(s);
 
-        public void HistoryAppend(string s)
+        public void HistoryAppend(CommandEvaluationContext context,string s)
         {
             _history.Add(s);
             _historyIndex = _history.Count;
+            context?.CommandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(context, Hooks.PostHistoryAppend, this);
         }
 
         public void HistorySetIndex(int index, bool checkIndex = true)
@@ -80,7 +82,11 @@ namespace OrbitalShell.Component.Shell
             else _historyIndex = index;
         }
 
-        public void ClearHistory() => _history.Clear();
+        public void ClearHistory(CommandEvaluationContext context)
+        {
+            _history.Clear();
+            context?.CommandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(context, Hooks.ClearHistory, this);
+        }
 
         #endregion
     }

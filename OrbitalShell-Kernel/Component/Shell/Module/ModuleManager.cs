@@ -8,7 +8,6 @@ using System.Reflection;
 using System.IO;
 using OrbitalShell.Component.CommandLine.Parsing;
 using System;
-using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Shell.Module
 {
@@ -32,7 +31,7 @@ namespace OrbitalShell.Component.Shell.Module
 
         public IModuleCommandManager ModuleCommandManager { get; protected set; }
 
-        public IModuleHookManager ModuleHookManager { get; protected set; }
+        public IHookManager ModuleHookManager { get; protected set; }
 
         #endregion
 
@@ -41,7 +40,7 @@ namespace OrbitalShell.Component.Shell.Module
         public ModuleManager(            
             //ISyntaxAnalyser syntaxAnalyser,
             IModuleCommandManager modComManager,
-            IModuleHookManager modHookManager,
+            IHookManager modHookManager,
             IModuleSet moduleSet
             )
         {
@@ -90,9 +89,9 @@ namespace OrbitalShell.Component.Shell.Module
             return null;
         }
 
-        static string _assemblyKey(Assembly assembly) => assembly.Location + "." + assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        static string AssemblyKey(Assembly assembly) => assembly.Location + "." + assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
-        private static string _moduleKey(Assembly assembly, out string id, out string ver)
+        private static string ModuleKey(Assembly assembly, out string id, out string ver)
         {
             id = assembly.GetCustomAttribute<ShellModuleAttribute>()?.PackageId ??
                 throw new Exception($"module package id missing or null in assembly '{assembly.ManifestModule.Name}' ('ShellModule' attribute missing or has null value)");
@@ -118,8 +117,8 @@ namespace OrbitalShell.Component.Shell.Module
 
                 // id is the name of the assembly (/!\ should not fit nuget packet id)
 
-                var modKey = _moduleKey(assembly, out var id, out var ver);
-                var assKey = _assemblyKey(assembly);
+                var modKey = ModuleKey(assembly, out var id, out var ver);
+                var assKey = AssemblyKey(assembly);
                 if (_loadedModules.Contains(assKey)) throw new Exception($"assembly already loaded: '{assKey}'");
 
                 if (_modules.ContainsKey(modKey))
@@ -181,14 +180,15 @@ namespace OrbitalShell.Component.Shell.Module
                             hooksCount
                         )
                     ));
-                _loadedModules.Add(_assemblyKey(assembly));
+                _loadedModules.Add(AssemblyKey(assembly));
                 _loadedAssemblies.Add(assembly.Location.ToLower(), assembly);
 
                 // run module hook init
                 ModuleHookManager.InvokeHooks(
                     context,
                     Hooks.ModuleInit,
-                    HookTriggerMode.FirstTimeOnly,
+                    this,
+                    HookTriggerMode.FirstTimeOnly,                    
                     (o) =>
                     {
                         moduleSpecification.IsInitialized = true;

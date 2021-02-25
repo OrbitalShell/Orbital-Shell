@@ -18,12 +18,12 @@ namespace OrbitalShell.Component.Shell
     public class ShellInitializer
     {
         readonly ICommandLineProcessor _clp;
-        readonly IDotNetConsole Console;
+        readonly IDotNetConsole _console;
 
         public ShellInitializer(ICommandLineProcessor clp)
         {
             _clp = clp;
-            Console = clp.Console;
+            _console = clp.Console;
         }
 
 
@@ -37,7 +37,7 @@ namespace OrbitalShell.Component.Shell
         {
             if (_clp.IsInitialized) return;
 
-            ShellInit( _clp.Args, Console, _clp.Settings, _clp.CommandEvaluationContext);
+            ShellInit( _clp.Args, _console, _clp.Settings, _clp.CommandEvaluationContext);
 
             // late init of settings from the context
             _clp.Settings.Initialize(_clp.CommandEvaluationContext);
@@ -51,7 +51,7 @@ namespace OrbitalShell.Component.Shell
             }
             catch (Exception ex)
             {
-                Console.Warning($"Run 'user profile file' skipped. Reason is : {ex.Message}");
+                _console.Warning($"Run 'user profile file' skipped. Reason is : {ex.Message}");
             }
 
             // run user aliases
@@ -64,12 +64,13 @@ namespace OrbitalShell.Component.Shell
             }
             catch (Exception ex)
             {
-                Console.Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
+                _console.Warning($"Run 'user aliases' skipped. Reason is : {ex.Message}");
             }
 
             _clp.ModuleManager.ModuleHookManager.InvokeHooks(
                 _clp.CommandEvaluationContext,
                 Hooks.ShellInitialized,
+                this,
                 HookTriggerMode.FirstTimeOnly
                 );
 
@@ -243,7 +244,7 @@ namespace OrbitalShell.Component.Shell
             )
         {
             var ctx = clp.CommandEvaluationContext;
-            Console.Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor);
+            _console.Out.EnableAvoidEndOfLineFilledWithBackgroundColor = ctx.ShellEnv.GetValue<bool>(ShellEnvironmentVar.settings_console_enableAvoidEndOfLineFilledWithBackgroundColor);
             var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_prompt);
             clp.CommandLineReader.SetDefaultPrompt(prompt);
 

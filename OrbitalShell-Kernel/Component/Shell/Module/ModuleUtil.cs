@@ -80,7 +80,6 @@ namespace OrbitalShell.Component.Shell.Module
         }
 
         public static bool IsModuleInstalled(
-            CommandEvaluationContext context,
             string moduleId)
         {
             var path = CommandLineProcessorSettings.ModulesFolderPath;
@@ -89,10 +88,10 @@ namespace OrbitalShell.Component.Shell.Module
             return true;
         }
 
-        public static List<string> GetInstalledModulesLowerPackageId(CommandEvaluationContext context)
+        public static List<string> GetInstalledModulesLowerPackageId()
             => Directory.GetDirectories(CommandLineProcessorSettings.ModulesFolderPath).Select(x => Path.GetFileName(x)).ToList();
         
-        public static List<FilePath> GetModuleAssemblies(CommandEvaluationContext context,string moduleId)
+        public static List<FilePath> GetModuleAssemblies(string moduleId)
         {
             var r = new List<FilePath>();
             var path = CommandLineProcessorSettings.ModulesFolderPath;
@@ -107,7 +106,7 @@ namespace OrbitalShell.Component.Shell.Module
 
         public static (AssemblyLoadContext assemblyLoadContext,Assembly moduleAssembly) GetModuleAssembly(CommandEvaluationContext context,string moduleId)
         {
-            var assys = GetModuleAssemblies(context, moduleId);
+            var assys = GetModuleAssemblies( moduleId);
             
             var versions = new Dictionary<VersionNumber, (AssemblyLoadContext alc,Assembly asy)>();
             string ver;

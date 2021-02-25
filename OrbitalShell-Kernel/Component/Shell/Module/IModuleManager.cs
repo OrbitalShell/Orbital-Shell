@@ -2,13 +2,14 @@
 using System.Reflection;
 
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Shell.Hook;
 
 namespace OrbitalShell.Component.Shell.Module
 {
     public interface IModuleManager
     {
         IModuleCommandManager ModuleCommandManager { get; }
-        IModuleHookManager ModuleHookManager { get; }
+        IHookManager ModuleHookManager { get; }
         IReadOnlyDictionary<string, ModuleSpecification> Modules { get; }
 
         Assembly GetLoadedModuleAssembly(string path);

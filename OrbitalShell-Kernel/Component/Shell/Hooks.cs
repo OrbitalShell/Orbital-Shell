@@ -1,5 +1,12 @@
+using System;
+
 namespace OrbitalShell.Component.Shell
 {
+    public class HookHandlers
+    {
+        public event EventHandler ShellCrashed(object o, EventArgs a);
+    }
+
     /// <summary>
     /// shell named hooks points for extensivity throught hook system
     /// </summary>
@@ -24,5 +31,45 @@ namespace OrbitalShell.Component.Shell
         /// prompt output end
         /// </summary>
         PromptOutputEnd,
+
+        /// <summary>
+        /// just before task exec of command line eval within command line reader
+        /// </summary>
+        PreProcessCommandLine,
+
+        /// <summary>
+        /// just after exec of command line eval within command line reader
+        /// </summary>
+        PostProcessCommandLine,
+
+        /// <summary>
+        /// error while processing command line within command line reader
+        /// </summary>
+        ProcessCommandLineError,
+
+        /// <summary>
+        /// user cancellation (CTRL+C) while processing command line within command line reader
+        /// </summary>
+        ProcessCommandLineCancellation,
+
+        /// <summary>
+        /// just after something is added to command history
+        /// </summary>
+        PostHistoryAppend,
+
+        /// <summary>
+        /// just after history is cleared
+        /// </summary>
+        ClearHistory,
+
+        /// <summary>
+        /// starts reading command line user input
+        /// </summary>
+        BeginReadCommandLine,
+
+        /// <summary>
+        /// a key was pressed while command line user input
+        /// </summary>
+        ReadCommandLineKeyPressed,
     }
 }

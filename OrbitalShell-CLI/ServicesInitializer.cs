@@ -43,7 +43,7 @@ namespace OrbitalShell
                     .AddScoped
                         <IModuleCommandManager,ModuleCommandManager>()
                     .AddScoped
-                        <IModuleHookManager,ModuleHookManager>()
+                        <IHookManager,HookManager>()
                     .AddScoped
                         <IExternalParserExtension, CommandLineProcessorExternalParserExtension>()
                     .AddScoped

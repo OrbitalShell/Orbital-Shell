@@ -122,7 +122,7 @@ namespace OrbitalShell.Commands.Shell
 
                 if (updateAll)
                 {
-                    var ids = ModuleUtil.GetInstalledModulesLowerPackageId(context);
+                    var ids = ModuleUtil.GetInstalledModulesLowerPackageId();
                     if (ids.Count == 0) 
                         o.Echoln("nothing to update");
                     else
@@ -135,7 +135,7 @@ namespace OrbitalShell.Commands.Shell
                 if (updateModuleName!=null)
                 {
                     n = updateModuleName;
-                    if (ModuleUtil.IsModuleInstalled(context, n))
+                    if (ModuleUtil.IsModuleInstalled( n))
                     {
                         _checkIsNotAKernelModule(n);
 
@@ -191,14 +191,14 @@ namespace OrbitalShell.Commands.Shell
 
                     if (_kernelModuleIds.Contains(n)) _checkIsNotAKernelModule(n); 
 
-                    if (!ModuleUtil.IsModuleInstalled( context, folderName ))
+                    if (!ModuleUtil.IsModuleInstalled( folderName ))
                         // error not installed
                         return ModuleErr(context, $"module '{n}' is not installed");
 
                     o.Echoln(clog + "removing potentially registered dlls:");
                     var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
                     var modInits = modInit.List.ToList();
-                    foreach ( var moduleAssemblyFilePath in ModuleUtil.GetModuleAssemblies(context,folderName) )
+                    foreach ( var moduleAssemblyFilePath in ModuleUtil.GetModuleAssemblies(folderName) )
                     {
                         o.Echo(clog + moduleAssemblyFilePath.FullName + " ... ");
                         var removableItems = modInits.Where(x => x.Path == FileSystemPath.UnescapePathSeparators(moduleAssemblyFilePath.FullName));
@@ -514,34 +514,6 @@ namespace OrbitalShell.Commands.Shell
                 return true;
             }
             return false;
-        }
-
-        [Obsolete]
-        List<ModuleReference> ParseModuleList(string repoModulesList)
-        {
-            var r = new List<ModuleReference>();
-            var lines = repoModulesList.Split("\n");
-            foreach (var s in lines)
-            {
-                var ts = s.Trim();
-                if (!string.IsNullOrWhiteSpace(s) && !ts.StartsWith(";"))
-                {
-                    var t = s.Split(";");
-                    if (t.Length == 4)
-                    {
-                        var itemType = t[0].ToLower();
-                        if (itemType == "m")
-                        {
-                            var name = t[1];
-                            var desc = t[3];
-                            var version = t[2];
-                            var modref = new ModuleReference(name, version, desc);
-                            r.Add(modref);
-                        }
-                    }
-                }
-            }
-            return r;
         }
 
         #endregion

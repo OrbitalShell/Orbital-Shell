@@ -9,7 +9,7 @@ namespace OrbitalShell.Component.CommandLine.Batch
     {
         public int RunBatch(CommandEvaluationContext context, string path)
         {
-            var (lines, eol, separator) = TextFileReader.ReadAllLines(path);
+            var (lines, _, _) = TextFileReader.ReadAllLines(path);
             return RunBatch(context, lines);
         }
 
@@ -20,6 +20,7 @@ namespace OrbitalShell.Component.CommandLine.Batch
             return RunBatch(context, lines);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Marquer les membres comme étant static", Justification = "<En attente>")]
         int RunBatch(CommandEvaluationContext context, string[] batchLines)
         {
             var ret = (int)ReturnCode.OK;

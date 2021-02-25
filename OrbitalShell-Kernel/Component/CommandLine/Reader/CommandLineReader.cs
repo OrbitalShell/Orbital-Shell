@@ -21,9 +21,6 @@ namespace OrbitalShell.Component.CommandLine.Reader
     {
         #region attributes
 
-        //public delegate ExpressionEvaluationResult ExpressionEvaluationCommandDelegate(
-        //    CommandEvaluationContext context, string com, int outputX, string postAnalysisPreExecOutput = null);
-
         Thread _inputReaderThread;
         string _prompt;
         StringBuilder _inputReaderStringBuilder;
@@ -34,14 +31,15 @@ namespace OrbitalShell.Component.CommandLine.Reader
         bool _readingStarted;
         string _nextPrompt = null;
         string _defaultPrompt = null;
-        ICommandLineProcessor CommandLineProcessor;
+        ICommandLineProcessor _commandLineProcessor;
         bool _ignoreNextKey = false;
 
         public Action<IAsyncResult> InputProcessor { get; set; }
 
         public IDotNetConsole Console { get; set; }
 
-        static int _InstanceId = 0;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Supprimer les membres privés non lus", Justification = "<En attente>")]
+        static int _instanceId = 0;
 
         #endregion
 
@@ -49,7 +47,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         public CommandLineReader( )
         {            
-            _InstanceId++;
+            _instanceId++;
 #if DBG_DI_INSTANCE
             System.Console.Out.WriteLine($"new CLR #{_InstanceId}");
 #endif                        
@@ -62,9 +60,9 @@ namespace OrbitalShell.Component.CommandLine.Reader
         {
             _defaultPrompt = prompt ?? $"> ";
             Console = clp.Console;
-            CommandLineProcessor = clp;
-            if (CommandLineProcessor != null && CommandLineProcessor != null) 
-                CommandLineProcessor.CommandLineReader = this;
+            _commandLineProcessor = clp;
+            if (_commandLineProcessor != null && _commandLineProcessor != null) 
+                _commandLineProcessor.CommandLineReader = this;
             Initialize(evalCommandDelegate);
         }
 
@@ -89,7 +87,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         void Initialize(Delegates.ExpressionEvaluationCommandDelegate evalCommandDelegate = null)
         {
-            if (evalCommandDelegate == null && CommandLineProcessor != null) _evalCommandDelegate = CommandLineProcessor.Eval;
+            if (evalCommandDelegate == null && _commandLineProcessor != null) _evalCommandDelegate = _commandLineProcessor.Eval;
 
             #region disabled
 
@@ -175,25 +173,28 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 try
                 {
                     sc.CancelKeyPress += CancelKeyPress;
-                    CommandLineProcessor.CancellationTokenSource = new CancellationTokenSource();
+                    _commandLineProcessor.CancellationTokenSource = new CancellationTokenSource();
                     Console.Out.IsModified = false;
                     Console.Err.IsModified = false;
 
+                    _commandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(
+                        _commandLineProcessor.CommandEvaluationContext, Hooks.PreProcessCommandLine, this, commandLine );
+
                     var task = Task.Run<ExpressionEvaluationResult>(
                         () => evalCommandDelegate(
-                                CommandLineProcessor.CommandEvaluationContext,
+                                _commandLineProcessor.CommandEvaluationContext,
                                 commandLine,
                                 _prompt == null ? 0 : Console.Out.GetPrint(_prompt).Length,        // TODO has no sens with multi line prompt !!!
-                                (enablePrePostComOutput && CommandLineProcessor != null) ?
-                                    CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput) : ""),
-                            CommandLineProcessor.CancellationTokenSource.Token
+                                (enablePrePostComOutput && _commandLineProcessor != null) ?
+                                    _commandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput) : ""),
+                            _commandLineProcessor.CancellationTokenSource.Token
                         );
 
                     try
                     {
                         try
                         {
-                            task.Wait(CommandLineProcessor.CancellationTokenSource.Token);
+                            task.Wait(_commandLineProcessor.CancellationTokenSource.Token);
                         }
                         catch (ThreadInterruptedException)
                         {
@@ -203,6 +204,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                     }
                     catch (OperationCanceledException)
                     {
+                        _commandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks<CommandLineReader>(_commandLineProcessor.CommandEvaluationContext, Hooks.ProcessCommandLineCancellation, this ) ;
                         //var res = task.Result;
                         expressionEvaluationResult = task.Result;
                         Console.Out.Warningln($"command canceled: {commandLine}");
@@ -211,34 +213,37 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 }
                 catch (Exception ex)
                 {
+                    _commandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(_commandLineProcessor.CommandEvaluationContext,Hooks.ProcessCommandLineError, this);
                     Console.LogError(ex);
                 }
                 finally
                 {
-                    if (enablePrePostComOutput && CommandLineProcessor != null)
+                    _commandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(_commandLineProcessor.CommandEvaluationContext, Hooks.PostProcessCommandLine, this);
+
+                    if (enablePrePostComOutput && _commandLineProcessor != null)
                     {
                         if (Console.Out.IsModified || Console.Err.IsModified)
                         {
                             if (!(Console.Out.CursorLeft == 0 && Console.Out.CursorTop == 0))
-                                Console.Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
+                                Console.Out.Echo(_commandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
                         }
-                        Console.Out.Echo(CommandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
+                        Console.Out.Echo(_commandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
                     }
 
-                    CommandLineProcessor.CancellationTokenSource.Dispose();
-                    CommandLineProcessor.CancellationTokenSource = null;
+                    _commandLineProcessor.CancellationTokenSource.Dispose();
+                    _commandLineProcessor.CancellationTokenSource = null;
                     sc.CancelKeyPress -= CancelKeyPress;
                 }
             }
 
             if (enableHistory && !string.IsNullOrWhiteSpace(commandLine))
-                CommandLineProcessor.CmdsHistory.HistoryAppend(commandLine);
+                _commandLineProcessor.CmdsHistory.HistoryAppend(_commandLineProcessor.CommandEvaluationContext,commandLine);
         }
 
         private void CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             e.Cancel = true;
-            CommandLineProcessor.CancellationTokenSource?.Cancel();
+            _commandLineProcessor.CancellationTokenSource?.Cancel();
         }
 
         public int ReadCommandLine(
@@ -280,8 +285,9 @@ namespace OrbitalShell.Component.CommandLine.Reader
             _prompt = prompt;
             bool noWorkArea = !Console.InWorkArea;
             Point? lastInputPos = null;
-            var hm = CommandLineProcessor?.ModuleManager?.ModuleHookManager;
-            var context = CommandLineProcessor?.CommandEvaluationContext;
+            var hm = _commandLineProcessor?.ModuleManager?.ModuleHookManager;
+            var context = _commandLineProcessor?.CommandEvaluationContext;
+            if (context == null) throw new Exception("command line reader is badly initialized: context is null");
 
             _inputReaderThread = new Thread(() =>
             {
@@ -297,22 +303,27 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         {
                             lock (Console.ConsoleLock)
                             {
-                                hm?.InvokeHooks(context, Hooks.PromptOutputBegin);
+                                hm?.InvokeHooks(context, Hooks.PromptOutputBegin, this);
 
                                 var _beginPromptPos = Console.Out.CursorPos;
                                 Console.Out.Echo(prompt);
 
-                                hm?.InvokeHooks(context, Hooks.PromptOutputEnd);
+                                hm?.InvokeHooks(context, Hooks.PromptOutputEnd, this);
 
                                 _beginOfLineCurPos = Console.Out.CursorPos;
                                 lastInputPos = _beginOfLineCurPos;
                                 Console.Out.ConsoleCursorPosBackup();
 
-#if FIX_LOW_ANSI    // TODO only if compatibility mode is enabled OR never (check the best)
-                                Thread.Sleep(25);
-                                Console.Out.ConsoleCursorPosRestore();
+#if FIX_LOW_ANSI    // TODO: check disabled (check the best)
+                                if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
+                                {
+                                    Thread.Sleep(25);
+                                    Console.Out.ConsoleCursorPosRestore();
+                                }
 #endif
                                 _readingStarted = true;
+
+                                context.CommandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(context, Hooks.BeginReadCommandLine, this);
                             }
                         }
                         var eol = false;
@@ -336,6 +347,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                 if (_sentInput == null)
                                 {
                                     c = sc.ReadKey(true);
+
+                                    context.CommandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(context, Hooks.ReadCommandLineKeyPressed, this);
 #if dbg
                                     System.Diagnostics.Debug.WriteLine($"{c.KeyChar}={c.Key}");
 #endif
@@ -514,7 +527,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 {
                                                     if (Console.Out.CursorTop == _beginOfLineCurPos.Y)
                                                     {
-                                                        var h = CommandLineProcessor.CmdsHistory.GetBackwardHistory();
+                                                        var h = _commandLineProcessor.CmdsHistory.GetBackwardHistory();
                                                         if (h != null)
                                                         {
                                                             Console.Out.HideCur();
@@ -541,7 +554,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                     var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
                                                     if (Console.Out.CursorTop == slines.Max(o => o.Y))
                                                     {
-                                                        var fh = CommandLineProcessor.CmdsHistory.GetForwardHistory();
+                                                        var fh = _commandLineProcessor.CmdsHistory.GetForwardHistory();
                                                         if (fh != null)
                                                         {
                                                             Console.Out.HideCur();
@@ -698,7 +711,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 {
                     //Out.ConsoleCursorPosRestore();    // both works
                     Console.Out.CursorPos = _beginOfLineCurPos;
-                    if (CommandLineProcessor.CommandEvaluationContext.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
+                    if (_commandLineProcessor.CommandEvaluationContext.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_console_enableCompatibilityMode))
                         /* 💥 */ // ED p0 clean up screen in ConPty
                         Console.Out.Write(ANSI.EL(ANSI.ELParameter.p0));    // minimum compatible
                     else

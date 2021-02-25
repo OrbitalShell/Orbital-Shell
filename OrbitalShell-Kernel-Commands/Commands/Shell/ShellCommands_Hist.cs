@@ -1,5 +1,4 @@
-﻿using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib.FileSystem;
 using System.Diagnostics.CodeAnalysis;
@@ -17,9 +16,8 @@ namespace OrbitalShell.Commands.Shell
     public partial class ShellCommands
     {
         [Command("displays the commands history list or manipulate it")]
-        [SuppressMessage("Style", "IDE0071WithoutSuggestion:Simplifier l’interpolation", Justification = "<En attente>")]
-        [SuppressMessage("Style", "IDE0071:Simplifier l’interpolation", Justification = "<En attente>")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
+        [SuppressMessage("Performance", "CA1822:Marquer les membres comme étant static", Justification = "<En attente>")]
         public CommandVoidResult History(
             CommandEvaluationContext context,
             [Option("i", "invoke", "invoke the command at the entry number in the history list", true, true)] int num,
@@ -36,7 +34,7 @@ namespace OrbitalShell.Commands.Shell
             )
         {
             var hist = context.CommandLineProcessor.CmdsHistory.History;
-            var max = hist.Count().ToString().Length;
+            var max = hist.Count.ToString().Length;
             int i = 1;
             var f = DefaultForegroundCmd;
 
@@ -54,7 +52,7 @@ namespace OrbitalShell.Commands.Shell
 
             if (clear)
             {
-                context.CommandLineProcessor.CmdsHistory.ClearHistory();
+                context.CommandLineProcessor.CmdsHistory.ClearHistory(context);
                 return new CommandVoidResult();
             }
 
@@ -72,13 +70,13 @@ namespace OrbitalShell.Commands.Shell
                     if (readFromFile)
                     {
                         var lines = File.ReadAllLines(file.FullName);
-                        foreach (var line in lines) context.CommandLineProcessor.CmdsHistory.HistoryAppend(line);
+                        foreach (var line in lines) context.CommandLineProcessor.CmdsHistory.HistoryAppend(context,line);
                         context.CommandLineProcessor.CmdsHistory.HistorySetIndex(-1, false);
                     }
                     if (appendFromFile)
                     {
                         var lines = File.ReadAllLines(file.FullName);
-                        foreach (var line in lines) if (!context.CommandLineProcessor.CmdsHistory.HistoryContains(line)) context.CommandLineProcessor.CmdsHistory.HistoryAppend(line);
+                        foreach (var line in lines) if (!context.CommandLineProcessor.CmdsHistory.HistoryContains(line)) context.CommandLineProcessor.CmdsHistory.HistoryAppend(context,line);
                         context.CommandLineProcessor.CmdsHistory.HistorySetIndex(-1, false);
                     }
                 }
@@ -100,6 +98,7 @@ namespace OrbitalShell.Commands.Shell
         [Command("repeat the previous command if there is one, else does nothing")]
         [CommandName("!!")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
+        [SuppressMessage("Performance", "CA1822:Marquer les membres comme étant static", Justification = "<En attente>")]
         public CommandResult<string> HistoryPreviousCommand(
             CommandEvaluationContext context
             )
@@ -113,6 +112,7 @@ namespace OrbitalShell.Commands.Shell
         [Command("repeat the command specified by absolute or relative line number in command history list")]
         [CommandName("!")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
+        [SuppressMessage("Performance", "CA1822:Marquer les membres comme étant static", Justification = "<En attente>")]
         public CommandResult<string> HistoryPreviousCommand(
             CommandEvaluationContext context,
             [Parameter("line number in the command history list if positive, else current command minus n if negative (! -1 equivalent to !!)")] int n
