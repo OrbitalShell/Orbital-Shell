@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 MAINTAINER Yobatman38 < yobatman [ at ] gmail.com >
 
-COPY OrbitalShell-CLI/bin/Debug/netcoreapp3.1/ /home/orbsh/
+COPY OrbitalShell-CLI/bin/Debug/net5.0/ /home/orbsh/
 RUN apt-get update \
     && apt-get install -y apt-transport-https wget \
     && apt autoclean \
@@ -13,7 +13,7 @@ RUN wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-p
     && dpkg -i /root/packages-microsoft-prod.deb \
     && rm /root/packages-microsoft-prod.deb \
     && apt-get update \
-    && apt-get install -y dotnet-runtime-3.1 \
+    && apt-get install -y dotnet-runtime-5.0 \
     && chmod +x /home/orbsh/orbsh \
     && apt autoclean \
     && apt clean \
