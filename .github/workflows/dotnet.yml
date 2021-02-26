@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'windows-latest', 'macOs-latest' ]
-        dotnet-version: [ '3.1.x' ]
+        dotnet-version: [ '5.0' ]
 
     runs-on: ${{ matrix.os }}
 
@@ -43,4 +43,4 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: Orbital Shell artifacts - ${{ matrix.os }}
-        path: ./OrbitalShell-CLI/bin/Debug/netcoreapp3.1/
+        path: ./OrbitalShell-CLI/bin/Debug/net5.0/

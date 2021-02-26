@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/runtime:5.0
 MAINTAINER Yobatman38 < yobatman [ at ] gmail.com >
 
-COPY OrbitalShell-CLI/bin/Debug/netcoreapp3.1/ App/
+COPY OrbitalShell-CLI/bin/Debug/net5.0/ App/
 WORKDIR /App
 ENTRYPOINT ["dotnet", "NetCore.Docker.dll"]
