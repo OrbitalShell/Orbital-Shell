@@ -1,5 +1,6 @@
 ﻿using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Lib.FileSystem;
 using System;
 using System.Collections.Generic;

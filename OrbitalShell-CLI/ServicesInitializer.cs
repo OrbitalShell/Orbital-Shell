@@ -8,6 +8,7 @@ using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.CommandLine.Reader;
 using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Lib.Sys;
 

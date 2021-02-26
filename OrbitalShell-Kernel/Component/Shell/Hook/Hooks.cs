@@ -1,12 +1,7 @@
 using System;
 
-namespace OrbitalShell.Component.Shell
+namespace OrbitalShell.Component.Shell.Hook
 {
-    public class HookHandlers
-    {
-        public event EventHandler ShellCrashed(object o, EventArgs a);
-    }
-
     /// <summary>
     /// shell named hooks points for extensivity throught hook system
     /// </summary>
@@ -71,5 +66,7 @@ namespace OrbitalShell.Component.Shell
         /// a key was pressed while command line user input
         /// </summary>
         ReadCommandLineKeyPressed,
+
+
     }
 }

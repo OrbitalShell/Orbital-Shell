@@ -7,69 +7,51 @@ namespace OrbitalShell.Component.Shell.Hook
 {
     public interface IHookManager
     {
-        AggregateHookResult<ResultType> InvokeHooks<CallerType, ParameterType, ResultType>(
-            CommandEvaluationContext context, 
-            Hooks name, 
-            CallerType caller,
-            ParameterType parameter = null,
-            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
-            Action<object> callBack = null
-            )
-            where CallerType : class
-            where ResultType : class
-            where ParameterType : class;
-
-        AggregateHookResult<ResultType> InvokeHooks<CallerType, ParameterType, ResultType>(
-            CommandEvaluationContext context, 
-            string name, 
-            CallerType caller,
-            ParameterType parameter = null,
-            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
-            Action<object> callBack = null
-            )
-            where CallerType : class
-            where ResultType : class
-            where ParameterType : class;
-
-        void InvokeHooks<CallerType, ParameterType>(
+        AggregateHookResult<ResultType> InvokeHooks<ParameterType, ResultType>(
             CommandEvaluationContext context,
             Hooks name,
-            CallerType caller,
-            ParameterType parameter = null,
+            ParameterType parameter = default,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
-            )
-            where CallerType : class
-            where ParameterType : class;
+            );
 
-        void InvokeHooks<CallerType, ParameterType>(
+        AggregateHookResult<ResultType> InvokeHooks<ParameterType, ResultType>(
             CommandEvaluationContext context,
             string name,
-            CallerType caller,
-            ParameterType parameter = null,
+            ParameterType parameter = default,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
-            )
-            where CallerType : class
-            where ParameterType : class;
+            );
 
-        void InvokeHooks<CallerType>(
+        void InvokeHooks<ParameterType>(
             CommandEvaluationContext context,
             Hooks name,
-            CallerType caller,
+            ParameterType parameter = default,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
-            )
-            where CallerType : class;
+            );
 
-        void InvokeHooks<CallerType>(
+        void InvokeHooks<ParameterType>(
             CommandEvaluationContext context,
             string name,
-            CallerType caller,
+            ParameterType parameter = default,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
-            )
-            where CallerType : class;
+            );
+
+        void InvokeHooks(
+            CommandEvaluationContext context,
+            Hooks name,
+            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
+            Action<object> callBack = null
+            );
+
+        void InvokeHooks(
+            CommandEvaluationContext context,
+            string name,
+            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
+            Action<object> callBack = null
+            );
 
         void RegisterHook(CommandEvaluationContext context, string name, MethodInfo mi);
     }

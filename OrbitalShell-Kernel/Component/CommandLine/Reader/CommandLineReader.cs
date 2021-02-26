@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Component.Shell.Variable;
 
 using sc = System.Console;
@@ -162,6 +163,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
             bool enableHistory = false,
             bool enablePrePostComOutput = true)
         {
+            var clp = _commandLineProcessor;
+
             if (commandLine != null)
             {
                 if (outputStartNextLine)
@@ -173,28 +176,28 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 try
                 {
                     sc.CancelKeyPress += CancelKeyPress;
-                    _commandLineProcessor.CancellationTokenSource = new CancellationTokenSource();
+                    clp.CancellationTokenSource = new CancellationTokenSource();
                     Console.Out.IsModified = false;
                     Console.Err.IsModified = false;
 
-                    _commandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(
-                        _commandLineProcessor.CommandEvaluationContext, Hooks.PreProcessCommandLine, this, commandLine );
+                    clp.ModuleManager.ModuleHookManager.InvokeHooks(
+                        clp.CommandEvaluationContext, Hooks.PreProcessCommandLine, commandLine );
 
                     var task = Task.Run<ExpressionEvaluationResult>(
                         () => evalCommandDelegate(
-                                _commandLineProcessor.CommandEvaluationContext,
+                                clp.CommandEvaluationContext,
                                 commandLine,
                                 _prompt == null ? 0 : Console.Out.GetPrint(_prompt).Length,        // TODO has no sens with multi line prompt !!!
-                                (enablePrePostComOutput && _commandLineProcessor != null) ?
-                                    _commandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput) : ""),
-                            _commandLineProcessor.CancellationTokenSource.Token
+                                (enablePrePostComOutput && clp != null) ?
+                                    clp.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput) : ""),
+                            clp.CancellationTokenSource.Token
                         );
 
                     try
                     {
                         try
                         {
-                            task.Wait(_commandLineProcessor.CancellationTokenSource.Token);
+                            task.Wait(clp.CancellationTokenSource.Token);
                         }
                         catch (ThreadInterruptedException)
                         {
@@ -204,7 +207,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                     }
                     catch (OperationCanceledException)
                     {
-                        _commandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks<CommandLineReader>(_commandLineProcessor.CommandEvaluationContext, Hooks.ProcessCommandLineCancellation, this ) ;
+                        clp.ModuleManager.ModuleHookManager.InvokeHooks<CommandLineReader>(clp.CommandEvaluationContext, Hooks.ProcessCommandLineCancellation, this ) ;
                         //var res = task.Result;
                         expressionEvaluationResult = task.Result;
                         Console.Out.Warningln($"command canceled: {commandLine}");
@@ -213,31 +216,31 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 }
                 catch (Exception ex)
                 {
-                    _commandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(_commandLineProcessor.CommandEvaluationContext,Hooks.ProcessCommandLineError, this);
+                    clp.ModuleManager.ModuleHookManager.InvokeHooks(clp.CommandEvaluationContext,Hooks.ProcessCommandLineError, this);
                     Console.LogError(ex);
                 }
                 finally
                 {
-                    _commandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(_commandLineProcessor.CommandEvaluationContext, Hooks.PostProcessCommandLine, this);
+                    clp.ModuleManager.ModuleHookManager.InvokeHooks(clp.CommandEvaluationContext, Hooks.PostProcessCommandLine, this);
 
-                    if (enablePrePostComOutput && _commandLineProcessor != null)
+                    if (enablePrePostComOutput && clp != null)
                     {
                         if (Console.Out.IsModified || Console.Err.IsModified)
                         {
                             if (!(Console.Out.CursorLeft == 0 && Console.Out.CursorTop == 0))
-                                Console.Out.Echo(_commandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
+                                Console.Out.Echo(clp.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutModifiedOutput));
                         }
-                        Console.Out.Echo(_commandLineProcessor.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
+                        Console.Out.Echo(clp.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPostExecOutput));
                     }
 
-                    _commandLineProcessor.CancellationTokenSource.Dispose();
-                    _commandLineProcessor.CancellationTokenSource = null;
+                    clp.CancellationTokenSource.Dispose();
+                    clp.CancellationTokenSource = null;
                     sc.CancelKeyPress -= CancelKeyPress;
                 }
             }
 
             if (enableHistory && !string.IsNullOrWhiteSpace(commandLine))
-                _commandLineProcessor.CmdsHistory.HistoryAppend(_commandLineProcessor.CommandEvaluationContext,commandLine);
+                clp.CmdsHistory.HistoryAppend(clp.CommandEvaluationContext,commandLine);
         }
 
         private void CancelKeyPress(object sender, ConsoleCancelEventArgs e)
@@ -348,7 +351,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                 {
                                     c = sc.ReadKey(true);
 
-                                    context.CommandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(context, Hooks.ReadCommandLineKeyPressed, this);
+                                    context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                        .InvokeHooks(context, Hooks.ReadCommandLineKeyPressed, c);
 #if dbg
                                     System.Diagnostics.Debug.WriteLine($"{c.KeyChar}={c.Key}");
 #endif

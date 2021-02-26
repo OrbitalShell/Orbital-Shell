@@ -58,21 +58,16 @@ namespace OrbitalShell.Component.Shell.Hook
         /// </summary>
         /// <param name="context">context</param>
         /// <param name="name">hook name</param>
-        /// <param name="caller">caller</param>
         /// <param name="parameter">parameter</param>
         /// <param name="hookTriggerMode">how the hook should be tiggered</param>
         /// <param name="callBack">called after a hook has finished exec (param is the hook method object owner)</param>
-        public AggregateHookResult<ResultType> InvokeHooks<CallerType, ParameterType, ResultType>(
+        public AggregateHookResult<ResultType> InvokeHooks<ParameterType, ResultType>(
             CommandEvaluationContext context,
-            string name,            
-            CallerType caller,
-            ParameterType parameter = null,
+            string name,         
+            ParameterType parameter = default,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
         )
-            where CallerType : class
-            where ResultType : class
-            where ParameterType : class
         {
             if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace))
                 context.Out.Echo(context.ShellEnv.Colors.Log + "[invoke hook: " + name + "](rdc) ");
@@ -96,7 +91,7 @@ namespace OrbitalShell.Component.Shell.Hook
                             context.Out.Echo(context.ShellEnv.Colors.Log + $"[hook '{hook.Name}' handled by: '{hook.Owner}.{hook.Method}'](rdc) ");
 
                         var hookResult = hook.Method.Invoke(hook.Owner, new object[] { context });
-                        result.Results.Add((hook, hookResult as ResultType));
+                        result.Results.Add((hook, (ResultType)hookResult ));
                         callBack?.Invoke(hook.Owner);
                     }
                     catch (Exception ex)
@@ -120,101 +115,78 @@ namespace OrbitalShell.Component.Shell.Hook
         /// <param name="parameter">parameter</param>
         /// <param name="hookTriggerMode">how the hook should be tiggered</param>
         /// <param name="callBack">callback after hook</param>
-        public AggregateHookResult<ResultType> InvokeHooks<CallerType,ParameterType,ResultType>(
+        public AggregateHookResult<ResultType> InvokeHooks<ParameterType,ResultType>(
             CommandEvaluationContext context,
             Hooks name,
-            CallerType caller,
-            ParameterType parameter = null,
+            ParameterType parameter = default,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
         )
-            where CallerType : class
-            where ResultType : class
-            where ParameterType : class 
-            
-            => InvokeHooks<CallerType,ParameterType,ResultType>(context, name + "", caller,parameter, hookTriggerMode, callBack);
+            => InvokeHooks<ParameterType,ResultType>(context, name + "", parameter, hookTriggerMode, callBack);
 
         /// <summary>
         /// invoke hooks having the given name
         /// </summary>
         /// <param name="context">command eval context</param>
         /// <param name="name">hook name</param>
-        /// <param name="caller">caller</param>
         /// <param name="parameter">parameter</param>
         /// <param name="hookTriggerMode">how the hook should be tiggered</param>
         /// <param name="callBack">callback after hook</param>
-        public void InvokeHooks<CallerType, ParameterType>(
+        public void InvokeHooks<ParameterType>(
             CommandEvaluationContext context,
             Hooks name,
-            CallerType caller,
-            ParameterType parameter = null,
+            ParameterType parameter = default,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
             )
-            where CallerType : class
-            where ParameterType : class
-
-            => InvokeHooks<CallerType,ParameterType,object>(context, name, caller, parameter, hookTriggerMode, callBack);
+            => InvokeHooks<ParameterType, object>(context, name, parameter, hookTriggerMode, callBack);
 
         /// <summary>
         /// invoke hooks having the given name
         /// </summary>
         /// <param name="context">command eval context</param>
         /// <param name="name">hook name</param>
-        /// <param name="caller">caller</param>
         /// <param name="parameter">parameter</param>
         /// <param name="hookTriggerMode">how the hook should be tiggered</param>
         /// <param name="callBack">callback after hook</param>
-        public void InvokeHooks<CallerType, ParameterType>(
+        public void InvokeHooks<ParameterType>(
             CommandEvaluationContext context,
             string name,
-            CallerType caller,
-            ParameterType parameter = null,
+            ParameterType parameter = default,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
             )
-            where CallerType : class
-            where ParameterType : class
-
-            => InvokeHooks<CallerType, ParameterType, object>(context, name + "", caller, parameter, hookTriggerMode, callBack);
+            => InvokeHooks<ParameterType, object>(context, name + "", parameter, hookTriggerMode, callBack);
 
         /// <summary>
         /// invoke hooks having the given name
         /// </summary>
         /// <param name="context">command eval context</param>
         /// <param name="name">hook name</param>
-        /// <param name="caller">caller</param>
         /// <param name="hookTriggerMode">how the hook should be tiggered</param>
         /// <param name="callBack">callback after hook</param>
-        public void InvokeHooks<CallerType>(
+        public void InvokeHooks(
             CommandEvaluationContext context,
             Hooks name,
-            CallerType caller,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
             )
-            where CallerType : class
-
-            => InvokeHooks<CallerType, object, object>(context, name, caller, null, hookTriggerMode, callBack);
+            => InvokeHooks<object, object>(context, name, null, hookTriggerMode, callBack);
 
         /// <summary>
         /// invoke hooks having the given name
         /// </summary>
         /// <param name="context">command eval context</param>
         /// <param name="name">hook name</param>
-        /// <param name="caller">caller</param>
         /// <param name="hookTriggerMode">how the hook should be tiggered</param>
         /// <param name="callBack">callback after hook</param>
-        public void InvokeHooks<CallerType>(
+        public void InvokeHooks(
             CommandEvaluationContext context,
             string name,
-            CallerType caller,
             HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
             Action<object> callBack = null
             )
-            where CallerType : class
-
-            => InvokeHooks<CallerType, object, object>(context, name + "",  caller, null, hookTriggerMode, callBack);
+            => InvokeHooks<object, object>(context, name + "", null, hookTriggerMode, callBack);
 
     }
 }
