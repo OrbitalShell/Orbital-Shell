@@ -11,7 +11,7 @@ VERSION="10"
 
 APP_PATH="/usr/local"
 APP_NAME="Orbital-Shell"
-BUILD_PATH="OrbitalShell-CLI/bin/Debug/netcoreapp3.1"
+BUILD_PATH="OrbitalShell-CLI/bin/Debug/netcoreapp5.0"
 
 
 ## Main script
@@ -37,7 +37,7 @@ echo -e "\n--> Update Linux"
 apt-get update
 
 echo -e "\n--> Install Linux Packages"
-apt-get install -y apt-transport-https git dotnet-sdk-3.1 dotnet-runtime-3.1
+apt-get install -y apt-transport-https git dotnet-sdk-5.0 dotnet-runtime-5.0
 
 echo -e "\n--> Get Orbital-Shell"
 cd ${APP_PATH}
