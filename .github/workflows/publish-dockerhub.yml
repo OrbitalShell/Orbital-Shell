@@ -27,7 +27,7 @@ jobs:
         workflow_conclusion: success
         branch: master
         name: Orbital Shell artifacts - ${{ matrix.os }}
-        path: ./OrbitalShell-CLI/bin/Debug/netcoreapp3.1/   
+        path: ./OrbitalShell-CLI/bin/Debug/net5.0/   
         repo: ${{ github.repository }}
 
     - name: Login to Docker Hub
