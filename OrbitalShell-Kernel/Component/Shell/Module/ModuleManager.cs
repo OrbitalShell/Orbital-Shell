@@ -187,7 +187,6 @@ namespace OrbitalShell.Component.Shell.Module
                 ModuleHookManager.InvokeHooks(
                     context,
                     Hooks.ModuleInit,
-                    this,
                     HookTriggerMode.FirstTimeOnly,                    
                     (o) =>
                     {

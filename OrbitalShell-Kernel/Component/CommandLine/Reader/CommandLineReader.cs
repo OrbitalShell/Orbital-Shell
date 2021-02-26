@@ -207,8 +207,9 @@ namespace OrbitalShell.Component.CommandLine.Reader
                     }
                     catch (OperationCanceledException)
                     {
-                        clp.ModuleManager.ModuleHookManager.InvokeHooks<CommandLineReader>(clp.CommandEvaluationContext, Hooks.ProcessCommandLineCancellation, this ) ;
-                        //var res = task.Result;
+                        clp.ModuleManager.ModuleHookManager.InvokeHooks<CommandLineReader>(
+                            clp.CommandEvaluationContext, Hooks.ProcessCommandLineCanceled ) ;
+
                         expressionEvaluationResult = task.Result;
                         Console.Out.Warningln($"command canceled: {commandLine}");
                     }
@@ -216,7 +217,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 }
                 catch (Exception ex)
                 {
-                    clp.ModuleManager.ModuleHookManager.InvokeHooks(clp.CommandEvaluationContext,Hooks.ProcessCommandLineError, this);
+                    clp.ModuleManager.ModuleHookManager.InvokeHooks(
+                        clp.CommandEvaluationContext,Hooks.ProcessCommandLineError);
                     Console.LogError(ex);
                 }
                 finally
@@ -306,12 +308,12 @@ namespace OrbitalShell.Component.CommandLine.Reader
                         {
                             lock (Console.ConsoleLock)
                             {
-                                hm?.InvokeHooks(context, Hooks.PromptOutputBegin, this);
+                                hm?.InvokeHooks(context, Hooks.PromptOutputBegin);
 
                                 var _beginPromptPos = Console.Out.CursorPos;
                                 Console.Out.Echo(prompt);
 
-                                hm?.InvokeHooks(context, Hooks.PromptOutputEnd, this);
+                                hm?.InvokeHooks(context, Hooks.PromptOutputEnd);
 
                                 _beginOfLineCurPos = Console.Out.CursorPos;
                                 lastInputPos = _beginOfLineCurPos;
@@ -326,7 +328,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
 #endif
                                 _readingStarted = true;
 
-                                context.CommandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(context, Hooks.BeginReadCommandLine, this);
+                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                    .InvokeHooks(context, Hooks.BeginReadCommandLine );
                             }
                         }
                         var eol = false;

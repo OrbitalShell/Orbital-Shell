@@ -69,7 +69,8 @@ namespace OrbitalShell.Component.Shell
         {
             _history.Add(s);
             _historyIndex = _history.Count;
-            context?.CommandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(context, Hooks.PostHistoryAppend, this);
+            context?.CommandLineProcessor.ModuleManager.ModuleHookManager
+                .InvokeHooks(context, Hooks.PostHistoryAppend);
         }
 
         public void HistorySetIndex(int index, bool checkIndex = true)
@@ -86,7 +87,8 @@ namespace OrbitalShell.Component.Shell
         public void ClearHistory(CommandEvaluationContext context)
         {
             _history.Clear();
-            context?.CommandLineProcessor.ModuleManager.ModuleHookManager.InvokeHooks(context, Hooks.ClearHistory, this);
+            context?.CommandLineProcessor.ModuleManager.ModuleHookManager
+                .InvokeHooks(context, Hooks.ClearHistory);
         }
 
         #endregion

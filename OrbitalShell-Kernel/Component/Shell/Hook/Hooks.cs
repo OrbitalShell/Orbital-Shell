@@ -45,7 +45,7 @@ namespace OrbitalShell.Component.Shell.Hook
         /// <summary>
         /// user cancellation (CTRL+C) while processing command line within command line reader
         /// </summary>
-        ProcessCommandLineCancellation,
+        ProcessCommandLineCanceled,
 
         /// <summary>
         /// just after something is added to command history

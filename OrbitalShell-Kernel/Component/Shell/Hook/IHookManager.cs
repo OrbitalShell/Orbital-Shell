@@ -42,15 +42,27 @@ namespace OrbitalShell.Component.Shell.Hook
         void InvokeHooks(
             CommandEvaluationContext context,
             Hooks name,
-            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
-            Action<object> callBack = null
+            HookTriggerMode hookTriggerMode,
+            Action<object> callBack
             );
 
         void InvokeHooks(
             CommandEvaluationContext context,
             string name,
-            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
-            Action<object> callBack = null
+            HookTriggerMode hookTriggerMode,
+            Action<object> callBack
+            );
+
+        void InvokeHooks(
+            CommandEvaluationContext context,
+            Hooks name,
+            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime
+            );
+
+        void InvokeHooks(
+            CommandEvaluationContext context,
+            string name,
+            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime
             );
 
         void RegisterHook(CommandEvaluationContext context, string name, MethodInfo mi);

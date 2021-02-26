@@ -168,8 +168,8 @@ namespace OrbitalShell.Component.Shell.Hook
         public void InvokeHooks(
             CommandEvaluationContext context,
             Hooks name,
-            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
-            Action<object> callBack = null
+            HookTriggerMode hookTriggerMode,
+            Action<object> callBack
             )
             => InvokeHooks<object, object>(context, name, null, hookTriggerMode, callBack);
 
@@ -183,10 +183,36 @@ namespace OrbitalShell.Component.Shell.Hook
         public void InvokeHooks(
             CommandEvaluationContext context,
             string name,
-            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime,
-            Action<object> callBack = null
+            HookTriggerMode hookTriggerMode,
+            Action<object> callBack
             )
             => InvokeHooks<object, object>(context, name + "", null, hookTriggerMode, callBack);
+
+        /// <summary>
+        /// invoke hooks having the given name
+        /// </summary>
+        /// <param name="context">command eval context</param>
+        /// <param name="name">hook name</param>
+        /// <param name="hookTriggerMode">how the hook should be tiggered</param>
+        public void InvokeHooks(
+            CommandEvaluationContext context,
+            Hooks name,
+            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime
+            )
+            => InvokeHooks<object, object>(context, name, null, hookTriggerMode);
+
+        /// <summary>
+        /// invoke hooks having the given name
+        /// </summary>
+        /// <param name="context">command eval context</param>
+        /// <param name="name">hook name</param>
+        /// <param name="hookTriggerMode">how the hook should be tiggered</param>
+        public void InvokeHooks(
+            CommandEvaluationContext context,
+            string name,
+            HookTriggerMode hookTriggerMode = HookTriggerMode.EachTime
+            )
+            => InvokeHooks<object, object>(context, name + "", null, hookTriggerMode);
 
     }
 }

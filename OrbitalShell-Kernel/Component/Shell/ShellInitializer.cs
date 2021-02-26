@@ -70,7 +70,6 @@ namespace OrbitalShell.Component.Shell
             _clp.ModuleManager.ModuleHookManager.InvokeHooks(
                 _clp.CommandEvaluationContext,
                 Hooks.ShellInitialized,
-                this,
                 HookTriggerMode.FirstTimeOnly
                 );
 
