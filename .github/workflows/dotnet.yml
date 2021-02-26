@@ -43,4 +43,4 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: Orbital Shell artifacts - ${{ matrix.os }}
-        path: ./OrbitalShell-CLI/bin/Debug/netcoreapp3.1/
+        path: ./OrbitalShell-CLI/bin/Debug/net5.0/
