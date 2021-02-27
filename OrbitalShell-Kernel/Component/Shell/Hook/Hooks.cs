@@ -67,6 +67,59 @@ namespace OrbitalShell.Component.Shell.Hook
         /// </summary>
         ReadCommandLineKeyPressed,
 
+        /// <summary>
+        /// clr enter
+        /// </summary>
+        ReadCommandLineEnterPressed,
 
+        /// <summary>
+        /// clr esc
+        /// </summary>
+        ReadCommandLineEscPressed,
+
+        /// <summary>
+        /// clr home
+        /// </summary>
+        ReadCommandLineHomePressed,
+
+        /// <summary>
+        /// clr end
+        /// </summary>
+        ReadCommandLineEndPressed,
+
+        /// <summary>
+        /// clr tab
+        /// </summary>
+        ReadCommandLineTabPressed,
+
+        /// <summary>
+        /// clr left arrow
+        /// </summary>
+        ReadCommandLineLeftArrowPressed,
+
+        /// <summary>
+        /// clr right arrow
+        /// </summary>
+        ReadCommandLineRightArrowPressed,
+
+        /// <summary>
+        /// clr up arrow
+        /// </summary>
+        ReadCommandLineUpArrowPressed,
+
+        /// <summary>
+        /// clr down arrow
+        /// </summary>
+        ReadCommandLineDownArrowPressed,
+
+        /// <summary>
+        /// clr backspace
+        /// </summary>
+        ReadCommandLineBackspacePressed,
+
+        /// <summary>
+        /// clr delete
+        /// </summary>
+        ReadCommandLineDeletePressed,
     }
 }

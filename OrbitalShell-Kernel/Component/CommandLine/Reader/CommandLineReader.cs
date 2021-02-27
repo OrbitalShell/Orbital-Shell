@@ -8,11 +8,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.ObjectPool;
+
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Lib;
 
 using sc = System.Console;
 
@@ -41,6 +44,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Supprimer les membres privés non lus", Justification = "<En attente>")]
         static int _instanceId = 0;
+
+        ObjectPool<EventArgs<ConsoleKeyInfo>> _keyEventArgsPool = new DefaultObjectPool<EventArgs<ConsoleKeyInfo>>(
+            new DefaultPooledObjectPolicy<EventArgs<ConsoleKeyInfo>>()
+            );
 
         #endregion
 
@@ -197,7 +204,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                     {
                         try
                         {
-                            task.Wait(clp.CancellationTokenSource.Token);
+                            task.Wait(clp.CancellationTokenSource.Token);       // TODO: not if {com} &
                         }
                         catch (ThreadInterruptedException)
                         {
@@ -223,7 +230,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 }
                 finally
                 {
-                    clp.ModuleManager.ModuleHookManager.InvokeHooks(clp.CommandEvaluationContext, Hooks.PostProcessCommandLine, this);
+                    clp.ModuleManager.ModuleHookManager
+                        .InvokeHooks(clp.CommandEvaluationContext, Hooks.PostProcessCommandLine );
 
                     if (enablePrePostComOutput && clp != null)
                     {
@@ -354,15 +362,21 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                 {
                                     c = sc.ReadKey(true);
 
+                                    var keyPressedEventArgs = _keyEventArgsPool.Get();
+                                    keyPressedEventArgs.Value = c;
                                     context.CommandLineProcessor.ModuleManager.ModuleHookManager
-                                        .InvokeHooks(context, Hooks.ReadCommandLineKeyPressed, c);
-#if dbg
+                                        .InvokeHooks(context, Hooks.ReadCommandLineKeyPressed, keyPressedEventArgs );                                    
+                                    
+                                    #if dbg
                                     System.Diagnostics.Debug.WriteLine($"{c.KeyChar}={c.Key}");
-#endif
+                                    #endif
+
                                     #region handle special keys - edition mode, movement
 
-                                    if (!_ignoreNextKey)
+                                    if (!_ignoreNextKey && !keyPressedEventArgs.IsCanceled)
                                     {
+                                        keyPressedEventArgs.IsCanceled = false;
+
                                         // normally the cursor has moved of 1 character right or left
                                         var cPos = Console.Out.CursorPos;
                                         if (lastInputPos.HasValue
@@ -390,23 +404,34 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                             /// CR: default end of input
                                             /// </summary>
                                             case ConsoleKey.Enter:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineEnterPressed, keyPressedEventArgs);
                                                 eol = true;
+
                                                 break;
 
                                             /// <summary>
                                             /// ESC : clean-up input and set cursor at begin of line (after prompt)
                                             /// </summary>
                                             case ConsoleKey.Escape:
-                                                //Out.HideCur();
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineEscPressed, keyPressedEventArgs);
+
                                                 CleanUpReadln();
                                                 lastInputPos = _beginOfLineCurPos;
-                                                //Out.ShowCur();
+
                                                 break;
 
                                             /// <summary>
                                             /// HOME : set cursor position at begin of input (just after prompt) 
                                             /// </summary>
                                             case ConsoleKey.Home:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineHomePressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     Console.Out.SetCursorPosConstraintedInWorkArea(_beginOfLineCurPos);
@@ -418,6 +443,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                             /// END : set cursor position at end of input
                                             /// </summary>
                                             case ConsoleKey.End:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineEndPressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos);
@@ -428,6 +457,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 break;
 
                                             case ConsoleKey.Tab:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineTabPressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     printedStr = "".PadLeft(Console.TabLength, ' ');
@@ -436,6 +469,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 break;
 
                                             case ConsoleKey.LeftArrow:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineLeftArrowPressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     var p = Console.Out.CursorPos;
@@ -456,6 +493,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 break;
 
                                             case ConsoleKey.RightArrow:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineRightArrowPressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     var txt = _inputReaderStringBuilder.ToString();
@@ -466,6 +507,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 break;
 
                                             case ConsoleKey.Backspace:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineBackspacePressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     var txt = _inputReaderStringBuilder.ToString();
@@ -498,6 +543,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 break;
 
                                             case ConsoleKey.Delete:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineDeletePressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     var txt = _inputReaderStringBuilder.ToString();
@@ -530,6 +579,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 break;
 
                                             case ConsoleKey.UpArrow:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineUpArrowPressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     if (Console.Out.CursorTop == _beginOfLineCurPos.Y)
@@ -556,6 +609,10 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 break;
 
                                             case ConsoleKey.DownArrow:
+
+                                                context.CommandLineProcessor.ModuleManager.ModuleHookManager
+                                                    .InvokeHooks(context, Hooks.ReadCommandLineDownArrowPressed, keyPressedEventArgs);
+
                                                 lock (Console.ConsoleLock)
                                                 {
                                                     var slines = Console.Out.GetWorkAreaStringSplits(_inputReaderStringBuilder.ToString(), _beginOfLineCurPos).Splits;
@@ -592,6 +649,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                         _ignoreNextKey = false;
 
                                     #endregion
+
+                                    _keyEventArgsPool.Return(keyPressedEventArgs);
                                 }
                                 else
                                 {
