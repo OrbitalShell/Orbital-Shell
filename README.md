@@ -1,6 +1,6 @@
 ## Orbital Shell
 
-<img src="assets/robotazteque.png" align="left" style="float:left;margin-right:8px"/><b>Orbital Shell</b> is a multi-plateform (**windows, linux, macos, arm**) command shell (according to .Net Core supported platforms and APIs compatibilities), inspired by <b><i>bash</i></b> and **POSIX** recommendations.<br><br>It provides any usual bash shell feature (even if modernized) and 'user friendly' syntaxes allowing to access (get/set/call) C# objects.<br><br>Developed using **C# 8, .NET Core 3.1/Net 5 and .NET Standard 2.1**
+<img src="assets/robotazteque.png" align="left" style="float:left;margin-right:8px"/><b>Orbital Shell</b> is a multi-plateform (**windows, linux, macos, arm**) command shell (according to .Net Core supported platforms and APIs compatibilities), inspired by <b><i>bash</i></b> and **POSIX** recommendations.<br><br>It provides any usual bash shell feature (even if modernized) and 'user friendly' syntaxes allowing to access (get/set/call) C# objects.<br><br>Developed using **C# 8 .NET 5.0 - compatible with modules and libraries targeting .NET Core 3.1 and .NET Standard 2.1**
 
 <br><br>
 
@@ -137,7 +137,7 @@ Developers and users manuals are available in the project web site @ [Orbital SH
 
 ## Contribute !
 
-😄 We are looking for **collaborators** 👯 to help for evolving this tool ! If you **like** the **command line**, the **bash** syntax, programming **cli tools**, **parsers**, **data streams**, ANSI, C# 8, batch, and so on... you may like to develop orbital shell! Any idea, suggest, code, feedback is welcomed ! 
+😄 We are looking for **collaborators** 👯 to help for evolving this tool ! If you **like** the **command line**, the **bash** syntax, programming **cli tools**, **parsers**, **data streams**, ANSI, C# 8, batch, and so on... you may like to develop orbital shell! Any idea, suggest, code, feedback is welcomed ! You can directly **FORK** the project @ [https://github.com/OrbitalShell/Orbital-Shell.git](https://github.com/OrbitalShell/Orbital-Shell.git) and start developing to prepare your first pull request, it will be well received. You can also peek **an issue** and start working on. Join the **orbital shell team** and get advantages of the team tools on github. We can contact 💬 by mail, skype and so on...
 
 You can directly **FORK** the project @ [https://github.com/OrbitalShell/Orbital-Shell.git](https://github.com/OrbitalShell/Orbital-Shell.git) and start developing to prepare your first pull request, it will be well received. You can also peek **an issue** and start working on. 
 
@@ -149,12 +149,28 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
   - visit the project repository @ [https://github.com/OrbitalShell/Orbital-Shell/](https://github.com/OrbitalShell/Orbital-Shell/)
   
 **Join the project**: 
-- Send a mail to the project team @ [mailto://orbital-shell@outlook.fr](mailto://orbital-shell@outlook.fr) or to [me](mailto://franck.gaspoz@gmail.com)
-- or **push to repository** you will receive an invite to join the project via github
 
-**The project team like to meet people and wish to share pleasure of programming and technology enthusiasm, with fun and good spirit** 
+## :fast_forward: :fast_forward: Join the project. You can send a mail to the project team @ [mailto://orbital-shell@outlook.fr](mailto://orbital-shell@outlook.fr) or to the maintener [me](mailto://franck.gaspoz@gmail.com) 
+- A simple **hello** from you part and you will be welcomed and invited to join the project 👍 !
+- A simple **star** on the project main repo and you will also be invited 👋 !
+## :fast_forward: :fast_forward: This project is a collaborative work, any one can participate and do anything he wishes 😎 !
 
+There are a various subjects that can be treated:
+- C# 5.0 programming
+- develop command line parser
+- develop shell commands (find,ls,grep,sed,..: add/improve any command you want!)
+- develop shell scripts (.orbsh/.sh)
+- Technical documentation
+- Automated Tests
+- Design any new feature
+- CI/CD (powered by GitHub workflows)
+- build binaries / distribs / .nupkg / setups / ...
+- Web site development (design, content update, ...)
 <br>
+
+  **The project team like to meet people and wish to share pleasure of programming and technology enthusiasm, with fun and good spirit** 
+
+<br><br>
 
 ## Features
 
