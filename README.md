@@ -151,6 +151,7 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
 **Join the project**: 
 
 ## :fast_forward: :fast_forward: Join the project. You can send a mail to the project team @ [mailto://orbital-shell@outlook.fr](mailto://orbital-shell@outlook.fr) or to the maintener [me](mailto://franck.gaspoz@gmail.com) 
+- Curious / beginner / intermediate / expert are all welcomed!
 - A simple **hello** from you part and you will be welcomed and invited to join the project 👍 !
 - A simple **star** on the project main repo and you will also be invited 👋 !
 ## :fast_forward: :fast_forward: This project is a collaborative work, any one can participate and do anything he wishes 😎 !
@@ -162,6 +163,7 @@ There are a various subjects that can be treated:
 - develop shell scripts (.orbsh/.sh)
 - Technical documentation
 - Automated Tests
+- Code review / validation of pull requests
 - Design any new feature
 - CI/CD (powered by GitHub workflows)
 - build binaries / distribs / .nupkg / setups / ...
