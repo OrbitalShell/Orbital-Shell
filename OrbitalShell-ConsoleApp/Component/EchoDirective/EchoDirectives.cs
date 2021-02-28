@@ -345,10 +345,8 @@
         /// </summary>
         SGR_RapidBlink,
 
-
         /// <summary>
-        /// 
-        /// </su
+        /// Reverse video
         /// </summary>
         SGR_ReverseVideo,
 
@@ -393,32 +391,32 @@
         SGR_NormalIntensity,
 
         /// <summary>
-        /// Set foreground color - 3/4 bits palette mode : SGRF=0<=n<=7[,bright]
+        /// Set foreground color - 3/4 bits palette mode : SGRF=0&lt;=n&lt;=7[,bright]
         /// </summary>
         SGRF,
 
         /// <summary>
-        /// set foreground color - 8 bits palette (256 colors) : SGRF8=0<=n<=255
+        /// set foreground color - 8 bits palette (256 colors) : SGRF8=0&lt;=n&lt;=255
         /// </summary>
         SGRF8,
 
         /// <summary>
-        /// set foreground color - 24 bits 'true color' : SGRF24=0<=n<=255,0<=n<=255,0<=n<=255 (r,g,b)
+        /// set foreground color - 24 bits 'true color' : SGRF24=0&lt;=n&lt;=255,0&lt;=n&lt;=255,0&lt;=n&lt;=255 (r,g,b)
         /// </summary>
         SGRF24,
 
         /// <summary>
-        /// Set background color - 3/4 bits palette mode : SGRF=0<=n<=7[,bright]
+        /// Set background color - 3/4 bits palette mode : SGRF=0&lt;=n&lt;=7[,bright]
         /// </summary>
         SGRB,
 
         /// <summary>
-        /// set background color - 8 bits palette (256 colors) : SGRF8=0<=n<=255
+        /// set background color - 8 bits palette (256 colors) : SGRF8=0&lt;=n&lt;=255
         /// </summary>
         SGRB8,
 
         /// <summary>
-        /// set background color - 24 bits 'true color' : SGRF24=0<=n<=255,0<=n<=255,0<=n<=255 (r,g,b)
+        /// set background color - 24 bits 'true color' : SGRF24=0&lt;=n&lt;=255,0&lt;=n&lt;=255,0&lt;=n&lt;=255 (r,g,b)
         /// </summary>
         SGRB24,
 
@@ -457,12 +455,12 @@
         f,
 
         /// <summary>
-        /// set foreground from 8 bits palette : f8=0<=n<=255
+        /// set foreground from 8 bits palette : f8=0&lt;=n&lt;=255
         /// </summary>
         f8,
 
         /// <summary>
-        /// set foreground from 24 bits color : f24=r:g:b with 0<=r,g,b<=255
+        /// set foreground from 24 bits color : f24=r:g:b with 0&lt;=r,g,b&lt;=255
         /// </summary>
         f24,
 
@@ -472,12 +470,12 @@
         b,
 
         /// <summary>
-        /// set background from 8 bits palette : b8=0<=n<=255
+        /// set background from 8 bits palette : b8=0&lt;=n&lt;=255
         /// </summary>
         b8,
 
         /// <summary>
-        /// set background from 24 bits color : b24=r:g:b with 0<=r,g,b<=255
+        /// set background from 24 bits color : b24=r:g:b with 0&lt;=r,g,b&lt;=255
         /// </summary>
         b24,
 

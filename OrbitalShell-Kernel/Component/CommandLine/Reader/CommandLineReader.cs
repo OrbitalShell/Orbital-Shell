@@ -400,9 +400,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
                                         switch (c.Key)
                                         {
-                                            /// <summary>
-                                            /// CR: default end of input
-                                            /// </summary>
+                                            // CR: default end of input
                                             case ConsoleKey.Enter:
 
                                                 context.CommandLineProcessor.ModuleManager.ModuleHookManager
@@ -411,9 +409,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
                                                 break;
 
-                                            /// <summary>
-                                            /// ESC : clean-up input and set cursor at begin of line (after prompt)
-                                            /// </summary>
+                                            // ESC : clean-up input and set cursor at begin of line (after prompt)
                                             case ConsoleKey.Escape:
 
                                                 context.CommandLineProcessor.ModuleManager.ModuleHookManager
@@ -424,9 +420,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
                                                 break;
 
-                                            /// <summary>
-                                            /// HOME : set cursor position at begin of input (just after prompt) 
-                                            /// </summary>
+                                            // HOME : set cursor position at begin of input (just after prompt) 
                                             case ConsoleKey.Home:
 
                                                 context.CommandLineProcessor.ModuleManager.ModuleHookManager
@@ -439,9 +433,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 }
                                                 break;
 
-                                            /// <summary>
-                                            /// END : set cursor position at end of input
-                                            /// </summary>
+                                            // END : set cursor position at end of input
                                             case ConsoleKey.End:
 
                                                 context.CommandLineProcessor.ModuleManager.ModuleHookManager

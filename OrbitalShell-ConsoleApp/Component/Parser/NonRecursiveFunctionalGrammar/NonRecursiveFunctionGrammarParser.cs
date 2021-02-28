@@ -9,7 +9,7 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
         #region predefined grammar functions
 
         /// <summary>
-        /// ascii<32 && !=27 (ANSI Single Code Function)
+        /// ascii&lt;32 &amp;&amp; !=27 (ANSI Single Code Function)
         /// </summary>
         public const string SCF = "scf";
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell
 {
@@ -18,7 +19,8 @@ namespace OrbitalShell
             var scope = App.Host.Services.CreateScope();
             si.ScopedServiceProvider = scope.ServiceProvider;
 
-            var returnCode = Shell.Startup(scope.ServiceProvider,args);
+            var shellStartup = scope.ServiceProvider.GetRequiredService<IShellStartup>();
+            var returnCode = shellStartup.Startup(args);
 
             App.Host.RunAsync().Wait();
 

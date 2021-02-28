@@ -14,8 +14,8 @@
     <Product>Orbital Shell - ConsoleApp</Product>
     <Description>Orbital Shell console application library</Description>
     <Copyright>(c) 2020 Licence MIT</Copyright>
-    <Version>1.0.8</Version>
-    <InformationalVersion>1.0.8</InformationalVersion>
+    <Version>1.0.9</Version>
+    <InformationalVersion>1.0.9</InformationalVersion>
 
 	<PackageReleaseNotes>milestone 1</PackageReleaseNotes>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -49,6 +49,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DocumentationFile>bin/Debug/net5.0/OrbitalShell-ConsoleApp.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591;1572;1573</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

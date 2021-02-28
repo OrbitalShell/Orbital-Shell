@@ -93,7 +93,7 @@ namespace OrbitalShell.Component.Console
         /// <summary>
         /// parse a 24 bit color
         /// </summary>
-        /// <param name="c">string of format: r:g:b where 0<=r,g,b<=255</param>
+        /// <param name="c">string of format: r:g:b where 0&lt;=r,g,b &lt;255</param>
         /// <returns></returns>
         public static (int r,int g,int b) Parse24BitColor(IConsole console, object c)
         {

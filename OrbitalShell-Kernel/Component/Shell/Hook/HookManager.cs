@@ -69,7 +69,7 @@ namespace OrbitalShell.Component.Shell.Hook
             Action<object> callBack = null
         )
         {
-            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace))
+            if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.debug_enableHookTrace,false))
                 context.Out.Echo(context.ShellEnv.Colors.Log + "[invoke hook: " + name + "](rdc) ");
 
             AggregateHookResult<ResultType> result = null;

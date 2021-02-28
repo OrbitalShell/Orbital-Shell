@@ -12,6 +12,7 @@ using static OrbitalShell.Lib.Str;
 using System.Collections.Generic;
 using System.Data;
 using OrbitalShell.Component.Shell.Module.Data;
+using OrbitalShell.Component.Shell.Hook;
 
 namespace OrbitalShell.Component.Shell.Variable
 {
@@ -41,8 +42,10 @@ namespace OrbitalShell.Component.Shell.Variable
         /// </summary>
         /// <param name="context"></param>
         public void Initialize(CommandEvaluationContext context)
-        {            
+        {
             Vars = context.Variables;
+
+            context.CommandLineProcessor.HookManager.InvokeHooks(context, Hooks.ShellStartsInitializing);
 
             // data objects
 
@@ -392,7 +395,6 @@ namespace OrbitalShell.Component.Shell.Variable
             return o;
         }
 
-
         #region getters
 
         public bool Get(ShellEnvironmentVar var, out object value, bool throwException = true)
@@ -406,15 +408,29 @@ namespace OrbitalShell.Component.Shell.Variable
             var path = Nsp(var);
             return Vars.GetValue(path, throwException);
         }
+
         public DataValue GetDataValue(string path, bool throwException = true)
         {
             return Vars.GetValue(path, throwException);
         }
-        public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true) => (T)GetDataValue(var, throwException).Value;
-        public T GetValue<T>(string varPath, string varName, bool throwException = true) => (T)GetDataValue(Nsp(varPath, varName), throwException).Value;
 
-        public bool IsOptionSetted(ShellEnvironmentVar @var) => GetValue<bool>(@var, false);
-        public bool IsOptionSetted(string Namespace, string varName) => Vars.GetValue<bool>(Nsp(Namespace, varName));
+        public T GetValue<T>(ShellEnvironmentVar var, bool throwException = true)
+        {
+            var v = GetDataValue(var, throwException);
+            if (v.Value == null) return default;
+            var tv = (T)(v.Value);
+            return tv;
+        }
+
+        public T GetValue<T>(string varPath, string varName, bool throwException = true) {
+            var v = GetDataValue(Nsp(varPath, varName), throwException);
+            if (v.Value == null) return default;
+            var tv = (T)(v.Value);
+            return tv;
+        }
+
+        public bool IsOptionSetted(ShellEnvironmentVar @var, bool throwException = true) => GetValue<bool>(@var, throwException);
+        public bool IsOptionSetted(string Namespace, string varName, bool throwException = true) => Vars.GetValue<bool>(Nsp(Namespace, varName), throwException);
 
         #endregion
 

@@ -380,9 +380,9 @@ namespace OrbitalShell.Component.Console
         /// 8- 15:  high intensity colors (as in ESC [ 90–97 m, see SGR_4BitsColors bright)<br/>
         /// 16-231:  6 × 6 × 6 cube (216 colors): 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)<br/>
         /// 232-255:  grayscale from black to white in 24 steps</para>
-        /// <para>format is {n},0<=n<=255</para>
+        /// <para>format is {n},0&lt;=n&lt;=255</para>
         /// </summary>
-        /// <param name="s">{n},0<=n<=255</param>
+        /// <param name="s">{n},0&lt;=n&lt;=255</param>
         /// <returns>ansi seq</returns>
         public static string SGRF8(object o)
         {
@@ -412,9 +412,9 @@ namespace OrbitalShell.Component.Console
         /// <summary>
         /// set foreground color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
         /// <para>parameters are red,green,blue luminosity from 0 to 255</para>
-        /// <para>format is: {r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255</para>
+        /// <para>format is: {r}:{g}:{b} 0&lt;=r&lt;=255 0&lt;=g&lt;=255 0&lt;=b&lt;=255</para>
         /// </summary>
-        /// <param name="s">{r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255</param>
+        /// <param name="s">{r}:{g}:{b} 0&lt;=r&lt;=255 0&lt;=g&lt;=255 0&lt;=b&lt;=255</param>
         /// <returns>ansi seq</returns>
         public static string SGRF24(object o)
         {
@@ -465,7 +465,7 @@ namespace OrbitalShell.Component.Console
         /// set background color - 8 bits palette (256 colors)
         /// <para>0-  7:  standard colors (as in ESC [ 30–37 m, see SGR_4BitsColors)<br/>
         /// 8- 15:  high intensity colors (as in ESC [ 90–97 m, see SGR_4BitsColors bright)<br/>
-        /// 16-231:  6 × 6 × 6 cube (216 colors): 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)<br/>
+        /// 16-231:  6 × 6 × 6 cube (216 colors): 16 + 36 × r + 6 × g + b (0 &lt;= r, g, b ≤ 5)<br/>
         /// 232-255:  grayscale from black to white in 24 steps</para>
         /// </summary>
         /// <param name="n">palette color index</param>
@@ -478,9 +478,9 @@ namespace OrbitalShell.Component.Console
         /// 8- 15:  high intensity colors (as in ESC [ 90–97 m, see SGR_4BitsColors bright)<br/>
         /// 16-231:  6 × 6 × 6 cube (216 colors): 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)<br/>
         /// 232-255:  grayscale from black to white in 24 steps</para>
-        /// <para>format is {n},0<=n<=255</para>
+        /// <para>format is {n},0&lt;=n&lt;=255</para>
         /// </summary>
-        /// <param name="s">{n},0<=n<=255</param>
+        /// <param name="s">{n},0&lt;=n&lt;=255</param>
         /// <returns>ansi seq</returns>
         public static string SGRB8(object o)
         {
@@ -510,9 +510,9 @@ namespace OrbitalShell.Component.Console
         /// <summary>
         /// set background color - 24 bits 'true color' (for 16 or 24 bits palette graphic cards)
         /// <para>parameters are red,green,blue luminosity from 0 to 255</para>
-        /// <para>format is: {r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255</para>
+        /// <para>format is: {r}:{g}:{b} 0&lt;=r&lt;=255 0&lt;=g&lt;=255 0&lt;=b&lt;=255</para>
         /// </summary>
-        /// <param name="s">{r}:{g}:{b} 0<=r<=255 0<=g<=255 0<=b<=255</param>
+        /// <param name="s">{r}:{g}:{b} 0&lt;=r&lt;=255 0&lt;=g&lt;=255 0&lt;=b&lt;=255</param>
         /// <returns>ansi seq</returns>
         public static string SGRB24(object o)
         {

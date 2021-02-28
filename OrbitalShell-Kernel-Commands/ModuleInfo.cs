@@ -1,12 +1,11 @@
 using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Lib;
 
-/// <summary>
-/// declare a shell module
-/// </summary>
+// declare a shell module
+
 [assembly: ShellModule("OrbitalShell-Kernel-Commands")]
 [assembly: ModuleTargetPlateform(TargetPlatform.Any)]
-[assembly: ModuleShellMinVersion("1.0.8")]
+[assembly: ModuleShellMinVersion("1.0.9")]
 [assembly: ModuleAuthors("Orbital Shell team")]
 namespace OrbitalShell.Kernel.Commands
 {

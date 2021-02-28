@@ -15,8 +15,8 @@
     <Product>Orbital Shell - Kernel commands module</Product>
     <Description>Orbital Shell kernel commands module. Orbital Shell is a command shell based inspired by bash and POSIX recommendations, coded in C# .Net Core</Description>
     <Copyright>(c) Orbital Shell 2020</Copyright>
-    <Version>1.0.8</Version>
-    <InformationalVersion>1.0.8</InformationalVersion>
+    <Version>1.0.9</Version>
+    <InformationalVersion>1.0.9</InformationalVersion>
 
 	<PackageReleaseNotes>milestone 1</PackageReleaseNotes>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -50,6 +50,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
     <DocumentationFile>bin/Debug/net5.0/OrbitalShell-Kernel-Commands.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591;1572;1573</NoWarn>
   </PropertyGroup>
 
 <ItemGroup>

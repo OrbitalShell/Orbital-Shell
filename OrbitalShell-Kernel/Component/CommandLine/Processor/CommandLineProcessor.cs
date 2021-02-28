@@ -24,6 +24,7 @@ using OrbitalShell.Lib.FileSystem;
 using System.Text;
 using OrbitalShell.Lib.Process;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell.Hook;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -71,6 +72,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public IExternalParserExtension ExternalParserExtension { get; protected set; }
 
         public IModuleManager ModuleManager { get; protected set; }
+
+        public IHookManager HookManager { get; protected set; }
 
         public IConsole Console { get; protected set; }
 
@@ -143,12 +146,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
         #region command engine operations
 
         public CommandLineProcessor(
-            //IServiceProviderScope scope,
             IConsole console,
             ICommandBatchProcessor cbp,
             ICommandsAlias cal,
             ISyntaxAnalyser sa,
             IModuleManager modManager,
+            IHookManager hookManager,
             IExternalParserExtension parserExt,
             ICommandLineProcessorSettings settings = null
             )
@@ -162,8 +165,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
             parserExt.CommandLineProcessor = this;
             SyntaxAnalyzer = sa;
             ModuleManager = modManager;
+            HookManager = hookManager;
             _settings = settings;
-            //_settings = settings ?? scope.ServiceProvider.GetRequiredService<ICommandLineProcessorSettings>();
             CommandBatchProcessor = cbp;
             CommandsAlias = cal;            
         }

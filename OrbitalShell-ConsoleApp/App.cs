@@ -10,8 +10,8 @@ namespace OrbitalShell
 
     /// <summary>
     /// console app bootstrap
-    /// <remarks>
     /// </summary>
+    /// <remarks>
     /// begin DI init
     /// </remarks>
     public static class App

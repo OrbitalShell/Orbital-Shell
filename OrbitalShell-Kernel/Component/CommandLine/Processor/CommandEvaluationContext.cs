@@ -88,7 +88,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CommandLineProcessor = commandLineProcessor;
             SetStreams(@out, @in, err);
             InputData = inputData;
-
+           
             SetupShellEnvVar();
             Variables = new Variables((VariableNamespace.env, ShellEnv));
             ShellEnv.Initialize(this);

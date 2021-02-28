@@ -57,6 +57,8 @@ namespace OrbitalShell
                                     serviceProvider.GetRequiredService<ICommandLineProcessor>());
                                 return clr;
                             })
+                    .AddScoped
+                        <IShellStartup,ShellStartup>()
                     );
         }
     }
