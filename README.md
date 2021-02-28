@@ -126,11 +126,11 @@ CLI OSX x64<br>
 
 This shell integrates the <u>most usefull shell commands</u>, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (<u>scripts, functions, commands, aliases, settings, parametrization,...</u>). Having a strong <u>ANSI/VT-100-220-300-500</u> support, it provides structured and colorized display of data and information (support of <u>ASCII, Unicode and 24 bits colors</u>).
 
-Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://orbitalshell.github.io/Orbital-Shell/) 
+Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://orbitalshell.github.io/OrbitalShell/) 
 
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="docs/assets/img/2021-02-12 03_47_28-Window.png"/>
 
-Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://orbitalshell.github.io/Orbital-Shell/documentation) 
+Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://orbitalshell.github.io/OrbitalShell/documentation) 
 
 
 <br>
@@ -145,7 +145,7 @@ Join the **orbital shell team** and get advantages of the team tools on github. 
 
   - read the [contribution guide lines](https://github.com/OrbitalShell/Orbital-Shell/blob/master/CONTRIBUTING.md) and the [code of conduct of the project](https://github.com/OrbitalShell/Orbital-Shell/blob/master/CODE_OF_CONDUCT.md)
   - read the project README @ [https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md](https://github.com/OrbitalShell/Orbital-Shell/blob/master/README.md)
-  - visit the project's web site @ [https://orbitalshell.github.io/Orbital-Shell/](https://orbitalshell.github.io/Orbital-Shell/)
+  - visit the project's web site @ [https://orbitalshell.github.io/Orbital-Shell/](https://orbitalshell.github.io/OrbitalShell/)
   - visit the project repository @ [https://github.com/OrbitalShell/Orbital-Shell/](https://github.com/OrbitalShell/Orbital-Shell/)
   
 **Join the project**: 
