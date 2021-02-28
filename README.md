@@ -257,6 +257,7 @@ There are a various subjects that can be treated:
 ## Orbital shell uses these libraries:
 
 - Microsoft.CodeAnalysis.CSharp.Scripting
+- Microsoft.Extension.ObjectPool
 - NewtonSoft.Json
 
 <br>
