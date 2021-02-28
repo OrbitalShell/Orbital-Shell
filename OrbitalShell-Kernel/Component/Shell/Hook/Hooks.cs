@@ -13,6 +13,11 @@ namespace OrbitalShell.Component.Shell.Hook
         ShellInitialized,
 
         /// <summary>
+        /// shell has just began Initialize()
+        /// </summary>
+        ShellStartsInitializing,
+
+        /// <summary>
         /// module init (module load)
         /// </summary>
         ModuleInit,
