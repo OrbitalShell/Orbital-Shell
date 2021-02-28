@@ -1,8 +1,0 @@
-{% capture comments_label %}{{ "Leave a comment" }}{% endcapture %}
-<h4 class="text-dark">{{ comments_label }}</h4>
-{% case site.comments.provider %}
-  {% when "disqus" %}
-    <section id="disqus_thread"></section>
-  {% when "custom" %}
-    <section id="custom-comments"></section>
-{% endcase %}

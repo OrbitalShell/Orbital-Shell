@@ -1,8 +1,0 @@
-{%- assign li_item = include.item -%}
-
-<li>
-  <a href="{{ li_item.url | relative_url }}">{{ li_item.title }}</a>
-  <p class="font-italic text-muted">
-    {{ li_item.date | date_to_string }} | {{ li_item.categories | join: ', ' }}
-  </p>
-</li>
