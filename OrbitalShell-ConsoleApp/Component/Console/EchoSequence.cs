@@ -12,10 +12,10 @@ namespace OrbitalShell.Component.Console
         public readonly string Text;
         public int Length => LastIndex - FirstIndex + 1;
 
-        IDotNetConsole Console;
+        IConsole Console;
 
         public EchoSequence(
-            IDotNetConsole console,
+            IConsole console,
             EchoDirectives? printDirective,
             int firstIndex,
             int lastIndex,
@@ -32,7 +32,7 @@ namespace OrbitalShell.Component.Console
         }
 
         public EchoSequence(
-            IDotNetConsole console,
+            IConsole console,
             string printDirective,
             int firstIndex,
             int lastIndex,

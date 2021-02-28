@@ -24,7 +24,7 @@ namespace OrbitalShell
     /// - the .net core make use of interop for each console method call in windows (ConsolePal.Windows.cs)
     /// </para>
     /// </summary>
-    public class Console : IDotNetConsole
+    public class Console : IConsole
     {
         #region attributes
 

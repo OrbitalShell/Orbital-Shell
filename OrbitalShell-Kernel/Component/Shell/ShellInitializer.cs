@@ -18,7 +18,7 @@ namespace OrbitalShell.Component.Shell
     public class ShellInitializer
     {
         readonly ICommandLineProcessor _clp;
-        readonly IDotNetConsole _console;
+        readonly IConsole _console;
 
         public ShellInitializer(ICommandLineProcessor clp)
         {
@@ -85,7 +85,7 @@ namespace OrbitalShell.Component.Shell
         /// <param name="context">shell default command evaluation context.Provides null to build a new one</param>
         public void ShellInit(
             string[] args,
-            IDotNetConsole console,
+            IConsole console,
             ICommandLineProcessorSettings settings,
             CommandEvaluationContext context = null
             )

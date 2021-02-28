@@ -89,7 +89,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
 
         public string ToColorizedString(ColorSettings colors, bool grammarSymbolsVisible = true)
         {
-            var console = App.Host.Services.GetRequiredService<IDotNetConsole>();
+            var console = App.Host.Services.GetRequiredService<IConsole>();
 
             var f = GetCmd(EchoDirectives.f + "", console.DefaultForeground.ToString().ToLower());
             var r = $"{colors.ParameterName}{ParameterName}{f}";

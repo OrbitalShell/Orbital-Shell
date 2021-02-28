@@ -18,7 +18,7 @@ namespace OrbitalShell.Component.EchoDirective
         public delegate void SimpleCommandDelegate();
         public readonly ConsoleTextWriterWrapper Writer;
         public readonly CommandMap CommandMap;
-        readonly IDotNetConsole Console;
+        readonly IConsole Console;
 
         public EchoDirectiveProcessor(
             ConsoleTextWriterWrapper writer,

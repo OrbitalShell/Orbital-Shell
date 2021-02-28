@@ -49,6 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
+    <DocumentationFile>bin/Debug/net5.0/OrbitalShell-Kernel-Commands.xml</DocumentationFile>
   </PropertyGroup>
 
 <ItemGroup>

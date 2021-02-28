@@ -49,6 +49,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
     <DefineConstants>TRACE;DBG_DI_INSTANCE_disabled</DefineConstants>
+    <DocumentationFile>bin/Debug/net5.0/OrbitalShell-Kernel.xml</DocumentationFile>
   </PropertyGroup>
 
 	<ItemGroup>

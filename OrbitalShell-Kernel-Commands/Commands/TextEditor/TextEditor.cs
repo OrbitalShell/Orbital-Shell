@@ -47,7 +47,7 @@ namespace OrbitalShell.Commands.TextEditor
         Encoding _fileEncoding;
         OSPlatform? _fileEOL;
         string _eolSeparator;
-        IDotNetConsole Console;
+        IConsole Console;
         string FileEOL
         {
             get

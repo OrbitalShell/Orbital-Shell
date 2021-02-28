@@ -40,7 +40,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         public Action<IAsyncResult> InputProcessor { get; set; }
 
-        public IDotNetConsole Console { get; set; }
+        public IConsole Console { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Supprimer les membres privés non lus", Justification = "<En attente>")]
         static int _instanceId = 0;

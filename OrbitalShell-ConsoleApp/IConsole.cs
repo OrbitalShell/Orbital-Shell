@@ -5,7 +5,7 @@ using OrbitalShell.Component.UI;
 
 namespace OrbitalShell.Component.Console
 {
-    public interface IDotNetConsole
+    public interface IConsole
     {
         public EventHandler ViewSizeChanged { get; set; }
         public EventHandler<WorkAreaScrollEventArgs> WorkAreaScrolled { get; set; }

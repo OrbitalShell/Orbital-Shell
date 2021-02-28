@@ -13,9 +13,9 @@ namespace OrbitalShell.Component.EchoDirective
     /// </summary>
     public static class Shortcuts
     {
-        public static IDotNetConsole Console;
+        public static IConsole Console;
         
-        public static void Initialize(IDotNetConsole console) => Console = console;
+        public static void Initialize(IConsole console) => Console = console;
 
         public static string GetCmd(string cmd, string value = null)
         {

@@ -53,6 +53,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
+    <DocumentationFile>bin/Debug/net5.0/orbsh.xml</DocumentationFile>
   </PropertyGroup>
 
 	 

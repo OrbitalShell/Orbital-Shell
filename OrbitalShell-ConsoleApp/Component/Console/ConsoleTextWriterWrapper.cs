@@ -22,7 +22,7 @@ namespace OrbitalShell.Component.Console
 
         public bool RedirecToErr = false;
 
-        public IDotNetConsole Console;
+        public IConsole Console;
 
         public ColorSettings ColorSettings;
 
@@ -71,18 +71,18 @@ namespace OrbitalShell.Component.Console
 
         #region init
 
-        public ConsoleTextWriterWrapper(IDotNetConsole console) : base() { Init(console); }
+        public ConsoleTextWriterWrapper(IConsole console) : base() { Init(console); }
 
-        public ConsoleTextWriterWrapper(IDotNetConsole console,TextWriter textWriter) : base(textWriter) { Init(console); }
+        public ConsoleTextWriterWrapper(IConsole console,TextWriter textWriter) : base(textWriter) { Init(console); }
 
-        public ConsoleTextWriterWrapper(IDotNetConsole console,CSharpScriptEngine cSharpScriptEngine) : base() { Init(console,cSharpScriptEngine); }
+        public ConsoleTextWriterWrapper(IConsole console,CSharpScriptEngine cSharpScriptEngine) : base() { Init(console,cSharpScriptEngine); }
 
-        public ConsoleTextWriterWrapper(IDotNetConsole console,TextWriter textWriter, CSharpScriptEngine cSharpScriptEngine) : base(textWriter) { Init(console,cSharpScriptEngine); }
+        public ConsoleTextWriterWrapper(IConsole console,TextWriter textWriter, CSharpScriptEngine cSharpScriptEngine) : base(textWriter) { Init(console,cSharpScriptEngine); }
 
         /// <summary>
         /// shell init
         /// </summary>
-        void Init(IDotNetConsole console,CSharpScriptEngine cSharpScriptEngine = null)
+        void Init(IConsole console,CSharpScriptEngine cSharpScriptEngine = null)
         {
             Console = console;
             CSharpScriptEngine = cSharpScriptEngine ?? new CSharpScriptEngine(console);

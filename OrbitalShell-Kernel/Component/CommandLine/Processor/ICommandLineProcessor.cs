@@ -21,7 +21,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         IExternalParserExtension ExternalParserExtension { get; }
         CommandLineReader CommandLineReader { get; set; }
         ICommandsAlias CommandsAlias { get; }
-        IDotNetConsole Console { get; }
+        IConsole Console { get; }
         bool IsCancellationRequested { get; }
         bool IsInitialized { get; set; }
         IModuleManager ModuleManager { get; }

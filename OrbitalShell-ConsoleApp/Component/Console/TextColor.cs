@@ -11,7 +11,7 @@ namespace OrbitalShell.Component.Console
         public ConsoleColor? Foreground
         {
             get {
-                var console = App.Host.Services.GetRequiredService<IDotNetConsole>();
+                var console = App.Host.Services.GetRequiredService<IConsole>();
                 return _foreground.HasValue?_foreground.Value:console.DefaultForeground; }
             set { _foreground = value; }
         }
@@ -20,7 +20,7 @@ namespace OrbitalShell.Component.Console
         public ConsoleColor? Background
         {
             get {
-                var console = App.Host.Services.GetRequiredService<IDotNetConsole>();
+                var console = App.Host.Services.GetRequiredService<IConsole>();
                 return _background.HasValue?_background.Value:console.DefaultBackground;  }
             set { _background = value; }
         }
@@ -66,7 +66,7 @@ namespace OrbitalShell.Component.Console
         /// parse a 4 bit color
         /// </summary>
         /// <param name="c">text of color name</param>
-        public static ConsoleColor? ParseColor(IDotNetConsole console,object c)
+        public static ConsoleColor? ParseColor(IConsole console,object c)
         {
             if (c==null) return null;
             var s = (string)c;
@@ -82,7 +82,7 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         /// <param name="c">string representing an integer in range 0..255 (included)</param>
         /// <returns></returns>
-        public static int Parse8BitColor(IDotNetConsole console, object c)
+        public static int Parse8BitColor(IConsole console, object c)
         {
             if (int.TryParse((string)c, out int r) && r>=0 && r<=255)            
                 return r;
@@ -95,7 +95,7 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         /// <param name="c">string of format: r:g:b where 0<=r,g,b<=255</param>
         /// <returns></returns>
-        public static (int r,int g,int b) Parse24BitColor(IDotNetConsole console, object c)
+        public static (int r,int g,int b) Parse24BitColor(IConsole console, object c)
         {
             var s = (string)c;
             var t = s.Split(':');

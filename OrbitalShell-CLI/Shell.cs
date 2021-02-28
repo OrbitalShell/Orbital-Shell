@@ -11,7 +11,7 @@ namespace OrbitalShell
     {
         public static int Startup(IServiceProvider serviceProvider,string[] args)
         {
-            var cons = serviceProvider.GetRequiredService<IDotNetConsole>();
+            var cons = serviceProvider.GetRequiredService<IConsole>();
 
             // 2. build a clp
 

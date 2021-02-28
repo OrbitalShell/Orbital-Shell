@@ -72,7 +72,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public IModuleManager ModuleManager { get; protected set; }
 
-        public IDotNetConsole Console { get; protected set; }
+        public IConsole Console { get; protected set; }
 
         string[] _args;
 
@@ -144,7 +144,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public CommandLineProcessor(
             //IServiceProviderScope scope,
-            IDotNetConsole console,
+            IConsole console,
             ICommandBatchProcessor cbp,
             ICommandsAlias cal,
             ISyntaxAnalyser sa,

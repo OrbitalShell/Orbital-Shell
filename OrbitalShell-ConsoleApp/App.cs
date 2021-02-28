@@ -29,7 +29,7 @@ namespace OrbitalShell
                 hosting.Host
                     .CreateDefaultBuilder(args)
                     .ConfigureServices((_, services) =>
-                        services.AddSingleton<IDotNetConsole,Console>());                        
+                        services.AddSingleton<IConsole,Console>());                        
             return HostBuilder;
         }
 

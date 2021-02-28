@@ -4,9 +4,9 @@ namespace OrbitalShell.Component.Console
 {
     public class ColorSettings
     {
-        IDotNetConsole Console;
+        IConsole Console;
 
-        public ColorSettings(IDotNetConsole console)
+        public ColorSettings(IConsole console)
         {
             Console = console;
         }

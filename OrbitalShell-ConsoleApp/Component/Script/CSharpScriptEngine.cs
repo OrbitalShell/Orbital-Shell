@@ -17,15 +17,15 @@ namespace OrbitalShell.Component.Script
         
         public ScriptOptions DefaultScriptOptions;
 
-        public CSharpScriptEngine(IDotNetConsole console) { _Init(console); }
+        public CSharpScriptEngine(IConsole console) { _Init(console); }
 
-        public CSharpScriptEngine(IDotNetConsole console,ScriptOptions defaultScriptOptions)
+        public CSharpScriptEngine(IConsole console,ScriptOptions defaultScriptOptions)
         {
             DefaultScriptOptions = defaultScriptOptions;
             _Init(console);
         }
 
-        private void _Init(IDotNetConsole console) {
+        private void _Init(IConsole console) {
             
             DefaultScriptOptions ??= ScriptOptions.Default;
             DefaultScriptOptions = DefaultScriptOptions

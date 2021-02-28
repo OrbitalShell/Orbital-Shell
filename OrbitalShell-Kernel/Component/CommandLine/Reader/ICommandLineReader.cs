@@ -8,7 +8,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 {
     public interface ICommandLineReader
     {
-        IDotNetConsole Console { get; set; }
+        IConsole Console { get; set; }
         Action<IAsyncResult> InputProcessor { get; set; }
 
         void Initialize(
