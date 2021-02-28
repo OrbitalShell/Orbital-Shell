@@ -176,7 +176,7 @@ There are a various subjects that can be treated:
 
 ## Features
 
-<img src="assets/orbital-shell.png"/>*a view of the shell running in Windows Terminal*
+<img src="assets/shell-wt-1.0.8.png"/>*a view of the shell running in Windows Terminal*
 
 <br>
 
