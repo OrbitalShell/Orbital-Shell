@@ -87,12 +87,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         #region official files names
 
+        public string InitFileName { get; set; } = ".init";
         public string UserProfileFileName { get; set; } = ".profile";
-        public string DefaultUserProfileFileName { get; set; } = "profile";
         public string LogFileName { get; set; } = "log";
         public string HistoryFileName { get; set; } = ".history";
         public string CommandsAliasFileName { get; set; } = ".aliases";
-        public string DefaultCommandsAliasFileName { get; set; } = "aliases";
         public string DefaultsFolderName { get; set; } = "Defaults";
         public string ModulesInitFileName { get; set; } = "modules-init.json";
 
@@ -109,6 +108,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public string AppDataRoamingUserFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDataFolderName);
         public string UserProfileFilePath => Path.Combine(AppDataRoamingUserFolderPath, UserProfileFileName);
+        public string InitFilePath => Path.Combine(ShellAppDataPath, InitFileName);
         public string LogFilePath => Path.Combine(AppDataRoamingUserFolderPath, LogFileName);
         public string HistoryFilePath => Path.Combine(AppDataRoamingUserFolderPath, HistoryFileName);
         public string CommandsAliasFilePath => Path.Combine(AppDataRoamingUserFolderPath, CommandsAliasFileName);

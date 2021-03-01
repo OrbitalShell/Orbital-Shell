@@ -44,8 +44,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Supprimer les membres privés non lus", Justification = "<En attente>")]
         static int _instanceId = 0;
-
-        ObjectPool<EventArgs<ConsoleKeyInfo>> _keyEventArgsPool = new DefaultObjectPool<EventArgs<ConsoleKeyInfo>>(
+        readonly ObjectPool<EventArgs<ConsoleKeyInfo>> _keyEventArgsPool = new DefaultObjectPool<EventArgs<ConsoleKeyInfo>>(
             new DefaultPooledObjectPolicy<EventArgs<ConsoleKeyInfo>>()
             );
 

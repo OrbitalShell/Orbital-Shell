@@ -8,12 +8,11 @@ namespace OrbitalShell
 {
     public class ShellStartup : IShellStartup
     {
-        IConsole _cons;
-        ICommandLineProcessor _clp;
-        ICommandLineReader _clr;
+        readonly IConsole _cons;
+        readonly ICommandLineProcessor _clp;
+        readonly ICommandLineReader _clr;
 
         public ShellStartup(
-            IServiceProvider serviceProvider,
             IConsole console,
             ICommandLineProcessor commandLineProcessor,
             ICommandLineReader commandLineReader
@@ -25,7 +24,8 @@ namespace OrbitalShell
         }
 
         public int Startup(
-            string[] args)
+            string[] args
+            )
         {
             _clp.SetArgs(args);
 
@@ -37,7 +37,7 @@ namespace OrbitalShell
             // invoke a shell initializer associated to the clp
 
             var shellInitializer = new ShellInitializer(_clp);
-            shellInitializer.Run(_clp.CommandEvaluationContext);
+            shellInitializer.Run();
 
             // starts an interactive shell
 

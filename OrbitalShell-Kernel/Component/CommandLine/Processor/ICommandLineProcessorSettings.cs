@@ -16,12 +16,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
         CommandEvaluationContext CommandEvaluationContext { get; }
         string CommandsAliasFileName { get; set; }
         string CommandsAliasFilePath { get; }
-        string DefaultCommandsAliasFileName { get; set; }
         string DefaultsFolderName { get; set; }
         string DefaultsFolderPath { get; }
-        string DefaultUserProfileFileName { get; set; }
         TextWriterWrapper Err { get; }
         char ErrorPositionMarker { get; set; }
+        string InitFileName { get; set; }
         string HistoryFileName { get; set; }
         string HistoryFilePath { get; }
         TextReader In { get; }
@@ -39,6 +38,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         string ShellExecBatchExt { get; set; }
         string UserProfileFileName { get; set; }
         string UserProfileFilePath { get; }
+        string InitFilePath { get; }
 
         void Initialize(CommandEvaluationContext commandEvaluationContext);
     }

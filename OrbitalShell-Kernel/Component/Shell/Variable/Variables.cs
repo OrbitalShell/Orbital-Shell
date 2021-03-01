@@ -78,7 +78,7 @@ namespace OrbitalShell.Component.Shell.Variable
 
         public DataValue SetValue(string path, object value)
         {
-            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            //var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
             if (!HasValue(path))
                 return AddValue(path, value);
             var o = GetValue(path);
@@ -89,7 +89,7 @@ namespace OrbitalShell.Component.Shell.Variable
         public DataValue SetValue(string rootPath, string path, object value)
         {
             path = Nsp(rootPath, path);
-            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            //var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
             if (!HasValue(path))
                 return AddValue(path, value);
             var o = GetValue(path);
@@ -100,7 +100,7 @@ namespace OrbitalShell.Component.Shell.Variable
         public DataValue SetValue(VariableNamespace rootPath, string path, object value)
         {
             path = Nsp(rootPath, path);
-            var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
+            //var name = path.Split(CommandLineSyntax.VariableNamePathSeparator).Last();
             if (!HasValue(path))
                 return AddValue(path, value);
             var o = GetValue(path);

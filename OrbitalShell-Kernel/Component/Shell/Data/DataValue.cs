@@ -63,9 +63,9 @@ namespace OrbitalShell.Component.Shell.Data
             Type valueType = null,
             bool isReadOnly = false)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(Name));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             ValueType = valueType ?? value?.GetType();
-            ValueType = ValueType ?? throw new ArgumentNullException(nameof(ValueType));
+            ValueType = ValueType ?? throw new ArgumentNullException(nameof(valueType));
             IsReadOnly = isReadOnly;
             /*Value = value;
             HasValue = true;*/
@@ -77,7 +77,7 @@ namespace OrbitalShell.Component.Shell.Data
             object value,
             bool isReadOnly)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(Name));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             ValueType = value?.GetType();
             IsReadOnly = isReadOnly;
             Value = value;
@@ -88,7 +88,7 @@ namespace OrbitalShell.Component.Shell.Data
             string name,
             bool isReadOnly)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(Name));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             IsReadOnly = isReadOnly;
         }
 
@@ -166,6 +166,7 @@ namespace OrbitalShell.Component.Shell.Data
         public IDataObject Set(ArraySegment<string> path, object value, bool isReadOnly = false, Type type = null)
             => Set(this, path, value, isReadOnly, type);
 
+
         /// <summary>
         /// set - isReadOnly and type are currently ignored (no usage)
         /// </summary>
@@ -175,6 +176,7 @@ namespace OrbitalShell.Component.Shell.Data
         /// <param name="isReadOnly">not implemented</param>
         /// <param name="type">not implemeted</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Supprimer le paramètre inutilisé", Justification = "<En attente>")]
         IDataObject Set(object target, ArraySegment<string> path, object value, bool isReadOnly = false, Type type = null)
         {
             IDataObject r = Parent;
@@ -200,6 +202,7 @@ namespace OrbitalShell.Component.Shell.Data
         public void Unset(ArraySegment<string> path)
             => Unset(this, path);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Supprimer le paramètre inutilisé", Justification = "<En attente>")]
         void Unset(object target, ArraySegment<string> path)
         {
             throw new DataValueReadOnlyException(this);
@@ -212,7 +215,7 @@ namespace OrbitalShell.Component.Shell.Data
 
         public void SetValue(object value)      // TODO return DataValue here , and propagates returns to callers and interfaces
         {
-            if (IsReadOnly) throw new Exception($"{_valueId} is readonly");
+            if (IsReadOnly) throw new Exception($"{ValueId} is readonly");
             if (value != null)
             {
                 if (ValueType != null)
@@ -246,6 +249,6 @@ namespace OrbitalShell.Component.Shell.Data
                 SetValue((object)v);
         }
 
-        string _valueId => $"DataValue '{Name}'";
+        string ValueId => $"DataValue '{Name}'";
     }
 }

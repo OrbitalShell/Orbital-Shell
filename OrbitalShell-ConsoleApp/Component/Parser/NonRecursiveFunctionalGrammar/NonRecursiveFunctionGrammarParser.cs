@@ -37,11 +37,9 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
 
         #region attributes
 
-        Dictionary<string,string> _lexs = new Dictionary<string,string>();
-
-        List<Rule> _rules = new List<Rule>();
-
-        Dictionary<string,Rule> _rulesIndex = new Dictionary<string,Rule>();
+        readonly Dictionary<string,string> _lexs = new Dictionary<string,string>();
+        readonly List<Rule> _rules = new List<Rule>();
+        readonly Dictionary<string,Rule> _rulesIndex = new Dictionary<string,Rule>();
 
         TreeNode _gramTree;
 
@@ -77,18 +75,18 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
             foreach ( var rule in rules )
                 AddRule(rule);
 
-            _BuildGramTree();
+            BuildGramTree();
         }
 
         #endregion
 
         #region grammar tree
 
-        void _BuildGramTree() 
+        void BuildGramTree() 
         {
             _gramTree = new TreeNode();
             foreach ( var rule in _rules ) {
-                _AddRuleToGramTree(_gramTree,rule,rule);
+                AddRuleToGramTree(_gramTree,rule,rule);
             }
             foreach ( var rule in _rules ) {
                 rule.SetKeyFromTreePath();
@@ -101,7 +99,7 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
             }
         }
         
-        void _AddRuleToGramTree(TreeNode node,IEnumerable<string> ruleTerms,Rule rule ) 
+        void AddRuleToGramTree(TreeNode node,IEnumerable<string> ruleTerms,Rule rule ) 
         {
             var rt = ruleTerms.FirstOrDefault();
             if (rt==null) return;
@@ -109,7 +107,7 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
             if (node.SubNodes.TryGetValue(rt,out var subNode)) rtNode = subNode;
             else node.SubNodes.Add(rt,rtNode = new TreeNode(rt));
             rule.TreePath.Add(rtNode);
-            _AddRuleToGramTree(rtNode,ruleTerms.Skip(1),rule);
+            AddRuleToGramTree(rtNode,ruleTerms.Skip(1),rule);
         }
 
         void AddRule(string rule) 
@@ -182,11 +180,11 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
             int i = 0;
             var paths = new SyntacticBlockList();
             var rootNode = _gramTree;
-            _Parse(ref t,i,rootNode,rootNode,paths);  
+            Parse(ref t,i,rootNode,rootNode,paths);  
             return paths;      
         }
 
-        void _Parse(
+        void Parse(
             ref char[] chars,
             int i,
             TreeNode rootNode,
@@ -281,7 +279,7 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
                             int holeSize,blockIndex;
                             if (paths.Count>1)
                             {                            
-                                var previous = paths[paths.Count-2];
+                                var previous = paths[^2];
                                 holeSize = selected.Index - ( previous.Index + previous.Text.Length-1 ) - 1;
                                 blockIndex = previous.Index + previous.Text.Length;
                             } else
@@ -400,7 +398,7 @@ namespace OrbitalShell.Component.Parser.NonRecursiveFunctionalGrammar
                             // explore gram next
                             foreach ( var kv in node.SubNodes ) {
                                 var pathsCount = paths.Count;
-                                _Parse(
+                                Parse(
                                     ref chars,i,rootNode,kv.Value,paths,currentPath,
                                     node.IsRoot,
                                     recurseLevel+1); 

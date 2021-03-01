@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Data;
 using OrbitalShell.Component.Shell.Module.Data;
 using OrbitalShell.Component.Shell.Hook;
+using OrbitalShell.Lib;
+using interser = System.Runtime.InteropServices;
 
 namespace OrbitalShell.Component.Shell.Variable
 {
@@ -21,7 +23,7 @@ namespace OrbitalShell.Component.Shell.Variable
     /// </summary>
     public class ShellEnvironment : DataObject
     {
-        public const string SystemPathSeparator = ";";
+        public static string SystemPathSeparator => (RuntimeEnvironment.OSType == interser.OSPlatform.Windows) ? ";" : ":";
 
         public Variables Vars { get; protected set; }
 
@@ -36,7 +38,7 @@ namespace OrbitalShell.Component.Shell.Variable
         public ShellEnvironment(string name) : base(name, false) { }
 
         /// <summary>
-        /// creates the standard shell<br/>
+        /// creates the standard shell env<br/>
         /// - add known namespaces and values names<br/>
         /// - setup shell variables
         /// </summary>

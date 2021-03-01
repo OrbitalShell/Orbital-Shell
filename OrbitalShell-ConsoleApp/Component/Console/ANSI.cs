@@ -135,10 +135,12 @@ namespace OrbitalShell.Component.Console
         /// <returns>ansi seq</returns>
         public static string SD(int n = 1) => $"{CSI}{n}T";
 
+
         /// <summary>
         /// Device Status Report - Reports the cursor position (CPR) to the application as (as though typed at the keyboard) ESC[n;mR, where n is the row and m is the column.)
         /// </summary>
         /// <returns>ansi seq</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Les champs non constants ne doivent pas être visibles", Justification = "<En attente>")]
         public static string DSR = $"{CSI}6n";
 
         public enum EDParameter
@@ -333,9 +335,9 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         public static string SGRF(object o)
         {
-            if (!(o is string s)) return null;
-            var p = ParseSGR_4BitsColor(s);
-            var r = SGR_SetForegroundColor4bits(p.color, p.bright);
+            if (o is not string s) return null;
+            var (color, bright) = ParseSGR_4BitsColor(s);
+            var r = SGR_SetForegroundColor4bits(color, bright);
             return r;
         }
 
@@ -386,7 +388,7 @@ namespace OrbitalShell.Component.Console
         /// <returns>ansi seq</returns>
         public static string SGRF8(object o)
         {
-            if (!(o is string s)) return null;
+            if (o is not string s) return null;
             try
             {
                 var n = Convert.ToInt16(s);
@@ -418,10 +420,10 @@ namespace OrbitalShell.Component.Console
         /// <returns>ansi seq</returns>
         public static string SGRF24(object o)
         {
-            if (!(o is string s)) return null;
+            if (o is not string s) return null;
             try
             {
-                int convert(string s)
+                static int convert(string s)
                 {
                     var n = Convert.ToInt16(s);
                     if (n < 0 || n > 255) throw new Exception("value out of bounds (8bits max)");
@@ -456,9 +458,9 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         public static string SGRB(object o)
         {
-            if (!(o is string s)) return null;
-            var p = ParseSGR_4BitsColor(s);
-            return SGR_SetBackgroundColor4bits(p.color, p.bright);
+            if (o is not string s) return null;
+            var (color, bright) = ParseSGR_4BitsColor(s);
+            return SGR_SetBackgroundColor4bits(color, bright);
         }
 
         /// <summary>
@@ -484,7 +486,7 @@ namespace OrbitalShell.Component.Console
         /// <returns>ansi seq</returns>
         public static string SGRB8(object o)
         {
-            if (!(o is string s)) return null;
+            if (o is not string s) return null;
             try
             {
                 var n = Convert.ToInt16(s);
@@ -516,10 +518,10 @@ namespace OrbitalShell.Component.Console
         /// <returns>ansi seq</returns>
         public static string SGRB24(object o)
         {
-            if (!(o is string s)) return null;
+            if (o is not string s) return null;
             try
             {
-                int convert(string s)
+                static int convert(string s)
                 {
                     var n = Convert.ToInt16(s);
                     if (n < 0 || n > 255) throw new Exception("value out of bounds (8bits max)");

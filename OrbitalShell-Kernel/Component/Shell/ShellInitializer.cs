@@ -30,10 +30,7 @@ namespace OrbitalShell.Component.Shell
         /// <summary>
         /// perform kernel inits and run init scripts
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:remove the parameter not used", Justification = "maybe in future change - waiting impl.")]
-        public void Run(
-            CommandEvaluationContext context
-            )
+        public void Run()
         {
             if (_clp.IsInitialized) return;
 
@@ -110,9 +107,7 @@ namespace OrbitalShell.Component.Shell
 
             ConsoleInit(_clp.CommandEvaluationContext);
 
-            // check shell app data folder
-            if (!Directory.Exists(_clp.Settings.ShellAppDataPath))
-                Directory.CreateDirectory(_clp.Settings.ShellAppDataPath);
+            InitShellInitFolder();
 
             // clp info output
             if (settings.PrintInfo) _clp.PrintInfo(_clp.CommandEvaluationContext);
@@ -300,7 +295,7 @@ namespace OrbitalShell.Component.Shell
             {
                 if (createNewCommandsAliasFile)
                 {
-                    var defaultAliasFilePath = Path.Combine(_clp.Settings.DefaultsFolderPath, _clp.Settings.DefaultCommandsAliasFileName);
+                    var defaultAliasFilePath = Path.Combine(_clp.Settings.DefaultsFolderPath, _clp.Settings.CommandsAliasFileName);
                     File.Copy(defaultAliasFilePath, _clp.Settings.CommandsAliasFilePath);
                     
                     _clp.CommandEvaluationContext.Logger.Success();
@@ -334,6 +329,41 @@ namespace OrbitalShell.Component.Shell
             }
         }
 
+        public void InitShellInitFolder()
+        {
+            // check shell app data folder
+            if (!Directory.Exists(_clp.Settings.ShellAppDataPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(_clp.Settings.ShellAppDataPath);
+                }
+                catch (Exception createAppDataFolderPathException)
+                {
+                    _clp.CommandEvaluationContext.Logger.Fail(createAppDataFolderPathException);
+                }
+            }
+
+            // initialize log file
+            if (!File.Exists(_clp.Settings.InitFilePath))
+            {
+                _clp.CommandEvaluationContext.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"creating init file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.InitFilePath)}' ... ", true, false);
+                try
+                {
+                    var logError = _clp.CommandEvaluationContext.Logger.Log($"file created on {System.DateTime.Now}");
+                    if (logError == null)
+                        _clp.CommandEvaluationContext.Logger.Success();
+                    else
+                        throw logError;
+                }
+                catch (Exception createInitFileException)
+                {
+                    _clp.Settings.LogAppendAllLinesErrorIsEnabled = false;
+                    _clp.CommandEvaluationContext.Logger.Fail(createInitFileException);
+                }
+            }
+        }
+
         public void InitUserProfileFolder()
         {
             // creates user app data folders
@@ -358,11 +388,9 @@ namespace OrbitalShell.Component.Shell
                 _clp.CommandEvaluationContext.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"creating log file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.LogFilePath)}' ... ", true, false);
                 try
                 {
-                    var logError = _clp.CommandEvaluationContext.Logger.Log($"file created on {System.DateTime.Now}");
-                    if (logError == null)
-                        _clp.CommandEvaluationContext.Logger.Success();
-                    else
-                        throw logError;
+                    var defaultInitFilePath = Path.Combine(_clp.Settings.DefaultsFolderPath, _clp.Settings.InitFileName);
+                    File.Copy(defaultInitFilePath, _clp.Settings.InitFilePath);
+                    _clp.CommandEvaluationContext.Logger.Success();
                 }
                 catch (Exception createLogFileException)
                 {
@@ -377,7 +405,7 @@ namespace OrbitalShell.Component.Shell
                 _clp.CommandEvaluationContext.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user profile file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.UserProfileFilePath)}' ... ", true, false);
                 try
                 {
-                    var defaultProfileFilePath = Path.Combine(_clp.Settings.DefaultsFolderPath, _clp.Settings.DefaultUserProfileFileName);
+                    var defaultProfileFilePath = Path.Combine(_clp.Settings.DefaultsFolderPath, _clp.Settings.UserProfileFileName);
                     File.Copy(defaultProfileFilePath, _clp.Settings.UserProfileFilePath);
                     _clp.CommandEvaluationContext.Logger.Success();
                 }

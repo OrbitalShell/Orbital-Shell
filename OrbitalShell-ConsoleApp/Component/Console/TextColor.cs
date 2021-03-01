@@ -12,7 +12,7 @@ namespace OrbitalShell.Component.Console
         {
             get {
                 var console = App.Host.Services.GetRequiredService<IConsole>();
-                return _foreground.HasValue?_foreground.Value:console.DefaultForeground; }
+                return _foreground ?? console.DefaultForeground; }
             set { _foreground = value; }
         }
 
@@ -21,7 +21,7 @@ namespace OrbitalShell.Component.Console
         {
             get {
                 var console = App.Host.Services.GetRequiredService<IConsole>();
-                return _background.HasValue?_background.Value:console.DefaultBackground;  }
+                return _background ?? console.DefaultBackground;  }
             set { _background = value; }
         }
 

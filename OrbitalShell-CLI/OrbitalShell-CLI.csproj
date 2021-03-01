@@ -67,14 +67,6 @@
 		  <Pack>True</Pack>
 		  <PackagePath>contentFiles/any/net5.0/assets/;content/assets/</PackagePath>
 	  </None>
-	  <None Remove="Component\Shell\Defaults\profile" />
-	 
-	  <None Include="Component\Shell\Defaults\profile">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		  <Pack>True</Pack>
-		  <PackagePath>contentFiles/any/net5.0/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
-		  <PackageCopyToOutput>true</PackageCopyToOutput>
-	  </None>
 	  <None Include="LICENSE.md">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <Pack>True</Pack>
@@ -104,6 +96,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Component\Shell\Defaults\.profile">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>True</Pack>
+      <PackagePath>contentFiles/any/net5.0/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </None>
     <None Update="Scripts\publish-cli-release.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

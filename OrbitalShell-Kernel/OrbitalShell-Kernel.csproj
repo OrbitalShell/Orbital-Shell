@@ -59,20 +59,6 @@
 			<Pack>True</Pack>
 			<PackagePath>contentFiles/any/netcoreapp3.1/assets/;content/assets/</PackagePath>
 		</None>
-		<None Remove="Component\Shell\Defaults\aliases" />
-		<None Include="Component\Shell\Defaults\aliases">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<Pack>True</Pack>
-			<PackagePath>contentFiles/any/netcoreapp3.1/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
-			<PackageCopyToOutput>true</PackageCopyToOutput>
-		</None>
-		<None Remove="Component\Shell\Defaults\profile" />
-		<None Include="Component\Shell\Defaults\profile">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<Pack>True</Pack>
-			<PackagePath>contentFiles/any/netcoreapp3.1/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
-			<PackageCopyToOutput>true</PackageCopyToOutput>
-		</None>
 		<None Include="LICENSE.md">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Pack>True</Pack>
@@ -100,6 +86,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Component\Shell\Defaults\.aliases">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>True</Pack>
+      <PackagePath>contentFiles/any/netcoreapp3.1/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </None>
+    <None Update="Component\Shell\Defaults\.init">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Component\Shell\Defaults\.profile">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>True</Pack>
+      <PackagePath>contentFiles/any/netcoreapp3.1/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </None>
     <None Update="Component\Shell\Module\modules-init.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

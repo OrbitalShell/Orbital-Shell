@@ -8,7 +8,7 @@ namespace OrbitalShell.Lib
         FreeBSD,
         Linux,
         OSX,
-        WIndows,
+        Windows,
         Any,
         Unspecified
     }
