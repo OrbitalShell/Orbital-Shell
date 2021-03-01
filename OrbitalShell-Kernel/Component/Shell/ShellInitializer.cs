@@ -350,11 +350,9 @@ namespace OrbitalShell.Component.Shell
                 _clp.CommandEvaluationContext.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"creating init file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.InitFilePath)}' ... ", true, false);
                 try
                 {
-                    var logError = _clp.CommandEvaluationContext.Logger.Log($"file created on {System.DateTime.Now}");
-                    if (logError == null)
-                        _clp.CommandEvaluationContext.Logger.Success();
-                    else
-                        throw logError;
+                    var defaultInitFilePath = Path.Combine(_clp.Settings.DefaultsFolderPath, _clp.Settings.InitFileName);
+                    File.Copy(defaultInitFilePath, _clp.Settings.InitFilePath);
+                    _clp.CommandEvaluationContext.Logger.Success();
                 }
                 catch (Exception createInitFileException)
                 {
@@ -388,9 +386,11 @@ namespace OrbitalShell.Component.Shell
                 _clp.CommandEvaluationContext.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"creating log file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.LogFilePath)}' ... ", true, false);
                 try
                 {
-                    var defaultInitFilePath = Path.Combine(_clp.Settings.DefaultsFolderPath, _clp.Settings.InitFileName);
-                    File.Copy(defaultInitFilePath, _clp.Settings.InitFilePath);
-                    _clp.CommandEvaluationContext.Logger.Success();
+                    var logError = _clp.CommandEvaluationContext.Logger.Log($"file created on {System.DateTime.Now}");
+                    if (logError == null)
+                        _clp.CommandEvaluationContext.Logger.Success();
+                    else
+                        throw logError;
                 }
                 catch (Exception createLogFileException)
                 {
