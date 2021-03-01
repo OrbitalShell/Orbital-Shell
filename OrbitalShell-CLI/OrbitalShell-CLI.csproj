@@ -61,37 +61,37 @@
   <ItemGroup>
 	  <None Include="assets\robotazteque.ico">
 		  <Pack>True</Pack>
-		  <PackagePath>contentFiles/any/netcoreapp3.1/assets/;content/assets/</PackagePath>
+		  <PackagePath>contentFiles/any/net5.0/assets/;content/assets/</PackagePath>
 	  </None>
 	  <None Include="assets\robotazteque.png">
 		  <Pack>True</Pack>
-		  <PackagePath>contentFiles/any/netcoreapp3.1/assets/;content/assets/</PackagePath>
+		  <PackagePath>contentFiles/any/net5.0/assets/;content/assets/</PackagePath>
 	  </None>
 	  <None Remove="Component\Shell\Defaults\profile" />
 	 
 	  <None Include="Component\Shell\Defaults\profile">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <Pack>True</Pack>
-		  <PackagePath>contentFiles/any/netcoreapp3.1/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
+		  <PackagePath>contentFiles/any/net5.0/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
 		  <PackageCopyToOutput>true</PackageCopyToOutput>
 	  </None>
 	  <None Include="LICENSE.md">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <Pack>True</Pack>
-		  <PackagePath>contentFiles/any/netcoreapp3.1/;content/</PackagePath>
+		  <PackagePath>contentFiles/any/net5.0/;content/</PackagePath>
 		  <PackageCopyToOutput>true</PackageCopyToOutput>
 	  </None>
 	  <None Include="README.md">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <Pack>True</Pack>
-		  <PackagePath>contentFiles/any/netcoreapp3.1/;content/</PackagePath>
+		  <PackagePath>contentFiles/any/net5.0/;content/</PackagePath>
 		  <PackageCopyToOutput>true</PackageCopyToOutput>
 	  </None>
 	  
 	  <None Include="scripts\**">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		<Pack>True</Pack>
-		<PackagePath>contentFiles/any/netcoreapp3.1/scripts/;content/scripts/</PackagePath>
+		<PackagePath>contentFiles/any/net5.0/scripts/;content/scripts/</PackagePath>
 		<PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
 	

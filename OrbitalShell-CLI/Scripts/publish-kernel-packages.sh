@@ -1,7 +1,7 @@
 ﻿#!orbsh
 # build/publish orbital shell kernel packages
 
-set version 1.0.8.nupkg
+set version 1.0.9.nupkg
 
 cls
 echo "(b=darkgreen,f=black)                                             "
