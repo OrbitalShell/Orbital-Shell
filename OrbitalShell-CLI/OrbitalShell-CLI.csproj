@@ -85,14 +85,7 @@
 		<Pack>True</Pack>
 		<PackagePath>contentFiles/any/net5.0/scripts/;content/scripts/</PackagePath>
 		<PackageCopyToOutput>true</PackageCopyToOutput>
-      </None>
-
-	  <None Include="data\**">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		  <Pack>True</Pack>
-		  <PackagePath>contentFiles/any/net5.0/scripts/;content/scripts/</PackagePath>
-		  <PackageCopyToOutput>true</PackageCopyToOutput>
-	  </None>
+    </None>
 	
   </ItemGroup>
 
@@ -109,7 +102,9 @@
       <PackagePath>contentFiles/any/net5.0/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-
+    <None Update="Scripts\publish-cli-release.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
