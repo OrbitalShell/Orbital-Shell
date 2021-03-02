@@ -80,7 +80,7 @@
 		  <PackageCopyToOutput>true</PackageCopyToOutput>
 	  </None>
 
-	  <None Include="_scripts\**">
+	  <None Include="scripts\**">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <Pack>True</Pack>
 		  <PackagePath>contentFiles/any/net5.0/scripts/;content/scripts/</PackagePath>
@@ -108,7 +108,7 @@
       <PackagePath>contentFiles/any/net5.0/Component/Shell/Defaults/;content/Component/Shell/Defaults/</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Update="_scripts\publish-cli-release.sh">
+    <None Update="scripts\publish-cli-release.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
