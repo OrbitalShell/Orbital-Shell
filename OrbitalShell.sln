@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "module-index-repository", "
 		module-index-repository\readme.txt = module-index-repository\readme.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrbitalShell-UnitTests", "OrbitalShell-UnitTests\OrbitalShell-UnitTests.csproj", "{DA60C0FE-E902-48A4-9C9F-19246C9978DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,14 @@ Global
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|x86.ActiveCfg = Release|x86
 		{C2920F91-71BE-4B0F-8742-4C52F4A75D56}.Release|x86.Build.0 = Release|x86
+		{DA60C0FE-E902-48A4-9C9F-19246C9978DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA60C0FE-E902-48A4-9C9F-19246C9978DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA60C0FE-E902-48A4-9C9F-19246C9978DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DA60C0FE-E902-48A4-9C9F-19246C9978DA}.Debug|x86.Build.0 = Debug|Any CPU
+		{DA60C0FE-E902-48A4-9C9F-19246C9978DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA60C0FE-E902-48A4-9C9F-19246C9978DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA60C0FE-E902-48A4-9C9F-19246C9978DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{DA60C0FE-E902-48A4-9C9F-19246C9978DA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

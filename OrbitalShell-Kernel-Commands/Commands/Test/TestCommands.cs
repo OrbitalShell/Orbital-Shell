@@ -19,6 +19,7 @@ namespace OrbitalShell.Commands.Test
     public class TestCommands : ICommandsDeclaringType
     {
         [Command("print cursor info")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandResult<Point> CursorInfo(CommandEvaluationContext context)
         {
             int x = sc.CursorLeft, y = sc.CursorTop;
@@ -28,6 +29,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("backup ansi cursor pos")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandResult<Point> CursorPosBackup(CommandEvaluationContext context)
         {
             int x = sc.CursorLeft, y = sc.CursorTop;
@@ -36,6 +38,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("restore ansi cursor pos")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandResult<Point> CursorPosRestore(CommandEvaluationContext context)
         {
             int x = sc.CursorLeft, y = sc.CursorTop;
@@ -44,6 +47,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("set console windows size")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandVoidResult ConsoleSetWindowSize(
             CommandEvaluationContext context,
             [Parameter(0, "width")] int w,
@@ -59,6 +63,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("set console buffer size")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandVoidResult ConsoleSetBufferSize(
             CommandEvaluationContext context,
             [Parameter(0, "width")] int w,
@@ -74,6 +79,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("check end of line symbols of a file")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandResult<List<string>> FileEol(
             CommandEvaluationContext context,
             [Parameter("file path")] FilePath file)
@@ -94,6 +100,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("echo an ANSI / VT-100 sequence")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandVoidResult AnsiSeq(
             CommandEvaluationContext context,
             [Parameter(0, "esc sequence (text behind ESC). replace character @ by ESC (\\x1b) to allow write new sequences in the string parameter")] string seq,
@@ -106,6 +113,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("echo an unicode character")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandVoidResult Unicode(
             CommandEvaluationContext context,
             [Parameter(0, "decimal unicode character index")] int n
@@ -115,7 +123,8 @@ namespace OrbitalShell.Commands.Test
             return CommandVoidResult.Instance;
         }
 
-        [Command("echo unicode characters from Console.Unicode (Codepage - 850)")]
+        [Command("echo unicode characters from Console.Unicode")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandVoidResult UnicodeTest(
             CommandEvaluationContext context
         )
@@ -130,6 +139,7 @@ namespace OrbitalShell.Commands.Test
         }
 
         [Command("show current colors support and current colors map using ANSI escape codes")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
         public CommandVoidResult AnsiColorTest(
             CommandEvaluationContext context
             )
