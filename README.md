@@ -260,6 +260,7 @@ There are a various subjects that can be treated:
 
 - Microsoft.CodeAnalysis.CSharp.Scripting
 - Microsoft.Extensions.ObjectPool
+- Microsoft.Extensions.Hosting
 - NewtonSoft.Json
 
 <br>
