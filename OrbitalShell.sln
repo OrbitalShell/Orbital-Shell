@@ -32,6 +32,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{00101C60-1864-48B1-98FC-A51B0E54D155}"
 	ProjectSection(SolutionItems) = preProject
 		docs\_config.yml = docs\_config.yml
+		docs\README.md = docs\README.md
 	EndProjectSection
 EndProject
 Global
