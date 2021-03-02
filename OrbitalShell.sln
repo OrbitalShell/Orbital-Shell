@@ -27,7 +27,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "module-index-repository", "
 		module-index-repository\readme.txt = module-index-repository\readme.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrbitalShell-UnitTests", "OrbitalShell-UnitTests\OrbitalShell-UnitTests.csproj", "{DA60C0FE-E902-48A4-9C9F-19246C9978DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-UnitTests", "OrbitalShell-UnitTests\OrbitalShell-UnitTests.csproj", "{DA60C0FE-E902-48A4-9C9F-19246C9978DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{00101C60-1864-48B1-98FC-A51B0E54D155}"
+	ProjectSection(SolutionItems) = preProject
+		docs\_config.yml = docs\_config.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +88,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{27033D10-E732-47E6-A607-27A718CEF3EF} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
+		{00101C60-1864-48B1-98FC-A51B0E54D155} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE827123-7F20-471E-B1BF-3E12AE9FFDC8}
