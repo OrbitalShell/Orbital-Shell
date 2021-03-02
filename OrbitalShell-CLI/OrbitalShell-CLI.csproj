@@ -79,13 +79,19 @@
 		  <PackagePath>contentFiles/any/net5.0/;content/</PackagePath>
 		  <PackageCopyToOutput>true</PackageCopyToOutput>
 	  </None>
-	  
+
 	  <None Include="scripts\**">
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		<Pack>True</Pack>
-		<PackagePath>contentFiles/any/net5.0/scripts/;content/scripts/</PackagePath>
-		<PackageCopyToOutput>true</PackageCopyToOutput>
-    </None>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <Pack>True</Pack>
+		  <PackagePath>contentFiles/any/net5.0/scripts/;content/scripts/</PackagePath>
+		  <PackageCopyToOutput>true</PackageCopyToOutput>
+	  </None>
+	  <None Include="data\**">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <Pack>True</Pack>
+		  <PackagePath>contentFiles/any/net5.0/scripts/;content/scripts/</PackagePath>
+		  <PackageCopyToOutput>true</PackageCopyToOutput>
+	  </None>
 	
   </ItemGroup>
 
