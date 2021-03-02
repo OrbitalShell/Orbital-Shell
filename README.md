@@ -45,9 +45,9 @@ OrbitalShell-Kernel<br>
 OrbitalShell-Kernel-Commands</td>
  
 <td valign="top">
-C# class lib<br>
-C# class lib<br>
-C# class lib
+net5.0 classlib<br>
+net5.0 classlib<br>
+net5.0 classlib
 </td>
  
 <td valign="top">
@@ -71,8 +71,8 @@ OrbitalShell-PromptGitInfo<br>
 OrbitalShell-DoomFireAlgo<br>
  
 <td valign="top">
-module .net core<br>
-module .net core
+shell module (net5.0)<br>
+shell module (net5.0)
 </td>
  
 <td valign="top">
@@ -260,6 +260,7 @@ There are a various subjects that can be treated:
 
 - Microsoft.CodeAnalysis.CSharp.Scripting
 - Microsoft.Extensions.ObjectPool
+- Microsoft.Extensions.Hosting
 - NewtonSoft.Json
 
 <br>
