@@ -397,6 +397,12 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
                                         (id, left, top, right, bottom) = Console.ActualWorkArea();
 
+                                        void AcceptChar()
+                                        {
+                                            printedStr = c.KeyChar + "";
+                                            printed = true;
+                                        } 
+
                                         switch (c.Key)
                                         {
                                             // CR: default end of input
@@ -510,6 +516,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                         Console.Out.Echo(txt, false, true);
                                                     }
                                                 }
+                                                else
+                                                    AcceptChar();
 
                                                 break;
 
@@ -647,8 +655,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 break;
 
                                             default:
-                                                printedStr = c.KeyChar + "";
-                                                printed = true;
+                                                AcceptChar();
                                                 break;
                                         }
                                     }
