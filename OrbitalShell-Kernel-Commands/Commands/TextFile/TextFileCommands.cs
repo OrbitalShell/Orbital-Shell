@@ -22,6 +22,8 @@ using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Commands.TextFile
 {
+    #pragma warning disable CA1822 // Marquer les membres comme étant static
+
     [Commands("commands related to text files")]
     [CommandsNamespace(CommandNamespace.tf)]
     public class TextFileCommands : ICommandsDeclaringType
@@ -56,9 +58,7 @@ namespace OrbitalShell.Commands.TextFile
                 return new CommandResult<List<TextFileInfo>>(new List<TextFileInfo> { new TextFileInfo(new FilePath(path.FullName), null, OSPlatform.Create("?"), null) }, ReturnCode.Error);
         }
 
-        [SuppressMessage("Style", "IDE0071:Simplifier l’interpolation", Justification = "<En attente>")]
-        [SuppressMessage("Style", "IDE0071WithoutSuggestion:Simplifier l’interpolation", Justification = "<En attente>")]
-        TextFileInfo PrintFile(
+        static TextFileInfo PrintFile(
             CommandEvaluationContext context,
             FilePath file,
             bool hideLineNumbers,
@@ -264,7 +264,7 @@ namespace OrbitalShell.Commands.TextFile
                 return new CommandResult<List<FilePath>>(new List<FilePath> { new FilePath(fileOrDir.FullName) }, ReturnCode.Error);
         }
 
-        (bool isValid, FilePath filePath) CheckIntegrity(
+        static (bool isValid, FilePath filePath) CheckIntegrity(
             CommandEvaluationContext context,
             FilePath filePath,
             double maxRatio,

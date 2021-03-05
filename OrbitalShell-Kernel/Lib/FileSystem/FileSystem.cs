@@ -13,40 +13,7 @@ namespace OrbitalShell.Lib.FileSystem
     /// os file system editing and helper operations
     /// </summary>
     public static partial class FileSystem
-    {
-        /// <summary>
-        /// use an heurisitc to detect if a file is a (non corrupted) text file
-        /// </summary>
-        /// <param name="path">full path of the file</param>
-        /// <returns>true if file is probably a text file, false if probably not</returns>
-        public static bool IsTextFile(
-            string path,
-            double maxRatio = 30,
-            int minSeqLength = 1024
-            )
-        {
-            var str = File.ReadAllText(path);
-            var arr = str.ToCharArray();
-            var r = true;
-            double nonPrintableCount = 0;
-            double rt = 0;
-            var cti = arr.Length - 1;
-
-            for (int i = 0; i < arr.Length; i++)
-            {
-                if (arr[i] != 10 && arr[i] != 13 && (arr[i] < 32 || arr[i] > 255)) nonPrintableCount++;
-                rt = nonPrintableCount / (i + 1) * 100d;
-                if (rt > maxRatio && i > minSeqLength)
-                {
-                    cti = i;        // index within no-text or corrupted-text is declared
-                    r = false;
-                    break;
-                }
-            }
-            r &= rt <= maxRatio;
-            return r;
-        }
-
+    {        
         /// <summary>
         /// search items in file system
         /// </summary>
@@ -126,7 +93,7 @@ namespace OrbitalShell.Lib.FileSystem
                             {
                                 try
                                 {
-                                    if (!FilePath.IsBinary(sitem.FileSystemInfo.FullName))
+                                    if (!FilePath.IsBinaryFile(sitem.FileSystemInfo.FullName))
                                     {
                                         // skip non text files
                                         var (lines, platform, eol) = TextFileReader.ReadAllLines(sitem.FileSystemInfo.FullName);

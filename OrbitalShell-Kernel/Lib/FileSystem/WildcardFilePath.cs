@@ -16,9 +16,9 @@ namespace OrbitalShell.Lib.FileSystem
             //OriginalPath = path;
             OriginalPath = GetOriginalPath(FileSystemInfo);
 
-            if (_CanNormalizePath(path, out _))
+            if (CanNormalizePath(path, out _))
             {
-                path = _NormalizePath(path);
+                path = NormalizePath(path);
             }
 
             if (ContainsWildcardFileName(path))

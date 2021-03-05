@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Text;
 using OrbitalShell.Component.CommandLine.Processor;
 
@@ -63,10 +64,34 @@ namespace OrbitalShell.Lib.FileSystem
             }
         }
 
-        public bool IsBinary(double maxRatio = 10, int minSeqLength = 1024, int maxSeqLength = 2048) =>
-            IsBinary(FullName, maxRatio, minSeqLength, maxSeqLength);
+        public const double NonPrintableCharactersMaxRatio = 10;
+        public const int CheckSequenceMinimumLength = 1024;
+        public const int CheckSequenceMaximumLength = 2048;
 
-        public static bool IsBinary(string filePath, double maxRatio = 10, int minSeqLength = 1024, int maxSeqLength = 2048)
+        public static bool IsTextFile(
+            string filePath, 
+            double maxRatio = NonPrintableCharactersMaxRatio, 
+            int minSeqLength = CheckSequenceMinimumLength, 
+            int maxSeqLength = CheckSequenceMaximumLength)
+            => !IsBinaryFile(filePath, maxRatio, minSeqLength, maxSeqLength);
+
+        public bool IsTextFile(
+            double maxRatio = NonPrintableCharactersMaxRatio, 
+            int minSeqLength = CheckSequenceMinimumLength, 
+            int maxSeqLength = CheckSequenceMaximumLength)
+            => !IsBinaryFile(FullName, maxRatio, minSeqLength, maxSeqLength);
+
+        public bool IsBinaryFile(
+            double maxRatio = NonPrintableCharactersMaxRatio, 
+            int minSeqLength = CheckSequenceMinimumLength, 
+            int maxSeqLength = CheckSequenceMaximumLength) =>
+            IsBinaryFile(FullName, maxRatio, minSeqLength, maxSeqLength);
+
+        public static bool IsBinaryFile(
+            string filePath, 
+            double maxRatio = NonPrintableCharactersMaxRatio, 
+            int minSeqLength = CheckSequenceMinimumLength, 
+            int maxSeqLength = CheckSequenceMaximumLength)
         {
             using var fs = new StreamReader(new FileStream(filePath, FileMode.Open));
             var r = false;
@@ -82,6 +107,7 @@ namespace OrbitalShell.Lib.FileSystem
                 else
                     break;
                 if ((c != 10 && c != 13 && c < 32) || c=='?') nonPrintableCount++;
+                if (c == '?') Debugger.Break();
                 rt = nonPrintableCount / (i + 1) * 100d;
                 if (rt > maxRatio && i > minSeqLength)
                 {

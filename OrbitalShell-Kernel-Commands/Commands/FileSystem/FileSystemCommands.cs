@@ -19,12 +19,15 @@ using static OrbitalShell.Lib.Str;
 using sc = System.Console;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using OrbitalShell.Component.Shell;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OrbitalShell.Commands.FileSystem
 {
     /// <summary>
     /// file systems commands
     /// </summary>
+    #pragma warning disable CA1822 // Marquer les membres comme étant static
+    #pragma warning disable IDE0060 // Marquer les membres comme étant static
     [Commands("commands related to files,directories,mounts/filesystems and disks")]
     [CommandsNamespace(CommandNamespace.fs)]
     public class FileSystemCommands : ICommandsDeclaringType
@@ -66,6 +69,7 @@ namespace OrbitalShell.Commands.FileSystem
         }
 
         [Command("make a directory")]
+        [SuppressMessage("Style", "IDE0060")]
         public CommandResult<DirectoryPath> Mkdir(
             CommandEvaluationContext context,
             [Parameter("path of the new directory")] DirectoryPath path
@@ -285,7 +289,7 @@ namespace OrbitalShell.Commands.FileSystem
             if (drive != null)
             {
                 drives = drives.Where(x => x.Name.Equals(drive, CommandLineParser.SyntaxMatchingRule));
-                if (drives.Count() == 0)
+                if (drives.Any())
                 {
                     context.Errorln($"drive \"{drive}\" not found");
                 }
@@ -550,7 +554,7 @@ namespace OrbitalShell.Commands.FileSystem
                     ((new List<(FileSystemPath, FileSystemPath)> { (source, null) }, new FindCounts()));
         }
 
-        List<FileSystemPath> RecurseInteractiveDeleteDir(
+        static List<FileSystemPath> RecurseInteractiveDeleteDir(
             CommandEvaluationContext context,
             DirectoryPath dir,
             bool simulate,
@@ -590,4 +594,5 @@ namespace OrbitalShell.Commands.FileSystem
             return r;
         }
     }
+
 }

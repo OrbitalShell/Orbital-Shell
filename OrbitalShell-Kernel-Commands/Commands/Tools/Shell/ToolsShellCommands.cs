@@ -118,7 +118,7 @@ namespace OrbitalShell.Commands.Tools.Shell
             foreach ( var item in items )
             {
                 var path = item.FullName;
-                if (item.IsFile && fs.IsTextFile(path))
+                if (item.IsFile && FilePath.IsTextFile(path))
                 {
                     var tpl = path;
                     _templateReplace(fields, settings, ref tpl);

@@ -21,6 +21,8 @@ namespace OrbitalShell.Lib.FileSystem
         /// </summary>
         public static readonly List<string> UserHomePathSymbols = new List<string> { "¤", "@", "~" };
 
+#pragma warning disable CA2211
+        // TODO: use settings
         public static string ErrorColorization = $"{Red}";
         public static string NormalDirectoryColorization = $"{Blue}";
         public static string WritableDirectoryColorization = $"{Bdarkgreen}{White}";
@@ -28,6 +30,7 @@ namespace OrbitalShell.Lib.FileSystem
         public static string SystemColorization = $"{Red}";
         public static string FileColorization = $"";
         public static string ReadOnlyFileColorization = $"{Green}";
+#pragma warning restore CA2211
 
         public FileSystemInfo FileSystemInfo { get; protected set; }
         public string Name => FileSystemInfo.Name;
@@ -63,7 +66,7 @@ namespace OrbitalShell.Lib.FileSystem
 
         public FileSystemPath(string fileSystemPath)
         {
-            fileSystemPath = _NormalizePath(fileSystemPath);
+            fileSystemPath = NormalizePath(fileSystemPath);
             FileSystemInfo = new DirectoryInfo(fileSystemPath);
             if (!FileSystemInfo.Exists)
             {
@@ -75,9 +78,9 @@ namespace OrbitalShell.Lib.FileSystem
         public FileSystemPath(FileSystemInfo fileSystemInfo)
         {
             var originalName = GetOriginalPath(fileSystemInfo);
-            if (_CanNormalizePath(originalName, out _))
+            if (CanNormalizePath(originalName, out _))
             {
-                var path = _NormalizePath(originalName);
+                var path = NormalizePath(originalName);
                 if (fileSystemInfo is DirectoryInfo)
                 {
                     FileSystemInfo = new DirectoryInfo(path);
@@ -96,14 +99,14 @@ namespace OrbitalShell.Lib.FileSystem
                 FileSystemInfo = fileSystemInfo;
         }
 
-        Type _fileSystemInfoType = typeof(FileSystemInfo);
+        readonly Type _fileSystemInfoType = typeof(FileSystemInfo);
         protected string GetOriginalPath(FileSystemInfo fsi)
         {
             var mi = _fileSystemInfoType.GetField("OriginalPath", BindingFlags.NonPublic | BindingFlags.Instance);
             return (string)mi.GetValue(fsi);
         }
 
-        protected bool _CanNormalizePath(string path, out string symbol)
+        protected static bool CanNormalizePath(string path, out string symbol)
         {
             foreach (var s in UserHomePathSymbols)
                 if (path.StartsWith(s))
@@ -115,12 +118,12 @@ namespace OrbitalShell.Lib.FileSystem
             return false;
         }
 
-        protected string _NormalizePath(string path)
+        protected static string NormalizePath(string path)
         {
-            if (_CanNormalizePath(path, out var symbol))
+            if (CanNormalizePath(path, out var symbol))
             {
                 path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                        + path.Substring(symbol.Length);
+                        + path[symbol.Length..];
             }
             return path;
         }
