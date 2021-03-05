@@ -126,31 +126,33 @@ namespace OrbitalShell.Lib.FileSystem
                             {
                                 try
                                 {
-                                    var (lines, platform, eol) = TextFileReader.ReadAllLines(sitem.FileSystemInfo.FullName);
-                                    bool match = false;
-                                    for (int i = 0; i < lines.Length; i++)
+                                    if (!FilePath.IsBinary(sitem.FileSystemInfo.FullName))
                                     {
-                                        if (lines[i].Contains(contains))
+                                        // skip non text files
+                                        var (lines, platform, eol) = TextFileReader.ReadAllLines(sitem.FileSystemInfo.FullName);
+                                        bool match = false;
+                                        for (int i = 0; i < lines.Length; i++)
                                         {
-                                            match |= true;
-                                            if (printMatches)
+                                            if (lines[i].Contains(contains))
                                             {
-                                                int j = lines[i].IndexOf(contains);
-                                                var loc = $"\t{context.ShellEnv.Colors.MarginText} {$"line {i},col {j}".PadRight(24)} ";
-                                                var txt = lines[i].Replace(contains, context.ShellEnv.Colors.TextExtractSelectionBlock + contains + Rdc + context.ShellEnv.Colors.TextExtract);
-                                                matches.Add(loc + context.ShellEnv.Colors.TextExtract + txt + Rdc);
+                                                match |= true;
+                                                if (printMatches)
+                                                {
+                                                    int j = lines[i].IndexOf(contains);
+                                                    var loc = $"\t{context.ShellEnv.Colors.MarginText} {$"line {i},col {j}".PadRight(24)} ";
+                                                    var txt = lines[i].Replace(contains, context.ShellEnv.Colors.TextExtractSelectionBlock + contains + Rdc + context.ShellEnv.Colors.TextExtract);
+                                                    matches.Add(loc + context.ShellEnv.Colors.TextExtract + txt + Rdc);
+                                                }
                                             }
                                         }
+                                        if (!match) sitem = null;
                                     }
-                                    if (!match) sitem = null;
-
-                                    /*var str = File.ReadAllText(sitem.FileSystemInfo.FullName);
-                                    if (!str.Contains(contains))
-                                        sitem = null;*/
+                                    else sitem = null;
                                 }
                                 catch (Exception ex)
                                 {
                                     context.Errorln($"file read error: {ex.Message} when accessing file: {sitem.PrintableFullName}");
+                                    sitem = null;
                                 }
                             }
                             if (sitem != null)

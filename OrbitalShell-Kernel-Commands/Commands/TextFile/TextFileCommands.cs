@@ -207,7 +207,7 @@ namespace OrbitalShell.Commands.TextFile
         }
 
         [Command("check integrity of one or several text files", "output a message for each corrupted file.\nThese command will declares a text file to be not integre as soon that it detects than the ratio of non printable caracters (excepted CR,LF) is geater than a fixed amount when reading the file")]
-        public CommandResult<List<FilePath>> checkIntegrity(
+        public CommandResult<List<FilePath>> CheckIntegrity(
             CommandEvaluationContext context,
             [Parameter("path of a file to be checked or path from where find files to to be checked")] FileSystemPath fileOrDir,
             [Option("p", "pattern", "select names that matches the pattern", true, true)] string pattern,
