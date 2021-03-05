@@ -273,8 +273,9 @@ namespace OrbitalShell.Commands.FileSystem
         }
 
         [Command("print informations about drives/mount points")]
-        [CommandName("DriveInfo")]
-        public CommandResult<List<DriveInfo>> Driveinfo(
+        [CommandName("Info")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:put static", Justification = "<wait>")]
+        public CommandResult<List<DriveInfo>> Info(
             CommandEvaluationContext context,
             [Parameter("drive name for which informations must be printed. if no drive specified, list all drives", true)] string drive,
             [Option("b", "borders", "if set add table borders")] bool borders

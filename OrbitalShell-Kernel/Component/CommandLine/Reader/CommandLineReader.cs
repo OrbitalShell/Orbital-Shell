@@ -497,6 +497,22 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                 }
                                                 break;
 
+                                            // CTRL + / : transform \ to /
+                                            case ConsoleKey.Divide:
+
+                                                if (c.Modifiers.HasFlag(ConsoleModifiers.Control))
+                                                {
+                                                    lock (Console.ConsoleLock)
+                                                    {
+                                                        var txt = _inputReaderStringBuilder.ToString().Replace('\\', '/');
+                                                        CleanUpReadln();
+                                                        _inputReaderStringBuilder.Append(txt);
+                                                        Console.Out.Echo(txt, false, true);
+                                                    }
+                                                }
+
+                                                break;
+
                                             case ConsoleKey.Backspace:
 
                                                 context.CommandLineProcessor.ModuleManager.ModuleHookManager

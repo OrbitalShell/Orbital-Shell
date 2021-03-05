@@ -26,6 +26,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
         bool IsCancellationRequested { get; }
         bool IsInitialized { get; set; }
         IModuleManager ModuleManager { get; }
+
+        // TODO: add IHookManager HookManager here
+        // remove from module manager
         
         ICommandLineProcessorSettings Settings { get; }
         ISyntaxAnalyser SyntaxAnalyzer { get; }
