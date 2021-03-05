@@ -647,8 +647,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                                     else
                                                     {
                                                         var sline = slines.Where(o => o.Y == Console.Out.CursorTop + 1).FirstOrDefault();
-                                                        // BUG: ici sline est null
-                                                        if (sline.Text != null)
+                                                        if (sline?.Text != null)
                                                             Console.Out.SetCursorPosConstraintedInWorkArea(Math.Min(Console.Out.CursorLeft, sline.X + sline.Length), Console.Out.CursorTop + 1);
                                                     }
                                                 }
