@@ -93,7 +93,7 @@ namespace OrbitalShell.Lib.FileSystem
             int minSeqLength = CheckSequenceMinimumLength, 
             int maxSeqLength = CheckSequenceMaximumLength)
         {
-            using var fs = new StreamReader(new FileStream(filePath, FileMode.Open));
+            using var fs = new StreamReader(new FileStream(filePath, FileMode.Open),null,true, CheckSequenceMaximumLength);
             var r = false;
             double nonPrintableCount = 0;
             double rt = 0;
@@ -107,7 +107,6 @@ namespace OrbitalShell.Lib.FileSystem
                 else
                     break;
                 if ((c != 10 && c != 13 && c < 32) || c=='?') nonPrintableCount++;
-                if (c == '?') Debugger.Break();
                 rt = nonPrintableCount / (i + 1) * 100d;
                 if (rt > maxRatio && i > minSeqLength)
                 {
