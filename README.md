@@ -275,4 +275,4 @@ There are a various subjects that can be treated:
 <img src="assets/tra4brains.png"/> | :warning: this project might be considered as a toy for old developer<br><br><img src="assets/pegi46small.png"/><br><br>
 -- | --
 
-*Warning: due to the average age of our main contributors, this project might contains **vintage** architecture,design and code. Nevertheless the source code is intensively based on young timers preferred patterns, C# 8 language usage (intellisense agrees), and it pretends to fit to good practices and architecture guidelines.*
+*Warning: due to the average age of our main contributors, this project might contains **vintage** architecture,design and code. Nevertheless the source code is intensively based on young devs preferred patterns, C# 8 language usage (intellisense agrees), and it pretends to fit to good practices and architecture guidelines.*
