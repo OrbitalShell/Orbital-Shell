@@ -27,7 +27,7 @@ namespace OrbitalShell
             string[] args
             )
         {
-            _clp.SetArgs(args);
+            var shellInitializer = GetShellInitializer(args);
 
             // prepare console
 
@@ -35,13 +35,22 @@ namespace OrbitalShell
             _cons.Out.ClearScreen();
 
             // invoke a shell initializer associated to the clp
-
-            var shellInitializer = new ShellInitializer(_clp);
+            
             shellInitializer.Run();
 
             // starts an interactive shell
 
             return _clr.ReadCommandLine();
         }
+
+        public ShellInitializer GetShellInitializer(string[] args)
+        {
+            _clp.SetArgs(args);
+            var shellInitializer = new ShellInitializer(_clp);
+            return shellInitializer;
+        }
+
+        public ICommandLineReader GetCommandLineReader()
+            => _clr;  
     }
 }

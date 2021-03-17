@@ -1,13 +1,29 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.Tasks;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell
 {
-    class Program
+    public static class Program
     {
-        static int Main(string[] args)
+        static async Task<int> Main(string[] args)
+            => await RunShell(args);
+
+        public static async Task<int> RunShell(string[] args)
+        {
+            var shellStartup = InitializeShell(args);
+
+            var returnCode = shellStartup.Startup(args);
+
+            await App.Host.RunAsync();
+
+            return returnCode;
+        }
+
+        public static IShellStartup InitializeShell(string[] args)
         {
             App.InitializeServices(System.Array.Empty<string>());
 
@@ -19,12 +35,7 @@ namespace OrbitalShell
             var scope = App.Host.Services.CreateScope();
             si.ScopedServiceProvider = scope.ServiceProvider;
 
-            var shellStartup = scope.ServiceProvider.GetRequiredService<IShellStartup>();
-            var returnCode = shellStartup.Startup(args);
-
-            App.Host.RunAsync().Wait();
-
-            return returnCode;
+            return scope.ServiceProvider.GetRequiredService<IShellStartup>();
         }
     }
 }

@@ -7,7 +7,7 @@
 	  
     <RootNamespace>OrbitalShell</RootNamespace>    
     <AssemblyName>orbsh</AssemblyName>
-    <StartupObject>OrbitalShell.Program</StartupObject>
+    <StartupObject></StartupObject>
     <NeutralLanguage>en-US</NeutralLanguage>
 
 	<PackageId>OrbitalShell</PackageId>

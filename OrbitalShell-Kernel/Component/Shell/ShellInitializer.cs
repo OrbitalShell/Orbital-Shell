@@ -26,13 +26,14 @@ namespace OrbitalShell.Component.Shell
             _console = clp.Console;
         }
 
+        public ICommandLineProcessor GetCommandLineProcessor() => _clp;
 
         /// <summary>
         /// perform kernel inits and run init scripts
         /// </summary>
-        public void Run()
+        public ShellInitializer Run()
         {
-            if (_clp.IsInitialized) return;
+            if (_clp.IsInitialized) return this;
 
             ShellInit( _clp.Args, _console, _clp.Settings, _clp.CommandEvaluationContext);
 
@@ -71,6 +72,7 @@ namespace OrbitalShell.Component.Shell
                 );
 
             _clp.IsInitialized = true;
+            return this;
         }
 
         /// <summary>
@@ -254,7 +256,6 @@ namespace OrbitalShell.Component.Shell
 
             ctx.ShellEnv.SetValue(ShellEnvironmentVar.settings_clp_shellExecBatchExt, settings.ShellExecBatchExt);
         }
-
 
         /// <summary>
         /// init the console. these init occurs before any display
