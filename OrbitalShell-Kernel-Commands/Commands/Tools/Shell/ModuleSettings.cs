@@ -19,7 +19,7 @@ namespace OrbitalShell.Commands.Tools.Shell
         public string ModulePackageID;
 
         /// <summary>
-        /// OrbitalShell-Module-{ModulePackageID}
+        /// OrbitalShell-Module-{ModuleLowerPackageID}
         /// </summary>
         public string ModuleLowerPackageID;
 
@@ -51,7 +51,7 @@ namespace OrbitalShell.Commands.Tools.Shell
         /// <summary>
         /// module min shell version (auto == OrbitalshellKernelVersion)
         /// </summary>
-        public string ModuleShellMinVersion = "1.0.1-beta4";
+        public string ModuleShellMinVersion = "1.0.9";
 
         /// <summary>
         /// authors
@@ -106,7 +106,7 @@ namespace OrbitalShell.Commands.Tools.Shell
         /// <summary>
         /// minimum shell version required
         /// </summary>     
-        public string OrbitalshellKernelVersion = "1.0.2";
+        public string OrbitalshellKernelVersion = "1.0.9";
         
         /// <summary>
         /// in: env.tools

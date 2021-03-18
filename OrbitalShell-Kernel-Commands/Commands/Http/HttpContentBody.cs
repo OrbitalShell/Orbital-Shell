@@ -9,13 +9,20 @@ namespace OrbitalShell.Commands.Http
     /// </summary>
     public class HttpContentBody
     {
-        public static readonly HttpContentBody EmptyHttpContentBody = new HttpContentBody(null);
+        public static readonly HttpContentBody EmptyHttpContentBody = new HttpContentBody();
 
-        public string Content;
+        public object Content;
 
-        public HttpContentBody(string content)
+        public HttpContentBody() { }
+
+        public HttpContentBody(object content)
         {
             Content = content;
+        }
+
+        public HttpContentBody(byte[] data)
+        {
+            Content = data;
         }
     }
 }

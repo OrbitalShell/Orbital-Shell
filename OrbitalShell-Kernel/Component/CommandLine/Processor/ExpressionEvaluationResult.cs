@@ -72,5 +72,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             EvalError = evalError;
             EvalErrorText = evalErrorText;
         }
+
+        public T GetResult<T>() => (T)Result;
     }
 }

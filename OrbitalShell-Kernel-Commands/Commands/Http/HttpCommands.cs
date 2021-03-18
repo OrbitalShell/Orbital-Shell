@@ -13,10 +13,12 @@ namespace OrbitalShell.Commands.Http
         [Command("get")]
         public CommandResult<HttpContentBody> Get(
             CommandEvaluationContext context,
-            [Parameter("query string")] string queryString
+            [Parameter("query string")] string queryString,
+            [Option("q","quiet","if not set (default), output get result on stdout",false,true)] bool quiet = false,
+            [Option("b","bin","get as a binary stream",false,true)] bool binary = false
             )
         {
-            string @return = null;
+            object @return = null;
             if (string.IsNullOrWhiteSpace(queryString))
             {
                 context.Errorln("uri must not be empty");
@@ -32,9 +34,13 @@ namespace OrbitalShell.Commands.Http
                 var result = tsk.Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    @return = result.Content.ReadAsStringAsync().Result;
+                    //@return = result.Content.ReadAsStringAsync().Result;
+                    @return =
+                        !binary ?
+                            result.Content.ReadAsStringAsync().Result :
+                            result.Content.ReadAsByteArrayAsync().Result;
 
-                    context.Out.Echo(@return, true, true);
+                    if (!quiet) context.Out.Echo(@return, true, true);
                 }
                 else
                     context.Errorln($"can't get response content: {result.ReasonPhrase}");
