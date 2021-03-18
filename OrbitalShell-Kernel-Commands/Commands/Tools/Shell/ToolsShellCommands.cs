@@ -56,7 +56,7 @@ namespace OrbitalShell.Commands.Tools.Shell
             [Option("i","in","take parameters from json input file",true,true)] string inputFile = defaultSettingsFileName,
             [Option("f","force","delete target if already exists")] bool force = false,
             [Option("s","skip-errors","skip ant error if possible")] bool skipErrors = false,
-            [Option(null, "no-init", "don't perform an initial init of remote repo")] bool noInitRemote = false,
+            [Option(null, "no-git-init", "don't perform an initial init of the git repository - do not init the project as a git repository")] bool noInitRemote = false,
             [Option("project template url", "modproj-tpl-url", "module project template url", true, true)] string url = moduleProjectTemplateRepositoryUrl,
             [Option("project archive url", "modproj-arch-url", "module project archive template url", true, true)] string archUrl = moduleProjectTemplateArchiveUrl,
             [Option(null,"preserve-curdir","preserve current dir")] bool preserveCurrentDir = false
@@ -208,7 +208,7 @@ namespace OrbitalShell.Commands.Tools.Shell
             _try(() =>
               {
                   _deleteIfExists(Path.Combine(output.FullName, "templateInfo.txt"));
-                  _deleteIfExists(Path.Combine(output.FullName, "./module-settings.json"));
+                  _deleteIfExists(Path.Combine(output.FullName, "module-settings.json"));
               });
 
             #endregion
