@@ -11,7 +11,7 @@ namespace OrbitalShell_UnitTests
     [TestCategory("command line syntax parser")]
     public class CommandLineSyntaxParserTests
     {
-        [TestMethod]        
+        [TestMethod("test syntaxes for standard arguments types")]        
         public void ArgumentSyntaxTest()
         {
             var shellInit = BaseTests.GetInitializedShell(BaseTests.DefaultShellInitArgs);            

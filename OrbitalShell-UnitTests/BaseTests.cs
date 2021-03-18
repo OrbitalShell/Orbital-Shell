@@ -15,6 +15,7 @@ namespace OrbitalShell_UnitTests
         public void TestShellNoneInteractiveStartup()
         {
             var shellInitializer = GetInitializedShell(DefaultShellInitArgs);
+            // no exception -> test ok
         }
 
         [TestMethod("starts an interactive shell")]
@@ -27,8 +28,7 @@ namespace OrbitalShell_UnitTests
                     .CommandLineReader
                     .ReadCommandLine();
 
-            if (returnCode != (int)ReturnCode.OK)
-                Assert.Fail();
+            Assert.AreEqual((int)ReturnCode.OK,returnCode);
         }
 
         /// <summary>
@@ -39,9 +39,9 @@ namespace OrbitalShell_UnitTests
         public static ShellInitializer GetInitializedShell(string[] args)
         {
             var st = Program.InitializeShell(args);
-            if (st == null) Assert.Fail();
+            Assert.IsNotNull(st);
             var si = st.GetShellInitializer(args).Run();
-            if (si == null) Assert.Fail();
+            Assert.IsNotNull(si);
             return si;
         }
     }

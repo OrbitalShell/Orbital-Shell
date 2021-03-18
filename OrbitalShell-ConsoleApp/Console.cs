@@ -267,7 +267,7 @@ namespace OrbitalShell
             // CursorLeft and CursorTop are always good
             lock (ConsoleLock)
             {
-                if (!CheckConsoleHasGeometry()) return (x, y, 1000, 1000);
+                if (!IsConsoleGeometryEnabled) return (x, y, 1000, 1000);
 
                 if (x < 0) x = sc.WindowLeft + sc.WindowWidth + x;
 
@@ -291,8 +291,10 @@ namespace OrbitalShell
             }
         }
 
+        // TODO: TO SLOW IN CASE OF PASTE TEXT INTO CONSOLE (reader call this on each new character inputed)
         public ActualWorkArea ActualWorkArea(bool fitToVisibleArea = true)
         {
+            if (!IsConsoleGeometryEnabled) return new ActualWorkArea(_workArea.Id, 0, 0, 0, 0);
             var x0 = _workArea.Rect.IsEmpty ? 0 : _workArea.Rect.X;
             var y0 = _workArea.Rect.IsEmpty ? 0 : _workArea.Rect.Y;
             var w0 = _workArea.Rect.IsEmpty ? -1 : _workArea.Rect.Width;
@@ -305,7 +307,7 @@ namespace OrbitalShell
 
         public void SetCursorAtWorkAreaTop()
         {
-            if (_workArea.Rect.IsEmpty) return;     // TODO: set cursor even if workarea empty?
+            if (!IsConsoleGeometryEnabled || _workArea.Rect.IsEmpty) return;     // TODO: set cursor even if workarea empty?
             lock (Out.Lock)
             {
                 Out.SetCursorPos(_workArea.Rect.X, _workArea.Rect.Y);
@@ -417,6 +419,7 @@ namespace OrbitalShell
                 && int.TryParse(s, out var v))
                 return v;
             if (TraceCommandErrors) LogError($"wrong cursor x: {x}");
+            if (!IsConsoleGeometryEnabled) return 0;
             lock (Out.Lock)
             {
                 return sc.CursorLeft;
@@ -429,6 +432,7 @@ namespace OrbitalShell
                 && int.TryParse(s, out var v))
                 return v;
             if (TraceCommandErrors) LogError($"wrong cursor y: {x}");
+            if (!IsConsoleGeometryEnabled) return 0;
             lock (Out.Lock)
             {
                 return sc.CursorTop;

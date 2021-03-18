@@ -85,6 +85,7 @@ namespace OrbitalShell.Component.Console
         void Init(IConsole console,CSharpScriptEngine cSharpScriptEngine = null)
         {
             Console = console;
+            console.CheckConsoleHasGeometry();
             CSharpScriptEngine = cSharpScriptEngine ?? new CSharpScriptEngine(console);
 
             // TIP: dot not affect background color throught System.Console.Background to preserve terminal console background transparency
@@ -854,13 +855,15 @@ namespace OrbitalShell.Component.Console
         {
             get
             {
+                if (!Console.IsConsoleGeometryEnabled) return 0;
                 lock (Lock)
-                {
+                {                    
                     return IsBufferEnabled ? _cachedCursorPosition.X : sc.CursorLeft;
                 }
             }
             set
             {
+                if (!Console.IsConsoleGeometryEnabled) return;
                 lock (Lock)
                 {
                     _cachedCursorPosition.X = value;
@@ -876,6 +879,7 @@ namespace OrbitalShell.Component.Console
         {
             get
             {
+                if (!Console.IsConsoleGeometryEnabled) return 0;
                 lock (Lock)
                 {
                     return IsBufferEnabled ? _cachedCursorPosition.X : sc.CursorTop;
@@ -883,6 +887,7 @@ namespace OrbitalShell.Component.Console
             }
             set
             {
+                if (!Console.IsConsoleGeometryEnabled) return;
                 lock (Lock)
                 {
                     _cachedCursorPosition.Y = value;
@@ -896,6 +901,7 @@ namespace OrbitalShell.Component.Console
         {
             get
             {
+                if (!Console.IsConsoleGeometryEnabled) return new Point(0,0);
                 lock (Lock)
                 {
                     return new Point(CursorLeft, CursorTop);
@@ -903,6 +909,7 @@ namespace OrbitalShell.Component.Console
             }
             set
             {
+                if (!Console.IsConsoleGeometryEnabled) return;
                 lock (Lock)
                 {
                     Write(ESC + $"[{value.Y + 1};{value.X + 1}H");
@@ -912,6 +919,7 @@ namespace OrbitalShell.Component.Console
 
         public void SetCursorPos(Point p)
         {
+            if (!Console.IsConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 var x = p.X;
@@ -935,6 +943,7 @@ namespace OrbitalShell.Component.Console
         /// <param name="y">y (origine 0)</param>
         public void SetCursorPos(int x, int y)
         {
+            if (!Console.IsConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 Console.FixCoords(ref x, ref y);
@@ -953,11 +962,13 @@ namespace OrbitalShell.Component.Console
 
         public void HideCur()
         {
+            if (!Console.IsConsoleGeometryEnabled) return;
             lock (Lock) { sc.CursorVisible = false; }
         }
 
         public void ShowCur()
         {
+            if (!Console.IsConsoleGeometryEnabled) return;
             lock (Lock) { sc.CursorVisible = true; }
         }
 

@@ -66,7 +66,7 @@ namespace OrbitalShell.Component.Shell
         help,
 
         /// <summary>
-        /// test (miscelaneous)
+        /// test (miscelaneous) , shell-test
         /// </summary>
         test,
 

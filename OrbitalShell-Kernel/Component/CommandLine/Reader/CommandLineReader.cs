@@ -285,6 +285,14 @@ namespace OrbitalShell.Component.CommandLine.Reader
             _readingStarted = false;
         }
 
+        /// <summary>
+        /// begin input reader thread
+        /// </summary>
+        /// <param name="asyncCallback">reader async call back at end of input</param>
+        /// <param name="prompt">prompt text</param>
+        /// <param name="waitForReaderExited">if true wait for end of input reader</param>
+        /// <param name="loop">mandatory for usage of SendInput</param>
+        /// <returns>forwarded state result code from asyncCallback</returns>
         public int BeginReadln(
             AsyncCallback asyncCallback,
             string prompt = null,
