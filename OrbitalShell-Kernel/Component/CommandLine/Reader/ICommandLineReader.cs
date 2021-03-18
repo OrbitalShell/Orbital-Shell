@@ -21,7 +21,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
         void IgnoreNextKey();
         void ProcessCommandLine(string commandLine, Delegates.ExpressionEvaluationCommandDelegate evalCommandDelegate, bool outputStartNextLine = false, bool enableHistory = false, bool enablePrePostComOutput = true);
         int ReadCommandLine(string prompt = null, bool waitForReaderExited = true);
-        void SendInput(string text, bool sendEnter = true);
+        void SendInput(string text, bool sendEnter = true, bool alwaysWaitForReaderExited = false);
         void SendNextInput(string text, bool sendEnter = true);
         void SetDefaultPrompt(string prompt);
         void SetPrompt(string prompt = null);

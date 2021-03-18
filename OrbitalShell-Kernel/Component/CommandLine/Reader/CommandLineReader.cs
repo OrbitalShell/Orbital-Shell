@@ -268,13 +268,13 @@ namespace OrbitalShell.Component.CommandLine.Reader
             return BeginReadln(new AsyncCallback(InputProcessor), prompt, waitForReaderExited);
         }
 
-        public void SendInput(string text, bool sendEnter = true)
+        public void SendInput(string text, bool sendEnter = true, bool waitEndOfInput = false)
         {
             _sentInput = text + ((sendEnter) ? Environment.NewLine : "");
             if (_inputReaderThread == null) return;
             StopBeginReadln();
             InputProcessor ??= ProcessInput;
-            BeginReadln(new AsyncCallback(InputProcessor), _prompt, _waitForReaderExited);
+            BeginReadln(new AsyncCallback(InputProcessor), _prompt, _waitForReaderExited | waitEndOfInput);
         }
 
         public void IgnoreNextKey() { _ignoreNextKey = true; }
