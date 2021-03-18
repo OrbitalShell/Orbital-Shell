@@ -134,11 +134,14 @@ namespace OrbitalShell.Commands.Tools.Shell
             packageId ??= moduleId;
             ModulePackageID = packageId;
             ModuleLowerPackageID = packageId?.ToLower();
-            ModulePascalCaseID = char.ToLower(packageId[0]) + packageId.Substring(1);
+            ModulePascalCaseID = CsName(char.ToLower(packageId[0]) + packageId[1..]);
             ModuleLowerID = $"orbitalshell-module-{ModuleID.ToLower()}";
             ModuleNamespace = $"env.com.{ModuleToolNamespace.ToLower()}";
-            ModuleCsID = ModuleID.Replace("-", "");
+            ModuleCsID = CsName(ModuleID);
+            ModuleToolVarSettingsName = ModulePascalCaseID;
             return this;
         }
+
+        static string CsName(string name) => name?.Replace("/", "")?.Replace("-","");
     }
 }
