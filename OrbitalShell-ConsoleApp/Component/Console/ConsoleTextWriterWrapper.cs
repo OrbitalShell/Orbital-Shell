@@ -1398,6 +1398,11 @@ namespace OrbitalShell.Component.Console
             int cursorX = -1,
             int cursorY = -1)
         {
+            if (!Console.IsConsoleGeometryEnabled) 
+                return new LineSplitList(
+                    new List<StringSegment>() { new StringSegment(s, 0, s.Length - 1) },null,0,0                    
+                );
+
             var originalString = s;
             var r = new List<StringSegment>();
             EchoSequenceList printSequences = null;

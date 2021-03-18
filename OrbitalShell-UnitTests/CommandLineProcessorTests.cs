@@ -19,8 +19,8 @@ namespace OrbitalShell_UnitTests
                 .GetCommandLineProcessor()
                 .CommandLineReader;
 
-            clr.BeginReadln(null, waitForReaderExited: false);
-            clr.SendInput("com-crash-test",waitEndOfInput:true);
+            //clr.BeginReadln(null, waitForReaderExited: false);    // this sentence and next mismatch on Loop parameter
+            clr.SendInput("com-crash-test",waitEndOfInput:true);    // change the function responsability: must assume begin readln
         }
     }
 }
