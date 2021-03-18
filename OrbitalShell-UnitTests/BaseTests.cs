@@ -18,7 +18,7 @@ namespace OrbitalShell_UnitTests
             // no exception -> test ok
         }
 
-        [TestMethod("starts an interactive shell")]
+        /*[TestMethod("starts an interactive shell")]
         public void TestShellInteractiveStartup()
         {
             var shellInitializer = GetInitializedShell(DefaultShellInitArgs);
@@ -26,10 +26,10 @@ namespace OrbitalShell_UnitTests
                 shellInitializer
                     .GetCommandLineProcessor()
                     .CommandLineReader
-                    .ReadCommandLine();
+                    .ReadCommandLine();     // never ends -> test never ok/fail
 
             Assert.AreEqual((int)ReturnCode.OK,returnCode);
-        }
+        }*/
 
         /// <summary>
         /// returns a shell that is initialized (user profile is loaded)

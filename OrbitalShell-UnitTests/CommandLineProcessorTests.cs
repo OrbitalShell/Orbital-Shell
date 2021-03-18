@@ -20,7 +20,7 @@ namespace OrbitalShell_UnitTests
                 .CommandLineReader;
 
             //clr.BeginReadln(null, waitForReaderExited: false);    // this sentence and next mismatch on Loop parameter
-            clr.SendInput("com-crash-test",waitEndOfInput:true);    // change the function responsability: must assume begin readln
+            //clr.SendInput("com-crash-test",waitEndOfInput:true);    // change the function responsability: must assume begin readln
         }
     }
 }
