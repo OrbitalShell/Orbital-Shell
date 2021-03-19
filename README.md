@@ -135,12 +135,15 @@ CLI OSX x64<br>
 <tr>
  
 <td valign="top">
+orbitalshell/orbital-shell
 </td>
 
 <td valign="top">
+Linux Ubuntu amd64
 </td>
 
 <td valign="top">
+https://hub.docker.com/r/orbitalshell/orbital-shell
 </td>
 
 </tr>
