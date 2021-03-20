@@ -91,12 +91,13 @@ shell module (net5.0)
 
 <tr>
 <td valign="top">
-OrbitalShell<br>
-OrbitalShell-win-x64<br>
-OrbitalShell-linux-musl-x64<br>
-OrbitalShell-linux-x64<br>
-OrbitalShell-linux-armx64<br>
-OrbitalShell-osx-x64<br>
+<a href="https://www.nuget.org/packages/OrbitalShell/" targer="_new">OrbitalShell</a><br>
+<a href="https://www.nuget.org/packages/OrbitalShell-win-x64/" targer="_new">OrbitalShell-win-x64</a><br>
+<a href="https://www.nuget.org/packages/OrbitalShell-linux-musl-x64/" targer="_new">OrbitalShell-linux-musl-x64</a><br>
+<a href="https://www.nuget.org/packages/OrbitalShell-linux-x64/" targer="_new">OrbitalShell-linux-x64</a><br>
+<a href="https://www.nuget.org/packages/OrbitalShell-linux-arm/" targer="_new">OrbitalShell-linux-arm</a><br>
+<a href="https://www.nuget.org/packages/OrbitalShell-linux-arm64/" targer="_new">OrbitalShell-linux-arm64</a><br>
+<a href="https://www.nuget.org/packages/OrbitalShell-osx-x64/" targer="_new">OrbitalShell-osx-x64</a><br>
 </td>
  
 <td valign="top">
@@ -104,6 +105,7 @@ CLI any <b>dotnet</b> platform*<br>
 CLI WIN x86<br>
 CLI linux MUSL x64<br>
 CLI linux x64<br>
+CLI linux ARM<br>
 CLI linux ARM x64<br>
 CLI OSX x64<br>
 </td>
@@ -114,6 +116,7 @@ CLI OSX x64<br>
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-win-x64.svg)](https://www.nuget.org/packages/OrbitalShell-win-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-win-x64.svg)<br>
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-musl-x64.svg)](https://www.nuget.org/packages/OrbitalShell-linux-musl-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-musl-x64.svg)<br>
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-x64.svg)](https://www.nuget.org/packages/OrbitalShell-linux-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-x64.svg)<br>
+[![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-arm.svg)](https://www.nuget.org/packages/OrbitalShell-linux-arm) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-arm.svg)<br>
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-linux-arm64.svg)](https://www.nuget.org/packages/OrbitalShell-linux-arm64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-linux-arm64.svg)<br>
 [![NuGetVersion](https://img.shields.io/nuget/v/OrbitalShell-osx-x64.svg)](https://www.nuget.org/packages/OrbitalShell-osx-x64) ![NuGetDownloads](https://img.shields.io/nuget/dt/OrbitalShell-osx-x64.svg)<br>
 </td>
