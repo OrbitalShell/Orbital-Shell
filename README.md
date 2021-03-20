@@ -40,9 +40,9 @@
 
 <tr>
 <td valign="top">
-OrbitalShell-ConsoleApp<br>
-OrbitalShell-Kernel<br>
-OrbitalShell-Kernel-Commands</td>
+<a href="https://github.com/OrbitalShell/Orbital-Shell/tree/master/OrbitalShell-ConsoleApp" target="_new">OrbitalShell-ConsoleApp</a><br>
+<a href="https://github.com/OrbitalShell/Orbital-Shell/tree/master/OrbitalShell-Kernel" target="_new">OrbitalShell-Kernel</a><br>
+<a href="https://github.com/OrbitalShell/Orbital-Shell/tree/master/OrbitalShell-Kernel-Commands" target="_new">OrbitalShell-Kernel-Commands</a></td>
  
 <td valign="top">
 net5.0 classlib<br>
@@ -67,8 +67,8 @@ net5.0 classlib
 
 <tr>
 <td valign="top">
-OrbitalShell-PromptGitInfo<br>
-OrbitalShell-DoomFireAlgo<br>
+<a href="https://github.com/OrbitalShell/Prompt-Git-Info/blob/main/README.md" target="_new">OrbitalShell-PromptGitInfo</a><br>
+<a href="https://github.com/OrbitalShell/Doom-Fire-Algo" target="_new">OrbitalShell-DoomFireAlgo</a><br>
  
 <td valign="top">
 shell module (net5.0)<br>
