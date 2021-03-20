@@ -122,6 +122,36 @@ CLI OSX x64<br>
 
 </table>
 
+**Docker images**<br>
+
+<table border="0" >
+
+<tr>
+ <th>image ID</th>
+ <th>description</th>
+ <th>link</th>
+</tr>
+
+<tr>
+ 
+<td valign="top">
+orbitalshell/orbital-shell
+</td>
+
+<td valign="top">
+Linux Ubuntu amd64
+</td>
+
+<td valign="top">
+https://hub.docker.com/r/orbitalshell/orbital-shell
+</td>
+
+</tr>
+
+</table>
+
+<br/>
+
 ## About the project
 
 This shell integrates the <u>most usefull shell commands</u>, and is intented to be extended by coding new commands or downloading new commands modules within a repository of modules. Of course it can be enterly customized by using the features integrated to the shell (<u>scripts, functions, commands, aliases, settings, parametrization,...</u>). Having a strong <u>ANSI/VT-100-220-300-500</u> support, it provides structured and colorized display of data and information (support of <u>ASCII, Unicode and 24 bits colors</u>).
