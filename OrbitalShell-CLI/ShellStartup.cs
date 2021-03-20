@@ -23,6 +23,11 @@ namespace OrbitalShell
             _clr = commandLineReader;
         }
 
+        /// <summary>
+        /// bootstrap shell for CLI context (interactive shell)
+        /// </summary>
+        /// <param name="args">shell arguments</param>
+        /// <returns>shell exit code</returns>
         public int Startup(
             string[] args
             )

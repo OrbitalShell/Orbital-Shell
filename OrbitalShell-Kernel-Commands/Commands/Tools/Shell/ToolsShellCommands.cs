@@ -201,7 +201,7 @@ namespace OrbitalShell.Commands.Tools.Shell
                 catch (Exception ex)
                 {
                     context.Error(ex.Message);
-                    if (!skipErrors) throw ex;
+                    if (!skipErrors) throw;
                 }
             }
 
