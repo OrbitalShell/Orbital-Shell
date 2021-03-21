@@ -15,12 +15,12 @@ using OrbitalShell.Component.Shell.Module.Data;
 
 namespace OrbitalShell.Component.Shell
 {
-    public class ShellInitializer
+    public class ShellBootstrap
     {
         readonly ICommandLineProcessor _clp;
         readonly IConsole _console;
 
-        public ShellInitializer(ICommandLineProcessor clp)
+        public ShellBootstrap(ICommandLineProcessor clp)
         {
             _clp = clp;
             _console = clp.Console;
@@ -31,7 +31,7 @@ namespace OrbitalShell.Component.Shell
         /// <summary>
         /// perform kernel inits and run init scripts
         /// </summary>
-        public ShellInitializer Run()
+        public ShellBootstrap Run()
         {
             if (_clp.IsInitialized) return this;
 
@@ -99,6 +99,8 @@ namespace OrbitalShell.Component.Shell
 
             // pre console init
             if (console.DefaultForeground != null) cons.ForegroundColor = console.DefaultForeground.Value;
+
+            // TODO: USE ShellArgsOptionBuilder GOT by DI from constructor to perform _clp.SetArgs
 
             // apply orbsh command args -env:{varName}={varValue}
             var appliedSettings = new List<string>();

@@ -36,11 +36,11 @@ namespace OrbitalShell_UnitTests
         /// </summary>
         /// <param name="args">shell command line arguments</param>
         /// <returns>a shell initializer</returns>
-        public static ShellInitializer GetInitializedShell(string[] args)
+        public static ShellBootstrap GetInitializedShell(string[] args)
         {
-            var st = Program.InitializeShell(args);
+            var st = Program.GetShellServiceHost(args);
             Assert.IsNotNull(st);
-            var si = st.GetShellInitializer(args).Run();
+            var si = st.GetShellBootstrap(args).Run();
             Assert.IsNotNull(si);
             return si;
         }

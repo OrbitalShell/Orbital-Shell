@@ -6,13 +6,13 @@ using System;
 
 namespace OrbitalShell
 {
-    public class ShellStartup : IShellStartup
+    public class ShellServiceHost : IShellServiceHost
     {
         readonly IConsole _cons;
         readonly ICommandLineProcessor _clp;
         readonly ICommandLineReader _clr;
 
-        public ShellStartup(
+        public ShellServiceHost(
             IConsole console,
             ICommandLineProcessor commandLineProcessor,
             ICommandLineReader commandLineReader
@@ -28,11 +28,11 @@ namespace OrbitalShell
         /// </summary>
         /// <param name="args">shell arguments</param>
         /// <returns>shell exit code</returns>
-        public int Startup(
+        public int InitializeShellServiceHost(
             string[] args
             )
         {
-            var shellInitializer = GetShellInitializer(args);
+            var shellBootstrap = GetShellBootstrap(args);
 
             // prepare console
 
@@ -41,18 +41,18 @@ namespace OrbitalShell
 
             // invoke a shell initializer associated to the clp
             
-            shellInitializer.Run();
+            shellBootstrap.Run();
 
             // starts an interactive shell
 
             return _clr.ReadCommandLine();
         }
 
-        public ShellInitializer GetShellInitializer(string[] args)
+        public ShellBootstrap GetShellBootstrap(string[] args)
         {
             _clp.SetArgs(args);
-            var shellInitializer = new ShellInitializer(_clp);
-            return shellInitializer;
+            var shellBootstrap = new ShellBootstrap(_clp);
+            return shellBootstrap;
         }
 
         public ICommandLineReader GetCommandLineReader()

@@ -9,21 +9,18 @@ namespace OrbitalShell
 {
     public static class Program
     {
-        static async Task<int> Main(string[] args)
-            => await RunShell(args);
-
-        public static async Task<int> RunShell(string[] args)
+        static int Main(string[] args)
         {
-            var shellStartup = InitializeShell(args);
+            var returnCode =
+                GetShellServiceHost(args)
+                .InitializeShellServiceHost(args);
 
-            var returnCode = shellStartup.Startup(args);
-
-            await App.Host.RunAsync();
+            App.Host.Run();
 
             return returnCode;
         }
 
-        public static IShellStartup InitializeShell(string[] args)
+        public static IShellServiceHost GetShellServiceHost(string[] args)
         {
             App.InitializeServices(System.Array.Empty<string>());
 
@@ -35,7 +32,7 @@ namespace OrbitalShell
             var scope = App.Host.Services.CreateScope();
             si.ScopedServiceProvider = scope.ServiceProvider;
 
-            return scope.ServiceProvider.GetRequiredService<IShellStartup>();
+            return scope.ServiceProvider.GetRequiredService<IShellServiceHost>();
         }
     }
 }

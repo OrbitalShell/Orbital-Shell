@@ -58,7 +58,7 @@ namespace OrbitalShell
                                 return clr;
                             })
                     .AddScoped
-                        <IShellStartup,ShellStartup>()
+                        <IShellServiceHost,ShellServiceHost>()
                     );
         }
     }
