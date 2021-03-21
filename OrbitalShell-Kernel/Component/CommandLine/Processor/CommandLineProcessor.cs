@@ -25,6 +25,7 @@ using System.Text;
 using OrbitalShell.Lib.Process;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell.Hook;
+using System.Threading.Tasks;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -469,7 +470,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public const int MaxWaitTime = 2000;    // 2 sec
 
         /// <summary>
-        /// shell exec short syntax. output not provided
+        /// shell exec short syntax. no input - output provided
         /// </summary>
         /// <param name="context"></param>
         /// <param name="com"></param>
@@ -484,7 +485,11 @@ namespace OrbitalShell.Component.CommandLine.Processor
         {
             var returnCode = ShellExec(
                 context, com, args, out var output,
-                true
+                true,
+                true,
+                true,
+                true,
+                false
                 );
             var success = (returnCode == (int)ReturnCode.OK);
 
@@ -513,6 +518,32 @@ namespace OrbitalShell.Component.CommandLine.Processor
             bool waitForExit = true,
             bool isStreamsEchoEnabled = true,
             bool isOutputCaptureEnabled = true,
+            bool mergeErrorStreamIntoOutput = true,
+            bool redirectStandardInput = false
+            )
+        {
+            return ShellExec(
+                context,
+                comPath,
+                args,
+                workingDirectory,
+                out _,
+                waitForExit,
+                isStreamsEchoEnabled,
+                isOutputCaptureEnabled,
+                mergeErrorStreamIntoOutput,
+                redirectStandardInput
+                );
+        }
+
+        public int ShellExec(
+            CommandEvaluationContext context,
+            string comPath,
+            string args,
+            string workingDirectory = null,
+            bool waitForExit = true,
+            bool isStreamsEchoEnabled = true,
+            bool isOutputCaptureEnabled = true,
             bool mergeErrorStreamIntoOutput = true
             )
         {
@@ -525,7 +556,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 waitForExit,
                 isStreamsEchoEnabled,
                 isOutputCaptureEnabled,
-                mergeErrorStreamIntoOutput
+                mergeErrorStreamIntoOutput,
+                false
                 );
         }
 
@@ -549,6 +581,29 @@ namespace OrbitalShell.Component.CommandLine.Processor
             bool waitForExit = true,
             bool isStreamsEchoEnabled = true,
             bool isOutputCaptureEnabled = true,
+            bool mergeErrorStreamIntoOutput = true,
+            bool redirectStandardInput = false
+            ) => ShellExec(
+                    context,
+                    comPath,
+                    args,
+                    null,
+                    out output,
+                    waitForExit,
+                    isStreamsEchoEnabled,
+                    isOutputCaptureEnabled,
+                    mergeErrorStreamIntoOutput,
+                    redirectStandardInput
+                );
+
+        public int ShellExec(
+            CommandEvaluationContext context,
+            string comPath,
+            string args,
+            out string output,
+            bool waitForExit = true,
+            bool isStreamsEchoEnabled = true,
+            bool isOutputCaptureEnabled = true,
             bool mergeErrorStreamIntoOutput = true
             ) => ShellExec(
                     context,
@@ -559,8 +614,33 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     waitForExit,
                     isStreamsEchoEnabled,
                     isOutputCaptureEnabled,
-                    mergeErrorStreamIntoOutput
+                    mergeErrorStreamIntoOutput,
+                    false
                 );
+
+        public int ShellExec(
+            CommandEvaluationContext context,
+            string comPath,
+            string args,
+            string workingDirectory,
+            out string output,
+            bool waitForExit = true,
+            bool isStreamsEchoEnabled = true,
+            bool isOutputCaptureEnabled = true,
+            bool mergeErrorStreamIntoOutput = true
+            )
+        => ShellExec(
+                context,
+                comPath,
+                args,
+                workingDirectory,
+                out output,
+                waitForExit,
+                isStreamsEchoEnabled,
+                isOutputCaptureEnabled,
+                mergeErrorStreamIntoOutput,
+                false
+            );
 
         /// <summary>
         /// exec a file with os shell exec or orbsh shell exec
@@ -583,9 +663,14 @@ namespace OrbitalShell.Component.CommandLine.Processor
             bool waitForExit = true,
             bool isStreamsEchoEnabled = true,
             bool isOutputCaptureEnabled = true,
-            bool mergeErrorStreamIntoOutput = true
+            bool mergeErrorStreamIntoOutput = true,
+            bool redirectStandardInput = false
             )
         {
+            Thread inputTask = null;
+            TextReader stdin = null;
+            ProcessWrapper pw = null;
+
             try
             {
                 output = null;
@@ -595,10 +680,10 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     UseShellExecute = false,
                     //StandardOutputEncoding = Encoding.UTF8,   // keep system default
                     //StandardErrorEncoding = Encoding.UTF8,    // keep system default
+
                     RedirectStandardError = true,
-                    RedirectStandardInput = false,
+                    RedirectStandardInput = redirectStandardInput,  // allows access to process StandardInput
                     RedirectStandardOutput = true,
-                    //LoadUserProfile = true,       // windows only
                     CreateNoWindow = true,
                     FileName = comPath,
                     Arguments = args,
@@ -608,6 +693,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 var sb = new StringBuilder();
 
                 // batch shell exec ?
+
                 if (Path.GetExtension(comPath) == context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clp_shellExecBatchExt))
                 {
                     var batchMethod = typeof(CommandLineProcessorCommands).GetMethod(nameof(CommandLineProcessorCommands.Batch));
@@ -616,7 +702,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     return r.EvalResultCode;
                 }
 
-                var pw = ProcessWrapper.ThreadRun(
+                // process exec
+
+                pw = ProcessWrapper.ThreadRun(
                     processStartInfo,
                     null,
                     (outStr) =>
@@ -634,29 +722,112 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessStart)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' [{pw.Process.Id}] started(rdc)");
 
                 int retCode = 0;
+                int c = -1;
 
                 if (waitForExit)
-                {
-                    pw.Process.WaitForExit();
-                    retCode = pw.Process.ExitCode;
+                {                    
+                    if (redirectStandardInput)
+                    {
+                        inputTask = new Thread(
+                            () =>
+                            {
+                                try
+                                {
+                                    var cp = comPath;
+                                    stdin = System.Console.In;
 
+#if dbg
+                                    Debug.WriteLine($"input task started [ cp = {cp} ]");
+#endif
+
+                                    while (!(bool)pw?.Process?.HasExited)
+                                    {
+                                        if (System.Console.KeyAvailable)
+                                        {
+                                            var key = System.Console.ReadKey(true);
+                                            c = key.KeyChar;
+
+                                            if (c > -1)
+                                            {
+                                                context.Out.ConsolePrint("" + (char)c);
+
+#if dbg
+                                                Debug.Write((char)c);
+#endif
+
+                                                pw?.Process.StandardInput.Write((char)c);
+                                                pw?.Process.StandardInput.Flush();
+                                            }
+                                        }
+
+                                        Thread.Sleep(1);
+                                    }
+
+#if dbg
+                                    Debug.WriteLine("input task exited");
+#endif
+                                }
+                                catch
+#if dbg
+                                (Exception ex)
+#endif
+                                {
+#if dbg
+                                    Debug.WriteLine($"input task exited ({ex.Message})");                                    
+#endif
+                                }
+                            });
+                        inputTask.Name = "forward input task";
+                        inputTask.Start();
+                    }
+
+                    var cancellationTask = Task.Run(() =>
+                    {
+                        try
+                        {
+                            while (!(bool)pw?.Process?.HasExited)
+                            {
+                                if (IsCancellationRequested)
+                                    pw?.Process?.Kill();
+                                Thread.Sleep(1);
+                            }
+
+                            inputTask?.Interrupt();
+
+#if dbg
+                            Debug.WriteLine($"cancellation task exited");
+#endif
+
+                        }
+                        catch
+#if dbg
+                        (Exception ex)
+#endif
+                        {
+#if dbg
+                            Debug.WriteLine($"cancellation task exited ({ex.Message})");
+#endif
+                        }
+                    });
+
+                    pw.Process.WaitForExit();                    
+
+                    retCode = pw.Process.ExitCode;
 
                     pw.StdOutCallBackThread.Join();
                     pw.StdErrCallBackThread.Join();
 
-
                     output = sb.ToString();
-
-                    //if (pw.StdOutCallBackThread.ThreadState != System.Threading.ThreadState.WaitSleepJoin) pw.StdOutCallBackThread.Join();
-                    //if (pw.StdErrCallBackThread.ThreadState != System.Threading.ThreadState.WaitSleepJoin) pw.StdErrCallBackThread.Join();
                 }
 
-                if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd)) context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' exited with code: {retCode}(rdc)");
+                if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd)) 
+                    context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' exited with code: {retCode}(rdc)");
 
                 return retCode;
             }
             catch (Exception shellExecException)
             {
+                inputTask?.Interrupt();
                 throw new Exception($"ShellExec error: {shellExecException}", shellExecException);
             }
             finally
@@ -807,6 +978,6 @@ namespace OrbitalShell.Component.CommandLine.Processor
             return r;
         }
 
-        #endregion
+#endregion
     }
 }

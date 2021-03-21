@@ -46,9 +46,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
         void PrintInfo(CommandEvaluationContext context);
         void SetArgs(string[] args);
         void SetArgs(string[] args, CommandEvaluationContext context, List<string> appliedSettings);
-        int ShellExec(CommandEvaluationContext context, string comPath, string args, string workingDirectory = null, bool waitForExit = true, bool isStreamsEchoEnabled = true, bool isOutputCaptureEnabled = true, bool mergeErrorStreamIntoOutput = true);
+        int ShellExec(CommandEvaluationContext context, string comPath, string args, string workingDirectory = null, bool waitForExit = true, bool isStreamsEchoEnabled = true, bool isOutputCaptureEnabled = true, bool mergeErrorStreamIntoOutput = true, bool redirectStandardInput = false);
         bool ShellExec(CommandEvaluationContext context, string com, string args, out CommandVoidResult returnCommandResult);
-        int ShellExec(CommandEvaluationContext context, string comPath, string args, out string output, bool waitForExit = true, bool isStreamsEchoEnabled = true, bool isOutputCaptureEnabled = true, bool mergeErrorStreamIntoOutput = true);
-        int ShellExec(CommandEvaluationContext context, string comPath, string args, string workingDirectory, out string output, bool waitForExit = true, bool isStreamsEchoEnabled = true, bool isOutputCaptureEnabled = true, bool mergeErrorStreamIntoOutput = true);
+        int ShellExec(CommandEvaluationContext context, string comPath, string args, out string output, bool waitForExit = true, bool isStreamsEchoEnabled = true, bool isOutputCaptureEnabled = true, bool mergeErrorStreamIntoOutput = true, bool redirectStandardInput = false);
+        int ShellExec(CommandEvaluationContext context, string comPath, string args, string workingDirectory, out string output, bool waitForExit = true, bool isStreamsEchoEnabled = true, bool isOutputCaptureEnabled = true, bool mergeErrorStreamIntoOutput = true, bool redirectStandardInput = false);
     }
 }
