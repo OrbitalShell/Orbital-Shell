@@ -41,7 +41,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
                         context,
                         path.FullName,
                         args,
-                        out output
+                        out output,
+                        redirectStandardInput:true
                     );
             }
             return new CommandResult<(int retCode, string output)>((ret, output));
