@@ -53,7 +53,7 @@ namespace OrbitalShell.Component.Shell.Init
         /// </summary>
         public static readonly ShellArg ARG_IMPORT_SETTINGS = new("s", "settings");
 
-        string[] Args;
+        string[] _args;
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace OrbitalShell.Component.Shell.Init
         /// <param name="args"></param>
         public void SetArgs(string[] args)
         {
-            Args = args;
+            _args = args;
         }
 
         /// <summary>
@@ -75,7 +75,24 @@ namespace OrbitalShell.Component.Shell.Init
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public bool HasArg(string name) => Args.Contains("-" + name) || Args.Contains("--" + name);
+        public bool HasArg(ShellArg arg) => _args.Contains(arg.ShortOpt) || _args.Contains(arg.LongOpt);
+
+        /// <summary>
+        /// returns values of an arg if it is provided, else null
+        /// </summary>
+        /// <param name="arg">searched arg</param>
+        /// <returns>arg values or null</returns>
+        public ShellArgValue GetArg(ShellArg arg)
+        {
+            var shortIdx = Array.IndexOf(_args,arg.ShortOpt);
+            var longIdx = Array.IndexOf(_args, arg.LongOpt);
+            var idx = Math.Max(shortIdx, longIdx);
+            if (idx == -1) return null;
+            return new ShellArgValue(
+                arg, 
+                _args[idx], (idx + 1 < _args.Length) ? _args[idx + 1] : null)
+                { ArgIndex = idx };
+        }
 
         /// <summary>
         /// check if the arg spec match the arg name
@@ -83,16 +100,49 @@ namespace OrbitalShell.Component.Shell.Init
         /// <param name="argSpec">arg spec</param>
         /// <param name="argName">arg name</param>
         /// <returns>true if both match, false otherwize</returns>
-        public static bool IsArg(ShellArg argSpec, string argName) =>
-            argName.StartsWith("-" + argSpec.ShortName) || argName.StartsWith("--" + argSpec.LongName);
+        public bool IsArg(ShellArg argSpec, string argName) =>
+            argName.StartsWith(argSpec.ShortOpt) || argName.StartsWith(argSpec.LongOpt);
 
         /// <summary>
-        /// import settings from a JSON file
+        /// import settings from a JSON file. use arg if specified else use defaults settings
         /// </summary>
-        /// <param name="path">path of the json file</param>
+        /// <param name="context">command eval context</param>
+        /// <param name="appliedArgs">args that have been takent into account</param>
         /// <returns>ShellArgsOptionBuilder</returns>
-        public ShellArgsOptionBuilder ImportSettingsFromJSon(string path)
+        public ShellArgsOptionBuilder ImportSettingsFromJSon(
+            CommandEvaluationContext context
+            )
         {
+            var settingsPath = "";
+            ShellArgValue importSettings;
+            if ((importSettings = GetArg(ARG_IMPORT_SETTINGS)) != null)
+                settingsPath = importSettings.ArgValue
+                    ?? throw new Exception($"--settings value is null");
+
+            return this;
+        }
+
+        /// <summary>
+        /// configure the command operation context from args
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ShellArgsOptionBuilder SetCommandOperationContextOptions(
+            CommandEvaluationContext context,
+            ref List<ShellArgValue> appliedArgs
+        )
+        {
+            bool CheckArg(ShellArg arg,ref List<ShellArgValue>  aa)
+            {
+                var argVal = GetArg(arg);
+                if (argVal == null) return false;
+                aa.Add(argVal);
+                return true;
+            }
+
+            context.Settings.HasConsole = !CheckArg(ARG_NO_CONSOLE,ref appliedArgs);
+            context.Settings.IsInteractive = !CheckArg(ARG_NO_INTERACTIVE, ref appliedArgs);
+            context.Settings.IsQuiet = CheckArg(ARG_QUIET, ref appliedArgs);
 
             return this;
         }
@@ -101,7 +151,7 @@ namespace OrbitalShell.Component.Shell.Init
         /// set command line processor options (ShellBootstrap.ShellInit)
         /// <para>apply orbsh command args -env:{varName}={varValue}</para>
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">command eval context</param>
         /// <param name="appliedArgs">args that have been takent into account</param>
         /// <returns>ShellArgsOptionBuilder</returns>
         public ShellArgsOptionBuilder SetCommandLineProcessorOptions(
@@ -110,7 +160,7 @@ namespace OrbitalShell.Component.Shell.Init
         {
             // parse and apply any --env:{VarName}={VarValue} argument
 
-            foreach (var arg in Args)
+            foreach (var arg in _args)
             {
                 if (IsArg(ARG_ENV, arg))
                 {

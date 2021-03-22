@@ -6,6 +6,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
 {
     public class CommandEvaluationContext
     {
+        public CommandEvaluationContextSettings Settings { get; protected set; } = new CommandEvaluationContextSettings();
+
         static int _instanceCounter = 1000;
         readonly static object _instanceLock = new object();
 

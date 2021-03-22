@@ -13,6 +13,7 @@ namespace OrbitalShell.Component.Shell.Init
         readonly IConsole _cons;
         readonly ICommandLineProcessor _clp;
         readonly ICommandLineReader _clr;
+        readonly IShellBootstrap _shellBootstrap;
 
         public static IShellServiceHost GetShellServiceHost(
             string[] args,
@@ -27,21 +28,23 @@ namespace OrbitalShell.Component.Shell.Init
 
             App.EndInitializeServices();
 
-            var scope = App.Host.Services.CreateScope();
-            si.ScopedServiceProvider = scope.ServiceProvider;
+            si.ServiceScope = App.Host.Services.CreateScope();
+            si.ScopedServiceProvider = si.ServiceScope.ServiceProvider;
 
-            return scope.ServiceProvider.GetRequiredService<IShellServiceHost>();
+            return si.ServiceScope.ServiceProvider.GetRequiredService<IShellServiceHost>();
         }
 
         public ShellServiceHost(
             IConsole console,
             ICommandLineProcessor commandLineProcessor,
-            ICommandLineReader commandLineReader
+            ICommandLineReader commandLineReader,
+            IShellBootstrap shellBootstrap
             )
         {
             _cons = console;
             _clp = commandLineProcessor;
             _clr = commandLineReader;
+            _shellBootstrap = shellBootstrap;
         }
 
         /// <summary>
@@ -49,10 +52,12 @@ namespace OrbitalShell.Component.Shell.Init
         /// </summary>
         /// <param name="args">shell arguments</param>
         /// <returns>shell exit code</returns>
-        public int InitializeShellServiceHost(
+        public int RunShellServiceHost(
             string[] args
             )
         {
+            _clp.SetArgs(args);
+
             var shellBootstrap = GetShellBootstrap(args);
 
             // prepare console
@@ -69,11 +74,12 @@ namespace OrbitalShell.Component.Shell.Init
             return _clr.ReadCommandLine();
         }
 
-        public ShellBootstrap GetShellBootstrap(string[] args)
+        public IShellBootstrap GetShellBootstrap(string[] args)
         {
             _clp.SetArgs(args);
-            var shellBootstrap = new ShellBootstrap(_clp);
-            return shellBootstrap;
+            //var shellBootstrap = new ShellBootstrap(_clp);
+            //var shellBootstrap = 
+            return _shellBootstrap;
         }
 
         public ICommandLineReader GetCommandLineReader()

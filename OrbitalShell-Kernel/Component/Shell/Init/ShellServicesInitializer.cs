@@ -19,12 +19,16 @@ namespace OrbitalShell.Component.Shell.Init
     {
         public IServiceProvider ScopedServiceProvider { get; set; }
 
+        public IServiceScope ServiceScope { get;set;}
+
         public IHostBuilder InitializeServices(IHostBuilder hostBuilder)
         {
             hostBuilder.ConfigureServices(
                 (_, services) => services
                     .AddScoped
                         <IShellArgsOptionBuilder,ShellArgsOptionBuilder>()
+                    .AddScoped
+                        <IShellBootstrap,ShellBootstrap>()
                     .AddScoped
                         <ICommandLineProcessor, CommandLineProcessor>()
                     .AddScoped

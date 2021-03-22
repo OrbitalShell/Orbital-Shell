@@ -1,9 +1,13 @@
-﻿namespace OrbitalShell.Component.Shell.Init
+﻿using System;
+
+using Microsoft.Extensions.Hosting;
+
+namespace OrbitalShell.Component.Shell.Init
 {
     public interface IShellServiceHost
     {
-        int InitializeShellServiceHost(string[] args);
+        int RunShellServiceHost(string[] args);
 
-        ShellBootstrap GetShellBootstrap(string[] args);
+        IShellBootstrap GetShellBootstrap(string[] args);
     }
 }

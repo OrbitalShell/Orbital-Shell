@@ -12,21 +12,24 @@ namespace OrbitalShell
         static int Main(string[] args)
         {
             var returnCode =
-                ShellServiceHost.GetShellServiceHost(
-                    args,
-                    (hostBuilder) => 
-                        hostBuilder.ConfigureServices(
-                            (_,services) => 
-                                services.AddScoped
-                                    <ICommandLineProcessorSettings, OrbitalShellCommandLineProcessorSettings>()
-                                    )
-                        )                    
-                .InitializeShellServiceHost(args);
+                GetShellServiceHost(args)
+                .RunShellServiceHost(args);
 
             App.Host.Run();
 
             return returnCode;
         }
+
+        public static IShellServiceHost GetShellServiceHost(string[] args)
+            => ShellServiceHost.GetShellServiceHost(
+                    args,
+                    (hostBuilder) =>
+                        hostBuilder.ConfigureServices(
+                            (_, services) =>
+                                services.AddScoped
+                                    <ICommandLineProcessorSettings, OrbitalShellCommandLineProcessorSettings>()
+                                    )
+                        );
     }
 }
 

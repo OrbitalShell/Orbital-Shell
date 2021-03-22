@@ -17,5 +17,9 @@ namespace OrbitalShell.Component.Shell.Init
             ShortName = shortName;
             LongName = longName;
         }
+
+        public string ShortOpt => "-" + ShortName;
+
+        public string LongOpt => "--" + LongName;
     }
 }
