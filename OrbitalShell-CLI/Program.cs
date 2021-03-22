@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-
+﻿
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Shell.Init;
 
 namespace OrbitalShell
 {
@@ -12,27 +12,20 @@ namespace OrbitalShell
         static int Main(string[] args)
         {
             var returnCode =
-                GetShellServiceHost(args)
+                ShellServiceHost.GetShellServiceHost(
+                    args,
+                    (hostBuilder) => 
+                        hostBuilder.ConfigureServices(
+                            (_,services) => 
+                                services.AddScoped
+                                    <ICommandLineProcessorSettings, OrbitalShellCommandLineProcessorSettings>()
+                                    )
+                        )                    
                 .InitializeShellServiceHost(args);
 
             App.Host.Run();
 
             return returnCode;
-        }
-
-        public static IShellServiceHost GetShellServiceHost(string[] args)
-        {
-            App.InitializeServices(System.Array.Empty<string>());
-
-            var si = new ServicesInitializer();
-            si.InitializeServices(App.HostBuilder);
-
-            App.EndInitializeServices();
-
-            var scope = App.Host.Services.CreateScope();
-            si.ScopedServiceProvider = scope.ServiceProvider;
-
-            return scope.ServiceProvider.GetRequiredService<IShellServiceHost>();
         }
     }
 }

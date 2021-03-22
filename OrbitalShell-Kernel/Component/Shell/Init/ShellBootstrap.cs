@@ -13,7 +13,7 @@ using System.Linq;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell.Module.Data;
 
-namespace OrbitalShell.Component.Shell
+namespace OrbitalShell.Component.Shell.Init
 {
     public class ShellBootstrap
     {

@@ -1,4 +1,4 @@
-﻿namespace OrbitalShell.Component.Shell
+﻿namespace OrbitalShell.Component.Shell.Init
 {
     public interface IShellServiceHost
     {

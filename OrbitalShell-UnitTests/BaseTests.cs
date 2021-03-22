@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OrbitalShell;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Init;
 
 namespace OrbitalShell_UnitTests
 {

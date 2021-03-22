@@ -95,6 +95,11 @@
 	
   </ItemGroup>
 
+	 
+  <ItemGroup>
+    <Compile Remove="ServicesInitializer.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj" />
     <ProjectReference Include="..\OrbitalShell-Kernel\OrbitalShell-Kernel.csproj" />

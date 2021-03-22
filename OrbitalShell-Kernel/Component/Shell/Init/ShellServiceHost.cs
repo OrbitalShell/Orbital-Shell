@@ -3,14 +3,35 @@ using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
 using System;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace OrbitalShell
+namespace OrbitalShell.Component.Shell.Init
 {
     public class ShellServiceHost : IShellServiceHost
     {
         readonly IConsole _cons;
         readonly ICommandLineProcessor _clp;
         readonly ICommandLineReader _clr;
+
+        public static IShellServiceHost GetShellServiceHost(
+            string[] args,
+            Action<IHostBuilder> initAction = null)
+        {
+            App.InitializeServices(System.Array.Empty<string>());
+
+            var si = new ShellServicesInitializer();
+            si.InitializeServices(App.HostBuilder);
+
+            initAction?.Invoke(App.HostBuilder);
+
+            App.EndInitializeServices();
+
+            var scope = App.Host.Services.CreateScope();
+            si.ScopedServiceProvider = scope.ServiceProvider;
+
+            return scope.ServiceProvider.GetRequiredService<IShellServiceHost>();
+        }
 
         public ShellServiceHost(
             IConsole console,

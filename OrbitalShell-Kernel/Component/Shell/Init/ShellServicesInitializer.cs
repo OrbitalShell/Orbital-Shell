@@ -9,21 +9,22 @@ using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.CommandLine.Reader;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Hook;
+using OrbitalShell.Component.Shell.Init;
 using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Lib.Sys;
 
-namespace OrbitalShell
+namespace OrbitalShell.Component.Shell.Init
 {
-    public class ServicesInitializer
+    public class ShellServicesInitializer
     {
         public IServiceProvider ScopedServiceProvider { get; set; }
 
-        public void InitializeServices(IHostBuilder hostBuilder)
+        public IHostBuilder InitializeServices(IHostBuilder hostBuilder)
         {
             hostBuilder.ConfigureServices(
                 (_, services) => services
                     .AddScoped
-                        <ICommandLineProcessorSettings, OrbitalShellCommandLineProcessorSettings>()
+                        <IShellArgsOptionBuilder,ShellArgsOptionBuilder>()
                     .AddScoped
                         <ICommandLineProcessor, CommandLineProcessor>()
                     .AddScoped
@@ -60,6 +61,7 @@ namespace OrbitalShell
                     .AddScoped
                         <IShellServiceHost,ShellServiceHost>()
                     );
+            return hostBuilder;
         }
     }
 }
