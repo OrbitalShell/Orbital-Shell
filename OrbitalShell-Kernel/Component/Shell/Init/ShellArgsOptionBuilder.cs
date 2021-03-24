@@ -188,7 +188,7 @@ namespace OrbitalShell.Component.Shell.Init
             CommandEvaluationContext context,
             ref List<ShellArgValue> appliedArgs)
         {
-            // parse and apply any --env:{VarName}={VarValue} argument
+            // parse and apply any [--env|-e]:{VarName}={VarValue} argument
 
             foreach (var arg in _args)
             {
@@ -208,7 +208,7 @@ namespace OrbitalShell.Component.Shell.Init
                     }
                     catch (Exception ex)
                     {
-                        context.Errorln($"shell arg set error: {arg} (error is: {ex.Message})");
+                        context.Errorln($"shell arg set option error: {arg} (error is: {ex.Message})");
                     }
                 }
             }
@@ -254,10 +254,7 @@ namespace OrbitalShell.Component.Shell.Init
             string name,
             object value)
         {
-            //var tn = VariableSyntax.SplitPath(name);
-            //var t = new ArraySegment<string>(tn);
             if (context.Variables.GetValue(name,false) is DataValue val)
-            //if (context.ShellEnv.Get(t, out var o) && o is DataValue val)
             {
                 try
                 {

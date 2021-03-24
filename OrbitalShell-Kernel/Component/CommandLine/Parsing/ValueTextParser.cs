@@ -71,6 +71,33 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 return true;
 
             }
+            else if (ptype.HasInterface(typeof(ICollection)) && ovalue.GetType().HasInterface(typeof(ICollection)))
+            {
+                var genArgs = ptype.GenericTypeArguments;
+                if (genArgs.Length > 1) throw new Exception("generic type with more then 1 type argument is not supported: " + ptype.UnmangledName());
+                var argType = genArgs[0];
+                var lst = Activator.CreateInstance(ptype);
+                var met = ptype.GetMethod("Add");
+                if (met == null) throw new Exception($"the type {ptype.UnmangledName()} has no method 'Add' that would allow to use it as a collection parameter type");
+
+                var values = ((ICollection)ovalue).GetEnumerator();
+                while (values.MoveNext())
+                {
+                    var val = values.Current;
+                    if (ToTypedValue(val, argType, null, out var convertedVal, out var valPossibleValues, fallBackType, defaultReturnIdentityOk, allowPrecisionLost))
+                    {
+                        met.Invoke(lst, new object[] { convertedVal });
+                    }
+                    else
+                    {
+                        possibleValues = valPossibleValues;
+                        return false;
+                    }
+                }
+
+                convertedValue = lst;
+                return true;
+            }
             else if (ptype.IsEnum && ovalue is string str)
             {
                 if (ptype.GetCustomAttribute<FlagsAttribute>() != null && str.Contains(CommandLineSyntax.ParameterTypeFlagEnumValuePrefixs))

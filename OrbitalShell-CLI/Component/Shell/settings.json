@@ -58,8 +58,8 @@
       "module": {
 
         "providerUrls": [
-          "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/dev/module-index-repository/module-list.json",
-          "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/main/module-index-repository/module-list.json" 
+          "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/master/module-index-repository/module-list.json",
+          "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/dev/module-index-repository/module-list.json"
         ]
 
       }

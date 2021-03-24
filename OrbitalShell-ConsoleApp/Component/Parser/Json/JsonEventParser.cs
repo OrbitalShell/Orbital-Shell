@@ -142,10 +142,11 @@ namespace OrbitalShell.Component.Parser.Json
                         break;
                 }
             }
-            foreach (var (name, value) in properties)
-            {
-                debugDelegate?.Invoke($"{Path(path)}.{name} = {value}");
-            }
+
+            if (debugDelegate!=null)
+                foreach (var (name, value) in properties)            
+                    debugDelegate?.Invoke($"{Path(path)}.{name} = {value}");
+            
             addObjectDelegate?.Invoke(properties);
             return allProperties;
         }
