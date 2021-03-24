@@ -1,14 +1,6 @@
 ﻿{
   // map shell environment variables and namespaces
 
-  "local": {
-
-  },
-
-  "global": {
-
-  },
-
   "env": {
 
     "debug": {
@@ -69,6 +61,14 @@
     "display": {
 
     }
+  },
+
+  "local": {
+
+  },
+
+  "global": {
+
   },
 
   "_": {

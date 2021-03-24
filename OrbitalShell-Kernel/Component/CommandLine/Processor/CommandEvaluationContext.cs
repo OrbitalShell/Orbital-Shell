@@ -129,7 +129,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public void Warning(string s, bool lineBreak = false) => Out.Warning(s, lineBreak);
 
         /// <summary>
-        /// simplesystem.diagnostics.debug
+        /// system.diagnostics.debug
         /// </summary>
         public void Debug(
             string s,

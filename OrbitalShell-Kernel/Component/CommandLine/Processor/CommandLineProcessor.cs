@@ -175,7 +175,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public void SetArgs(string[] args) => _args = args;
 
         /// <summary>
-        /// clp init
+        /// clp init (defaults streams are console streams)
         /// </summary>
         public void Init(
             string[] args,
@@ -217,10 +217,18 @@ namespace OrbitalShell.Component.CommandLine.Processor
             {
                 try
                 {
+                    var bannerPath = context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_banner_path);
+                    if (!Path.IsPathFullyQualified(bannerPath))
+                        bannerPath =
+                            Path.Combine(
+                                context.ShellEnv.GetValue<DirectoryPath>(ShellEnvironmentVar.shell)
+                                    .FullName,
+                                bannerPath);
+
                     // todo: use a simple banner command !
                     var banner =
                         File.ReadAllLines(
-                            context.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_banner_path)
+                            bannerPath
                         );
                     int c = context.ShellEnv.GetValue<int>(ShellEnvironmentVar.settings_console_banner_startColorIndex);
                     int n = 1;

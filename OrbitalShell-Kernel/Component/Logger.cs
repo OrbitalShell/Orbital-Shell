@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
 
 namespace OrbitalShell.Component
 {
@@ -17,6 +18,8 @@ namespace OrbitalShell.Component
         public readonly CommandEvaluationContext CommandEvaluationContext;
         static object _logFileLock = new object();
         public bool MuteLogErrors;
+        public bool IsEchoEnabled = true;
+        public ConsoleTextWriterWrapper Out => IsEchoEnabled ? CommandEvaluationContext.Out : null;
 
         public Logger(CommandEvaluationContext context)
         {
@@ -31,49 +34,49 @@ namespace OrbitalShell.Component
         public void Success(string message = null, bool log = true, bool lineBreak = true, string prefix = "Success")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message, prefix);
-            CommandEvaluationContext.Out.Echo(logMessage,lineBreak);
+            Out?.Echo(logMessage,lineBreak);
             if (log) Log(logMessage);
         }
 
         public void Done(string message = null, bool log = true, bool lineBreak = true, string prefix = "Done")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Success + _LogMessage(message, prefix);
-            CommandEvaluationContext.Out.Echo(logMessage, lineBreak);
+            Out?.Echo(logMessage, lineBreak);
             if (log) Log(logMessage);
         }
 
         public void Info(string message, bool log = true, bool lineBreak = true, string prefix = "")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Log + _LogMessage(message, prefix);
-            CommandEvaluationContext.Out.Echo(logMessage, lineBreak);
+            Out?.Echo(logMessage, lineBreak);
             if (log) Log(logMessage);
         }
 
         public void Fail(string message = null, bool log = true, bool lineBreak = true, string prefix = "Fail")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + _LogMessage(message, prefix, "");
-            CommandEvaluationContext.Out.Echo(logMessage, lineBreak);
+            Out?.Echo(logMessage, lineBreak);
             if (log) Log(logMessage);
         }
 
         public void Warning(string message = null, bool log = true, bool lineBreak = true, string prefix = "Warning")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Warning + _LogMessage(message, prefix);
-            CommandEvaluationContext.Out.Echo(logMessage, lineBreak);
+            Out?.Echo(logMessage, lineBreak);
             if (log) LogWarning(logMessage);
         }
 
         public void Fail(Exception exception, bool log = true, bool lineBreak = true, string prefix = "Fail : ")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + exception?.Message;
-            CommandEvaluationContext.Out.Echo(logMessage, lineBreak);
+            Out?.Echo(logMessage, lineBreak);
             if (log) LogError(logMessage);
         }
 
         public void Error(string message = null, bool log = false, bool lineBreak = true, string prefix = "")
         {
             var logMessage = CommandEvaluationContext.ShellEnv.Colors.Error + prefix + (message == null ? "" : $"{message}");
-            CommandEvaluationContext.Out.Echo(logMessage, lineBreak);
+            Out?.Echo(logMessage, lineBreak);
             if (log) LogError(logMessage);
         }
 

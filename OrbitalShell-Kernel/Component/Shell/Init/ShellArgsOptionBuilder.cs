@@ -35,7 +35,7 @@ namespace OrbitalShell.Component.Shell.Init
         /// <summary>
         /// starts a non interactive shell (no prompt)
         /// </summary>
-        public static readonly ShellArg ARG_NO_INTERACTIVE = new("e", "no-interactive");
+        public static readonly ShellArg ARG_NO_INTERACTIVE = new("e", "no-interact");
 
         /// <summary>
         /// indicates the shell is not attached to a console (stdin is not keyboard)
@@ -43,14 +43,14 @@ namespace OrbitalShell.Component.Shell.Init
         public static readonly ShellArg ARG_NO_CONSOLE = new("r", "no-console");
 
         /// <summary>
-        /// indicates the shell runs in quiet mode (no extra ouput except commands output & prompt)
+        /// indicates the shell runs in quiet mode (no extra ouput except commands output & prompt [if interactive] )
         /// </summary>
         public static readonly ShellArg ARG_QUIET = new("q", "quiet");
 
         /// <summary>
         /// indicates the shell to run the command after shell init
         /// </summary>
-        public static readonly ShellArg ARG_RUN_COMMAND = new("c", "cmd");
+        public static readonly ShellArg ARG_RUN_COMMAND = new("c", "com");
 
         /// <summary>
         /// indicates the shell to import settings from file

@@ -94,11 +94,11 @@ namespace OrbitalShell.Component.Shell.Init
             )
         {
             _clp.Init(args, settings, context);
-
-            // get final clp command evaluation context
-            context = _clp.CommandEvaluationContext;
+            
+            context = _clp.CommandEvaluationContext;    // get final clp command evaluation context
 
             context.Logger.MuteLogErrors = true;
+
             _clp.Settings.Initialize(context);
 
             _shellArgsOptionBuilder.SetArgs(args);
@@ -110,10 +110,14 @@ namespace OrbitalShell.Component.Shell.Init
                 .ImportSettingsFromJSon(context,ref appliedSettings);
 
             // init from settings
+
+            context.Logger.IsEchoEnabled = !context.Settings.IsQuiet;
+            context.Out.IsMute = context.Settings.IsQuiet;
+
             ShellInitFromSettings(_clp, settings);
 
             // pre console init
-            if (console.DefaultForeground != null) cons.ForegroundColor = console.DefaultForeground.Value;
+            if (!context.Settings.IsMute && console.DefaultForeground != null) cons.ForegroundColor = console.DefaultForeground.Value;
 
             ConsoleInit(_clp.CommandEvaluationContext);
 
@@ -157,6 +161,9 @@ namespace OrbitalShell.Component.Shell.Init
             _clp.PostInit();
 
             context.Logger.Done();
+
+            CreateUserSettingsFile();
+
             context.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.HistoryFilePath)}' ... ", true, false);
 
             CreateRestoreUserHistoryFile();
@@ -290,13 +297,16 @@ namespace OrbitalShell.Component.Shell.Init
             var winHeight = (int)oWinHeight.Value;
             try
             {
+                if (!context.Settings.IsMute)
+                {
 #pragma warning disable CA1416 // Valider la compatibilité de la plateforme
-                if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
+                    if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
 #pragma warning restore CA1416 // Valider la compatibilité de la plateforme
 #pragma warning disable CA1416 // Valider la compatibilité de la plateforme
-                if (winHeight > -1) System.Console.WindowHeight = winHeight;
+                    if (winHeight > -1) System.Console.WindowHeight = winHeight;
 #pragma warning restore CA1416 // Valider la compatibilité de la plateforme
-                System.Console.Clear();
+                    System.Console.Clear();
+                }
             }
             catch { }
         }
@@ -342,6 +352,23 @@ namespace OrbitalShell.Component.Shell.Init
             catch (Exception createUserProfileFileException)
             {
                 _clp.CommandEvaluationContext.Logger.Fail(createUserProfileFileException);
+            }
+        }
+
+        public void CreateUserSettingsFile()
+        {            
+            var createUserSettingsFile = !File.Exists(_clp.Settings.UserSettingsFilePath);
+            if (createUserSettingsFile)
+                _clp.CommandEvaluationContext.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user settings file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.UserProfileFilePath)}' ... ", true, false);
+            try
+            {
+                if (createUserSettingsFile)
+                    File.Copy(_clp.Settings.ShellSettingsFilePath, _clp.Settings.UserSettingsFilePath);
+                if (createUserSettingsFile) _clp.CommandEvaluationContext.Logger.Success();
+            }
+            catch (Exception createUserSettingsFileException)
+            {
+                _clp.CommandEvaluationContext.Logger.Fail(createUserSettingsFileException);
             }
         }
 

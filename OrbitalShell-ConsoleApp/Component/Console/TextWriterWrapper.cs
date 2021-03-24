@@ -11,7 +11,11 @@ namespace OrbitalShell.Component.Console
     {
         #region attributes
 
-        public bool IsModified;
+        public bool IsNotMute => !IsMute;
+        public bool IsMute { get; set; }
+
+
+        public bool IsModified { get; set; }
 
         public bool IsRedirected { get; protected set; }
         public bool IsBufferEnabled { get; protected set; }
@@ -277,11 +281,17 @@ namespace OrbitalShell.Component.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual void Write(string s)
         {
+            if (IsMute) return;
+
             var modifiantStr = !string.IsNullOrEmpty(s);
             IsModified |= modifiantStr;
-            if (modifiantStr && IsRecordingEnabled) _recording.Append(s);
+
+            if (modifiantStr && IsRecordingEnabled) 
+                _recording.Append(s);
+            
             if (IsReplicationEnabled)
                 _replicateStreamWriter.Write(s);
+
             if (IsBufferEnabled)
             {
                 _bufferWriter.Write(s);
@@ -298,10 +308,16 @@ namespace OrbitalShell.Component.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual Task WriteAsync(string s)
         {
+            if (IsMute) return Task.CompletedTask;
+
             IsModified = !string.IsNullOrWhiteSpace(s);
-            if (IsModified && IsRecordingEnabled) _recording.Append(s);
+
+            if (IsModified && IsRecordingEnabled) 
+                _recording.Append(s);
+
             if (IsReplicationEnabled)
                 _replicateStreamWriter.WriteAsync(s);
+
             if (IsBufferEnabled)
             {
                 return _bufferWriter.WriteAsync(s);
@@ -318,10 +334,15 @@ namespace OrbitalShell.Component.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual void WriteLine(string s)
         {
+            if (IsMute) return;
             IsModified = true;
-            if (IsRecordingEnabled) _recording.AppendLine(s);
+
+            if (IsRecordingEnabled) 
+                _recording.AppendLine(s);
+
             if (IsReplicationEnabled)
                 _replicateStreamWriter.WriteLine(s);
+
             if (IsBufferEnabled)
             {
                 _bufferWriter.WriteLine(s);
@@ -332,10 +353,17 @@ namespace OrbitalShell.Component.Console
             }
         }
 
-        public virtual void EchoDebug(
+        /// <summary>
+        /// internal debug method about echo
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="lineBreak"></param>
+        /// <param name="callerMemberName"></param>
+        /// <param name="callerLineNumber"></param>
+        internal virtual void EchoDebug(
             string s, 
             bool lineBreak = false, 
-            [CallerMemberName]string callerMemberName = "", 
+            [CallerMemberName]string callerMemberName = "",
             [CallerLineNumber]int callerLineNumber = -1)
         {
             if (!FileEchoDebugEnabled) return;

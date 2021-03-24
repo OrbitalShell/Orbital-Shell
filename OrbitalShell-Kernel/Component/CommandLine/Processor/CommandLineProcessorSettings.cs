@@ -40,25 +40,15 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 commandEvaluationContext.CommandLineProcessor.Console,
                 scriptOptions);
 
-            //Out = DotNetConsole.Out;
             Out = new ShellConsoleTextWriterWrapper(
                 commandEvaluationContext,
                 System.Console.Out,
                 cSharpScriptEngine
             );
 
-            /*  
-                /!\ it can exists only one wrapper for out,
-                between the command evaluation context and dot net console
-            */
-
-
             commandEvaluationContext.CommandLineProcessor.Console.Out = Out;
-            //DotNetConsole.Out = Out;
             Err = commandEvaluationContext.CommandLineProcessor.Console.Err;
-            //Err = DotNetConsole.Err;
             In = commandEvaluationContext.CommandLineProcessor.Console.In;
-            //In = DotNetConsole.In;
 
             commandEvaluationContext.SetStreams(Out, In, Err);
         }

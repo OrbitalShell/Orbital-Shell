@@ -291,7 +291,6 @@ namespace OrbitalShell
             }
         }
 
-        // TODO: TO SLOW IN CASE OF PASTE TEXT INTO CONSOLE (reader call this on each new character inputed)
         public ActualWorkArea ActualWorkArea(bool fitToVisibleArea = true)
         {
             if (!IsConsoleGeometryEnabled) return new ActualWorkArea(_workArea.Id, 0, 0, 0, 0);
@@ -302,8 +301,6 @@ namespace OrbitalShell
             var (x, y, w, h) = GetCoords(x0, y0, w0, h0, fitToVisibleArea);
             return new ActualWorkArea(_workArea.Id, x, y, w, h);
         }
-
-
 
         public void SetCursorAtWorkAreaTop()
         {

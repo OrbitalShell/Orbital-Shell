@@ -16,5 +16,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public bool HasConsole { get; set; }
 
         public bool IsInteractive { get; set; }
+
+        public bool IsMute => IsQuiet || !HasConsole;
     }
 }

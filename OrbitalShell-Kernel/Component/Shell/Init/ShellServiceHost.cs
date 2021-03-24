@@ -60,11 +60,6 @@ namespace OrbitalShell.Component.Shell.Init
 
             var shellBootstrap = GetShellBootstrap(args);
 
-            // prepare console
-
-            _cons.Out.Echo(ANSI.RIS);
-            _cons.Out.ClearScreen();
-
             // invoke a shell initializer associated to the clp
             
             shellBootstrap.Run();
@@ -77,8 +72,6 @@ namespace OrbitalShell.Component.Shell.Init
         public IShellBootstrap GetShellBootstrap(string[] args)
         {
             _clp.SetArgs(args);
-            //var shellBootstrap = new ShellBootstrap(_clp);
-            //var shellBootstrap = 
             return _shellBootstrap;
         }
 

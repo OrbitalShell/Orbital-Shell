@@ -10,7 +10,7 @@ namespace OrbitalShell_UnitTests
     [TestCategory("shell init")]
     public class BaseTests
     {
-        public static string[] DefaultShellInitArgs => new string[] { "" };
+        public static string[] DefaultShellInitArgs => new string[] { "--quiet --no-interact --no-console" };
 
         [TestMethod("starts a non interactive shell")]
         public void TestShellNoneInteractiveStartup()

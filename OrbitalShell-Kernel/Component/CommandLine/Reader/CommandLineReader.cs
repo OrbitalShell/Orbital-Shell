@@ -351,7 +351,6 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
                         try
                         {
-
                             while (!eol)
                             {
                                 ConsoleKeyInfo c;
