@@ -39,6 +39,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
         string UserProfileFileName { get; set; }
         string UserProfileFilePath { get; }
         string InitFilePath { get; }
+        string ShellSettingsFilePath { get; }
+        string UserSettingsFilePath { get; }
 
         void Initialize(CommandEvaluationContext commandEvaluationContext);
     }

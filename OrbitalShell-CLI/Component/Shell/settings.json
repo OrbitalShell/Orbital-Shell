@@ -1,0 +1,77 @@
+﻿{
+  // map shell environment variables and namespaces
+
+  "local": {
+
+  },
+
+  "global": {
+
+  },
+
+  "env": {
+
+    "debug": {
+
+      "enableHookTrace": false,
+      "enablePipelineTrace": false
+
+    },
+
+    "settings": {
+
+      "clp": {
+
+        "enableShellExecTraceProcessStart": false,
+        "enableShellExecTraceProcessEnd": false,
+        "shellExecBatchExt": ".sh"
+
+      },
+
+      "clr": {
+
+        "comPreAnalysisOutput": "\r\n",
+        "comPostExecOutModifiedOutput": "\r\n",
+        "comPostExecOutput": ""
+
+      },
+
+      "console": {
+
+        "prompt": "> ",
+        "initialWindowWidth": -1,
+        "initialWindowHeight": -1,
+        "enableCompatibilityMode": false,
+        "enableAvoidEndOfLineFilledWithBackgroundColor": true,
+
+        "banner": {
+
+          "path": "./Commands/CommandLineProcessor/banner-4.txt",
+          "isEnabled": true,
+          "startColorIndex": 21,
+          "startColorIndex2": 49,
+          "colorIndexStep": 6
+        }
+
+      },
+
+      "module": {
+
+        "providerUrls": [
+          "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/dev/module-index-repository/module-list.json",
+          "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/main/module-index-repository/module-list.json" 
+        ]
+
+      }
+
+    },
+
+    "display": {
+
+    }
+  },
+
+  "_": {
+
+  }
+}

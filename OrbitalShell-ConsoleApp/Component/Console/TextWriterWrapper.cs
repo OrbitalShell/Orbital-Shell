@@ -15,10 +15,10 @@ namespace OrbitalShell.Component.Console
 
         public bool IsRedirected { get; protected set; }
         public bool IsBufferEnabled { get; protected set; }
-        public static int InitialBufferCapacity = 163840;
+        public static int InitialBufferCapacity = 1_000_000;
         public object Lock => _textWriter;
 
-        public int TextWriterInitialCapacity = 163840;
+        public int TextWriterInitialCapacity = 1_000_000;
 
         private TextWriter _textWriter;
         protected TextWriter _redirectedTextWriter;
@@ -277,8 +277,9 @@ namespace OrbitalShell.Component.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual void Write(string s)
         {
-            IsModified = !string.IsNullOrWhiteSpace(s);
-            if (IsModified && IsRecordingEnabled) _recording.Append(s);
+            var modifiantStr = !string.IsNullOrEmpty(s);
+            IsModified |= modifiantStr;
+            if (modifiantStr && IsRecordingEnabled) _recording.Append(s);
             if (IsReplicationEnabled)
                 _replicateStreamWriter.Write(s);
             if (IsBufferEnabled)

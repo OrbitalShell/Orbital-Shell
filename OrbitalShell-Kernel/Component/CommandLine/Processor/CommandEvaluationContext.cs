@@ -1,6 +1,7 @@
 ﻿using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Console;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -126,6 +127,17 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public void Warningln(string s) => Out.Warning(s, true);
 
         public void Warning(string s, bool lineBreak = false) => Out.Warning(s, lineBreak);
+
+        /// <summary>
+        /// simplesystem.diagnostics.debug
+        /// </summary>
+        public void Debug(
+            string s,
+            bool lineBreak = false,
+            [CallerFilePath] string callerFilePath = "",
+            [CallerMemberName] string callerMemberName = "",
+            [CallerLineNumber] int callerLineNumber = -1)
+        => Out.Debug(s, lineBreak, callerFilePath, callerMemberName, callerLineNumber);
 
         #endregion
     }

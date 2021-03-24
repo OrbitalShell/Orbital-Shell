@@ -35,6 +35,18 @@ namespace OrbitalShell.Component.Console
 
         ActualWorkArea ActualWorkArea(bool fitToVisibleArea = true);
         bool CheckConsoleHasGeometry();
+        static bool GetConsoleHasGeometry()
+        {
+            try
+            {
+                var x = System.Console.WindowLeft;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
         void Error(string s = "");
         void Error(IEnumerable<string> ls);
         void Error(string s, bool lineBreak = false);

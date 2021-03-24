@@ -101,14 +101,13 @@ namespace OrbitalShell.Component.Shell.Init
             context.Logger.MuteLogErrors = true;
             _clp.Settings.Initialize(context);
 
-            // TODO: USE ShellArgsOptionBuilder GOT by DI from constructor to perform _clp.SetArgs
             _shellArgsOptionBuilder.SetArgs(args);
 
             var appliedSettings = new List<ShellArgValue>();
             _shellArgsOptionBuilder
                 .SetCommandOperationContextOptions(context, ref appliedSettings)
                 .SetCommandLineProcessorOptions(context, ref appliedSettings)
-                .ImportSettingsFromJSon(context);
+                .ImportSettingsFromJSon(context,ref appliedSettings);
 
             // init from settings
             ShellInitFromSettings(_clp, settings);
@@ -245,6 +244,11 @@ namespace OrbitalShell.Component.Shell.Init
             }
         }
 
+        /// <summary>
+        /// setup properties of clp and shell env from the settings object and envrionment variables
+        /// </summary>
+        /// <param name="clp">clp</param>
+        /// <param name="settings">clp settings</param>
         void ShellInitFromSettings(
             ICommandLineProcessor clp,
             ICommandLineProcessorSettings settings

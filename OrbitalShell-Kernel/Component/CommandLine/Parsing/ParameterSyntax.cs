@@ -107,14 +107,19 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         public bool TryGetValue(
             object ovalue,
             out object convertedValue,
-            out List<object> possibleValues
+            out List<object> possibleValues,
+            Type fallBackType = null,
+            bool defaultReturnIdentityOk = true,
+            bool allowPrecisionLost = true
         ) => ValueTextParser.ToTypedValue(
                 ovalue,
                 CommandParameterSpecification.ParameterInfo.ParameterType,
                 CommandParameterSpecification.ParameterInfo.DefaultValue,
                 out convertedValue,
                 out possibleValues,
-                true);
+                fallBackType,
+                defaultReturnIdentityOk,
+                allowPrecisionLost);
 
         public IMatchingParameter BuildMatchingParameter()
         {

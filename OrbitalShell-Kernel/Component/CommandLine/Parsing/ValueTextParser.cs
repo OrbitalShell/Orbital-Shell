@@ -19,6 +19,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         /// <param name="defaultValue">default value used on type value instantiation default value. not used if null</param>
         /// <param name="convertedValue">value converted to real type expected</param>
         /// <param name="possibleValues">in case of fail, message indicating possible values for the expected type</param>
+        /// <param name="fallBackType">if given value if not a string, try to downcast to this type with precision lost if allowed</param>
         /// <returns>true if success, false otherwise</returns>
         public static bool ToTypedValue(
             object ovalue,
@@ -26,7 +27,9 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             object defaultValue,
             out object convertedValue,
             out List<object> possibleValues,
-            bool defaultReturnIdentityOk = false
+            Type fallBackType = null,
+            bool defaultReturnIdentityOk = false,
+            bool allowPrecisionLost = true            
             )
         {
             convertedValue = null;
@@ -53,7 +56,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 var values = s.SplitNotUnslashed(CommandLineSyntax.ParameterTypeListValuesSeparator);
                 foreach (var val in values)
                 {
-                    if (ToTypedValue(val, argType, null, out var convertedVal, out var valPossibleValues, defaultReturnIdentityOk))
+                    if (ToTypedValue(val, argType, null, out var convertedVal, out var valPossibleValues, fallBackType, defaultReturnIdentityOk, allowPrecisionLost))
                     {
                         met.Invoke(lst, new object[] { convertedVal });
                     }
@@ -80,7 +83,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                     {
                         var val = fval.Substring(1);
                         var flagEnabling = fval[0] == CommandLineSyntax.ParameterTypeFlagEnumValuePrefixEnabled;
-                        if (ToTypedValue(val, ptype, null, out var convertedVal, out var valPossibleValues, defaultReturnIdentityOk))
+                        if (ToTypedValue(val, ptype, null, out var convertedVal, out var valPossibleValues, fallBackType, defaultReturnIdentityOk, allowPrecisionLost))
                         {
                             if (flagEnabling)
                                 flag = (int)flag + (int)convertedVal;
@@ -248,11 +251,33 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 // unknown type, not CustomParameter: converted value = original value
                 if (!found)
                 {
+                    if (allowPrecisionLost)
+                    {
+                        var valType = ovalue.GetType();
+                        // try to decrease precision with lost
+                        if (valType.IsValueType && valType.IsPrimitive)
+                        {
+                            if (valType.Name.Contains("64") && ptype.Name.Contains("32"))
+                            {
+                                if (ptype==typeof(Int32) && valType==typeof(Int64))
+                                {
+                                    // this is a common case implied by json deserializer which set int to 64bits as default
+
+                                    unchecked
+                                    {
+                                        var newVal = ((Int64)ovalue) & 0x00000000FFFFFFFFL;
+                                        convertedValue = (Int32)newVal;
+                                        if (!allowPrecisionLost && (Int64)convertedValue != (Int64)ovalue)
+                                            convertedValue = null;
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     result = defaultReturnIdentityOk;
                     if (defaultReturnIdentityOk) convertedValue = ovalue;
-                    /*result = true;
-                    convertedValue = ovalue;*/
-                    //result = false;
                 }
             }
 

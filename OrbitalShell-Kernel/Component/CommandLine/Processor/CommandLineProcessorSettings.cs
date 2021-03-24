@@ -87,6 +87,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         #region official files names
 
+        public string SettingsFileName { get; set; } = "settings.json";
         public string InitFileName { get; set; } = ".init";
         public string UserProfileFileName { get; set; } = ".profile";
         public string LogFileName { get; set; } = "log";
@@ -112,12 +113,14 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public string LogFilePath => Path.Combine(AppDataRoamingUserFolderPath, LogFileName);
         public string HistoryFilePath => Path.Combine(AppDataRoamingUserFolderPath, HistoryFileName);
         public string CommandsAliasFilePath => Path.Combine(AppDataRoamingUserFolderPath, CommandsAliasFileName);
+        public string UserSettingsFilePath => Path.Combine(AppDataRoamingUserFolderPath, SettingsFileName);
 
         public string ModulesInitFilePath => Path.Combine(ShellAppDataPath, ModulesInitFileName);
 
         public static string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string BinFolderPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static string ModulesFolderPath => Path.Combine(BinFolderPath, "Modules");
+        public string ShellSettingsFilePath => Path.Combine(BinFolderPath, "Component", "Shell", SettingsFileName);
 
         public string DefaultsFolderPath
         {

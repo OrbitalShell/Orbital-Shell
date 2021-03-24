@@ -1091,6 +1091,19 @@ namespace OrbitalShell.Component.Console
             if (FileEchoDebugAutoFlush) _debugEchoStreamWriter?.Flush();
         }
 
+        /// <summary>
+        /// simplesystem.diagnostics.debug
+        /// </summary>
+        public void Debug(
+            string s,
+            bool lineBreak = false,
+            [CallerFilePath] string callerFilePath = "",
+            [CallerMemberName] string callerMemberName = "",
+            [CallerLineNumber] int callerLineNumber = -1)
+        {
+            System.Diagnostics.Debug.WriteLine($"{Path.GetFileName(callerFilePath)}:{callerLineNumber} | {callerMemberName} °°° {s}");
+        }
+
         public override void Write(string s)
         {
             if (RedirecToErr)
