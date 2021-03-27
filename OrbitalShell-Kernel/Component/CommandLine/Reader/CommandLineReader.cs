@@ -177,12 +177,21 @@ namespace OrbitalShell.Component.CommandLine.Reader
         {
             var clp = _commandLineProcessor;
 
-            if (string.IsNullOrWhiteSpace(commandLine)) return null;
+            if (commandLine==null) return null;
             
             if (outputStartNextLine)
             {
                 Console.Out.LineBreak();
             }
+
+            if (string.IsNullOrWhiteSpace(commandLine))
+            {
+                if (enablePrePostComOutput && clp != null)
+                    Console.Out.Echo(clp.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput));
+                
+                return null;
+            }
+
             ExpressionEvaluationResult expressionEvaluationResult = null;
 
             try
