@@ -28,6 +28,10 @@ namespace OrbitalShell
     {
         #region attributes
 
+        static int _instanceCounter = 1000;
+        static object _instanceLock = new object();
+        public int ID;
+
         #region streams : entry points to DotNetConsole output operations
 
         public ConsoleTextWriterWrapper Out { get; set; }
@@ -95,10 +99,17 @@ namespace OrbitalShell
 
         public Console()
         {
-            Out = new ConsoleTextWriterWrapper(this, sc.Out);       // INFINITE LOOP
+            lock (_instanceLock)
+            {
+                ID = _instanceCounter;
+                _instanceCounter++;
+            }
+            Out = new ConsoleTextWriterWrapper(this, sc.Out);
             Colors = new ColorSettings(this);
             Shortcuts.Initialize(this);
         }
+
+        public override string ToString() => $"[Console : ID={ID} Out={Out} In={In} Err={Err}]";
 
         #region log methods
 
@@ -174,9 +185,9 @@ namespace OrbitalShell
         {
             lock (Out.Lock)
             {
-                Out.RedirecToErr = true;
+                Out.RedirectToErr = true;
                 Out.Echo($"{Colors.Error}{s}{Colors.Default}", lineBreak);
-                Out.RedirecToErr = false;
+                Out.RedirectToErr = false;
             }
         }
 

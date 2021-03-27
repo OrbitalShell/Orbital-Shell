@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using OrbitalShell.Component.CommandLine.Processor;
+
 namespace OrbitalShell_UnitTests
 {
     [TestClass]
@@ -19,8 +21,10 @@ namespace OrbitalShell_UnitTests
                 .GetCommandLineProcessor()
                 .CommandLineReader;
 
-            //clr.BeginReadln(null, waitForReaderExited: false);    // this sentence and next mismatch on Loop parameter
-            //clr.SendInput("com-crash-test",waitEndOfInput:true);    // change the function responsability: must assume begin readln
+            var (asyncResult, evalResult) = clr.SendInput("com-crash-test");
+
+            Assert.IsNotNull(evalResult.EvalError);
+            Assert.AreEqual(evalResult.EvalResultCode, (int)ReturnCode.Error);
         }
     }
 }

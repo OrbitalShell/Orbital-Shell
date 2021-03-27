@@ -20,10 +20,11 @@ namespace OrbitalShell.Component.Console
     {
         #region attributes
 
+        public override string ToString() => $"[console text writer wrapper - {base.ToString()}]";
         public bool IsMuteOrIsNotConsoleGeometryEnabled => IsMute || !Console.IsConsoleGeometryEnabled;
         public bool IsNotMuteAndIsConsoleGeometryEnabled => IsNotMute && Console.IsConsoleGeometryEnabled;
 
-        public bool RedirecToErr = false;
+        public bool RedirectToErr = false;
 
         public IConsole Console;
 
@@ -1112,6 +1113,7 @@ namespace OrbitalShell.Component.Console
             [CallerMemberName] string callerMemberName = "",
             [CallerLineNumber] int callerLineNumber = -1)
         {
+            if (IsMute) return;
             if (!FileEchoDebugEnabled) return;
             if (FileEchoDebugDumpDebugInfo)
             {
@@ -1135,13 +1137,14 @@ namespace OrbitalShell.Component.Console
             [CallerMemberName] string callerMemberName = "",
             [CallerLineNumber] int callerLineNumber = -1)
         {
+            if (IsMute) return;
             System.Diagnostics.Debug.Write($"{Path.GetFileName(callerFilePath)}:{callerLineNumber} | {callerMemberName} °°° {s}");
             if (lineBreak) System.Diagnostics.Debug.WriteLine(String.Empty);
         }
 
         public override void Write(string s)
         {
-            if (RedirecToErr)
+            if (RedirectToErr)
             {
                 if (IsReplicationEnabled)
                     _replicateStreamWriter.Write(s);
@@ -1155,9 +1158,9 @@ namespace OrbitalShell.Component.Console
             }
         }
 
-        //public void Echoln(IEnumerable<string> ls, bool ignorePrintDirectives = false) { foreach (var s in ls) Echoln(s, ignorePrintDirectives); }
+        // TODO: public void Echoln(IEnumerable<string> ls, bool ignorePrintDirectives = false) { foreach (var s in ls) Echoln(s, ignorePrintDirectives); }
 
-        //public void Echo(IEnumerable<string> ls, bool lineBreak = false, bool ignorePrintDirectives = false) { foreach (var s in ls) Echo(s, lineBreak, ignorePrintDirectives); }
+        // TODO: public void Echo(IEnumerable<string> ls, bool lineBreak = false, bool ignorePrintDirectives = false) { foreach (var s in ls) Echo(s, lineBreak, ignorePrintDirectives); }
 
         public void Echoln(string s = "", bool ignorePrintDirectives = false) => Echo(s, true, false, !ignorePrintDirectives);
         public void Echoln(object s, bool ignorePrintDirectives = false) => Echo(s, true, false, !ignorePrintDirectives);
@@ -1193,6 +1196,7 @@ namespace OrbitalShell.Component.Console
             bool getNonPrintablesASCIICodesAsLabel = true
             )
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 if (o == null)
@@ -1236,9 +1240,9 @@ namespace OrbitalShell.Component.Console
         {
             if (IsNotMute)
             {
-                RedirecToErr = true;
+                RedirectToErr = true;
                 Console.Out.Echo($"{Console.Colors.Error}{s}{Console.Colors.Default}", lineBreak);
-                RedirecToErr = false;
+                RedirectToErr = false;
             }
             else
             {

@@ -44,9 +44,12 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 commandEvaluationContext,
                 System.Console.Out,
                 cSharpScriptEngine
-            );
+            )
+            {
+                IsMute = commandEvaluationContext.Out.IsMute
+            };
 
-            commandEvaluationContext.CommandLineProcessor.Console.Out = Out;
+            commandEvaluationContext.CommandLineProcessor.Console.Out = Out;    // are trully equals
             Err = commandEvaluationContext.CommandLineProcessor.Console.Err;
             In = commandEvaluationContext.CommandLineProcessor.Console.In;
 

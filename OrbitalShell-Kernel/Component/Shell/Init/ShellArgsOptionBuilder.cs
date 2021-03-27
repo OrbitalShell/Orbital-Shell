@@ -140,10 +140,10 @@ namespace OrbitalShell.Component.Shell.Init
         {
             if (!File.Exists(path))
             {
-                context.Debug("skip import settings from json file: file not present: " + path);
+                context.Logger.Log("skip import settings from json file: file not present: " + path);
                 return this;
             }
-            context.Debug("import settings from json file: " + path);
+            context.Logger.Log("import settings from json file: " + path);
 
             foreach (var (name, value) in new JsonEventParser()
                 .ReadJSonObjectFromFile(path))

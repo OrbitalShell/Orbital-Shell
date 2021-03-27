@@ -11,6 +11,8 @@ namespace OrbitalShell.Component.Console
     public class ShellConsoleTextWriterWrapper : ConsoleTextWriterWrapper
     {
         public CommandEvaluationContext CommandEvaluationContext;
+        
+        public override string ToString() => $"[shell console text writer wrapper - {base.ToString()}]";
 
         public ShellConsoleTextWriterWrapper(
             CommandEvaluationContext commandEvaluationContext,
@@ -38,6 +40,7 @@ namespace OrbitalShell.Component.Console
             // TODO: add the formatting options for the decorators (see ConsoleCommands.Echo)            
             )
         {
+            if (IsMute) return;
             if (o == null)
             {
                 // handle null
@@ -85,8 +88,6 @@ namespace OrbitalShell.Component.Console
                 }
             }
         }
-
-
 
     }
 }

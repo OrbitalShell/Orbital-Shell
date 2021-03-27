@@ -14,6 +14,8 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public readonly Logger Logger;
 
+        public override string ToString() => $"[com eval ctx : id={ID} Out={Out} ]";        
+
         /// <summary>
         /// context id
         /// </summary>

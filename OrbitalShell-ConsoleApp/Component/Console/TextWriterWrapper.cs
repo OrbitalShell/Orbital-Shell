@@ -11,6 +11,11 @@ namespace OrbitalShell.Component.Console
     {
         #region attributes
 
+        static int _instanceCounter = 1000;
+        static object _instanceLock = new object();
+        public int ID;
+        public override string ToString() => $"[text writer wrapper: id={ID} isMute={IsMute}]";
+
         public bool IsNotMute => !IsMute;
         public bool IsMute { get; set; }
 
@@ -63,12 +68,23 @@ namespace OrbitalShell.Component.Console
 
         public TextWriterWrapper()
         {
+            Init();
             _textWriter = new StreamWriter(new MemoryStream(TextWriterInitialCapacity));
         }
 
         public TextWriterWrapper(TextWriter textWriter)
         {
+            Init();
             _textWriter = textWriter;
+        }
+
+        void Init()
+        {
+            lock (_instanceLock)
+            {
+                ID = _instanceCounter;
+                _instanceCounter++;
+            }
         }
 
         #endregion
@@ -366,6 +382,7 @@ namespace OrbitalShell.Component.Console
             [CallerMemberName]string callerMemberName = "",
             [CallerLineNumber]int callerLineNumber = -1)
         {
+            if (IsMute) return;
             if (!FileEchoDebugEnabled) return;
             if (FileEchoDebugDumpDebugInfo)
                 _debugEchoStreamWriter?.Write($"l={s.Length},br={lineBreak} [{callerMemberName}:{callerLineNumber}] :");

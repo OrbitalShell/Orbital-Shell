@@ -207,6 +207,10 @@ namespace OrbitalShell.Component.CommandLine.Processor
             if (CommandLineReader == null) throw new Exception("a command line reader is required by the command line processor to perform this action");
         }
 
+        /// <summary>
+        /// output clp debug infos
+        /// </summary>
+        /// <param name="context">com eval ctx</param>
         public void PrintInfo(CommandEvaluationContext context)
         {
             context.Out.Echoln($"{CommandEvaluationContext.ShellEnv.Colors.Label}{Uon} {Settings.AppLongName} ({Settings.AppName}) version {Assembly.GetExecutingAssembly().GetName().Version}" + ("".PadRight(18, ' ')) + Tdoff);
