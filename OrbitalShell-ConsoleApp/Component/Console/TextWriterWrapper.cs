@@ -314,7 +314,7 @@ namespace OrbitalShell.Component.Console
             }
             else
             {
-                _textWriter.Write(s);
+                _textWriter.Write(s);                
             }
         }
 
