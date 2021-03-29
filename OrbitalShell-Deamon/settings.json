@@ -1,0 +1,6 @@
+﻿{
+  "ListeningPort": 8181,
+  "ByteBufferLength": 4096,
+  "WelcomeMessage": "Orbital Shell Deamon\r\n--------------------",
+  "EndMessage": "Orbital Shell Deamon exited"
+}
