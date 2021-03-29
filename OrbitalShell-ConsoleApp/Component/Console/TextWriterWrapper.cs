@@ -11,14 +11,23 @@ namespace OrbitalShell.Component.Console
     {
         #region attributes
 
-        public bool IsModified;
+        static int _instanceCounter = 1000;
+        static object _instanceLock = new object();
+        public int ID;
+        public override string ToString() => $"[text writer wrapper: id={ID} isMute={IsMute}]";
+
+        public bool IsNotMute => !IsMute;
+        public bool IsMute { get; set; }
+
+
+        public bool IsModified { get; set; }
 
         public bool IsRedirected { get; protected set; }
         public bool IsBufferEnabled { get; protected set; }
-        public static int InitialBufferCapacity = 163840;
+        public static int InitialBufferCapacity = 1_000_000;
         public object Lock => _textWriter;
 
-        public int TextWriterInitialCapacity = 163840;
+        public int TextWriterInitialCapacity = 1_000_000;
 
         private TextWriter _textWriter;
         protected TextWriter _redirectedTextWriter;
@@ -59,12 +68,23 @@ namespace OrbitalShell.Component.Console
 
         public TextWriterWrapper()
         {
+            Init();
             _textWriter = new StreamWriter(new MemoryStream(TextWriterInitialCapacity));
         }
 
         public TextWriterWrapper(TextWriter textWriter)
         {
+            Init();
             _textWriter = textWriter;
+        }
+
+        void Init()
+        {
+            lock (_instanceLock)
+            {
+                ID = _instanceCounter;
+                _instanceCounter++;
+            }
         }
 
         #endregion
@@ -277,17 +297,24 @@ namespace OrbitalShell.Component.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual void Write(string s)
         {
-            IsModified = !string.IsNullOrWhiteSpace(s);
-            if (IsModified && IsRecordingEnabled) _recording.Append(s);
+            if (IsMute) return;
+
+            var modifiantStr = !string.IsNullOrEmpty(s);
+            IsModified |= modifiantStr;
+
+            if (modifiantStr && IsRecordingEnabled) 
+                _recording.Append(s);
+            
             if (IsReplicationEnabled)
                 _replicateStreamWriter.Write(s);
+
             if (IsBufferEnabled)
             {
                 _bufferWriter.Write(s);
             }
             else
             {
-                _textWriter.Write(s);
+                _textWriter.Write(s);                
             }
         }
 
@@ -297,10 +324,16 @@ namespace OrbitalShell.Component.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual Task WriteAsync(string s)
         {
+            if (IsMute) return Task.CompletedTask;
+
             IsModified = !string.IsNullOrWhiteSpace(s);
-            if (IsModified && IsRecordingEnabled) _recording.Append(s);
+
+            if (IsModified && IsRecordingEnabled) 
+                _recording.Append(s);
+
             if (IsReplicationEnabled)
                 _replicateStreamWriter.WriteAsync(s);
+
             if (IsBufferEnabled)
             {
                 return _bufferWriter.WriteAsync(s);
@@ -317,10 +350,15 @@ namespace OrbitalShell.Component.Console
         /// <param name="s">string to be written to the stream</param>
         public virtual void WriteLine(string s)
         {
+            if (IsMute) return;
             IsModified = true;
-            if (IsRecordingEnabled) _recording.AppendLine(s);
+
+            if (IsRecordingEnabled) 
+                _recording.AppendLine(s);
+
             if (IsReplicationEnabled)
                 _replicateStreamWriter.WriteLine(s);
+
             if (IsBufferEnabled)
             {
                 _bufferWriter.WriteLine(s);
@@ -331,12 +369,20 @@ namespace OrbitalShell.Component.Console
             }
         }
 
-        public virtual void EchoDebug(
+        /// <summary>
+        /// internal debug method about echo
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="lineBreak"></param>
+        /// <param name="callerMemberName"></param>
+        /// <param name="callerLineNumber"></param>
+        internal virtual void EchoDebug(
             string s, 
             bool lineBreak = false, 
-            [CallerMemberName]string callerMemberName = "", 
+            [CallerMemberName]string callerMemberName = "",
             [CallerLineNumber]int callerLineNumber = -1)
         {
+            if (IsMute) return;
             if (!FileEchoDebugEnabled) return;
             if (FileEchoDebugDumpDebugInfo)
                 _debugEchoStreamWriter?.Write($"l={s.Length},br={lineBreak} [{callerMemberName}:{callerLineNumber}] :");

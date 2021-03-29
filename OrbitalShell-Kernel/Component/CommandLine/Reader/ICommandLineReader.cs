@@ -9,7 +9,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
     public interface ICommandLineReader
     {
         IConsole Console { get; set; }
-        Action<IAsyncResult> InputProcessor { get; set; }
+        Func<IAsyncResult, ExpressionEvaluationResult> InputProcessor { get; set; }
 
         void Initialize(
             string prompt = null,
@@ -19,9 +19,9 @@ namespace OrbitalShell.Component.CommandLine.Reader
         void CleanUpReadln();
         string GetPrompt();
         void IgnoreNextKey();
-        void ProcessCommandLine(string commandLine, Delegates.ExpressionEvaluationCommandDelegate evalCommandDelegate, bool outputStartNextLine = false, bool enableHistory = false, bool enablePrePostComOutput = true);
+        ExpressionEvaluationResult ProcessCommandLine(string commandLine, Delegates.ExpressionEvaluationCommandDelegate evalCommandDelegate, bool outputStartNextLine = false, bool enableHistory = false, bool enablePrePostComOutput = true);
         int ReadCommandLine(string prompt = null, bool waitForReaderExited = true);
-        void SendInput(string text, bool sendEnter = true, bool alwaysWaitForReaderExited = false);
+        (IAsyncResult asyncResult, ExpressionEvaluationResult evalResult) SendInput(string text, bool sendEnter = true, bool alwaysWaitForReaderExited = false, Action<IAsyncResult, ExpressionEvaluationResult> postInputProcessorCallback = null);
         void SendNextInput(string text, bool sendEnter = true);
         void SetDefaultPrompt(string prompt);
         void SetPrompt(string prompt = null);

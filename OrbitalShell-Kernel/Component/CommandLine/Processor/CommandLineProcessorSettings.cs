@@ -40,25 +40,18 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 commandEvaluationContext.CommandLineProcessor.Console,
                 scriptOptions);
 
-            //Out = DotNetConsole.Out;
             Out = new ShellConsoleTextWriterWrapper(
                 commandEvaluationContext,
                 System.Console.Out,
                 cSharpScriptEngine
-            );
+            )
+            {
+                IsMute = commandEvaluationContext.Out.IsMute
+            };
 
-            /*  
-                /!\ it can exists only one wrapper for out,
-                between the command evaluation context and dot net console
-            */
-
-
-            commandEvaluationContext.CommandLineProcessor.Console.Out = Out;
-            //DotNetConsole.Out = Out;
+            commandEvaluationContext.CommandLineProcessor.Console.Out = Out;    // are trully equals
             Err = commandEvaluationContext.CommandLineProcessor.Console.Err;
-            //Err = DotNetConsole.Err;
             In = commandEvaluationContext.CommandLineProcessor.Console.In;
-            //In = DotNetConsole.In;
 
             commandEvaluationContext.SetStreams(Out, In, Err);
         }
@@ -87,6 +80,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         #region official files names
 
+        public string SettingsFileName { get; set; } = "settings.json";
         public string InitFileName { get; set; } = ".init";
         public string UserProfileFileName { get; set; } = ".profile";
         public string LogFileName { get; set; } = "log";
@@ -112,12 +106,14 @@ namespace OrbitalShell.Component.CommandLine.Processor
         public string LogFilePath => Path.Combine(AppDataRoamingUserFolderPath, LogFileName);
         public string HistoryFilePath => Path.Combine(AppDataRoamingUserFolderPath, HistoryFileName);
         public string CommandsAliasFilePath => Path.Combine(AppDataRoamingUserFolderPath, CommandsAliasFileName);
+        public string UserSettingsFilePath => Path.Combine(AppDataRoamingUserFolderPath, SettingsFileName);
 
         public string ModulesInitFilePath => Path.Combine(ShellAppDataPath, ModulesInitFileName);
 
         public static string UserProfileFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string BinFolderPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static string ModulesFolderPath => Path.Combine(BinFolderPath, "Modules");
+        public string ShellSettingsFilePath => Path.Combine(BinFolderPath, "Component", "Shell", SettingsFileName);
 
         public string DefaultsFolderPath
         {

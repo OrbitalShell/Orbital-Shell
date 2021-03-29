@@ -1,42 +1,35 @@
-﻿using System.Threading.Tasks;
-
+﻿
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Shell.Init;
 
 namespace OrbitalShell
 {
     public static class Program
     {
-        static async Task<int> Main(string[] args)
-            => await RunShell(args);
-
-        public static async Task<int> RunShell(string[] args)
+        static int Main(string[] args)
         {
-            var shellStartup = InitializeShell(args);
+            var returnCode =
+                GetShellServiceHost(args)
+                .RunShellServiceHost(args);
 
-            var returnCode = shellStartup.Startup(args);
-
-            await App.Host.RunAsync();
+            App.Host.Run();
 
             return returnCode;
         }
 
-        public static IShellStartup InitializeShell(string[] args)
-        {
-            App.InitializeServices(System.Array.Empty<string>());
-
-            var si = new ServicesInitializer();
-            si.InitializeServices(App.HostBuilder);
-
-            App.EndInitializeServices();
-
-            var scope = App.Host.Services.CreateScope();
-            si.ScopedServiceProvider = scope.ServiceProvider;
-
-            return scope.ServiceProvider.GetRequiredService<IShellStartup>();
-        }
+        public static IShellServiceHost GetShellServiceHost(string[] args)
+            => ShellServiceHost.GetShellServiceHost(
+                    args,
+                    (hostBuilder) =>
+                        hostBuilder.ConfigureServices(
+                            (_, services) =>
+                                services.AddScoped
+                                    <ICommandLineProcessorSettings, OrbitalShellCommandLineProcessorSettings>()
+                                    )
+                        );
     }
 }
 

@@ -20,7 +20,11 @@ namespace OrbitalShell.Component.Console
     {
         #region attributes
 
-        public bool RedirecToErr = false;
+        public override string ToString() => $"[console text writer wrapper - {base.ToString()}]";
+        public bool IsMuteOrIsNotConsoleGeometryEnabled => IsMute || !Console.IsConsoleGeometryEnabled;
+        public bool IsNotMuteAndIsConsoleGeometryEnabled => IsNotMute && Console.IsConsoleGeometryEnabled;
+
+        public bool RedirectToErr = false;
 
         public IConsole Console;
 
@@ -80,7 +84,7 @@ namespace OrbitalShell.Component.Console
         public ConsoleTextWriterWrapper(IConsole console,TextWriter textWriter, CSharpScriptEngine cSharpScriptEngine) : base(textWriter) { Init(console,cSharpScriptEngine); }
 
         /// <summary>
-        /// shell init
+        /// console init + internal init
         /// </summary>
         void Init(IConsole console,CSharpScriptEngine cSharpScriptEngine = null)
         {
@@ -88,9 +92,12 @@ namespace OrbitalShell.Component.Console
             console.CheckConsoleHasGeometry();
             CSharpScriptEngine = cSharpScriptEngine ?? new CSharpScriptEngine(console);
 
-            // TIP: dot not affect background color throught System.Console.Background to preserve terminal console background transparency
-            Console.DefaultForeground = sc.ForegroundColor;
-            _cachedForegroundColor = Console.DefaultForeground;
+            if (IsNotMute)
+            {
+                // TIP: dot not affect background color throught System.Console.Background to preserve terminal console background transparency
+                Console.DefaultForeground = sc.ForegroundColor;
+                _cachedForegroundColor = Console.DefaultForeground;
+            }
 
             InitEchoDirectives();
         }
@@ -378,7 +385,7 @@ namespace OrbitalShell.Component.Console
             return null;
         }
 
-        object _Exit(object x) { Console.Exit(); return null; }
+        object _Exit(object x) { Environment.Exit(0); return null; }
         object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(Console,x)); return null; }
         object _SetForegroundParse8BitColor(object x) { SetForeground(TextColor.Parse8BitColor(Console, x)); return null; }
         object _SetForegroundParse24BitColor(object x) { SetForeground(TextColor.Parse24BitColor(Console, x)); return null; }
@@ -422,12 +429,14 @@ namespace OrbitalShell.Component.Console
 
         void BackupCursorInformation()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             _cachedCursorPosition = CursorPos;
             _cachedBufferSize = new Size(sc.BufferWidth, sc.BufferHeight);
         }
 
         void ClearCursorInformation()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             _cachedCursorPosition = Point.Empty;
             _cachedBufferSize = Size.Empty;
         }
@@ -462,6 +471,7 @@ namespace OrbitalShell.Component.Console
 
         public void Infos()
         {
+            if (IsMute) return;
             var @out = Console.Out;
             var colors = Console.Colors;
             lock (@out.Lock)
@@ -484,31 +494,37 @@ namespace OrbitalShell.Component.Console
 
         public void RSTXTA()
         {
+            if (IsMute) return;
             lock (Lock) { Write(ANSI.RSTXTA); }
         }
 
         public void CursorHome()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write($"{(char)27}[H"); }
         }
 
         public void ClearLineFromCursorRight()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write($"{(char)27}[K"); };
         }
 
         public void ClearLineFromCursorLeft()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write($"{(char)27}[1K"); }
         }
 
         public void ClearLine()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write($"{(char)27}[2K"); }
         }
 
         public void FillFromCursorRight()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 FillLineFromCursor(' ', false, false);
@@ -517,63 +533,80 @@ namespace OrbitalShell.Component.Console
 
         public void EnableInvert()
         {
+            if (IsMute) return;
             lock (Lock) { Write($"{(char)27}[7m"); }
         }
 
         public void EnableBlink()
         {
+            if (IsMute) return;
             lock (Lock) { Write($"{(char)27}[5m"); }           // not available on many consoles
         }
 
         public void EnableLowIntensity()
         {
+            if (IsMute) return;
             lock (Lock) { Write($"{(char)27}[2m"); }    // not available on many consoles
         }
 
         public void EnableUnderline()
         {
+            if (IsMute) return;
             lock (Lock) { Write($"{(char)27}[4m"); }
         }
 
         public void EnableBold()
         {
+            if (IsMute) return;
             lock (Lock) { Write($"{(char)27}[1m"); }            // not available on many consoles
         }
 
         public void DisableTextDecoration()
         {
+            if (IsMute) return;
             lock (Lock) { Write($"{(char)27}[0m"); /*RestoreDefaultColors();*/ }
         }
 
         public void MoveCursorDown(int n = 1)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write($"{(char)27}[{n}B"); }
         }
 
         public void MoveCursorTop(int n = 1)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write($"{(char)27}[{n}A"); }
         }
 
         public void MoveCursorLeft(int n = 1)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write($"{(char)27}[{n}D"); }
         }
 
         public void MoveCursorRight(int n = 1)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write($"{(char)27}[{n}C"); }
         }
 
-        public void ScrollWindowDown(int n = 1) { Write(((char)27) + $"[{n}T"); }
+        public void ScrollWindowDown(int n = 1) {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
+            lock (Lock) { Write(((char)27) + $"[{n}T"); }
+        }
 
-        public void ScrollWindowUp(int n = 1) { Write(((char)27) + $"[{n}S"); }
+        public void ScrollWindowUp(int n = 1) {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
+            lock (Lock) { Write(((char)27) + $"[{n}S"); }
+        }
 
         /// <summary>
         /// backup the current 3bit foreground color
         /// </summary>
         public void BackupForeground()
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
@@ -586,6 +619,7 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         public void BackupBackground()
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
@@ -595,11 +629,13 @@ namespace OrbitalShell.Component.Console
 
         public void RestoreForeground()
         {
+            if (IsMute) return;
             lock (Lock) { SetForeground(Console.DefaultForeground); }
         }
 
         public void RestoreBackground()
         {
+            if (IsMute) return;
             lock (Lock) { SetBackground(Console.DefaultBackground); }
         }
 
@@ -609,6 +645,7 @@ namespace OrbitalShell.Component.Console
         /// <param name="c"></param>
         public void SetForeground(ConsoleColor? c)
         {
+            if (IsMute) return;
             if (c == null) return;
             lock (Lock)
             {
@@ -620,6 +657,7 @@ namespace OrbitalShell.Component.Console
 
         public void SetBackground(ConsoleColor? c)
         {
+            if (IsMute) return;
             if (c == null) return;
             lock (Lock)
             {
@@ -635,6 +673,7 @@ namespace OrbitalShell.Component.Console
         /// <param name="c"></param>
         public void SetForeground(int c)
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 Write($"{(char)27}[38;5;{c}m");
@@ -647,6 +686,7 @@ namespace OrbitalShell.Component.Console
         /// <param name="c"></param>
         public void SetBackground(int c)
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 Write($"{(char)27}[48;5;{c}m");
@@ -661,6 +701,7 @@ namespace OrbitalShell.Component.Console
         /// <param name="b">blue from 0 to 255</param>
         public void SetForeground(int r, int g, int b)
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 Write($"{(char)27}[38;2;{r};{g};{b}m");
@@ -675,6 +716,7 @@ namespace OrbitalShell.Component.Console
         /// <param name="b">blue from 0 to 255</param>
         public void SetBackground(int r, int g, int b)
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 Write($"{(char)27}[48;2;{r};{g};{b}m");
@@ -687,6 +729,7 @@ namespace OrbitalShell.Component.Console
 
         public void SetDefaultForeground(ConsoleColor c)
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 Console.DefaultForeground = c; sc.ForegroundColor = c;
@@ -695,6 +738,7 @@ namespace OrbitalShell.Component.Console
 
         public void SetDefaultBackground(ConsoleColor c)
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 Console.DefaultBackground = c; sc.BackgroundColor = c;
@@ -703,6 +747,7 @@ namespace OrbitalShell.Component.Console
 
         public void SetDefaultColors(ConsoleColor foregroundColor, ConsoleColor backgroundColor)
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 SetDefaultForeground(foregroundColor);
@@ -715,6 +760,7 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         public void RestoreDefaultColors()
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 Write(ANSI.RSTXTA);
@@ -746,46 +792,30 @@ namespace OrbitalShell.Component.Console
 
         public void ClearScreen()
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 if (IsBufferEnabled) throw new BufferedOperationNotAvailableException();
 
-                //RestoreDefaultColors();       // removed for the moment - can be restored in the future
                 try
                 {
-
-
-
                     WriteLine(ANSI.RSTXTA);         // reset text attr
 
                     System.Threading.Thread.Sleep(10);
 
-                    //WriteLine(ANSI.RSTXTA+"     ");         // reset text attr
-                    //Write(ANSI.ED(EDparameter.p0));
-                    //Write(ANSI.RSTXTA+" ");
-
                     sc.Write(ANSI.RIS);
                     sc.Clear();
-                    //sc.Write(ANSI.RIS);
-
-                    //Write(ESC + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
-
-                    //Write(Esc + "[0;0H");       // bug set arbitrary cursor pos on low-ansi terminals
-                    //base._textWriter.Flush();
-                    //Write(Esc + "[2J");         // bug set arbitrary cursor pos on low-ansi terminals
-
                 }
                 catch (System.IO.IOException)
                 {
 
                 }
-                //Write(Esc+"[2J" + Esc + "[0;0H"); // bugged on windows
-                //UpdateUI(true, false);
             };
         }
 
         public void LineBreak()
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 Write(LNBRK);
@@ -794,6 +824,7 @@ namespace OrbitalShell.Component.Console
 
         public void ConsoleCursorPosBackup()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 Write(ANSI.DECSC);
@@ -802,12 +833,14 @@ namespace OrbitalShell.Component.Console
 
         public void ConsoleCursorPosBackupAndRestore()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             ConsoleCursorPosBackup();
             ConsoleCursorPosRestore();
         }
 
         public void ConsoleCursorPosRestore()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 Write(ANSI.DECRC);
@@ -816,6 +849,7 @@ namespace OrbitalShell.Component.Console
 
         public Task ConsoleCursorPosRestoreAsync()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return Task.CompletedTask;
             lock (Lock)
             {
                 return WriteAsync(ANSI.DECRC);
@@ -824,6 +858,7 @@ namespace OrbitalShell.Component.Console
 
         public void BackupCursorPos()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 _cursorLeftBackup = CursorLeft;
@@ -836,6 +871,7 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         public void RestoreCursorPos()
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 Write(ESC + "[2J" + ESC + $"[{_cursorTopBackup + 1};{_cursorLeftBackup + 1}H");
@@ -855,7 +891,7 @@ namespace OrbitalShell.Component.Console
         {
             get
             {
-                if (!Console.IsConsoleGeometryEnabled) return 0;
+                if (IsMuteOrIsNotConsoleGeometryEnabled) return 0;
                 lock (Lock)
                 {                    
                     return IsBufferEnabled ? _cachedCursorPosition.X : sc.CursorLeft;
@@ -863,7 +899,7 @@ namespace OrbitalShell.Component.Console
             }
             set
             {
-                if (!Console.IsConsoleGeometryEnabled) return;
+                if (IsMuteOrIsNotConsoleGeometryEnabled) return;
                 lock (Lock)
                 {
                     _cachedCursorPosition.X = value;
@@ -879,7 +915,7 @@ namespace OrbitalShell.Component.Console
         {
             get
             {
-                if (!Console.IsConsoleGeometryEnabled) return 0;
+                if (IsMuteOrIsNotConsoleGeometryEnabled) return 0;
                 lock (Lock)
                 {
                     return IsBufferEnabled ? _cachedCursorPosition.X : sc.CursorTop;
@@ -887,7 +923,7 @@ namespace OrbitalShell.Component.Console
             }
             set
             {
-                if (!Console.IsConsoleGeometryEnabled) return;
+                if (IsMuteOrIsNotConsoleGeometryEnabled) return;
                 lock (Lock)
                 {
                     _cachedCursorPosition.Y = value;
@@ -901,7 +937,7 @@ namespace OrbitalShell.Component.Console
         {
             get
             {
-                if (!Console.IsConsoleGeometryEnabled) return new Point(0,0);
+                if (IsMuteOrIsNotConsoleGeometryEnabled) return new Point(0,0);
                 lock (Lock)
                 {
                     return new Point(CursorLeft, CursorTop);
@@ -909,7 +945,7 @@ namespace OrbitalShell.Component.Console
             }
             set
             {
-                if (!Console.IsConsoleGeometryEnabled) return;
+                if (IsMuteOrIsNotConsoleGeometryEnabled) return;
                 lock (Lock)
                 {
                     Write(ESC + $"[{value.Y + 1};{value.X + 1}H");
@@ -919,7 +955,7 @@ namespace OrbitalShell.Component.Console
 
         public void SetCursorPos(Point p)
         {
-            if (!Console.IsConsoleGeometryEnabled) return;
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 var x = p.X;
@@ -943,7 +979,7 @@ namespace OrbitalShell.Component.Console
         /// <param name="y">y (origine 0)</param>
         public void SetCursorPos(int x, int y)
         {
-            if (!Console.IsConsoleGeometryEnabled) return;
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 Console.FixCoords(ref x, ref y);
@@ -956,19 +992,15 @@ namespace OrbitalShell.Component.Console
             }
         }
 
-#pragma warning disable CA1416 // Valider la compatibilité de la plateforme
-        public static bool CursorVisible => sc.CursorVisible;
-#pragma warning restore CA1416 // Valider la compatibilité de la plateforme
-
         public void HideCur()
         {
-            if (!Console.IsConsoleGeometryEnabled) return;
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { sc.CursorVisible = false; }
         }
 
         public void ShowCur()
         {
-            if (!Console.IsConsoleGeometryEnabled) return;
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { sc.CursorVisible = true; }
         }
 
@@ -1009,9 +1041,9 @@ namespace OrbitalShell.Component.Console
                     // directives are keeped
                     Echo(s, lineBreak, false, false, true, printSequences, false, false);
                 }
-                Console.EnableConstraintConsolePrintInsideWorkArea = e;
-                sw.Flush();
                 ms.Position = 0;
+                Console.EnableConstraintConsolePrintInsideWorkArea = e;
+                sw.Flush();                
                 var rw = new StreamReader(ms);
                 var txt = rw.ReadToEnd();
                 rw.Close();
@@ -1042,8 +1074,10 @@ namespace OrbitalShell.Component.Console
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ConsolePrint(string s, bool lineBreak = false)
         {
+            if (IsMute) return;
             // any print goes here...
             lock (Lock)
             {
@@ -1065,6 +1099,7 @@ namespace OrbitalShell.Component.Console
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         /// <summary>
         /// debug echo to file
         /// </summary>
@@ -1072,12 +1107,13 @@ namespace OrbitalShell.Component.Console
         /// <param name="lineBreak"></param>
         /// <param name="callerMemberName"></param>
         /// <param name="callerLineNumber"></param>
-        public override void EchoDebug(
+        internal override void EchoDebug(
             string s,
             bool lineBreak = false,
             [CallerMemberName] string callerMemberName = "",
             [CallerLineNumber] int callerLineNumber = -1)
         {
+            if (IsMute) return;
             if (!FileEchoDebugEnabled) return;
             if (FileEchoDebugDumpDebugInfo)
             {
@@ -1091,21 +1127,40 @@ namespace OrbitalShell.Component.Console
             if (FileEchoDebugAutoFlush) _debugEchoStreamWriter?.Flush();
         }
 
+        /// <summary>
+        /// simplesystem.diagnostics.debug
+        /// </summary>
+        public void Debug(
+            string s,
+            bool lineBreak = false,
+            [CallerFilePath] string callerFilePath = "",
+            [CallerMemberName] string callerMemberName = "",
+            [CallerLineNumber] int callerLineNumber = -1)
+        {
+            if (IsMute) return;
+            System.Diagnostics.Debug.Write($"{Path.GetFileName(callerFilePath)}:{callerLineNumber} | {callerMemberName} °°° {s}");
+            if (lineBreak) System.Diagnostics.Debug.WriteLine(String.Empty);
+        }
+
         public override void Write(string s)
         {
-            if (RedirecToErr)
+            if (RedirectToErr)
             {
                 if (IsReplicationEnabled)
                     _replicateStreamWriter.Write(s);
+
                 Console.Err.Write(s);
             }
             else
-                base.Write(s);
+            {
+                if (IsNotMute)
+                    base.Write(s);
+            }
         }
 
-        //public void Echoln(IEnumerable<string> ls, bool ignorePrintDirectives = false) { foreach (var s in ls) Echoln(s, ignorePrintDirectives); }
+        // TODO: public void Echoln(IEnumerable<string> ls, bool ignorePrintDirectives = false) { foreach (var s in ls) Echoln(s, ignorePrintDirectives); }
 
-        //public void Echo(IEnumerable<string> ls, bool lineBreak = false, bool ignorePrintDirectives = false) { foreach (var s in ls) Echo(s, lineBreak, ignorePrintDirectives); }
+        // TODO: public void Echo(IEnumerable<string> ls, bool lineBreak = false, bool ignorePrintDirectives = false) { foreach (var s in ls) Echo(s, lineBreak, ignorePrintDirectives); }
 
         public void Echoln(string s = "", bool ignorePrintDirectives = false) => Echo(s, true, false, !ignorePrintDirectives);
         public void Echoln(object s, bool ignorePrintDirectives = false) => Echo(s, true, false, !ignorePrintDirectives);
@@ -1141,6 +1196,7 @@ namespace OrbitalShell.Component.Console
             bool getNonPrintablesASCIICodesAsLabel = true
             )
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 if (o == null)
@@ -1173,19 +1229,32 @@ namespace OrbitalShell.Component.Console
 
         public void Warningln(string s) => Warning(s, true);
 
-        public void Warning(string s, bool lineBreak = true) => Console.Out.Echo($"{Console.Colors.Warning}{s}{Console.Colors.Default}", lineBreak);
+        public void Warning(string s, bool lineBreak = true)
+        {
+            if (IsNotMute) Console.Out.Echo($"{Console.Colors.Warning}{s}{Console.Colors.Default}", lineBreak);
+        }
 
         public void Errorln(string s) => Error(s, true);
 
         public void Error(string s, bool lineBreak = true)
         {
-            Console.Out.RedirecToErr = true;
-            Console.Out.Echo($"{Console.Colors.Error}{s}{Console.Colors.Default}", lineBreak);
-            Console.Out.RedirecToErr = false;
+            if (IsNotMute)
+            {
+                RedirectToErr = true;
+                Console.Out.Echo($"{Console.Colors.Error}{s}{Console.Colors.Default}", lineBreak);
+                RedirectToErr = false;
+            }
+            else
+            {
+                Console.Err.Write(s);
+                if (lineBreak) Console.Err.WriteLine(string.Empty);
+            }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void ConsoleSubPrint(string s, bool lineBreak = false)
         {
+            if (IsMute) return;
             lock (Lock)
             {
                 if (Console.EnableConstraintConsolePrintInsideWorkArea)
@@ -1239,44 +1308,13 @@ namespace OrbitalShell.Component.Console
                 }
                 else
                 {
-                    /*var dep = CursorLeft + s.Length - 1 > x + w - 1;
-                    if (dep)
-                    {
-                        Write(s);
-                        // removed: too slow & buggy (s.Length is wrong due to ansi codes)
-                        //if (!IsRedirected) FillLineFromCursor(' ');   // this fix avoid background color to fill the full line on wsl/linux
-                    }
-                    else*/
                     Write(s);
-
                     EchoDebug(s);
 
                     if (lineBreak)
                     {
-#if fix_colors_on_br
-                        var f = _cachedForegroundColor;
-                        var b = _cachedBackgroundColor;
-                        if (!IsRedirected)
-                        {
-                            // needs ShellEnv
-                            SetForeground( ColorSettings.Default.Foreground.Value );
-                            SetBackground( ColorSettings.Default.Background.Value );
-                            _textWriter.WriteLine(string.Empty);
-                        }
-#else
-                        /*_textWriter*/
                         WriteLine(string.Empty);
-#endif
-
                         EchoDebug(string.Empty, true);
-
-#if fix_colors_on_br
-                        if (!IsRedirected)
-                        {
-                            SetForeground( f );
-                            SetBackground( b );
-                        }
-#endif
                     }
                 }
             }
@@ -1284,6 +1322,7 @@ namespace OrbitalShell.Component.Console
 
         void FillLineFromCursor(char c = ' ', bool resetCursorLeft = true, bool useDefaultColors = true)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 if (!EnableFillLineFromCursor) return;
@@ -1340,6 +1379,7 @@ namespace OrbitalShell.Component.Console
             bool doNotEvaluatePrintDirectives = true,
             bool ignorePrintDirectives = false)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return 0;
             var r = GetWorkAreaStringSplits(
                 s,
                 origin,
@@ -1363,6 +1403,10 @@ namespace OrbitalShell.Component.Console
             bool doNotEvaluatePrintDirectives = false,
             bool ignorePrintDirectives = false)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) 
+                return new LineSplitList(
+                    new List<StringSegment>() { new StringSegment(s, 0, s.Length - 1) }, null, 0, 0
+                );
             var r = GetWorkAreaStringSplits(
                 s,
                 origin,
@@ -1398,7 +1442,7 @@ namespace OrbitalShell.Component.Console
             int cursorX = -1,
             int cursorY = -1)
         {
-            if (!Console.IsConsoleGeometryEnabled) 
+            if (IsMuteOrIsNotConsoleGeometryEnabled) 
                 return new LineSplitList(
                     new List<StringSegment>() { new StringSegment(s, 0, s.Length - 1) },null,0,0                    
                 );
@@ -1546,6 +1590,7 @@ namespace OrbitalShell.Component.Console
 
         public void SetCursorPosConstraintedInWorkArea(Point pos, bool enableOutput = true, bool forceEnableConstraintInWorkArea = false, bool fitToVisibleArea = true)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             var x = pos.X;
             var y = pos.Y;
             SetCursorPosConstraintedInWorkArea(ref x, ref y, enableOutput, forceEnableConstraintInWorkArea, fitToVisibleArea);
@@ -1564,6 +1609,7 @@ namespace OrbitalShell.Component.Console
         /// <param name="fitToVisibleArea"></param>
         public void SetCursorPosConstraintedInWorkArea(ref int cx, ref int cy, bool enableOutput = true, bool forceEnableConstraintInWorkArea = false, bool fitToVisibleArea = true)
         {
+            if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock)
             {
                 int dx = 0;

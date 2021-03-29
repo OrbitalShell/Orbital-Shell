@@ -35,7 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{00101C60-1
 		docs\README.md = docs\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrbitalShell-WebAPI", "OrbitalShell-WebAPI\OrbitalShell-WebAPI.csproj", "{7358D4CC-FF77-47E1-90B4-5E5ECB22A5E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-WebAPI", "OrbitalShell-WebAPI\OrbitalShell-WebAPI.csproj", "{7358D4CC-FF77-47E1-90B4-5E5ECB22A5E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

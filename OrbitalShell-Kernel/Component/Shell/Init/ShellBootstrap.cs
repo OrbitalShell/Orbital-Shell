@@ -13,17 +13,21 @@ using System.Linq;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell.Module.Data;
 
-namespace OrbitalShell.Component.Shell
+namespace OrbitalShell.Component.Shell.Init
 {
-    public class ShellInitializer
+    public class ShellBootstrap : IShellBootstrap
     {
         readonly ICommandLineProcessor _clp;
         readonly IConsole _console;
+        readonly IShellArgsOptionBuilder _shellArgsOptionBuilder;
 
-        public ShellInitializer(ICommandLineProcessor clp)
+        public ShellBootstrap(
+            ICommandLineProcessor clp,
+            IShellArgsOptionBuilder shellArgsOptionBuilder)
         {
             _clp = clp;
             _console = clp.Console;
+            _shellArgsOptionBuilder = shellArgsOptionBuilder;
         }
 
         public ICommandLineProcessor GetCommandLineProcessor() => _clp;
@@ -31,11 +35,11 @@ namespace OrbitalShell.Component.Shell
         /// <summary>
         /// perform kernel inits and run init scripts
         /// </summary>
-        public ShellInitializer Run()
+        public ShellBootstrap Run()
         {
             if (_clp.IsInitialized) return this;
 
-            ShellInit( _clp.Args, _console, _clp.Settings, _clp.CommandEvaluationContext);
+            ShellInit(_clp.Args, _console, _clp.Settings, _clp.CommandEvaluationContext);
 
             // late init of settings from the context
             _clp.Settings.Initialize(_clp.CommandEvaluationContext);
@@ -44,7 +48,7 @@ namespace OrbitalShell.Component.Shell
             try
             {
                 _clp.CommandBatchProcessor.RunBatch(
-                    _clp.CommandEvaluationContext, 
+                    _clp.CommandEvaluationContext,
                     _clp.Settings.UserProfileFilePath);
             }
             catch (Exception ex)
@@ -56,8 +60,8 @@ namespace OrbitalShell.Component.Shell
             try
             {
                 _clp.CommandsAlias.Init(
-                    _clp.CommandEvaluationContext, 
-                    _clp.Settings.AppDataRoamingUserFolderPath, 
+                    _clp.CommandEvaluationContext,
+                    _clp.Settings.AppDataRoamingUserFolderPath,
                     _clp.Settings.CommandsAliasFileName);
             }
             catch (Exception ex)
@@ -89,23 +93,31 @@ namespace OrbitalShell.Component.Shell
             CommandEvaluationContext context = null
             )
         {
-            _clp.Init(args,settings,context);
-
-            // get final clp command evaluation context
-            context = _clp.CommandEvaluationContext;
+            _clp.Init(args, settings, context);
+            
+            context = _clp.CommandEvaluationContext;    // get final clp command evaluation context
 
             context.Logger.MuteLogErrors = true;
+
             _clp.Settings.Initialize(context);
 
-            // pre console init
-            if (console.DefaultForeground != null) cons.ForegroundColor = console.DefaultForeground.Value;
+            _shellArgsOptionBuilder.SetArgs(args);
 
-            // apply orbsh command args -env:{varName}={varValue}
-            var appliedSettings = new List<string>();
-            _clp.SetArgs(args, _clp.CommandEvaluationContext, appliedSettings);
+            var appliedSettings = new List<ShellArgValue>();
+            _shellArgsOptionBuilder
+                .SetCommandOperationContextOptions(context, ref appliedSettings)
+                .SetCommandLineProcessorOptions(context, ref appliedSettings)
+                .ImportSettingsFromJSon(context,ref appliedSettings);
 
             // init from settings
-            ShellInitFromSettings(_clp,settings);
+
+            context.Logger.IsEchoEnabled = !context.Settings.IsQuiet;
+            context.Out.IsMute = context.Settings.IsQuiet;
+
+            ShellInitFromSettings(_clp, settings);
+
+            // pre console init
+            if (!context.Settings.IsMute && console.DefaultForeground != null) cons.ForegroundColor = console.DefaultForeground.Value;
 
             ConsoleInit(_clp.CommandEvaluationContext);
 
@@ -134,8 +146,8 @@ namespace OrbitalShell.Component.Shell
 
             var mpath = _clp.Settings.ModulesInitFilePath;
             context.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"loading modules: '{FileSystemPath.UnescapePathSeparators(mpath)}' ... ", true, false);
-            
-            ModulesInit(context,mpath);
+
+            ModulesInit(context, mpath);
             context.Logger.Done("modules loaded");
 
             #endregion
@@ -149,6 +161,9 @@ namespace OrbitalShell.Component.Shell
             _clp.PostInit();
 
             context.Logger.Done();
+
+            CreateUserSettingsFile();
+
             context.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"restoring user history file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.HistoryFilePath)}' ... ", true, false);
 
             CreateRestoreUserHistoryFile();
@@ -170,7 +185,7 @@ namespace OrbitalShell.Component.Shell
             _clp.PostInit();
         }
 
-        void ModulesInit(CommandEvaluationContext context,string moduleInitFilePath)
+        void ModulesInit(CommandEvaluationContext context, string moduleInitFilePath)
         {
             if (!File.Exists(moduleInitFilePath))
             {
@@ -181,7 +196,7 @@ namespace OrbitalShell.Component.Shell
                         Path.Combine(CommandLineProcessorSettings.BinFolderPath, "Component", "Shell", "Module", _clp.Settings.ModulesInitFileName),
                         _clp.Settings.ModulesInitFilePath
                     );
-                    _clp.CommandEvaluationContext.Logger.Success("",true,false);                    
+                    _clp.CommandEvaluationContext.Logger.Success("", true, false);
                 }
                 catch (Exception createModuleInitFilePathException)
                 {
@@ -192,7 +207,8 @@ namespace OrbitalShell.Component.Shell
             try
             {
                 LoadModulesFromConfig(context);
-            } catch (Exception loadModuleException)
+            }
+            catch (Exception loadModuleException)
             {
                 _clp.CommandEvaluationContext.Logger.Fail(loadModuleException);
             }
@@ -202,23 +218,23 @@ namespace OrbitalShell.Component.Shell
         {
             var mods = ModuleUtil.LoadModuleInitConfiguration(context);
 
-            if (mods==null)
+            if (mods == null)
             {
                 // rebuild the module-init file - it is crashed
                 mods = new ModuleInit()
-                    {
-                        ReadMe = $"new file generated on {System.DateTime.Now}",
-                        List = Array.Empty<ModuleInitItem>()
+                {
+                    ReadMe = $"new file generated on {System.DateTime.Now}",
+                    List = Array.Empty<ModuleInitItem>()
                 };
                 ModuleUtil.SaveModuleInitConfiguration(context, mods);
                 context.Errorln("a crashed version of module-init has been restored to initial state");
             }
-                
+
             var enabledMods = mods.List.Where(x => x.IsEnabled);
             if (!enabledMods.Any()) return;
             var o = context.Out;
             o.Echoln();
-            foreach ( var mod in enabledMods)
+            foreach (var mod in enabledMods)
             {
                 try
                 {
@@ -227,13 +243,19 @@ namespace OrbitalShell.Component.Shell
                     context.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"module assembly loaded: '{a}'. registering module ... ", true, false);
                     var modSpec = _clp.ModuleManager.RegisterModule(_clp.CommandEvaluationContext, a);
                     context.Logger.Done(modSpec.Info.GetDescriptor(context));
-                } catch (Exception loadModException)
+                }
+                catch (Exception loadModException)
                 {
                     _clp.CommandEvaluationContext.Logger.Fail(loadModException);
                 }
             }
         }
 
+        /// <summary>
+        /// setup properties of clp and shell env from the settings object and envrionment variables
+        /// </summary>
+        /// <param name="clp">clp</param>
+        /// <param name="settings">clp settings</param>
         void ShellInitFromSettings(
             ICommandLineProcessor clp,
             ICommandLineProcessorSettings settings
@@ -275,13 +297,16 @@ namespace OrbitalShell.Component.Shell
             var winHeight = (int)oWinHeight.Value;
             try
             {
+                if (!context.Settings.IsMute)
+                {
 #pragma warning disable CA1416 // Valider la compatibilité de la plateforme
-                if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
+                    if (WinWidth > -1) System.Console.WindowWidth = WinWidth;
 #pragma warning restore CA1416 // Valider la compatibilité de la plateforme
 #pragma warning disable CA1416 // Valider la compatibilité de la plateforme
-                if (winHeight > -1) System.Console.WindowHeight = winHeight;
+                    if (winHeight > -1) System.Console.WindowHeight = winHeight;
 #pragma warning restore CA1416 // Valider la compatibilité de la plateforme
-                System.Console.Clear();
+                    System.Console.Clear();
+                }
             }
             catch { }
         }
@@ -298,7 +323,7 @@ namespace OrbitalShell.Component.Shell
                 {
                     var defaultAliasFilePath = Path.Combine(_clp.Settings.DefaultsFolderPath, _clp.Settings.CommandsAliasFileName);
                     File.Copy(defaultAliasFilePath, _clp.Settings.CommandsAliasFilePath);
-                    
+
                     _clp.CommandEvaluationContext.Logger.Success();
                 }
             }
@@ -327,6 +352,23 @@ namespace OrbitalShell.Component.Shell
             catch (Exception createUserProfileFileException)
             {
                 _clp.CommandEvaluationContext.Logger.Fail(createUserProfileFileException);
+            }
+        }
+
+        public void CreateUserSettingsFile()
+        {            
+            var createUserSettingsFile = !File.Exists(_clp.Settings.UserSettingsFilePath);
+            if (createUserSettingsFile)
+                _clp.CommandEvaluationContext.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user settings file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.UserProfileFilePath)}' ... ", true, false);
+            try
+            {
+                if (createUserSettingsFile)
+                    File.Copy(_clp.Settings.ShellSettingsFilePath, _clp.Settings.UserSettingsFilePath);
+                if (createUserSettingsFile) _clp.CommandEvaluationContext.Logger.Success();
+            }
+            catch (Exception createUserSettingsFileException)
+            {
+                _clp.CommandEvaluationContext.Logger.Fail(createUserSettingsFileException);
             }
         }
 

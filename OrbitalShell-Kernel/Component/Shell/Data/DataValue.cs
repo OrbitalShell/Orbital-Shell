@@ -224,7 +224,7 @@ namespace OrbitalShell.Component.Shell.Data
                     if (objType != ValueType
                         && (!objType.InheritsFrom(ValueType)))
                     {
-                        if (ValueTextParser.ToTypedValue(value, ValueType, null, out var v, out _))
+                        if (ValueTextParser.ToTypedValue(value, ValueType, null, out var v, out _, ValueType))
                         {
                             this.Value = v;
                             return;
@@ -240,7 +240,7 @@ namespace OrbitalShell.Component.Shell.Data
 
         /// <summary>
         ///  set a typed variable from a string value<br/>
-        ///  don't set the value if conversion has failed - no exception
+        ///  don't set the value if conversion has failed - exception
         /// </summary>
         /// <param name="value">a string value that must be converted to var type an assigned to the var</param>
         public void SetValue(string value)
