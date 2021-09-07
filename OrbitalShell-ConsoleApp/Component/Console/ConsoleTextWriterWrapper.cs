@@ -1,18 +1,21 @@
-﻿using OrbitalShell.Component.UI;
-using OrbitalShell.Component.EchoDirective;
-using OrbitalShell.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
-using itpsrv = System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using static OrbitalShell.Lib.Str;
-using sc = System.Console;
+
+using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Component.Script;
+using OrbitalShell.Component.UI;
+using OrbitalShell.Lib;
+
 using static OrbitalShell.Component.Console.ANSI;
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.Script;
+using static OrbitalShell.Lib.Str;
+
+using itpsrv = System.Runtime.InteropServices;
+using sc = System.Console;
 
 namespace OrbitalShell.Component.Console
 {
@@ -77,16 +80,16 @@ namespace OrbitalShell.Component.Console
 
         public ConsoleTextWriterWrapper(IConsole console) : base() { Init(console); }
 
-        public ConsoleTextWriterWrapper(IConsole console,TextWriter textWriter) : base(textWriter) { Init(console); }
+        public ConsoleTextWriterWrapper(IConsole console, TextWriter textWriter) : base(textWriter) { Init(console); }
 
-        public ConsoleTextWriterWrapper(IConsole console,CSharpScriptEngine cSharpScriptEngine) : base() { Init(console,cSharpScriptEngine); }
+        public ConsoleTextWriterWrapper(IConsole console, CSharpScriptEngine cSharpScriptEngine) : base() { Init(console, cSharpScriptEngine); }
 
-        public ConsoleTextWriterWrapper(IConsole console,TextWriter textWriter, CSharpScriptEngine cSharpScriptEngine) : base(textWriter) { Init(console,cSharpScriptEngine); }
+        public ConsoleTextWriterWrapper(IConsole console, TextWriter textWriter, CSharpScriptEngine cSharpScriptEngine) : base(textWriter) { Init(console, cSharpScriptEngine); }
 
         /// <summary>
         /// console init + internal init
         /// </summary>
-        void Init(IConsole console,CSharpScriptEngine cSharpScriptEngine = null)
+        void Init(IConsole console, CSharpScriptEngine cSharpScriptEngine = null)
         {
             Console = console;
             console.CheckConsoleHasGeometry();
@@ -386,7 +389,7 @@ namespace OrbitalShell.Component.Console
         }
 
         object _Exit(object x) { Environment.Exit(0); return null; }
-        object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(Console,x)); return null; }
+        object _SetForegroundColor(object x) { SetForeground(TextColor.ParseColor(Console, x)); return null; }
         object _SetForegroundParse8BitColor(object x) { SetForeground(TextColor.Parse8BitColor(Console, x)); return null; }
         object _SetForegroundParse24BitColor(object x) { SetForeground(TextColor.Parse24BitColor(Console, x)); return null; }
 
@@ -413,7 +416,7 @@ namespace OrbitalShell.Component.Console
         }
         object _SetCursorX(object x) { CursorLeft = Console.GetCursorX(x); return null; }
         object _SetCursorY(object x) { CursorTop = Console.GetCursorY(x); return null; }
-        object _ExecCSharp(object x) { return CSharpScriptEngine.ExecCSharp((string)x,this); }
+        object _ExecCSharp(object x) { return CSharpScriptEngine.ExecCSharp((string)x, this); }
         void _MoveCursorTop() { MoveCursorTop(1); }
         void _MoveCursorDown() { MoveCursorDown(1); }
         void _MoveCursorLeft() { MoveCursorLeft(1); }
@@ -591,12 +594,14 @@ namespace OrbitalShell.Component.Console
             lock (Lock) { Write($"{(char)27}[{n}C"); }
         }
 
-        public void ScrollWindowDown(int n = 1) {
+        public void ScrollWindowDown(int n = 1)
+        {
             if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write(((char)27) + $"[{n}T"); }
         }
 
-        public void ScrollWindowUp(int n = 1) {
+        public void ScrollWindowUp(int n = 1)
+        {
             if (IsMuteOrIsNotConsoleGeometryEnabled) return;
             lock (Lock) { Write(((char)27) + $"[{n}S"); }
         }
@@ -893,7 +898,7 @@ namespace OrbitalShell.Component.Console
             {
                 if (IsMuteOrIsNotConsoleGeometryEnabled) return 0;
                 lock (Lock)
-                {                    
+                {
                     return IsBufferEnabled ? _cachedCursorPosition.X : sc.CursorLeft;
                 }
             }
@@ -937,7 +942,7 @@ namespace OrbitalShell.Component.Console
         {
             get
             {
-                if (IsMuteOrIsNotConsoleGeometryEnabled) return new Point(0,0);
+                if (IsMuteOrIsNotConsoleGeometryEnabled) return new Point(0, 0);
                 lock (Lock)
                 {
                     return new Point(CursorLeft, CursorTop);
@@ -1041,9 +1046,9 @@ namespace OrbitalShell.Component.Console
                     // directives are keeped
                     Echo(s, lineBreak, false, false, true, printSequences, false, false);
                 }
-                ms.Position = 0;
                 Console.EnableConstraintConsolePrintInsideWorkArea = e;
-                sw.Flush();                
+                sw.Flush();
+                ms.Position = 0;
                 var rw = new StreamReader(ms);
                 var txt = rw.ReadToEnd();
                 rw.Close();
@@ -1403,7 +1408,7 @@ namespace OrbitalShell.Component.Console
             bool doNotEvaluatePrintDirectives = false,
             bool ignorePrintDirectives = false)
         {
-            if (IsMuteOrIsNotConsoleGeometryEnabled) 
+            if (IsMuteOrIsNotConsoleGeometryEnabled)
                 return new LineSplitList(
                     new List<StringSegment>() { new StringSegment(s, 0, s.Length - 1) }, null, 0, 0
                 );
@@ -1442,9 +1447,9 @@ namespace OrbitalShell.Component.Console
             int cursorX = -1,
             int cursorY = -1)
         {
-            if (IsMuteOrIsNotConsoleGeometryEnabled) 
+            if (IsMuteOrIsNotConsoleGeometryEnabled)
                 return new LineSplitList(
-                    new List<StringSegment>() { new StringSegment(s, 0, s.Length - 1) },null,0,0                    
+                    new List<StringSegment>() { new StringSegment(s, 0, s.Length - 1) }, null, 0, 0
                 );
 
             var originalString = s;

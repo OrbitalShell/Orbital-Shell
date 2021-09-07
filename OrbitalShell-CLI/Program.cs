@@ -13,7 +13,7 @@ namespace OrbitalShell
         {
             var returnCode =
                 GetShellServiceHost(args)
-                .RunShellServiceHost(args);
+                    .RunShellServiceHost(args);
 
             App.Host.Run();
 
