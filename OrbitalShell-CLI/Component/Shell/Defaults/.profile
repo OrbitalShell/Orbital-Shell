@@ -3,6 +3,9 @@
 # this is the default orbsh user profile init script
 # ---------------------------------------------------------------------------------------------------------
 
+# set default foreground (linux wsl ubuntu fix)
+echo "(df=gray)" -n
+
 # set the prompt
 
 #prompt "(RSTXTA)(b8=19) (b8=20) (exec=System.Environment.CurrentDirectory) (b8=19,f8=46) (b8=18) (b8=17) (br)(f=yellow) > (rdc)"

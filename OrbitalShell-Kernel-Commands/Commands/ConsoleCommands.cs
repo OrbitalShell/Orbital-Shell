@@ -1,21 +1,21 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Variable;
+
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Commands
 {
     [Commands("commands of the console")]
     [CommandsNamespace(CommandNamespace.cons)]
     public class ConsoleCommands : ICommandsDeclaringType
-    {
+    { // (rdc)
         const string _printDocText =
 @"(rdc)text can contains (uon)echo directives(uoff) that changes the echo behavior. 
 the echo directive syntax is formed according to these pattern:
@@ -88,7 +88,7 @@ current print directives are:
             CommandEvaluationContext context,
             [Parameter("text or other (value of type object) to be writen to output", true, "")] object obj = null,
             [Option("n", "no-break", "no line break: do not add a line break after output")] bool avoidLineBreak = false,
-            [Option("r", "raw", "raw mode - echo directives and ansi sequences are replaces by readable text")] bool raw = false
+            [Option("r", "raw", "raw mode - echo directives and ansi sequences are replaced by readable text")] bool raw = false
             )
         {
             lock (context.Out.Lock)
@@ -132,7 +132,7 @@ current print directives are:
                 try
                 {
                     var ne = System.Text.Encoding.GetEncoding(encodingName);
-                    System.Console.OutputEncoding = ne;                    
+                    System.Console.OutputEncoding = ne;
                     ret = ne;
                 }
                 catch (ArgumentException)

@@ -1,19 +1,20 @@
-using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib;
-using OrbitalShell.Lib.Data;
 using System;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
 using OrbitalShell.Component.EchoDirective;
 using OrbitalShell.Component.Shell;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.Data;
+
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -26,7 +27,7 @@ namespace OrbitalShell.Commands.Shell
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.help)]
         public CommandVoidResult Help(
             CommandEvaluationContext context,
-            [Option("s", "short", "short display: decrase output details")] bool shortView,
+            [Option("s", "short", "short display: decrease output details")] bool shortView,
             [Option("v", "verbose", "set verbose view: increase output details")] bool verboseView,
             [Option("a", "all", "list all commands")] bool all,
             [Option("n", "namespace", "filter commands list by namespace value or wildcard or regex (wildcard have ?,* , regex starts with \\)", true, true)] PatternString @namespace,
@@ -135,7 +136,7 @@ namespace OrbitalShell.Commands.Shell
                 var ncmds = cmds.ToList();
                 ncmds.Sort(new Comparison<CommandSpecification>((x, y) => x.Name.CompareTo(y.Name)));
                 cmds = ncmds.AsQueryable();
-                if (cmds.Count() > 0)
+                if (cmds.Any())
                 {
                     var maxcmdlength = cmds.Select(x => x.Name.Length).Max() + 1;
                     var maxcmdtypelength = cmds.Select(x => x.DeclaringTypeShortName.Length).Max() + 1;
@@ -204,7 +205,9 @@ namespace OrbitalShell.Commands.Shell
             if (maxnslength == -1) maxnslength = com.Namespace.Length + 1;
             if (maxcmdtypelength == -1) maxcmdtypelength = com.DeclaringTypeShortName.Length + 1;
             var col = singleout ? "" : "".PadRight(maxcnamelength, ' ');
+
             var f = GetCmd(EchoDirectives.f + "", context.CommandLineProcessor.Console.DefaultForeground.ToString().ToLower());
+
             if (list)
             {
                 if (!shortView)
@@ -259,7 +262,7 @@ namespace OrbitalShell.Commands.Shell
 
                             var supdef = $"{ptype}{pdef}";
                             // method 'Echo if has' else to string
-                            context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors, false)}{pleftCol}{p.Description}");
+                            context.Out.Echoln($"{col}{Tab}{p.ToColorizedString(context.ShellEnv.Colors, false)}{pleftCol}{f}{p.Description}");
                             if (!string.IsNullOrWhiteSpace(supdef)) context.Out.Echoln($"{col}{Tab}{" ".PadRight(mpl)}{supdef}");
                         }
 
@@ -292,7 +295,7 @@ namespace OrbitalShell.Commands.Shell
             var lineStart = Environment.NewLine;
             var prfx0 = "{]=);:_&é'(";
             var prfx1 = "$*^ùè-_à'";
-            docText = docText.Replace(lineStart, prfx0 + prfx1);
+            docText = docText.Replace(lineStart, prfx0 + prfx1).Replace("\r","");
             var lst = docText.Split(prfx0).AsQueryable();
             if (string.IsNullOrWhiteSpace(lst.FirstOrDefault())) lst = lst.Skip(1);
             lst = lst.Select(x => "".PadRight(leftMarginSize, ' ') + x + Br);

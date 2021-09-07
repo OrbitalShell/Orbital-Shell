@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             // ,"-env:Settings.EnableConsoleBackgroundTransparentMode=true"
-            "program": "${workspaceFolder}/OrbitalShell-CLI/bin/Debug/netcoreapp3.1/orbsh.dll",
+            "program": "${workspaceFolder}/OrbitalShell-CLI/bin/Debug/net5.0/orbsh.dll",
             "args": ["--env:settings.console.enableCompatibilityMode=true"],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

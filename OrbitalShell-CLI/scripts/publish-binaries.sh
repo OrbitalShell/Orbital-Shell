@@ -1,7 +1,7 @@
-﻿#!porbsh
+﻿#!orbsh
 # build/publish orbital shell binaries
 
-set version 1.0.8
+set version 1.0.9
 set nugetext .nupkg
 
 cls
