@@ -2,7 +2,7 @@
 {
     public interface ISocketServerSettings
     {
-        int ByteBufferLength { get; set; }
+        int BufferCapacity { get; set; }
         int ListeningPort { get; set; }
     }
 }
