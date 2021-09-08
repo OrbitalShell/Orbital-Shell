@@ -33,7 +33,7 @@ namespace OrbitalShell.Component.Shell.Data
 
         public bool Get(string path, out object data)
         {
-            if (string.IsNullOrWhiteSpace("path"))
+            if (string.IsNullOrWhiteSpace(path))
                 path = "";
 
             if (_objects.TryGetValue(path, out var value))

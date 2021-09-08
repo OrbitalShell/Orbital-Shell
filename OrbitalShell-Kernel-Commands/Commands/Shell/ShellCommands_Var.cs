@@ -234,6 +234,22 @@ namespace OrbitalShell.Commands.Shell
             return new CommandResult<object>(@var);
         }
 
+        [Command("get a shell variable. The variable is stored in the variables env.$lastComResult and _./")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
+        public CommandResult<object> Get(
+            CommandEvaluationContext context,
+            [Parameter(0, "variable name with or without namespace prefix", false)] string name
+            //[Option("r", "read-only", "for a new variable, set it read only")] bool readOnly = false
+            )
+        {
+            if (!VariableSyntax.HasValidRootNamespace(name))
+                name = Variables.Nsp(VariableNamespace.local, name);
+
+            context.Variables.Get(name, out var @var, false);
+
+            return new CommandResult<object>(@var);
+        }
+
         [Command("unset the value of shell variables. can not unset namespace, only variables")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<object> Unset(
