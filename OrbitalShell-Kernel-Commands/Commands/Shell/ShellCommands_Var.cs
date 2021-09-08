@@ -234,7 +234,7 @@ namespace OrbitalShell.Commands.Shell
             return new CommandResult<object>(@var);
         }
 
-        [Command("get a shell variable. The variable is stored in the variables env.$lastComResult and _./")]
+        [Command("get a shell variable value. The value is stored in the variables env.$lastComResult and _./")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<object> Get(
             CommandEvaluationContext context,
@@ -247,7 +247,11 @@ namespace OrbitalShell.Commands.Shell
 
             context.Variables.Get(name, out var @var, false);
 
-            return new CommandResult<object>(@var);
+            return new CommandResult<object>(
+                (@var is DataValue dataValue) ?
+                    dataValue.Value
+                    : @var
+            );
         }
 
         [Command("unset the value of shell variables. can not unset namespace, only variables")]
