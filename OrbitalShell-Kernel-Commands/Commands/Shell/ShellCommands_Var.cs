@@ -1,16 +1,17 @@
-﻿using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.Shell.Data;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Data;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Lib;
 using OrbitalShell.Lib.Sys;
+
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -73,7 +74,7 @@ namespace OrbitalShell.Commands.Shell
         [CommandAlias("loc", "vars local")]
         [CommandAlias("glob", "vars global")]
         [CommandAlias("settings", "env settings")]
-        public CommandResult<List<IDataObject>> Vars(
+        public CommandResult<List<IDataObject>> Var(
             CommandEvaluationContext context,
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,

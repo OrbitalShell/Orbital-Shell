@@ -4,13 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9F4F4828-D106-4F36-8E04-42BDCB84A44D}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-		LICENSE.md = LICENSE.md
-		README.md = README.md
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-ConsoleApp", "OrbitalShell-ConsoleApp\OrbitalShell-ConsoleApp.csproj", "{3357EBB3-2565-4390-A28B-8B837DA52BBC}"
 EndProject
@@ -40,6 +33,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{8133
 	ProjectSection(SolutionItems) = preProject
 		scripts\build.sh = scripts\build.sh
 		scripts\run.sh = scripts\run.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repo-info", "repo-info", "{0DB58486-81EE-4068-8EE4-F95C0BDA1DAE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
@@ -106,6 +108,7 @@ Global
 		{27033D10-E732-47E6-A607-27A718CEF3EF} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 		{00101C60-1864-48B1-98FC-A51B0E54D155} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 		{813306DF-B1F8-4FC5-AADF-E6A3F2D175DF} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
+		{0DB58486-81EE-4068-8EE4-F95C0BDA1DAE} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE827123-7F20-471E-B1BF-3E12AE9FFDC8}
