@@ -26,7 +26,7 @@ namespace OrbitalShell.Commands.Shell
         [Command("print help about commands, namespaces, commands declaring types and modules")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.help)]
         public CommandVoidResult Help(
-            CommandEvaluationContext context,
+            CommandEvaluationContext _,
             [Option("s", "short", "short display: decrease output details")] bool shortView,
             [Option("v", "verbose", "set verbose view: increase output details")] bool verboseView,
             [Option("a", "all", "list all commands")] bool all,
@@ -39,7 +39,7 @@ namespace OrbitalShell.Commands.Shell
         {
             var hascn = !string.IsNullOrWhiteSpace(commandName);
             var list = !all && !hascn;
-            var cmds = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.AllCommands.AsQueryable();
+            var cmds = _.CommandLineProcessor.ModuleManager.ModuleCommandManager.AllCommands.AsQueryable();
             var namespaces = cmds.Select(x => x.Namespace).Distinct().ToList();
             namespaces.Sort();
             bool ignoreCase = true;
@@ -53,7 +53,7 @@ namespace OrbitalShell.Commands.Shell
 
                 if (!string.IsNullOrWhiteSpace(type))
                 {
-                    var typenames = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringTypesAssemblyQualifiedNames.ToList();
+                    var typenames = _.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringTypesAssemblyQualifiedNames.ToList();
                     var typelst = typenames
                         .Select(x => Type.GetType(x))
                         .Where(x => x != null && type.Match(x.Name))
@@ -82,7 +82,11 @@ namespace OrbitalShell.Commands.Shell
                             foreach (var typ in typelst)
                             {
                                 var cmdattr = typ.GetCustomAttribute<CommandsAttribute>();
-                                context.Out.Echoln(Darkcyan + TypeName(typ).PadRight(maxtl) + Tab + DefaultForegroundCmd + cmdattr.Description);
+                                var s = Darkcyan + TypeName(typ).PadRight(maxtl) + Tab + DefaultForegroundCmd
+                                    + cmdattr.Description
+                                        .Replace("(", "((")
+                                        .Replace(")", "))");
+                                _.Out.Echoln(s);
                             }
                         }
                         return new CommandVoidResult();
@@ -93,9 +97,9 @@ namespace OrbitalShell.Commands.Shell
 
                 #region filter on module
 
-                if (cmds.Count() > 0 && !string.IsNullOrWhiteSpace(module))
+                if (cmds.Any() && !string.IsNullOrWhiteSpace(module))
                 {
-                    var mods = context.CommandLineProcessor.ModuleManager.Modules;
+                    var mods = _.CommandLineProcessor.ModuleManager.Modules;
                     var modnames = mods.Values.Where(x => module.Match(x.Name)).Select(x => x.Name).ToList();
                     modnames.Sort();
                     shortView = !verboseView;
@@ -108,7 +112,7 @@ namespace OrbitalShell.Commands.Shell
                         {
                             var maxml = modnames.Select(x => x.Length).Max();
                             foreach (var modname in modnames)
-                                context.Out.Echoln(Darkcyan + modname.PadRight(maxml) + Tab + DefaultForegroundCmd + mods.Values.Where(x => x.Name == modname).First().Description);
+                                _.Out.Echoln(Darkcyan + modname.PadRight(maxml) + Tab + DefaultForegroundCmd + mods.Values.Where(x => x.Name == modname).First().Description);
                         }
                         return new CommandVoidResult();
                     }
@@ -128,7 +132,7 @@ namespace OrbitalShell.Commands.Shell
                     else
                     {
                         foreach (var ns in nslst)
-                            context.Out.Echoln(Darkcyan + ns);
+                            _.Out.Echoln(Darkcyan + ns);
                         return new CommandVoidResult();
                     }
                 }
@@ -158,11 +162,11 @@ namespace OrbitalShell.Commands.Shell
                         {
                             if (grouping.Any())
                             {
-                                if (g > 0) context.Out.Echoln();
-                                context.Out.Echoln($"{ANSI.SGR_Underline}{context.ShellEnv.Colors.Label}{grouping.Key}{ANSI.SGR_UnderlineOff}{context.ShellEnv.Colors.Default}{ANSI.CRLF}");
+                                if (g > 0) _.Out.Echoln();
+                                _.Out.Echoln($"{ANSI.SGR_Underline}{_.ShellEnv.Colors.Label}{grouping.Key}{ANSI.SGR_UnderlineOff}{_.ShellEnv.Colors.Default}{ANSI.CRLF}");
                                 foreach (var item in grouping)
                                 {
-                                    _PrintCommandHelp(context, item, shortView, verboseView, list, maxnslength, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
+                                    _PrintCommandHelp(_, item, shortView, verboseView, list, maxnslength, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
                                 }
                                 g++;
                             }
@@ -173,8 +177,8 @@ namespace OrbitalShell.Commands.Shell
                         int n = 0;
                         foreach (var cmd in cmds)
                         {
-                            if (!list && n > 0) context.Out.Echoln();
-                            _PrintCommandHelp(context, cmd, shortView, verboseView, list, maxnslength, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
+                            if (!list && n > 0) _.Out.Echoln();
+                            _PrintCommandHelp(_, cmd, shortView, verboseView, list, maxnslength, maxcmdlength, maxcmdtypelength, maxmodlength, !string.IsNullOrWhiteSpace(commandName));
                             n++;
                         }
                     }
@@ -182,7 +186,7 @@ namespace OrbitalShell.Commands.Shell
             }
             else
             {
-                context.Errorln($"Command not found: '{commandName}'");
+                _.Errorln($"Command not found: '{commandName}'");
                 return new CommandVoidResult(ReturnCode.Error);
             }
             return new CommandVoidResult();
