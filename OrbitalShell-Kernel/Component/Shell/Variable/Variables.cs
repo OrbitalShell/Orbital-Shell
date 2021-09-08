@@ -1,12 +1,10 @@
-﻿using OrbitalShell.Component.Shell.Data;
-using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.CommandLine.Processor;
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using static OrbitalShell.Component.Shell.Variable.VariableSyntax;
+using System.Linq;
+
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.Shell.Data;
 
 namespace OrbitalShell.Component.Shell.Variable
 {
@@ -117,6 +115,7 @@ namespace OrbitalShell.Component.Shell.Variable
         /// <summary>
         /// search in variables the path according to these precedence rules:
         /// - absolute path
+        /// - path related to _
         /// - path related to Local
         /// - path related to Env
         /// - path related to Global
@@ -127,10 +126,13 @@ namespace OrbitalShell.Component.Shell.Variable
         {
             var r = _dataRegistry.Get(path, out value)
             || _dataRegistry.Get(Nsp(VariableNamespace.local, path), out value)
+            || _dataRegistry.Get(Nsp(VariableNamespace._, path), out value)
             || _dataRegistry.Get(Nsp(VariableNamespace.global, path), out value)
             || _dataRegistry.Get(Nsp(VariableNamespace.env, path), out value);
+
             if (!r && throwException)
                 throw new VariablePathNotFoundException(path);
+
             return r;
         }
 
@@ -140,7 +142,7 @@ namespace OrbitalShell.Component.Shell.Variable
         public bool Get(VariableNamespace rootPath, string path, out object value, bool throwException = true)
             => Get(Nsp(rootPath, path), out value, throwException);
 
-        public T GetValue<T>(string path, bool throwException = true) => (T)GetValue(path,throwException).Value;
+        public T GetValue<T>(string path, bool throwException = true) => (T)GetValue(path, throwException).Value;
         public T GetValue<T>(string rootPath, string path, bool throwException = true) => (T)GetValue(Nsp(rootPath, path), throwException).Value;
         public T GetValue<T>(VariableNamespace rootPath, string path, bool throwException = true) => (T)GetValue(Nsp(rootPath, path), throwException).Value;
 
@@ -182,7 +184,7 @@ namespace OrbitalShell.Component.Shell.Variable
             if (throwException)
                 throw new VariablePathNotFoundException(path);
             // a real null DataValue
-            return new DataValue(path,null,false);
+            return new DataValue(path, null, false);
         }
         public DataValue GetValue(string rootPath, string path, bool throwException = true)
             => GetValue(Nsp(rootPath, path), throwException);
