@@ -56,10 +56,7 @@ namespace OrbitalShell.Commands.Shell
                     var typenames = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringTypesAssemblyQualifiedNames.ToList();
                     var typelst = typenames
                         .Select(x => Type.GetType(x))
-                        .ToList();
-
-                    typelst = typelst
-                        .Where(x => type.Match(x.Name))
+                        .Where(x => x != null && type.Match(x.Name))
                         .ToList();
 
                     typelst.Sort((x, y) => x.Name.CompareTo(y.Name));
@@ -111,7 +108,7 @@ namespace OrbitalShell.Commands.Shell
                         {
                             var maxml = modnames.Select(x => x.Length).Max();
                             foreach (var modname in modnames)
-                                context.Out.Echoln(Darkcyan + modname.PadRight(maxml) + Tab + DefaultForegroundCmd + mods[modname].Description);
+                                context.Out.Echoln(Darkcyan + modname.PadRight(maxml) + Tab + DefaultForegroundCmd + mods.Values.Where(x => x.Name == modname).First().Description);
                         }
                         return new CommandVoidResult();
                     }
