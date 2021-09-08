@@ -1,6 +1,8 @@
-﻿using OrbitalShell.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using OrbitalShell.Lib;
+
 using static OrbitalShell.Component.Shell.Variable.VariableSyntax;
 
 namespace OrbitalShell.Component.Shell.Data
@@ -31,6 +33,9 @@ namespace OrbitalShell.Component.Shell.Data
 
         public bool Get(string path, out object data)
         {
+            if (string.IsNullOrWhiteSpace("path"))
+                path = "";
+
             if (_objects.TryGetValue(path, out var value))
             {
                 data = value;
