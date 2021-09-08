@@ -56,9 +56,14 @@ namespace OrbitalShell.Commands.Shell
                     var typenames = context.CommandLineProcessor.ModuleManager.ModuleCommandManager.CommandDeclaringTypesAssemblyQualifiedNames.ToList();
                     var typelst = typenames
                         .Select(x => Type.GetType(x))
+                        .ToList();
+
+                    typelst = typelst
                         .Where(x => type.Match(x.Name))
                         .ToList();
+
                     typelst.Sort((x, y) => x.Name.CompareTo(y.Name));
+
                     shortView = !verboseView;
 
                     if (!listFilter)
@@ -154,7 +159,7 @@ namespace OrbitalShell.Commands.Shell
                         int g = 0;
                         foreach (var grouping in cmdByNs)
                         {
-                            if (grouping.Count() > 0)
+                            if (grouping.Any())
                             {
                                 if (g > 0) context.Out.Echoln();
                                 context.Out.Echoln($"{ANSI.SGR_Underline}{context.ShellEnv.Colors.Label}{grouping.Key}{ANSI.SGR_UnderlineOff}{context.ShellEnv.Colors.Default}{ANSI.CRLF}");
@@ -295,7 +300,7 @@ namespace OrbitalShell.Commands.Shell
             var lineStart = Environment.NewLine;
             var prfx0 = "{]=);:_&é'(";
             var prfx1 = "$*^ùè-_à'";
-            docText = docText.Replace(lineStart, prfx0 + prfx1).Replace("\r","");
+            docText = docText.Replace(lineStart, prfx0 + prfx1).Replace("\r", "");
             var lst = docText.Split(prfx0).AsQueryable();
             if (string.IsNullOrWhiteSpace(lst.FirstOrDefault())) lst = lst.Skip(1);
             lst = lst.Select(x => "".PadRight(leftMarginSize, ' ') + x + Br);
