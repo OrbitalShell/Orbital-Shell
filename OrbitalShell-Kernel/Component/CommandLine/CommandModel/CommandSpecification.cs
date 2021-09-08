@@ -1,13 +1,14 @@
-﻿using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.CommandLine.CommandModel
 {
@@ -50,11 +51,11 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             MethodInfo = methodInfo;
             if (commandParameterSpecifications != null)
             {
-                foreach (var cmdParamSpec in commandParameterSpecifications.ToList() )
+                foreach (var cmdParamSpec in commandParameterSpecifications.ToList())
                 {
                     var key = cmdParamSpec.ActualName;
                     if (_parametersSpecifications.ContainsKey(key))
-                        throw new Exception($"redondant command parameter specification: {cmdParamSpec}");
+                        throw new ArgumentException($"redondant command parameter specification: {cmdParamSpec}");
                     _parametersSpecifications.Add(cmdParamSpec.ActualName, cmdParamSpec);
                 }
             }
@@ -66,7 +67,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
                     ReturnType = t.GetGenericArguments()[0];
             }
             else
-                throw new Exception($"wrong command return type: {t.UnmangledName()} - expected type is {typeof(ICommandResult).UnmangledName()}. ");
+                throw new ArgumentException($"wrong command return type: {t.UnmangledName()} - expected type is {typeof(ICommandResult).UnmangledName()}. ");
         }
 
         public string ModuleName => Path.GetFileNameWithoutExtension(MethodInfo.DeclaringType.Assembly.Location);

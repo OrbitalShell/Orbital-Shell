@@ -44,6 +44,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repo-info", "repo-info", "{
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{EF8C09D7-E024-40D1-87AB-948D73FDB10E}"
+	ProjectSection(SolutionItems) = preProject
+		doc\README.md = doc\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{80A45F2A-C00F-4DAE-8C8F-F2A03AAAE8D9}"
+	ProjectSection(SolutionItems) = preProject
+		doc\assets\2021-02-12 03_47_28-Window.png = doc\assets\2021-02-12 03_47_28-Window.png
+		doc\assets\2021-02-12 14_28_35-Window.png = doc\assets\2021-02-12 14_28_35-Window.png
+		doc\assets\orbital-shell.png = doc\assets\orbital-shell.png
+		doc\assets\pegi46small.png = doc\assets\pegi46small.png
+		doc\assets\robotazteque.png = doc\assets\robotazteque.png
+		doc\assets\shell-wt-1.0.8-2.png = doc\assets\shell-wt-1.0.8-2.png
+		doc\assets\tra4brains.png = doc\assets\tra4brains.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +125,8 @@ Global
 		{00101C60-1864-48B1-98FC-A51B0E54D155} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 		{813306DF-B1F8-4FC5-AADF-E6A3F2D175DF} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 		{0DB58486-81EE-4068-8EE4-F95C0BDA1DAE} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
+		{EF8C09D7-E024-40D1-87AB-948D73FDB10E} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
+		{80A45F2A-C00F-4DAE-8C8F-F2A03AAAE8D9} = {EF8C09D7-E024-40D1-87AB-948D73FDB10E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE827123-7F20-471E-B1BF-3E12AE9FFDC8}

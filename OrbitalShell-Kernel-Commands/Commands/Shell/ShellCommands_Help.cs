@@ -34,6 +34,9 @@ namespace OrbitalShell.Commands.Shell
             [Option("t", "type", "filter commands list on command declaring type name value or wildcard or regex", true, true)] PatternString type,
             [Option("m", "module", "filter commands list by module name value or wildcard or regex ", true, true)] PatternString module,
             [Option("l", "list", "if one of -n|-t|-m is set, output list of filtered values")] bool listFilter,
+            [Option(null, "types", "same as -t * -l")] bool listTypes,
+            [Option(null, "modules", "same as -m * -l")] bool listModules,
+            [Option(null, "namespaces", "same as -n * -l")] bool listNamespaces,
             [Parameter("output help for the command having the name 'commandName'", true)] string commandName
             )
         {
@@ -43,6 +46,24 @@ namespace OrbitalShell.Commands.Shell
             var namespaces = cmds.Select(x => x.Namespace).Distinct().ToList();
             namespaces.Sort();
             bool ignoreCase = true;
+
+            if (listTypes)
+            {
+                type = new PatternString("*");
+                listFilter = true;
+            }
+
+            if (listModules)
+            {
+                module = new PatternString("*");
+                listFilter = true;
+            }
+
+            if (listNamespaces)
+            {
+                @namespace = new PatternString("*");
+                listFilter = true;
+            }
 
             if (hascn)
                 cmds = cmds.Where(x => x.Name.Equals(commandName, CommandLineParser.SyntaxMatchingRule));

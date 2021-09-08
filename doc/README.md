@@ -1,18 +1,8 @@
 ## Orbital Shell
 
-<img src="doc/assets/robotazteque.png" align="left" style="float:left;margin-right:8px"/><b>Orbital Shell</b> 
-is a multi-plateform (**windows, linux, macos, arm**) command shell (according to .Net Core 
-supported platforms and APIs compatibilities), inspired by <b><i>bash</i></b> and **POSIX** 
-recommendations.<br><br>
-It provides any usual bash shell feature (even if modernized) and 'user friendly' syntaxes 
-allowing to access (get/set/call) C# objects.<br><br>
-Developed using **C# 8 Net 5.0**
-Development tools: 
-- Visual Studio 2019 community
-- Visual Studio Code 1.59.1
-- orbital shell
+<img src="assets/robotazteque.png" align="left" style="float:left;margin-right:8px"/><b>Orbital Shell</b> is a multi-plateform (**windows, linux, macos, arm**) command shell (according to .Net Core supported platforms and APIs compatibilities), inspired by <b><i>bash</i></b> and **POSIX** recommendations.<br><br>It provides any usual bash shell feature (even if modernized) and 'user friendly' syntaxes allowing to access (get/set/call) C# objects.<br><br>Developed using **C# 8 .NET 5.0 - compatible with modules and libraries targeting .NET Core 3.1 and .NET Standard 2.1**
 
-<hr><br>
+<br><br>
 
 ![.NET](https://github.com/OrbitalShell/Orbital-Shell/workflows/.NET/badge.svg?branch=master)
 ![last commit](https://img.shields.io/github/last-commit/orbitalshell/Orbital-Shell?style=plastic)
@@ -171,7 +161,7 @@ This shell integrates the <u>most usefull shell commands</u>, and is intented to
 
 Find any information and documentation about this project on the project's Web Site @ [Orbital SHell Git-Pages](https://orbitalshell.github.io/OrbitalShell/) 
 
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="doc/assets/2021-02-12 03_47_28-Window.png"/>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="assets/2021-02-12 03_47_28-Window.png"/>
 
 Developers and users manuals are available in the project web site @ [Orbital SHell Git-Pages (documentation)](https://orbitalshell.github.io/OrbitalShell/documentation) 
 
@@ -221,7 +211,7 @@ There are a various subjects that can be treated:
 
 ## Features
 
-<img src="doc/assets/shell-wt-1.0.8-2.png"/>*a view of the shell running in Windows Terminal*
+<img src="assets/shell-wt-1.0.8-2.png"/>*a view of the shell running in Windows Terminal*
 
 <br>
 
@@ -295,7 +285,7 @@ There are a various subjects that can be treated:
 
   - such a command will be auto documented like this by the shell **help command**:
   
-    <img src="doc/assets/2021-02-12%2014_28_35-Window.png"/>
+    <img src="assets/2021-02-12%2014_28_35-Window.png"/>
 
 <br>
 
@@ -315,7 +305,7 @@ There are a various subjects that can be treated:
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 
-<img src="doc/assets/tra4brains.png"/> | :warning: this project might be considered as a toy for old developer<br><br><img src="doc/assets/pegi46small.png"/><br><br>
+<img src="assets/tra4brains.png"/> | :warning: this project might be considered as a toy for old developer<br><br><img src="assets/pegi46small.png"/><br><br>
 -- | --
 
 *Warning: due to the average age of our main contributors, this project might contains **vintage** architecture,design and code. Nevertheless the source code is intensively based on young devs preferred patterns, C# 8 language usage (intellisense agrees), and it pretends to fit to good practices and architecture guidelines.*

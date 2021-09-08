@@ -2,13 +2,17 @@
 
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.Console;
+
 using System.Reflection;
+
 #if printDefaultValueInSyntax
 using static OrbitalShell.Lib.Str;
 #endif
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
+
 using OrbitalShell.Component.EchoDirective;
 using OrbitalShell.Lib;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace OrbitalShell.Component.CommandLine.CommandModel
@@ -57,7 +61,7 @@ namespace OrbitalShell.Component.CommandLine.CommandModel
             OptionLongName = optionLongName;
 
             if (HasValue && requiredParameterName != null)
-                throw new AmbiguousParameterSpecificationException($"parameter '{ParameterName}' can't both having a value and requiring a parameter (name '{requiredParameterName}')");
+                throw new AmbiguousParameterSpecificationException($"parameter specification error: the parameter '{ParameterName}' can't have both a required parameter ('{requiredParameterName}')");
         }
 
         public string ParameterValueTypeName => ParameterInfo.ParameterType.Name;

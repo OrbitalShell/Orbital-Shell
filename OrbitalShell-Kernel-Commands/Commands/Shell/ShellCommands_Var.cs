@@ -12,6 +12,7 @@ using OrbitalShell.Lib;
 using OrbitalShell.Lib.Sys;
 
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using static OrbitalShell.Component.Shell.Variable.Variables;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -23,7 +24,7 @@ namespace OrbitalShell.Commands.Shell
         [Command("outputs a table of environment variables and values")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<List<IDataObject>> Env(
-            CommandEvaluationContext context,
+            CommandEvaluationContext _,
             [Parameter(0, "variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
             [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
@@ -32,11 +33,11 @@ namespace OrbitalShell.Commands.Shell
         {
             object obj;
             if (varPath == null)
-                context.Variables.GetObject(VariableNamespace.env + "", out obj);
+                _.Variables.GetObject(VariableNamespace.env + "", out obj);
             else
-                context.Variables.GetObject(VariableNamespace.env, varPath, out obj);
+                _.Variables.GetObject(VariableNamespace.env, varPath, out obj);
 
-            var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
+            var options = new TableFormattingOptions(_.ShellEnv.TableFormattingOptions)
             {
                 UnfoldCategories = unfoldNamespaces,
                 UnfoldItems = unfoldObjects,
@@ -49,7 +50,7 @@ namespace OrbitalShell.Commands.Shell
                 var resultValue = new CommandResult<List<IDataObject>>(lst);
                 var wrapper = new DataObject("");
                 wrapper.Set(new string[] { "x" }, value);
-                wrapper.Echo(new EchoEvaluationContext(context.Out, context, options));
+                wrapper.Echo(new EchoEvaluationContext(_.Out, _, options));
                 return resultValue;
             }
             else
@@ -57,13 +58,13 @@ namespace OrbitalShell.Commands.Shell
                 if (obj is IDataObject envVars)
                 {
                     var values = envVars.GetAttributes();
-                    envVars.Echo(new EchoEvaluationContext(context.Out, context, options));
+                    envVars.Echo(new EchoEvaluationContext(_.Out, _, options));
                     return new CommandResult<List<IDataObject>>(values);
                 }
                 else
                 {
                     // directly dump object members
-                    EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(context.Out, context, options));
+                    EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(_.Out, _, options));
                     return new CommandResult<List<IDataObject>>(null);
                 }
             }
@@ -75,7 +76,7 @@ namespace OrbitalShell.Commands.Shell
         [CommandAlias("glob", "vars global")]
         [CommandAlias("settings", "env settings")]
         public CommandResult<List<IDataObject>> Var(
-            CommandEvaluationContext context,
+            CommandEvaluationContext _,
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
             [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
@@ -84,11 +85,11 @@ namespace OrbitalShell.Commands.Shell
         {
             object obj;
             if (varPath == null)
-                obj = context.Variables.RootObject;
+                obj = _.Variables.RootObject;
             else
-                context.Variables.GetObject(varPath, out obj);
+                _.Variables.GetObject(varPath, out obj);
 
-            var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
+            var options = new TableFormattingOptions(_.ShellEnv.TableFormattingOptions)
             {
                 UnfoldCategories = unfoldNamespaces,
                 UnfoldItems = unfoldObjects,
@@ -101,7 +102,7 @@ namespace OrbitalShell.Commands.Shell
                 var resultValue = new CommandResult<List<IDataObject>>(lst);
                 var wrapper = new DataObject("");
                 wrapper.Set(new string[] { "x" }, value);
-                wrapper.Echo(new EchoEvaluationContext(context.Out, context, options));
+                wrapper.Echo(new EchoEvaluationContext(_.Out, _, options));
                 return resultValue;
             }
             else
@@ -109,13 +110,13 @@ namespace OrbitalShell.Commands.Shell
                 if (obj is IDataObject envVars)
                 {
                     var values = envVars.GetAttributes();
-                    envVars.Echo(new EchoEvaluationContext(context.Out, context, options));
+                    envVars.Echo(new EchoEvaluationContext(_.Out, _, options));
                     return new CommandResult<List<IDataObject>>(values);
                 }
                 else
                 {
                     // directly dump object members
-                    EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(context.Out, context, options));
+                    EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(_.Out, _, options));
                     return new CommandResult<List<IDataObject>>(null);
                 }
             }
@@ -124,7 +125,7 @@ namespace OrbitalShell.Commands.Shell
         [Command("set a command alias if a name and a value is provided. If only the name is provided, clear the alias definition. it no parameters is specified, list all alias")]
         [CommandAlias("al", "alias")]
         public CommandResult<List<string>> Alias(
-            CommandEvaluationContext context,
+            CommandEvaluationContext _,
             [Parameter(0, "name of the alias", true)] string name,
             [Parameter(1, "text of the alias", true)][OptionRequireParameter("name")] string text,
             [Option("s", "save", "save current aliases to user aliases file")] bool save
@@ -133,31 +134,31 @@ namespace OrbitalShell.Commands.Shell
             var r = new List<string>();
             if (name == null)
             {
-                foreach (var kvp in context.CommandLineProcessor.CommandsAlias.Aliases)
-                    context.Out.Echoln(CommandsAlias.BuildAliasCommand(kvp.Key, kvp.Value));
+                foreach (var kvp in _.CommandLineProcessor.CommandsAlias.Aliases)
+                    _.Out.Echoln(CommandsAlias.BuildAliasCommand(kvp.Key, kvp.Value));
             }
             else
             {
                 if (string.IsNullOrWhiteSpace(text))
-                    context.CommandLineProcessor.CommandsAlias.UnsetAlias(context, name);
+                    _.CommandLineProcessor.CommandsAlias.UnsetAlias(_, name);
                 else
-                    context.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(context, name, text);
+                    _.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(_, name, text);
             }
             if (save)
-                context.CommandLineProcessor.CommandsAlias.SaveAliases(context);
+                _.CommandLineProcessor.CommandsAlias.SaveAliases(_);
             return new CommandResult<List<string>>(r);
         }
 
         [Command("outputs informations about a variable")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<IDataObject> Inf(
-                    CommandEvaluationContext context,
+                    CommandEvaluationContext _,
                     [Parameter(0, "variable namespace of a value")] string varPath
                )
         {
-            context.Variables.GetObject(varPath, out var obj);
+            _.Variables.GetObject(varPath, out var obj);
 
-            var options = new TableFormattingOptions(context.ShellEnv.TableFormattingOptions)
+            var options = new TableFormattingOptions(_.ShellEnv.TableFormattingOptions)
             {
                 UnfoldCategories = false,
                 UnfoldItems = false,
@@ -188,7 +189,7 @@ namespace OrbitalShell.Commands.Shell
 
             Table dt = new Table();
             dt.AddColumns("property", "value")
-                .SetFormat("property", $"{context.ShellEnv.Colors.Label}{{0}}{Rdc}");
+                .SetFormat("property", $"{_.ShellEnv.Colors.Label}{{0}}{Rdc}");
             dt.Columns[0].DataType = typeof(string);
             dt.Columns[1].DataType = typeof(object);
 
@@ -200,7 +201,7 @@ namespace OrbitalShell.Commands.Shell
                 dt.Rows.Add(row);
             }
 
-            dt.Echo(new EchoEvaluationContext(context.Out, context, options));
+            dt.Echo(new EchoEvaluationContext(_.Out, _, options));
 
             return new CommandResult<IDataObject>(obj as IDataObject);
         }
@@ -208,7 +209,7 @@ namespace OrbitalShell.Commands.Shell
         [Command("set the value of a shell variable, or display the name and values of shell variables")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<object> Set(
-            CommandEvaluationContext context,
+            CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name,
             [Parameter(1, "value that must be assigned to the variable", false)] object value,
             [Parameter(2, "name of the object type to be used in order to convert the provided value (on first assign, will assign a type to the variable. After type is assigned, the value can't be assigned from another type). default type is object", true)] string typeLabel = null,
@@ -228,8 +229,8 @@ namespace OrbitalShell.Commands.Shell
                         $"type label not found: '{typeLabel}'. possible values are: {string.Join(",", TypeBuilder.GetTypeLabels().Keys)}{ANSI.CRLF}or any actual .net type fullname case sensitive");
             }
 
-            context.Variables.Set(name, value, readOnly, type);
-            context.Variables.Get(name, out var @var, false);
+            _.Variables.Set(name, value, readOnly, type);
+            _.Variables.Get(name, out var @var, false);
 
             return new CommandResult<object>(@var);
         }
@@ -237,15 +238,16 @@ namespace OrbitalShell.Commands.Shell
         [Command("get a shell variable value. The value is stored in the variables env.$lastComResult and _./")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<object> Get(
-            CommandEvaluationContext context,
+            CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name
-            //[Option("r", "read-only", "for a new variable, set it read only")] bool readOnly = false
             )
         {
+            var path = name;
             if (!VariableSyntax.HasValidRootNamespace(name))
-                name = Variables.Nsp(VariableNamespace.local, name);
+                path = Variables.Nsp(VariableNamespace.local, name);
 
-            context.Variables.Get(name, out var @var, false);
+            if (!_.Variables.Get(path, out var @var, false))
+                throw new VariablePathNotFoundException(name);
 
             return new CommandResult<object>(
                 (@var is DataValue dataValue) ?
@@ -257,16 +259,16 @@ namespace OrbitalShell.Commands.Shell
         [Command("unset the value of shell variables. can not unset namespace, only variables")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<object> Unset(
-            CommandEvaluationContext context,
+            CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name
             )
         {
             if (!VariableSyntax.HasValidRootNamespace(name))
                 name = Variables.Nsp(VariableNamespace.local, name);
 
-            context.Variables.Get(name, out var @var, true);
+            _.Variables.Get(name, out var @var, true);
             if (@var is IDataObject)
-                context.Variables.Unset(name);
+                _.Variables.Unset(name);
             else
                 throw new Exception($"can't unset a variable member: '{name}'");
 

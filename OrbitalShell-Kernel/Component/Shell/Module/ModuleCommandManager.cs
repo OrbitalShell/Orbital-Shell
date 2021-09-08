@@ -1,14 +1,14 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using OrbitalShell.Lib;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
-using System.Reflection;
-using System.Collections.ObjectModel;
-using OrbitalShell.Component.Shell.Variable;
-using System.Text;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Shell.Module
 {
@@ -192,7 +192,7 @@ namespace OrbitalShell.Component.Shell.Module
                                 // manadatory: param 0 is CommandEvaluationContext
                                 if (parameter.ParameterType != typeof(CommandEvaluationContext))
                                 {
-                                    context.Errorln($"class={type.FullName} method={method.Name} parameter 0 ('{parameter.Name}') should be of type '{typeof(CommandEvaluationContext).FullName}', but is of type: {parameter.ParameterType.FullName}");
+                                    context.Errorln($"parameter specification error: class={type.FullName} method={method.Name} parameter 0 ('{parameter.Name}') should be of type '{typeof(CommandEvaluationContext).FullName}', but is of type: {parameter.ParameterType.FullName}");
                                     syntaxError = true;
                                     break;
                                 }
@@ -236,7 +236,7 @@ namespace OrbitalShell.Component.Shell.Module
                                             optAttr.Description,
                                             optAttr.IsOptional,
                                             -1,
-                                            optAttr.OptionName /*?? parameter.Name*/,
+                                            optAttr.OptionName,
                                             optAttr.OptionLongName,
                                             optAttr.HasValue,
                                             parameter.HasDefaultValue,
@@ -300,31 +300,34 @@ namespace OrbitalShell.Component.Shell.Module
                             {
                                 if (_commands.TryGetValue(cmdspec.Name, out var cmdlst))
                                 {
-                                    if (cmdlst.Select(x => x.MethodInfo.DeclaringType == type).Any())
+                                    var existingComs = cmdlst.Where(x => x.Namespace == cmdspec.Namespace);
+                                    if (existingComs.Any())
                                     {
-                                        context.Errorln($"command already registered: '{cmdspec.Name}' in type '{cmdspec.DeclaringTypeFullName}'");
+                                        context.Errorln($"{cmdspec.DeclaringTypeFullName}: there is already a command registered with the name: {cmdspec.Name} and namespace: {cmdspec.Namespace} in type {existingComs.First().DeclaringTypeFullName}");
                                         registered = false;
                                     }
                                     else
                                     {
+                                        // accept same name if in a different declaring type
                                         cmdlst.Add(cmdspec);
                                     }
                                 }
                                 else
                                     _commands.Add(cmdspec.Name, new List<CommandSpecification> { cmdspec });
 
-
                                 if (registered)
                                 {
                                     _syntaxAnalyzer.Add(cmdspec);
                                     comsCount++;
+
                                     // register command Aliases
+
                                     if (cmdspec.Aliases != null)
-                                        foreach (var alias in cmdspec.Aliases)
+                                        foreach (var (name, text) in cmdspec.Aliases)
                                             context.CommandLineProcessor.CommandsAlias.AddOrReplaceAlias(
                                                 context,
-                                                alias.name,
-                                                alias.text
+                                                name,
+                                                text
                                                 );
                                 }
                             }
