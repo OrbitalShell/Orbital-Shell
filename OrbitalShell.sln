@@ -36,6 +36,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{00101C60-1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalShell-WebAPI", "OrbitalShell-WebAPI\OrbitalShell-WebAPI.csproj", "{7358D4CC-FF77-47E1-90B4-5E5ECB22A5E8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{813306DF-B1F8-4FC5-AADF-E6A3F2D175DF}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\build.sh = scripts\build.sh
+		scripts\run.sh = scripts\run.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +105,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{27033D10-E732-47E6-A607-27A718CEF3EF} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 		{00101C60-1864-48B1-98FC-A51B0E54D155} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
+		{813306DF-B1F8-4FC5-AADF-E6A3F2D175DF} = {9F4F4828-D106-4F36-8E04-42BDCB84A44D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE827123-7F20-471E-B1BF-3E12AE9FFDC8}
