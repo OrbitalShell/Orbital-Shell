@@ -84,8 +84,8 @@ namespace OrbitalShell.Commands.Shell
                                 var cmdattr = typ.GetCustomAttribute<CommandsAttribute>();
                                 var s = Darkcyan + TypeName(typ).PadRight(maxtl) + Tab + DefaultForegroundCmd
                                     + cmdattr.Description
-                                        .Replace("(", "((")
-                                        .Replace(")", "))");
+                                        .Replace("(", "")
+                                        .Replace(")", "");
                                 _.Out.Echoln(s);
                             }
                         }
