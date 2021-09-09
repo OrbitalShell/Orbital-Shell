@@ -122,6 +122,10 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             ':'
         };
 
+        public static char VariableNameOpenCapture = '(';
+
+        public static char VariableNameEndCapture = ')';
+
         /// <summary>
         /// not escapable characters that are excluded from variable names , variable namespaces
         /// </summary>
@@ -131,10 +135,6 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             VariableNameOpenCapture,
             VariableNameEndCapture
         };
-
-        public static char VariableNameOpenCapture = '(';
-
-        public static char VariableNameEndCapture = ')';
 
         public static string[] StreamSeparators =
         {

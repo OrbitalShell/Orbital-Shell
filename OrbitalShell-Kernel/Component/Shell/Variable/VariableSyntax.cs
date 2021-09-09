@@ -9,21 +9,42 @@ namespace OrbitalShell.Component.Shell.Variable
 {
     public static class VariableSyntax
     {
-        public static string ReadVariableName(
-            ref char[] text,
-            int beginPos,
-            out int endPos)
+        public static (
+            string varName,
+            int beginIndex,
+            int lastIndex,
+            bool isNameCaptured)
+            ReadVariableName(
+                ref char[] text,
+                int beginPos)
         {
             int i = beginPos;
-            bool isNameCaptured = false;
-            bool isCapturingName = false;
-            bool skipSymbol = false;
+            var isNameCaptured = false;
+            var isCapturingName = false;
+            var capturesRecursionCount = 0;
+            var recursionCount = 0;
 
             while (i < text.Length)
             {
                 var c = text[i];
                 char? previousChar = (i > 0) ? text[i - 1] : null;
-                skipSymbol = false;
+                var isNeutralized = previousChar == NeutralizerSymbol;
+                var skipSymbol = false;
+
+                if (c == VariablePrefix
+                    && !isNeutralized)
+                {
+                    // variable in variable name
+                    // reset start def at this point
+                    skipSymbol = true;
+                    isCapturingName = false;
+                    isNameCaptured = false;
+                    beginPos = i + 1;
+                    recursionCount++;
+                }
+
+                if (c == VariableNameOpenCapture)
+                    capturesRecursionCount++;
 
                 if (!isCapturingName && c == VariableNameOpenCapture)
                 {
@@ -35,7 +56,8 @@ namespace OrbitalShell.Component.Shell.Variable
                 if (isCapturingName && c == VariableNameEndCapture)
                 {
                     isCapturingName = false;
-                    skipSymbol = true;
+                    /*skipSymbol = true;*/
+                    //break;
                 }
 
                 if (!skipSymbol
@@ -50,12 +72,19 @@ namespace OrbitalShell.Component.Shell.Variable
                 i++;
             }
 
-            //endPos = (i < text.Length ? i : text.Length - 1) - 1;
-            endPos = i - 1;
+            var endPos = i - 1;
 
             return isNameCaptured ?
-                new string(text[(beginPos + 1)..endPos])
-                : new string(text[beginPos..(endPos + 1)]);
+
+                (new string(text[(beginPos + 1)..(endPos + 1)])
+                    , beginPos - 1
+                    , endPos + 1
+                    , isNameCaptured)
+
+                : (new string(text[beginPos..(endPos + 1)])
+                    , beginPos - 1
+                    , endPos
+                    , isNameCaptured);
         }
 
         /// <summary>

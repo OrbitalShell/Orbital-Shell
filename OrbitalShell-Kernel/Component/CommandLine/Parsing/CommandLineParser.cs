@@ -248,12 +248,21 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 if (c == CommandLineSyntax.VariablePrefix
                     && previousChar != NeutralizerSymbol)
                 {
-                    var varName = VariableSyntax.ReadVariableName(
-                        ref t,
-                        i + 1,
-                        out var j);
-                    vars.Add(new StringSegment(varName, i, j, j - i + 1));
-                    i = j;
+                    (string varName,
+                        int beginIndex,
+                        int lastIndex,
+                        bool isNameCaptured) =
+                        VariableSyntax.ReadVariableName(
+                            ref t,
+                            i + 1);
+                    vars.Add(
+                        new StringSegment(
+                            varName,
+                            beginIndex,
+                            lastIndex,
+                            lastIndex - beginIndex + 1
+                            ));
+                    i = lastIndex;
                 }
                 i++;
             }
@@ -266,7 +275,6 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 foreach (var vr in vars)
                 {
                     lastvr = vr;
-                    //nexpr.Append(expr.Substring(x, vr.X - x));
                     nexpr.Append(expr[x..vr.X]);
                     try
                     {
@@ -306,7 +314,6 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 }
                 if (lastvr != null)
                 {
-                    //nexpr.Append(expr.Substring(x));
                     nexpr.Append(expr[x..]);
                 }
                 expr = nexpr.ToString();

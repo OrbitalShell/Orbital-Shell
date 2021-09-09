@@ -5,7 +5,7 @@ using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Console
 {
-    [DebuggerDisplay("{Text}          {X}..{Y} ({ Y - X + 1})")]
+    [DebuggerDisplay("{Text}          {X}..{Y} ({ Y - X + 1 })")]
     public class StringSegment
     {
         public string Text { get; protected set; }
