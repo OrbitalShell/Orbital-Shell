@@ -243,11 +243,15 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             while (i < t.Length)
             {
                 var c = t[i];
-                if (c == CommandLineSyntax.VariablePrefix && (i == 0 || t[i - 1] != '\\'))
-                {
-                    var j = VariableSyntax.FindEndOfVariableName(t, i + 1);
-                    var varName = expr.Substring(i + 1, j - i);
+                char? previousChar = i > 0 ? t[i - 1] : null;
 
+                if (c == CommandLineSyntax.VariablePrefix
+                    && previousChar != NeutralizerSymbol)
+                {
+                    var varName = VariableSyntax.ReadVariableName(
+                        ref t,
+                        i + 1,
+                        out var j);
                     vars.Add(new StringSegment(varName, i, j, j - i + 1));
                     i = j;
                 }

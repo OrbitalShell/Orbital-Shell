@@ -9,22 +9,53 @@ namespace OrbitalShell.Component.Shell.Variable
 {
     public static class VariableSyntax
     {
-        public static int FindEndOfVariableName(char[] text, int beginPos)
+        public static string ReadVariableName(
+            ref char[] text,
+            int beginPos,
+            out int endPos)
         {
             int i = beginPos;
+            bool isNameCaptured = false;
+            bool isCapturingName = false;
+            bool skipSymbol = false;
+
             while (i < text.Length)
             {
+                var c = text[i];
                 char? previousChar = (i > 0) ? text[i - 1] : null;
-                if (!IsVariableNameValidCharacter(
-                    text[i],
-                    previousChar
-                    ))
+                skipSymbol = false;
+
+                if (!isCapturingName && c == VariableNameOpenCapture)
+                {
+                    isCapturingName = true;
+                    skipSymbol = true;
+                    isNameCaptured = true;
+                }
+
+                if (isCapturingName && c == VariableNameEndCapture)
+                {
+                    isCapturingName = false;
+                    skipSymbol = true;
+                }
+
+                if (!skipSymbol
+                    && !isCapturingName
+                    && !IsVariableNameValidCharacter(
+                        c,
+                        previousChar
+                        ))
                 {
                     break;
                 }
                 i++;
             }
-            return i - 1;
+
+            //endPos = (i < text.Length ? i : text.Length - 1) - 1;
+            endPos = i - 1;
+
+            return isNameCaptured ?
+                new string(text[(beginPos + 1)..endPos])
+                : new string(text[beginPos..(endPos + 1)]);
         }
 
         /// <summary>
@@ -38,7 +69,7 @@ namespace OrbitalShell.Component.Shell.Variable
         {
             return
                 !(
-                // exclude non printable caracters & flow control caracters
+                // exclude non printable characters & flow control caracters
                 c <= 31
                 // excluded in names
                 || ExcludeFromVariableName.Contains(c)

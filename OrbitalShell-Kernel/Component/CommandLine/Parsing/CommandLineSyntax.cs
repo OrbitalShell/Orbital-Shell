@@ -128,9 +128,13 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         public static char[] ExcludeFromVariableName =
         {
             '/',
-            '(',
-            ')'
+            VariableNameOpenCapture,
+            VariableNameEndCapture
         };
+
+        public static char VariableNameOpenCapture = '(';
+
+        public static char VariableNameEndCapture = ')';
 
         public static string[] StreamSeparators =
         {

@@ -20,6 +20,9 @@ namespace OrbitalShell.Component.Console
 
         public Dictionary<string, object> Map;
 
+        public string FromArray(ref char[] t)
+            => new(t[X..(Y + 1)]);
+
         public void SetText(string text, bool updateCoords = false)
         {
             Text = text;
