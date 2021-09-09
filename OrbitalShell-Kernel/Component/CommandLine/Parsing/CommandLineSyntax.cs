@@ -1,5 +1,6 @@
-﻿using OrbitalShell.Component.CommandLine.Pipeline;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
+using OrbitalShell.Component.CommandLine.Pipeline;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {
@@ -104,8 +105,10 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             DoubleQuote,
             SingleQuote,
             NeutralizerSymbol,
-            '&' };
-
+            '&',        // ❓❓❓ TODO: why ? pipeline ? ❓❓❓
+            '\r',
+            '\n'
+        };
 
         public static string InputRedirect = "1>";
 
@@ -117,6 +120,16 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             '*',
             '^',
             ':'
+        };
+
+        /// <summary>
+        /// not escapable characters that are excluded from variable names , variable namespaces
+        /// </summary>
+        public static char[] ExcludeFromVariableName =
+        {
+            '/',
+            '(',
+            ')'
         };
 
         public static string[] StreamSeparators =

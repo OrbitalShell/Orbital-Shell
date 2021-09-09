@@ -1,18 +1,26 @@
-﻿using OrbitalShell.Lib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Console
 {
+    [DebuggerDisplay("{Text}          {X}..{Y} ({ Y - X + 1})")]
     public class StringSegment
     {
         public string Text { get; protected set; }
+
         public int X { get; protected set; }
+
         public int Y { get; protected set; }
+
         public int Length { get; protected set; }
+
+        public bool IsEmpty { get; set; }
 
         public Dictionary<string, object> Map;
 
-        public void SetText(string text,bool updateCoords=false)
+        public void SetText(string text, bool updateCoords = false)
         {
             Text = text;
             if (updateCoords)
@@ -62,10 +70,6 @@ namespace OrbitalShell.Component.Console
         /// warn: this is intensively used in error messages...
         /// </summary>
         /// <returns>text representation of a StringSegment</returns>
-        public override string ToString()
-        {
-            //return $"pos={X},{Y} l={Length} Text={Text}"; // warn: this is intensively used in error messages...
-            return Text;
-        }
+        public override string ToString() => Text;
     }
 }

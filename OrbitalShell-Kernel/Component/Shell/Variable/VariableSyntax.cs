@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+
 using OrbitalShell.Component.CommandLine.Parsing;
+
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 
 namespace OrbitalShell.Component.Shell.Variable
@@ -12,7 +14,11 @@ namespace OrbitalShell.Component.Shell.Variable
             int i = beginPos;
             while (i < text.Length)
             {
-                if (!IsVariableNameValidCharacter(text[i]))
+                char? previousChar = (i > 0) ? text[i - 1] : null;
+                if (!IsVariableNameValidCharacter(
+                    text[i],
+                    previousChar
+                    ))
                 {
                     break;
                 }
@@ -21,17 +27,28 @@ namespace OrbitalShell.Component.Shell.Variable
             return i - 1;
         }
 
-        public static bool IsVariableNameValidCharacter(char c)
+        /// <summary>
+        /// predicates that indicates if a character is valid in a variable name, eventually according to the previous character
+        /// <para>// ⚡️⚡️⚡️ TODO: disallow in name declaration ⚡️⚡️⚡️</para>
+        /// </summary>
+        /// <param name="c">character to check</param>
+        /// <param name="previousChar">eventually the character that is immediately before the character to be checked</param>
+        /// <returns></returns>
+        public static bool IsVariableNameValidCharacter(char c, char? previousChar = null)
         {
-            // exclude non printable caracters & flow control caracters
-            return c > 31
-            // exclude top level separators
-            && !TopLevelSeparators.Contains(c)
-            // exclude variable delimiter
-            && c != VariablePrefix
-            // exclude common operators
-            && !CommonOperators.Contains(c)
-            ;
+            return
+                !(
+                // exclude non printable caracters & flow control caracters
+                c <= 31
+                // excluded in names
+                || ExcludeFromVariableName.Contains(c)
+                // exclude variable delimiter
+                || (c == VariablePrefix && (!previousChar.HasValue || previousChar.Value != NeutralizerSymbol))
+                // exclude top level separators
+                || TopLevelSeparators.Contains(c)
+                // exclude common operators
+                || CommonOperators.Contains(c)
+                );
         }
 
         public static string[] SplitPath(string path)
