@@ -13,51 +13,85 @@ namespace OrbitalShell.Component.Shell.Variable
             string varName,
             int beginIndex,
             int lastIndex,
-            bool isNameCaptured)
+            bool isNameCaptured,
+            int remaining,
+            bool previousNameDefined)
             ReadVariableName(
                 ref char[] text,
-                int beginPos)
+                int beginPos,
+                int lastPos
+            )
         {
             int i = beginPos;
             var isNameCaptured = false;
             var isCapturingName = false;
             var capturesRecursionCount = 0;
             var recursionCount = 0;
+            bool nameDefined = false;
+            bool previousNameDefined = true;
 
-            while (i < text.Length)
+            while (i < lastPos)
             {
                 var c = text[i];
                 char? previousChar = (i > 0) ? text[i - 1] : null;
+                char? nextChar = (i + 1 < text.Length) ? text[i + 1] : null;
+                //var nextIsVariableNameOpenCapture = nextChar == VariableNameOpenCapture;
                 var isNeutralized = previousChar == NeutralizerSymbol;
                 var skipSymbol = false;
 
                 if (c == VariablePrefix
-                    && !isNeutralized)
+                    && !isNeutralized
+                    //&& !nextIsVariableNameOpenCapture
+                    )
                 {
-                    // variable in variable name
-                    // reset start def at this point
-                    skipSymbol = true;
-                    isCapturingName = false;
-                    isNameCaptured = false;
-                    beginPos = i + 1;
-                    recursionCount++;
+                    if (!isCapturingName && nameDefined)
+                    {
+                        //i--;
+                        break;
+                    }
+                    else
+                    {
+                        // variable in variable name
+                        // reset start def at this point
+                        skipSymbol = true;
+                        isCapturingName = false;
+                        isNameCaptured = false;
+                        beginPos = i + 1;
+                        recursionCount++;
+                        previousNameDefined = nameDefined;
+                        nameDefined = false;
+
+                    }
                 }
 
                 if (c == VariableNameOpenCapture)
-                    capturesRecursionCount++;
-
-                if (!isCapturingName && c == VariableNameOpenCapture)
                 {
+                    capturesRecursionCount++;
+                }
+
+                if (/*!isCapturingName &&*/ c == VariableNameOpenCapture)
+                {
+                    // TODO: ❓❓ choose if yes or no ❓❓
+                    /*if (isCapturingName)
+                        throw new Exception($"( not allowed in: {new string(text)} at pos {i}");*/
+
+                    skipSymbol = !isCapturingName;
                     isCapturingName = true;
-                    skipSymbol = true;
                     isNameCaptured = true;
                 }
 
-                if (isCapturingName && c == VariableNameEndCapture)
+                if (/*isCapturingName &&*/ c == VariableNameEndCapture)
                 {
-                    isCapturingName = false;
-                    /*skipSymbol = true;*/
-                    //break;
+                    /*skipSymbol = isCapturingName;
+                    isCapturingName = false;*/
+                    if (isCapturingName)
+                        i++;
+                    break;
+                }
+
+                if (!skipSymbol)
+                {
+                    nameDefined = true;
                 }
 
                 if (!skipSymbol
@@ -76,15 +110,19 @@ namespace OrbitalShell.Component.Shell.Variable
 
             return isNameCaptured ?
 
-                (new string(text[(beginPos + 1)..(endPos + 1)])
+                (new string(text[(beginPos + 1)..endPos])
                     , beginPos - 1
-                    , endPos + 1
-                    , isNameCaptured)
+                    , endPos
+                    , isNameCaptured
+                    , recursionCount + 1
+                    , previousNameDefined)
 
                 : (new string(text[beginPos..(endPos + 1)])
                     , beginPos - 1
                     , endPos
-                    , isNameCaptured);
+                    , isNameCaptured
+                    , recursionCount + 1
+                    , previousNameDefined);
         }
 
         /// <summary>

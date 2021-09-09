@@ -122,9 +122,9 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             ':'
         };
 
-        public static char VariableNameOpenCapture = '(';
+        public static char VariableNameOpenCapture = '{';
 
-        public static char VariableNameEndCapture = ')';
+        public static char VariableNameEndCapture = '}';
 
         /// <summary>
         /// not escapable characters that are excluded from variable names , variable namespaces

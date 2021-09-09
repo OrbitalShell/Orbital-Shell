@@ -1,16 +1,18 @@
-﻿using OrbitalShell.Component.Shell.Data;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Lib;
-using OrbitalShell.Lib.Sys;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
+
+using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.EchoDirective;
-using System.Collections;
+using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.Shell.Module;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.Sys;
+
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
 namespace OrbitalShell.Component.Console
 {
@@ -293,14 +295,15 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Count;
             foreach (var o in obj)
             {
-                Echo(o, new EchoEvaluationContext(ctx,new FormatingOptions(ctx.Options) { LineBreak = false }));
+                Echo(o, new EchoEvaluationContext(ctx, new FormatingOptions(ctx.Options) { LineBreak = false }));
                 if (i < nb)
                 {
                     if (!ctx.Options.LineBreak)
                         @out.Echo(ShellEnvironment.SystemPathSeparator /*TODO: currently no way to support option change from any context (see: shell meta-options + output filters )*/ );
                     else
                         @out.Echoln();
-                } else if (ctx.Options.LineBreak) 
+                }
+                else if (ctx.Options.LineBreak)
                     @out.Echoln();
                 i++;
             }
@@ -324,7 +327,8 @@ namespace OrbitalShell.Component.Console
                         @out.Echo(ShellEnvironment.SystemPathSeparator);
                     else
                         @out.Echoln();
-                } else if (ctx.Options.LineBreak) @out.Echoln();
+                }
+                else if (ctx.Options.LineBreak) @out.Echoln();
                 i++;
             }
         }
@@ -371,7 +375,8 @@ namespace OrbitalShell.Component.Console
                         @out.Echo(ShellEnvironment.SystemPathSeparator);
                     else
                         @out.Echoln();
-                } else if (ctx.Options.LineBreak) @out.Echoln();
+                }
+                else if (ctx.Options.LineBreak) @out.Echoln();
                 i++;
             }
         }
@@ -394,7 +399,8 @@ namespace OrbitalShell.Component.Console
                         @out.Echo(ShellEnvironment.SystemPathSeparator);
                     else
                         @out.Echoln();
-                } else if (ctx.Options.LineBreak) @out.Echoln();
+                }
+                else if (ctx.Options.LineBreak) @out.Echoln();
                 i++;
             }
         }
@@ -689,14 +695,14 @@ namespace OrbitalShell.Component.Console
                 var cols = ((DataRow)rw).ItemArray;
                 for (int i = 0; i < cols.Length; i++)
                 {
-                    string s , s2;
+                    string s, s2;
                     if (table is Table t)
                     {
                         s = @out.GetPrint(t.GetFormatedValue(context, table.Columns[i].ColumnName, cols[i]?.ToString())) ?? "";
                         colLengths[i] = Math.Max(s.Length, colLengths[i]);
                         s2 = @out.GetPrint(t.GetFormatedHeader(table.Columns[i].ColumnName)) ?? "";
                         colLengths[i] = Math.Max(s2.Length, colLengths[i]);
-                        if (i == cols.Length - 1) colLengths[i] = s.Length+2;
+                        if (i == cols.Length - 1) colLengths[i] = s.Length + 2;
                     }
                     else
                     {
@@ -708,8 +714,8 @@ namespace OrbitalShell.Component.Console
                     }
                 }
             }
-            var colsep = options.NoBorders ? 
-                " ".PadLeft(Math.Max(1,options.ColumnRightMargin))
+            var colsep = options.NoBorders ?
+                " ".PadLeft(Math.Max(1, options.ColumnRightMargin))
                 : (context.ShellEnv.Colors.TableBorder + " | " + context.ShellEnv.Colors.Default);
 
 
@@ -746,7 +752,7 @@ namespace OrbitalShell.Component.Console
             string fhv(string header, string value) => (table is Table t) ? t.GetFormatedValue(context, header, value) : value;
             foreach (var rw in table.Rows)
             {
-                if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
+                if (context.CommandLineProcessor.CancellationTokenSource?.IsCancellationRequested is bool b && b)
                 {
                     @out.EnableFillLineFromCursor = true;
                     @out.ShowCur();
@@ -764,15 +770,15 @@ namespace OrbitalShell.Component.Console
                     var o = arr[i];
 
                     MethodInfo mi = null;
-                    if (((!(o is string)) || table.Columns[i].DataType == typeof(object) )
+                    if (((!(o is string)) || table.Columns[i].DataType == typeof(object))
                             && o != null && (mi = o.GetEchoMethod()) != null)
                     {
                         // value dump via Echo primitive
                         @out.Echo("" + context.ShellEnv.Colors.Default);
                         var p0 = @out.CursorPos;
-                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, new FormatingOptions(options) { LineBreak = false }  ));
+                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, new FormatingOptions(options) { LineBreak = false }));
                         var p1 = @out.CursorPos;
-                        if (p1.Y==p0.Y)
+                        if (p1.Y == p0.Y)
                         {
                             var l = p1.X - p0.X;
                             var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));

@@ -235,89 +235,114 @@ namespace OrbitalShell.Component.CommandLine.Parsing
              *  - var.ToString()
              */
             var origStr = new string(expr);
+            char[] t;
+            int totalRemaining;
+            int searchScopeEndIndex = expr.Length;
 
-            var t = expr.ToCharArray();
-            var i = 0;
-            var vars = new List<StringSegment>();
-
-            while (i < t.Length)
+            do
             {
-                var c = t[i];
-                char? previousChar = i > 0 ? t[i - 1] : null;
+                totalRemaining = 0;
+                var i = 0;
+                var vars = new List<StringSegment>();
+                t = expr.ToCharArray();
+                int nextSearchScopeEndIndex = searchScopeEndIndex;
+                searchScopeEndIndex = Math.Min(t.Length, searchScopeEndIndex);
 
-                if (c == CommandLineSyntax.VariablePrefix
-                    && previousChar != NeutralizerSymbol)
+                while (i < searchScopeEndIndex && i < t.Length)
                 {
-                    (string varName,
-                        int beginIndex,
-                        int lastIndex,
-                        bool isNameCaptured) =
-                        VariableSyntax.ReadVariableName(
-                            ref t,
-                            i + 1);
-                    vars.Add(
-                        new StringSegment(
-                            varName,
-                            beginIndex,
-                            lastIndex,
-                            lastIndex - beginIndex + 1
-                            ));
-                    i = lastIndex;
-                }
-                i++;
-            }
+                    var c = t[i];
+                    char? previousChar = i > 0 ? t[i - 1] : null;
 
-            if (vars.Count > 0)
-            {
-                var nexpr = new StringBuilder();
-                int x = 0;
-                StringSegment lastvr = null;
-                foreach (var vr in vars)
-                {
-                    lastvr = vr;
-                    nexpr.Append(expr[x..vr.X]);
-                    try
+                    if (c == CommandLineSyntax.VariablePrefix
+                        && previousChar != NeutralizerSymbol)
                     {
-                        context.Variables.Get(vr.Text, out var value);
+                        (string varName,
+                            int beginIndex,
+                            int lastIndex,
+                            bool isNameCaptured,
+                            int remaining,
+                            bool previousNameDefined) =
+                            VariableSyntax.ReadVariableName(
+                                ref t,
+                                i + 1,
+                                searchScopeEndIndex);
+                        totalRemaining += remaining;
+                        vars.Add(
+                            new VariableStringSegment(
+                                varName,
+                                beginIndex,
+                                lastIndex,
+                                lastIndex - beginIndex + 1
+                                ));
+                        i = lastIndex;
 
-                        // here: value is transformed by his ToString method
-                        // (var is substituted by its text)
+                        /*if (
+                            //!isNameCaptured &&
+                            previousNameDefined)
+                            nextSearchScopeEndIndex = Math.Min(
+                                nextSearchScopeEndIndex, 
+                                beginIndex);*/
+                    }
+                    i++;
+                }
+                searchScopeEndIndex = nextSearchScopeEndIndex;
 
-                        if (vars.Count == 1 &&
-                            ((CommandLineSyntax.VariablePrefix + vr.Text) == origStr))
+                if (vars.Count > 0)
+                {
+                    var nexpr = new StringBuilder();
+                    int x = 0;
+                    StringSegment lastvr = null;
+                    foreach (var vr in vars)
+                    {
+                        lastvr = vr;
+                        nexpr.Append(expr[x..vr.X]);
+                        try
                         {
-                            // single var (no conversion)
-                            // keep var ref in place (arbitrary convention)
-                            var varName = CommandLineSyntax.VariablePrefix + vr.Text;
-                            nexpr.Append(varName);
-                            references.AddOrReplace(varName, value);
-                        }
-                        else
-                        {
-                            var o = (value is DataValue dv) ? dv.Value : value;
-                            if (o == null)
-                                nexpr.Append(o);
+                            context.Variables.Get(vr.Text, out var value);
+
+                            // here: value is transformed by his ToString method
+                            // (var is substituted by its text)
+
+                            if (vars.Count == 1 &&
+                                ((CommandLineSyntax.VariablePrefix + vr.Text) == origStr))
+                            {
+                                // single var (no conversion)
+                                // keep var ref in place (arbitrary convention)
+                                var varName = CommandLineSyntax.VariablePrefix + vr.Text;
+                                nexpr.Append(varName);
+                                references.AddOrReplace(varName, value);
+                            }
                             else
                             {
-                                var (success, strValue) = CommandSyntax.TryCastToString(context, o);
-                                nexpr.Append(strValue);
+                                var o = (value is DataValue dv) ? dv?.Value : value;
+                                if (o == null)
+                                    nexpr.Append(o);
+                                else
+                                {
+                                    var (success, strValue) = CommandSyntax.TryCastToString(context, o);
+                                    nexpr.Append(strValue);
+                                }
                             }
                         }
+                        catch (VariablePathNotFoundException ex)
+                        {
+                            context.Errorln(ex.Message);
+                            // keep bad var name in place (? can be option of the shell. Bash let it blank)
+                            nexpr.Append(CommandLineSyntax.VariablePrefix + vr.Text);
+                        }
+                        x = vr.Y + 1;
+                        totalRemaining--;
                     }
-                    catch (VariablePathNotFoundException ex)
-                    {
-                        context.Errorln(ex.Message);
-                        // keep bad var name in place (? can be option of the shell. Bash let it blank)
-                        nexpr.Append(CommandLineSyntax.VariablePrefix + vr.Text);
-                    }
-                    x = vr.Y + 1;
+                    if (lastvr != null)
+                        nexpr.Append(
+                            (x < expr.Length) ?
+                                expr[x..]
+                                : "");
+
+                    expr = nexpr.ToString();
                 }
-                if (lastvr != null)
-                {
-                    nexpr.Append(expr[x..]);
-                }
-                expr = nexpr.ToString();
-            }
+
+            } while (totalRemaining > 0);
 
             return (expr, references);
         }
