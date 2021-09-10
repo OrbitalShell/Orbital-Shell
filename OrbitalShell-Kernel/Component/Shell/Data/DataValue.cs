@@ -1,11 +1,9 @@
-﻿using OrbitalShell.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using static OrbitalShell.Lib.Str;
+
 using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Shell.Data
 {
@@ -208,34 +206,45 @@ namespace OrbitalShell.Component.Shell.Data
             throw new DataValueReadOnlyException(this);
         }
 
-        /*public override string ToString()
-        {
-            return $"{Name}{(IsReadOnly ? " (r) " : "")} [{ValueType.Name}] {(HasValue ? ("= " + DumpAsText(Value,false)) : "")}";
-        }*/
-
-        public void SetValue(object value)      // TODO return DataValue here , and propagates returns to callers and interfaces
+        public void SetValue(object value, Type type = null)      // TODO return DataValue here , and propagates returns to callers and interfaces
         {
             if (IsReadOnly) throw new Exception($"{ValueId} is readonly");
+            Type reverseTypeIfFail = ValueType;
+
+            if (type != null)
+            {
+                // try trans-type
+                ValueType = type;
+            }
+
             if (value != null)
             {
                 if (ValueType != null)
                 {
                     var objType = value.GetType();
-                    if (objType != ValueType
-                        && (!objType.InheritsFrom(ValueType)))
+                    if (!objType.IsOrInheritsFrom(ValueType))
                     {
-                        if (ValueTextParser.ToTypedValue(value, ValueType, null, out var v, out _, ValueType))
-                        {
-                            this.Value = v;
-                            return;
-                        }
-                        else
-                            throw new Exception($"value can't be converted to type: {ValueType.FullName} from type {value.GetType().FullName}");
+                        AffectValueFromString(value, reverseTypeIfFail);
+                        return;
                     }
                 }
             }
             this.Value = value;
             this.HasValue = true;
+        }
+
+        private void AffectValueFromString(object value, Type reverseTypeIfFail = null)
+        {
+            if (ValueTextParser.ToTypedValue(value, ValueType, null, out var v, out _, ValueType))
+            {
+                Value = v;
+                return;
+            }
+            else
+            {
+                if (reverseTypeIfFail != null) ValueType = reverseTypeIfFail;
+                throw new Exception($"value: '{value}' can't be converted to type: {ValueType.FullName} from type {value.GetType().FullName}");
+            }
         }
 
         /// <summary>

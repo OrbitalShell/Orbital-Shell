@@ -53,13 +53,13 @@ namespace OrbitalShell.Component.Shell.Variable
 
         #region setters
 
-        public void Set(string path, object value, bool isReadOnly = false, Type type = null) => _dataRegistry.Set(path, value, isReadOnly, type);
-        public void Set(string rootPath, string path, object value, bool isReadOnly = false, Type type = null) => _dataRegistry.Set(Nsp(rootPath, path), value, isReadOnly, type);
-        public void Set(VariableNamespace rootPath, string path, object value, bool isReadOnly = false, Type type = null) => _dataRegistry.Set(Nsp(rootPath, path), value, isReadOnly, type);
+        public Variables Set(string path, object value, bool isReadOnly = false, Type type = null) { _dataRegistry.Set(path, value, isReadOnly, type); return this; }
+        public Variables Set(string rootPath, string path, object value, bool isReadOnly = false, Type type = null) { _dataRegistry.Set(Nsp(rootPath, path), value, isReadOnly, type); return this; }
+        public Variables Set(VariableNamespace rootPath, string path, object value, bool isReadOnly = false, Type type = null) { _dataRegistry.Set(Nsp(rootPath, path), value, isReadOnly, type); return this; }
 
-        public void Unset(string path) => _dataRegistry.Unset(path);
-        public void Unset(string rootPath, string path) => _dataRegistry.Unset(Nsp(rootPath, path));
-        public void Unset(VariableNamespace rootPath, params string[] path) => _dataRegistry.Unset(Nsp(rootPath, path));
+        public Variables Unset(string path) { _dataRegistry.Unset(path); return this; }
+        public Variables Unset(string rootPath, string path) { _dataRegistry.Unset(Nsp(rootPath, path)); return this; }
+        public Variables Unset(VariableNamespace rootPath, params string[] path) { _dataRegistry.Unset(Nsp(rootPath, path)); return this; }
 
         #endregion
 

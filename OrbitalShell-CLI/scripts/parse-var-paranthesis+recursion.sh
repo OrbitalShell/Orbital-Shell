@@ -43,8 +43,8 @@ echo "(f=green)# *{A*x}"
 echo ${A$x}
 echo
 
-echo "(f=green)# *{A*x*x}"
-echo echo $(A$x)
+echo "(f=green)# *{A*x*y}"
+echo ${A$x$x}
 echo
 
 # echo "${x$(y)} mes (f=red)Co(f=gray)uilles"

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using OrbitalShell.Lib;
 
-using static OrbitalShell.Component.Shell.Variable.VariableSyntax;
+using static OrbitalShell.Component.CommandLine.Parsing.VariableSyntax;
 
 namespace OrbitalShell.Component.Shell.Data
 {

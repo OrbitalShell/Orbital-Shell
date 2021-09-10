@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.Shell.Variable;
 
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
 
-namespace OrbitalShell.Component.Shell.Variable
+namespace OrbitalShell.Component.CommandLine.Parsing
 {
     public static class VariableSyntax
     {
@@ -57,7 +57,6 @@ namespace OrbitalShell.Component.Shell.Variable
                         recursionCount++;
                         previousNameDefined = nameDefined;
                         nameDefined = false;
-
                     }
                 }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection.Metadata;
 
 using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
@@ -261,8 +262,9 @@ namespace OrbitalShell.Commands.Shell
             CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name,
             [Parameter(1, "value that must be assigned to the variable", false)] object value,
-            [Parameter(2, "name of the object type to be used in order to convert the provided value (on first assign, will assign a type to the variable. After type is assigned, the value can't be assigned from another type). default type is object", true)] string typeLabel = null,
-            [Option("r", "read-only", "for a new variable, set it read only")] bool readOnly = false
+            [Parameter(2, "name of the object type to be used in order to convert the provided value (on first assign, will assign a type to the variable. default type is object", true)] string typeLabel = null,
+            [Option("r", "read-only", "for a new variable, set it read only")] bool readOnly = false,
+            [Option("c", "copy", "do not affect 'value', copy the value from the variable named 'value'")] bool copy = false
             )
         {
             if (!VariableSyntax.HasValidRootNamespace(name))
@@ -278,10 +280,27 @@ namespace OrbitalShell.Commands.Shell
                         $"type label not found: '{typeLabel}'. possible values are: {string.Join(",", TypeBuilder.GetTypeLabels().Keys)}{ANSI.CRLF}or any actual .net type fullname case sensitive");
             }
 
-            _.Variables.Set(name, value, readOnly, type);
-            _.Variables.Get(name, out var @var, false);
-
-            return new CommandResult<object>(@var);
+            if (!copy)
+            {
+                _.Variables
+                    .Set(name, value, readOnly, type)
+                    .Get(name, out var @var, false);
+                return new CommandResult<object>(@var);
+            }
+            else
+            {
+                _.Variables.Get(value.ToString(), out var @source, true);
+                object sourceValue = source;
+                Type targetType = type;
+                if (sourceValue is DataValue dataValue)
+                {
+                    sourceValue = dataValue.Value;
+                    if (targetType == null)
+                        targetType = dataValue.ValueType;
+                }
+                _.Variables.Set(name, sourceValue, readOnly, targetType);
+            }
+            return new CommandResult<object>(null);
         }
 
         [Command("returns a variable value. The value is stored in the variables env.$lastComResult and _./")]

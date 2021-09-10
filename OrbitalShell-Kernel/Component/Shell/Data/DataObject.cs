@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 /*
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
 */
 using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.Shell.Variable;
 
 namespace OrbitalShell.Component.Shell.Data
 {
@@ -75,7 +73,7 @@ namespace OrbitalShell.Component.Shell.Data
                 {
                     if (value is DataObject) throw new Exception($"bad value type: '({nameof(IDataObject)})'");
                     // ⏺ update value                    
-                    ((DataValue)attr).SetValue(value);
+                    ((DataValue)attr).SetValue(value, type);
                     //r.Parent = this;
                     //_attributes[attrname] = r;
                 }

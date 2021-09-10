@@ -49,6 +49,9 @@ namespace OrbitalShell.Lib
             return TypesManglingExt.FriendlyName(type);
         }
 
+        public static bool IsOrInheritsFrom(this Type type, Type refType)
+            => type == refType || type.InheritsFrom(refType);
+
         public static bool InheritsFrom(this Type type, Type ancestorType)
         {
             while (type != null)
