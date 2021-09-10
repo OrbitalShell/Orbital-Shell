@@ -36,7 +36,52 @@ namespace OrbitalShell.Commands.Shell
                 _.Variables.GetObject(VariableNamespace.env + "", out obj);
             else
                 _.Variables.GetObject(VariableNamespace.env, varPath, out obj);
+            return DumpVarTable(_, obj, unfoldNamespaces, unfoldObjects, parsed);
+        }
 
+        [Command("outputs a table of local variables and values")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
+        public CommandResult<List<IDataObject>> Locals(
+            CommandEvaluationContext _,
+            [Parameter(0, "variable namespace or value path below the local namespace. if specified and exists, output is built from this point, otherwise outputs all variables from local root", true)] string varPath,
+            [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
+            [Option("p", "parsed", "echo string values in parsed mode (ansi and directives). By default strings objects are represented by raw text")] bool parsed = false
+            )
+        {
+            object obj;
+            if (varPath == null)
+                _.Variables.GetObject(VariableNamespace.local + "", out obj);
+            else
+                _.Variables.GetObject(VariableNamespace.local, varPath, out obj);
+            return DumpVarTable(_, obj, unfoldNamespaces, unfoldObjects, parsed);
+        }
+
+        [Command("outputs a table of global variables and values")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
+        public CommandResult<List<IDataObject>> Globals(
+            CommandEvaluationContext _,
+            [Parameter(0, "variable namespace or value path below the global namespace. if specified and exists, output is built from this point, otherwise outputs all variables from global root", true)] string varPath,
+            [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
+            [Option("p", "parsed", "echo string values in parsed mode (ansi and directives). By default strings objects are represented by raw text")] bool parsed = false
+            )
+        {
+            object obj;
+            if (varPath == null)
+                _.Variables.GetObject(VariableNamespace.global + "", out obj);
+            else
+                _.Variables.GetObject(VariableNamespace.global, varPath, out obj);
+            return DumpVarTable(_, obj, unfoldNamespaces, unfoldObjects, parsed);
+        }
+
+        CommandResult<List<IDataObject>> DumpVarTable(
+            CommandEvaluationContext _,
+            object obj,
+            bool unfoldNamespaces,
+            bool unfoldObjects,
+            bool parsed = false)
+        {
             var options = new TableFormattingOptions(_.ShellEnv.TableFormattingOptions)
             {
                 UnfoldCategories = unfoldNamespaces,
