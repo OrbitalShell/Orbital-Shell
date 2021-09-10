@@ -307,7 +307,7 @@ namespace OrbitalShell.Commands.Shell
 
         [Command("unset the value of shell variables. can not unset namespace, only variables")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<object> UnsetVar(
+        public CommandResult<object> Unset(
             CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name
             )
