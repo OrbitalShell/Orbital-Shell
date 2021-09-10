@@ -9,7 +9,6 @@ using OrbitalShell.Component.CommandLine.Pipeline;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell.Data;
-using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Lib;
 
 using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
@@ -30,7 +29,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         /// <param name="expr"></param>
         /// <returns></returns>
         public static StringSegment[] SplitExpr(
-            CommandEvaluationContext context,
+            CommandEvaluationContext _,
             string expr
             )
         {
@@ -315,7 +314,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                                     nexpr.Append(o);
                                 else
                                 {
-                                    var (success, strValue) = CommandSyntax.TryCastToString(_, o);
+                                    CommandSyntax.TryCastToString(_, o, out var strValue);
                                     nexpr.Append(strValue);
                                 }
                             }

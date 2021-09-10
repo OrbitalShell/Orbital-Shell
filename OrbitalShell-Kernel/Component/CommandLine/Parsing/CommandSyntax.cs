@@ -1,14 +1,16 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.Shell.Data;
-using OrbitalShell.Component.Console;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using OrbitalShell.Lib;
 using System.Reflection;
+using System.Text;
+
 using Microsoft.CodeAnalysis;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell.Data;
+using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {
@@ -166,8 +168,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
 
                             void trySetValueFromStr()
                             {
-                                var (success, strValue) = TryCastToString(context, varValue);
-                                if (!success)
+                                if (!TryCastToString(context, varValue, out var strValue))
                                     perr();
                                 else
                                 {
@@ -252,31 +253,30 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             return (matchingParameters, parseErrors);
         }
 
-        public static (bool success, string strValue) TryCastToString(
+        public static bool TryCastToString(
             CommandEvaluationContext context,
-            object varValue
+            object varValue,
+            out string strValue
             )
         {
+            strValue = null;
             if (varValue == null)
-            {
-                return (true, null);
-            }
+                return false;
             else
             {
                 try
                 {
                     // 2. try to convert from AsText method if available, fall back to ToString
-                    string strValue = null;
                     MethodInfo mi;
                     if ((mi = varValue.GetAsTextMethod()) != null)
                         strValue = mi.InvokeAsText(varValue, context);
                     else
                         strValue = varValue.ToString();
-                    return (true, strValue);
+                    return true;
                 }
                 catch (InvalidCastException)
                 {
-                    return (false, null);
+                    return false;
                 }
             }
         }

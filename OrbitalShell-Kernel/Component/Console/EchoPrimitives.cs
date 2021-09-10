@@ -298,11 +298,20 @@ namespace OrbitalShell.Component.Console
             var nb = obj.Count;
             foreach (var o in obj)
             {
-                Echo(o, new EchoEvaluationContext(ctx, new FormatingOptions(ctx.Options) { LineBreak = false }));
+                Echo(o,
+                    new EchoEvaluationContext(
+                        ctx,
+                        ctx
+                            .Options
+                            .Clone()
+                            .Apply(o => o.LineBreak = false)
+                        ));
+
                 if (i < nb)
                 {
                     if (!ctx.Options.LineBreak)
-                        @out.Echo(ShellEnvironment.SystemPathSeparator /*TODO: currently no way to support option change from any context (see: shell meta-options + output filters )*/ );
+                        /*TODO: currently no way to support option change from any context (see: shell meta-options + output filters )*/
+                        @out.Echo(ShellEnvironment.SystemPathSeparator);
                     else
                         @out.Echoln();
                 }
@@ -615,11 +624,13 @@ namespace OrbitalShell.Component.Console
 
             dt.AddNamePrefix("".PadLeft(TabLength));
 
+            CommandSyntax.TryCastToString(ctx, obj, out var strValue);
+
             dt.InsertRow(
                 0
                 , name
                 , obj.GetType().UnmangledName()
-                , CommandSyntax.TryCastToString(ctx, obj).strValue
+                , strValue
                 );
 
             dt.Echo(new EchoEvaluationContext(@out, context, options));
@@ -791,7 +802,16 @@ namespace OrbitalShell.Component.Console
                         // value dump via Echo primitive
                         @out.Echo("" + context.ShellEnv.Colors.Default);
                         var p0 = @out.CursorPos;
-                        mi.InvokeEcho(o, new EchoEvaluationContext(@out, context, new FormatingOptions(options) { LineBreak = false }));
+                        mi.InvokeEcho(o,
+                            new EchoEvaluationContext(
+                                @out,
+                                context,
+                                // ⚠️⚠️ do not downcast options type when transferring to descendants ⚠️⚠️
+                                new TableFormattingOptions(options)
+                                {
+                                    LineBreak = false
+                                }));
+
                         var p1 = @out.CursorPos;
                         if (p1.Y == p0.Y)
                         {

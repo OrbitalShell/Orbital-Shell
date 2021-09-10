@@ -83,7 +83,7 @@ namespace OrbitalShell.Component.Shell.Data
                 if (path.Count == 1)
                 {
                     // ⏺ new value
-                    r = (value is IDataObject) ? (IDataObject)value
+                    r = (value is IDataObject @object) ? @object
                         : new DataValue(attrname, value, type, isReadOnly);
 
                     r.Parent = this;

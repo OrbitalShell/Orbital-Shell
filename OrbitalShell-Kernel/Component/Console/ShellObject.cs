@@ -1,7 +1,10 @@
-﻿using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Lib;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Lib;
+
 using static OrbitalShell.Component.Console.EchoPrimitives;
 
 namespace OrbitalShell.Component.Console
@@ -9,6 +12,7 @@ namespace OrbitalShell.Component.Console
     /// <summary>
     /// dynamically outputable &amp; convertible object that integrates with the shell
     /// </summary>
+    [DebuggerDisplay("shell object")]
     public class ShellObject : IShellObject
     {
         public static ShellObject _instance;

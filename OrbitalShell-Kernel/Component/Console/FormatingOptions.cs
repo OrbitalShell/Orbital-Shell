@@ -1,8 +1,10 @@
-﻿using System;
+﻿using OrbitalShell.Lib.Sys;
 
 namespace OrbitalShell.Component.Console
 {
-    public class FormatingOptions : ShellObject
+    public class FormatingOptions :
+        ShellObject,
+        IClonable<FormatingOptions>
     {
         static new FormatingOptions _instance;
         public new static FormatingOptions Instance
@@ -36,5 +38,9 @@ namespace OrbitalShell.Component.Console
             LineBreak = lineBreak;
             IsRawModeEnabled = isRawModeEnabled;
         }
+
+        public virtual FormatingOptions Clone()
+            => new(this);
+
     }
 }

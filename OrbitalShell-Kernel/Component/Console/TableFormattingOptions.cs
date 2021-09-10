@@ -1,6 +1,10 @@
-﻿namespace OrbitalShell.Component.Console
+﻿using OrbitalShell.Lib.Sys;
+
+namespace OrbitalShell.Component.Console
 {
-    public class TableFormattingOptions : FormatingOptions
+    public class TableFormattingOptions
+        : FormatingOptions,
+        IClonable<TableFormattingOptions>
     {
         public enum TableLayout
         {
@@ -50,5 +54,9 @@
             ColumnLeftMargin = columnLeftMargin;
             ColumnRightMargin = columnRightMargin;
         }
+
+        public override TableFormattingOptions Clone()
+            => new(this);
+
     }
 }
