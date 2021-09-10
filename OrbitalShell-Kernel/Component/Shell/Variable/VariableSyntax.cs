@@ -34,14 +34,11 @@ namespace OrbitalShell.Component.Shell.Variable
             {
                 var c = text[i];
                 char? previousChar = (i > 0) ? text[i - 1] : null;
-                char? nextChar = (i + 1 < text.Length) ? text[i + 1] : null;
-                //var nextIsVariableNameOpenCapture = nextChar == VariableNameOpenCapture;
                 var isNeutralized = previousChar == NeutralizerSymbol;
                 var skipSymbol = false;
 
                 if (c == VariablePrefix
                     && !isNeutralized
-                    //&& !nextIsVariableNameOpenCapture
                     )
                 {
                     if (!isCapturingName && nameDefined)
@@ -69,7 +66,7 @@ namespace OrbitalShell.Component.Shell.Variable
                     capturesRecursionCount++;
                 }
 
-                if (/*!isCapturingName &&*/ c == VariableNameOpenCapture)
+                if (c == VariableNameOpenCapture)
                 {
                     // TODO: ❓❓ choose if yes or no ❓❓
                     /*if (isCapturingName)
@@ -80,10 +77,8 @@ namespace OrbitalShell.Component.Shell.Variable
                     isNameCaptured = true;
                 }
 
-                if (/*isCapturingName &&*/ c == VariableNameEndCapture)
+                if (c == VariableNameEndCapture)
                 {
-                    /*skipSymbol = isCapturingName;
-                    isCapturingName = false;*/
                     if (isCapturingName)
                         i++;
                     break;

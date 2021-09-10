@@ -12,13 +12,13 @@ namespace OrbitalShell.Lib
     {
         #region others
 
-        public static Match Match(this string input,string regex)
+        public static Match Match(this string input, string regex)
         {
             var r = new Regex(regex);
             return r.Match(input);
         }
 
-        public static void Match(this string input, string regex,out Match match)
+        public static void Match(this string input, string regex, out Match match)
         {
             var r = new Regex(regex);
             match = r.Match(input);
@@ -104,5 +104,12 @@ namespace OrbitalShell.Lib
             foreach (var c in s) if (!char.IsDigit(c)) sb.Append(c);
             return sb.ToString();
         }
+
+        public static string WrapIf(this string s, bool condition, string preFix, string postFix)
+        =>
+            condition ?
+                $"{preFix}{s}{postFix}"
+                : s;
     }
+
 }

@@ -222,7 +222,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         public static
             (string expr, Dictionary<string, object> references)
             SubstituteVariables(
-                CommandEvaluationContext context,
+                CommandEvaluationContext _,
                 string expr
             )
         {
@@ -243,7 +243,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
             {
                 totalRemaining = 0;
                 var i = 0;
-                var vars = new List<StringSegment>();
+                var vars = new List<VariableStringSegment>();
                 t = expr.ToCharArray();
                 int nextSearchScopeEndIndex = searchScopeEndIndex;
                 searchScopeEndIndex = Math.Min(t.Length, searchScopeEndIndex);
@@ -261,7 +261,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                             int lastIndex,
                             bool isNameCaptured,
                             int remaining,
-                            bool previousNameDefined) =
+                            bool _) =
                             VariableSyntax.ReadVariableName(
                                 ref t,
                                 i + 1,
@@ -272,16 +272,10 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                                 varName,
                                 beginIndex,
                                 lastIndex,
-                                lastIndex - beginIndex + 1
+                                lastIndex - beginIndex + 1,
+                                isNameCaptured
                                 ));
                         i = lastIndex;
-
-                        /*if (
-                            //!isNameCaptured &&
-                            previousNameDefined)
-                            nextSearchScopeEndIndex = Math.Min(
-                                nextSearchScopeEndIndex, 
-                                beginIndex);*/
                     }
                     i++;
                 }
@@ -291,20 +285,22 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 {
                     var nexpr = new StringBuilder();
                     int x = 0;
-                    StringSegment lastvr = null;
+                    VariableStringSegment lastvr = null;
+                    VariableStringSegment currentVr = null;
                     foreach (var vr in vars)
                     {
+                        currentVr = vr;
                         lastvr = vr;
                         nexpr.Append(expr[x..vr.X]);
                         try
                         {
-                            context.Variables.Get(vr.Text, out var value);
+                            _.Variables.Get(vr.Text, out var value);
 
                             // here: value is transformed by his ToString method
                             // (var is substituted by its text)
 
                             if (vars.Count == 1 &&
-                                ((CommandLineSyntax.VariablePrefix + vr.Text) == origStr))
+                                (vr.FullSyntax == origStr))
                             {
                                 // single var (no conversion)
                                 // keep var ref in place (arbitrary convention)
@@ -319,16 +315,16 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                                     nexpr.Append(o);
                                 else
                                 {
-                                    var (success, strValue) = CommandSyntax.TryCastToString(context, o);
+                                    var (success, strValue) = CommandSyntax.TryCastToString(_, o);
                                     nexpr.Append(strValue);
                                 }
                             }
                         }
                         catch (VariablePathNotFoundException ex)
                         {
-                            context.Errorln(ex.Message);
-                            // keep bad var name in place (? can be option of the shell. Bash let it blank)
-                            nexpr.Append(CommandLineSyntax.VariablePrefix + vr.Text);
+                            _.Errorln(ex.Message);
+                            // Bash convention: replace name by empty
+                            nexpr.Append("");
                         }
                         x = vr.Y + 1;
                         totalRemaining--;
