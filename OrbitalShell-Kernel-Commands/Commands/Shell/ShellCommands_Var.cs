@@ -36,7 +36,7 @@ namespace OrbitalShell.Commands.Shell
                 _.Variables.GetObject(VariableNamespace.env + "", out obj);
             else
                 _.Variables.GetObject(VariableNamespace.env, varPath, out obj);
-            return DumpVarTable(_, obj, unfoldNamespaces, unfoldObjects, parsed);
+            return DumpVarTable(_, VariableNamespace.env + varPath, obj, unfoldNamespaces, unfoldObjects, parsed);
         }
 
         [Command("outputs a table of local variables and values")]
@@ -54,7 +54,7 @@ namespace OrbitalShell.Commands.Shell
                 _.Variables.GetObject(VariableNamespace.local + "", out obj);
             else
                 _.Variables.GetObject(VariableNamespace.local, varPath, out obj);
-            return DumpVarTable(_, obj, unfoldNamespaces, unfoldObjects, parsed);
+            return DumpVarTable(_, VariableNamespace.local + varPath, obj, unfoldNamespaces, unfoldObjects, parsed);
         }
 
         [Command("outputs a table of global variables and values")]
@@ -72,11 +72,12 @@ namespace OrbitalShell.Commands.Shell
                 _.Variables.GetObject(VariableNamespace.global + "", out obj);
             else
                 _.Variables.GetObject(VariableNamespace.global, varPath, out obj);
-            return DumpVarTable(_, obj, unfoldNamespaces, unfoldObjects, parsed);
+            return DumpVarTable(_, VariableNamespace.global + varPath, obj, unfoldNamespaces, unfoldObjects, parsed);
         }
 
         CommandResult<List<IDataObject>> DumpVarTable(
             CommandEvaluationContext _,
+            string name,
             object obj,
             bool unfoldNamespaces,
             bool unfoldObjects,
@@ -109,7 +110,7 @@ namespace OrbitalShell.Commands.Shell
                 else
                 {
                     // directly dump object members
-                    EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(_.Out, _, options));
+                    EchoPrimitives.DumpObject(name, obj, _, new EchoEvaluationContext(_.Out, _, options));
                     return new CommandResult<List<IDataObject>>(null);
                 }
             }
@@ -130,7 +131,10 @@ namespace OrbitalShell.Commands.Shell
         {
             object obj;
             if (varPath == null)
+            {
+                varPath = "";
                 obj = _.Variables.RootObject;
+            }
             else
                 _.Variables.GetObject(varPath, out obj);
 
@@ -161,7 +165,7 @@ namespace OrbitalShell.Commands.Shell
                 else
                 {
                     // directly dump object members
-                    EchoPrimitives.DumpObject(obj, new EchoEvaluationContext(_.Out, _, options));
+                    EchoPrimitives.DumpObject(varPath, obj, _, new EchoEvaluationContext(_.Out, _, options));
                     return new CommandResult<List<IDataObject>>(null);
                 }
             }
@@ -194,11 +198,11 @@ namespace OrbitalShell.Commands.Shell
             return new CommandResult<List<string>>(r);
         }
 
-        [Command("outputs informations about a variable")]
+        [Command("outputs properties of a variable")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<IDataObject> Inf(
+        public CommandResult<IDataObject> Prop(
                     CommandEvaluationContext _,
-                    [Parameter(0, "variable namespace of a value")] string varPath
+                    [Parameter(0, "variable name (partial or full namespace)")] string varPath
                )
         {
             _.Variables.GetObject(varPath, out var obj);
@@ -280,9 +284,9 @@ namespace OrbitalShell.Commands.Shell
             return new CommandResult<object>(@var);
         }
 
-        [Command("get a shell variable value. The value is stored in the variables env.$lastComResult and _./")]
+        [Command("returns a variable value. The value is stored in the variables env.$lastComResult and _./")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<object> Get(
+        public CommandResult<object> GetValue(
             CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name
             )
@@ -303,7 +307,7 @@ namespace OrbitalShell.Commands.Shell
 
         [Command("unset the value of shell variables. can not unset namespace, only variables")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<object> Unset(
+        public CommandResult<object> UnsetVar(
             CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name
             )

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using static OrbitalShell.Component.Console.EchoPrimitives;
+using System.Runtime.Serialization;
+
 using OrbitalShell.Component.CommandLine.Processor;
-using System;
+
+using static OrbitalShell.Component.Console.EchoPrimitives;
 
 namespace OrbitalShell.Component.Shell.Data
 {
@@ -39,6 +41,16 @@ namespace OrbitalShell.Component.Shell.Data
             foreach (DataColumn col in Columns)
                 tr[col.ColumnName] = objects[i++];
             this.Rows.Add(tr);
+            return this;
+        }
+
+        public Table InsertRow(int index, params object[] objects)
+        {
+            var tr = base.NewRow();
+            int i = 0;
+            foreach (DataColumn col in Columns)
+                tr[col.ColumnName] = objects[i++];
+            this.Rows.InsertAt(tr, index);
             return this;
         }
 
@@ -81,6 +93,13 @@ namespace OrbitalShell.Component.Shell.Data
             return this;
         }
 
+        public Table AddNamePrefix(string prefix)
+        {
+            foreach (DataRow row in Rows)
+                row[0] = prefix + row[0];
+            return this;
+        }
+
         #endregion
 
         #region fluent setters
@@ -103,7 +122,7 @@ namespace OrbitalShell.Component.Shell.Data
 
         public string GetFormatedValue(CommandEvaluationContext context, string columnName, object value)
         {
-            if (ColumnsTextFormats.TryGetValue(columnName,out var textFormat))
+            if (ColumnsTextFormats.TryGetValue(columnName, out var textFormat))
                 return string.Format(textFormat, DumpAsText(context, value, false));
             else
                 return DumpAsText(context, value, false);
@@ -114,7 +133,7 @@ namespace OrbitalShell.Component.Shell.Data
             if (ColumnsHeadersTextFormats.TryGetValue(columnName, out var textFormat))
                 return string.Format(textFormat, columnName);
             else
-                return columnName;                   
+                return columnName;
         }
 
         #endregion

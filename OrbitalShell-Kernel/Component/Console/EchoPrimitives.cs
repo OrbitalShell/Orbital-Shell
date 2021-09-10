@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 
+using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.EchoDirective;
 using OrbitalShell.Component.Shell.Data;
@@ -43,6 +44,8 @@ namespace OrbitalShell.Component.Console
             return table;
         }
 
+        private const int TabLength = 4;
+
         static void AddObjectToTable(
             CommandEvaluationContext context,
             Table table,
@@ -51,7 +54,7 @@ namespace OrbitalShell.Component.Console
             int level = 0
             )
         {
-            var tab = "".PadLeft((level * 4), ' ');
+            var tab = "".PadLeft(level * TabLength, ' ');
             var prfx = context.ShellEnv.Colors.HalfDarkLabel;
             foreach (var (name, value, inf) in obj.GetMemberValues())
             {
@@ -127,7 +130,7 @@ namespace OrbitalShell.Component.Console
             }
             else
             {
-                var tab = "".PadLeft((level * 4), ' ');
+                var tab = "".PadLeft((level * TabLength), ' ');
                 var dv = value as DataValue;
                 var valueType = (dv != null) ? dv.ValueType?.UnmangledName() : value?.GetType().UnmangledName();
                 var val = dv?.Value;
@@ -595,11 +598,13 @@ namespace OrbitalShell.Component.Console
         #region variables & collections objects
 
         public static void DumpObject(
+            string name,
             object obj,
-            EchoEvaluationContext ctx)
+            CommandEvaluationContext ctx,
+            EchoEvaluationContext _)
         {
-            var (@out, context, opts) = ctx;
-            if (context.EchoMap.MappedCall(obj, ctx)) return;
+            var (@out, context, opts) = _;
+            if (context.EchoMap.MappedCall(obj, _)) return;
 
             var options = opts as TableFormattingOptions;
             options ??= (TableFormattingOptions)
@@ -607,6 +612,16 @@ namespace OrbitalShell.Component.Console
                 .InitFrom(opts);
             options = new TableFormattingOptions(options) { PadLastColumn = false };
             var dt = GetVarsDataTable(context, obj, new List<IDataObject>(), options);
+
+            dt.AddNamePrefix("".PadLeft(TabLength));
+
+            dt.InsertRow(
+                0
+                , name
+                , obj.GetType().UnmangledName()
+                , CommandSyntax.TryCastToString(ctx, obj).strValue
+                );
+
             dt.Echo(new EchoEvaluationContext(@out, context, options));
         }
 

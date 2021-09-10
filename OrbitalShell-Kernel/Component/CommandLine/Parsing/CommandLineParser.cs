@@ -304,7 +304,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                             {
                                 // single var (no conversion)
                                 // keep var ref in place (arbitrary convention)
-                                var varName = CommandLineSyntax.VariablePrefix + vr.Text;
+                                var varName = origStr;
                                 nexpr.Append(varName);
                                 references.AddOrReplace(varName, value);
                             }
@@ -329,6 +329,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                         x = vr.Y + 1;
                         totalRemaining--;
                     }
+
                     if (lastvr != null)
                         nexpr.Append(
                             (x < expr.Length) ?

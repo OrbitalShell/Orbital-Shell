@@ -112,32 +112,26 @@ namespace OrbitalShell.Lib
         public static List<(string name, object value, MemberInfo memberInfo)> GetMemberValues(this object o)
         {
             var t = o.GetType();
-            var r = new List<(string, object, MemberInfo)>();
+            var array = new List<(string, object, MemberInfo)>();
             foreach (var f in t.GetFields())
             {
-                //r.Add((f.Name, f.GetValue(o),f));
-                r.Add((f.Name, f.GetMemberValue(o), f));
+                array.Add((f.Name, f.GetMemberValue(o), f));
             }
             foreach (var p in t.GetProperties())
             {
-                /*if (p.GetGetMethod().GetParameters().Length==0)
-                    r.Add((p.Name, p.GetValue(o),p));
-                else
-                    // indexed property
-                    r.Add((p.Name, "indexed property" , p));*/
                 try
                 {
                     var val = p.GetMemberValue(o, true);
-                    r.Add((p.Name, p.GetValue(o), p));
+                    array.Add((p.Name, p.GetValue(o), p));
                 }
                 catch (ArgumentException)
                 {
-                    r.Add((p.Name, "indexed property", p));
+                    array.Add((p.Name, "indexed property", p));
                 }
             }
-            r.Sort(new Comparison<(string, object, MemberInfo)>(
+            array.Sort(new Comparison<(string, object, MemberInfo)>(
                 (a, b) => a.Item1.CompareTo(b.Item1)));
-            return r;
+            return array;
         }
 
         public static Type GetMemberValueType(this MemberInfo memberInfo)
