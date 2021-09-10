@@ -74,8 +74,6 @@ namespace OrbitalShell.Component.Shell.Data
                     if (value is DataObject) throw new Exception($"bad value type: '({nameof(IDataObject)})'");
                     // ⏺ update value                    
                     ((DataValue)attr).SetValue(value, type);
-                    //r.Parent = this;
-                    //_attributes[attrname] = r;
                 }
                 else
                     r = attr.Set(path.Slice(1), value, isReadOnly, type);

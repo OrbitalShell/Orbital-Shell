@@ -64,10 +64,8 @@ namespace OrbitalShell.Component.Shell.Data
             Name = name ?? throw new ArgumentNullException(nameof(name));
             ValueType = valueType ?? value?.GetType();
             ValueType = ValueType ?? throw new ArgumentNullException(nameof(valueType));
-            IsReadOnly = isReadOnly;
-            /*Value = value;
-            HasValue = true;*/
             SetValue(value);
+            IsReadOnly = isReadOnly;
         }
 
         public DataValue(
