@@ -240,7 +240,11 @@ namespace OrbitalShell.Commands.Shell
                 props.Add("value", v.Value);
             }
             else
-                throw new Exception($"can't get information for a variable member");
+            {
+                props.Add("name", VariableSyntax.GetVariableName(varPath));
+                props.Add("type", obj.GetType().UnmangledName(false));
+                props.Add("value", obj);
+            }
 
             Table dt = new();
             dt.AddColumns("property", "value")
