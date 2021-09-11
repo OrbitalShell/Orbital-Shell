@@ -1,27 +1,31 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell.Module;
-using OrbitalShell.Lib.FileSystem;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Reflection;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.Shell;
 using System.IO;
-using OrbitalShell.Lib;
-using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Component.Console;
-using System;
-using System.Net.Http;
-using OrbitalShell.Component.Shell.Data;
-using OrbitalShell.Commands.NuGetServerApi;
 using System.IO.Compression;
-using OrbitalShell.Commands.FileSystem;
-using OrbitalShell.Lib.Data;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Runtime.Loader;
+
 using Newtonsoft.Json;
+
+using OrbitalShell.Commands.FileSystem;
+using OrbitalShell.Commands.NuGetServerApi;
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Data;
+using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Component.Shell.Module.Data;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.Data;
+using OrbitalShell.Lib.FileSystem;
+
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -47,14 +51,14 @@ namespace OrbitalShell.Commands.Shell
             [Option("r", "remove", "uninstall a module. module files are still available in $modules", true, true)] string uninstallModuleName = null,
             [Option("u", "update", "try to update an installed module from the nuget source", true, true)] string updateModuleName = null,
             [Option(null, "check-only", "do not install update, just check if an update exists", true)] bool checkOnly = false,
-            [Option(null,"update-all", "try to update all installed modules from the nuget source")] bool updateAll = false,
+            [Option(null, "update-all", "try to update all installed modules from the nuget source")] bool updateAll = false,
             [Option(null, "register-update-only", "do not add new entries to module-init, simply update existing entries")] bool registerUpdateOnly = false,
             [Option("f", "fetch-list", "fetch list of modules from modules repositories", true)] bool fetchList = false,
             [Option("o", "fetch-info", "query modules repositories about a module name, if found fetch the module info and output results. the module is not installed", true, true)] string fetchInfoName = null,
             [Option("v", "version", "module version if applyable", true, true)] string version = null,
             [Option("s", "short", "output less informations", true)] bool @short = false,
-            [Option(null,"skip-load" , "do not load the module after having installed it",true)] bool skipLoad = false,
-            [Option(null,"force","perform the requested operation even if already done, in case of it is meaningfull (example: -i --force constraint the command to reinstall a module)")] bool force = false
+            [Option(null, "skip-load", "do not load the module after having installed it", true)] bool skipLoad = false,
+            [Option(null, "force", "perform the requested operation even if already done, in case of it is meaningfull (example: -i --force constraint the command to reinstall a module)")] bool force = false
             )
         {
             ModuleSpecification moduleSpecification = null;
@@ -64,7 +68,7 @@ namespace OrbitalShell.Commands.Shell
             var o = context.Out;
             string n;
 
-            if (loadModulePath == null && unloadModuleName == null && updateModuleName == null 
+            if (loadModulePath == null && unloadModuleName == null && updateModuleName == null
                 && installModuleName == null && uninstallModuleName == null && !updateAll
                 && !fetchList && !fetchInfo)
             {
@@ -111,7 +115,8 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(context.CommandLineProcessor.ModuleManager.Modules.Values.ToList());
             }
 
-            static void _checkIsNotAKernelModule(string n) {
+            static void _checkIsNotAKernelModule(string n)
+            {
                 if (_kernelModuleIds.Contains(n.ToLower()))
                     throw new Exception($"the kernel module '{n}' can't be handled by the module command. Please refers to kernel update documentation");
             }
@@ -123,19 +128,19 @@ namespace OrbitalShell.Commands.Shell
                 if (updateAll)
                 {
                     var ids = ModuleUtil.GetInstalledModulesLowerPackageId();
-                    if (ids.Count == 0) 
+                    if (ids.Count == 0)
                         o.Echoln("nothing to update");
                     else
                         foreach (var id in ids)
-                            Module(context: context, updateModuleName: id, checkOnly: checkOnly, registerUpdateOnly:true);
+                            Module(context: context, updateModuleName: id, checkOnly: checkOnly, registerUpdateOnly: true);
                 }
 
                 // update module
 
-                if (updateModuleName!=null)
+                if (updateModuleName != null)
                 {
                     n = updateModuleName;
-                    if (ModuleUtil.IsModuleInstalled( n))
+                    if (ModuleUtil.IsModuleInstalled(n))
                     {
                         _checkIsNotAKernelModule(n);
 
@@ -153,7 +158,7 @@ namespace OrbitalShell.Commands.Shell
                         if (r.EvalResultCode == (int)ReturnCode.OK)
                         {
                             var vers = ((PackageVersions)r.Result).Versions;
-                            var lastPackageIndex = vers.Length-1;
+                            var lastPackageIndex = vers.Length - 1;
                             var curPackageIndex = Array.IndexOf(vers, curPackVer);
                             if (lastPackageIndex > curPackageIndex)
                             {
@@ -164,7 +169,7 @@ namespace OrbitalShell.Commands.Shell
                                 if (!checkOnly)
                                 {
                                     // module -i {modulePackageId} --force --skip-load
-                                    var installUpdateRes = Module(context: context, installModuleName: n, force: true, skipLoad: true, registerUpdateOnly:registerUpdateOnly);
+                                    var installUpdateRes = Module(context: context, installModuleName: n, force: true, skipLoad: true, registerUpdateOnly: registerUpdateOnly);
                                     if (installUpdateRes.ReturnCode != (int)ReturnCode.OK)
                                         return ModuleErr(context, $"module update failed due to error: {installUpdateRes.ExecErrorText}");
 
@@ -176,29 +181,30 @@ namespace OrbitalShell.Commands.Shell
                         }
                         else
                             return ModuleErr(context, $"module id '{n}' not found at NuGet");
-                    } else 
+                    }
+                    else
                         return ModuleErr(context, $"module '{n}' is not installed");
                 }
 
                 // uninstall module
 
-                if (uninstallModuleName!=null)
+                if (uninstallModuleName != null)
                 {
                     n = uninstallModuleName;
                     var folderName = n.ToLower();
 
                     _checkIsNotAKernelModule(n);
 
-                    if (_kernelModuleIds.Contains(n)) _checkIsNotAKernelModule(n); 
+                    if (_kernelModuleIds.Contains(n)) _checkIsNotAKernelModule(n);
 
-                    if (!ModuleUtil.IsModuleInstalled( folderName ))
+                    if (!ModuleUtil.IsModuleInstalled(folderName))
                         // error not installed
                         return ModuleErr(context, $"module '{n}' is not installed");
 
                     o.Echoln(clog + "removing potentially registered dlls:");
                     var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
                     var modInits = modInit.List.ToList();
-                    foreach ( var moduleAssemblyFilePath in ModuleUtil.GetModuleAssemblies(folderName) )
+                    foreach (var moduleAssemblyFilePath in ModuleUtil.GetModuleAssemblies(folderName))
                     {
                         o.Echo(clog + moduleAssemblyFilePath.FullName + " ... ");
                         var removableItems = modInits.Where(x => x.Path == FileSystemPath.UnescapePathSeparators(moduleAssemblyFilePath.FullName));
@@ -228,25 +234,25 @@ namespace OrbitalShell.Commands.Shell
                     #region fetch module info
 
                     var queryMethod = typeof(NuGetServerApiCommands).GetMethod("NugetQuery");
-                    var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{n} -t 1",0);
-                    if (r0.EvalResultCode!=(int)ReturnCode.OK) return ModuleErr(context, r0.ErrorReason);
+                    var r0 = context.CommandLineProcessor.Eval(context, queryMethod, $"{n} -t 1", 0);
+                    if (r0.EvalResultCode != (int)ReturnCode.OK) return ModuleErr(context, r0.ErrorReason);
                     if (r0.Result is not QueryResultRoot queryRes) return ModuleErr(context, "nuget query return a null result");
-                    if (queryRes.Data.Length==0) return ModuleErr(context, "module id unknown");
-                    
+                    if (queryRes.Data.Length == 0) return ModuleErr(context, "module id unknown");
+
                     #endregion
 
                     var packageId = queryRes.Data[0].Id;
                     o.Echoln();
 
-                    var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");                    
+                    var getVersMethod = typeof(NuGetServerApiCommands).GetMethod("NugetVer");
                     var r = context.CommandLineProcessor.Eval(context, getVersMethod, $"{n} -q", 0);
-                    if (r.EvalResultCode==(int)ReturnCode.OK)
+                    if (r.EvalResultCode == (int)ReturnCode.OK)
                     {
                         var vers = (PackageVersions)r.Result;
 
-                        if (!lastVer && !vers.Versions.Contains(version))                        
-                            return ModuleErr(context,$"module version '{version}' not found");
-                        
+                        if (!lastVer && !vers.Versions.Contains(version))
+                            return ModuleErr(context, $"module version '{version}' not found");
+
                         if (lastVer)
                         {
                             version = vers.Versions.Last();
@@ -259,17 +265,17 @@ namespace OrbitalShell.Commands.Shell
                         var moduleLowerFullId = $"{folderName}.{lowerVersion}";  // == module lower id
 
                         if (ModuleUtil.IsModuleInstalled(
-                            folderName,version
+                            folderName, version
                             ) && !force)
                             // error already installed, !force
-                            return ModuleErr(context,$"module '{moduleLowerFullId}' is already installed (may try --force)");
+                            return ModuleErr(context, $"module '{moduleLowerFullId}' is already installed (may try --force)");
 
-                        var moduleFolder = Path.Combine( output, folderName );
+                        var moduleFolder = Path.Combine(output, folderName);
                         if (!Directory.Exists(moduleFolder)) Directory.CreateDirectory(moduleFolder);
 
                         moduleFolder = FileSystemPath.UnescapePathSeparators(moduleFolder);
                         var rd = context.CommandLineProcessor.Eval(context, dwnMethod, $"{n} {version} -o {moduleFolder}", 0);
-                        if (rd.EvalResultCode==(int)ReturnCode.OK)
+                        if (rd.EvalResultCode == (int)ReturnCode.OK)
                         {
                             o.Echo(clog + "extracting package... ");
 
@@ -277,7 +283,7 @@ namespace OrbitalShell.Commands.Shell
                             if (!Directory.Exists(versionFolder)) Directory.CreateDirectory(versionFolder);
 
                             var nupkgFileName = (string)rd.Result;
-                            ZipFile.ExtractToDirectory(Path.Combine(moduleFolder, nupkgFileName),versionFolder,true);
+                            ZipFile.ExtractToDirectory(Path.Combine(moduleFolder, nupkgFileName), versionFolder, true);
 
                             o.Echoln(" Done(rdc)");
                             o.Echo(ANSI.RSTXTA + ANSI.CPL(1) + ANSI.EL(ANSI.ELParameter.p2));     // TODO: add as ANSI combo
@@ -291,7 +297,7 @@ namespace OrbitalShell.Commands.Shell
 
                             var findResult = ((List<FileSystemPath>, FindCounts))find.Result;
                             var nbImport = 0;
-                            foreach ( var dll in findResult.Item1 )
+                            foreach (var dll in findResult.Item1)
                             {
                                 if (!context.CommandLineProcessor.ModuleManager.IsModuleAssemblyLoaded(dll.FullName))
                                 {
@@ -299,7 +305,7 @@ namespace OrbitalShell.Commands.Shell
                                     o.Echoln(clog + $"importing dll: '{dll.Name}'");
 
                                     // must load assembly in another app domain (not .core) to avoid conflict with any loaded dll ==> use a new assembly load context
-                                    var alc = new AssemblyLoadContext($"module assembly load context",true);
+                                    var alc = new AssemblyLoadContext($"module assembly load context", true);
                                     var assembly = alc.LoadFromAssemblyPath(dll.FullName);
 
                                     if (ModuleUtil.IsAssemblyShellModule(assembly))
@@ -309,7 +315,7 @@ namespace OrbitalShell.Commands.Shell
                                             if (!skipLoad)
                                                 context.CommandLineProcessor.ModuleManager.RegisterModule(context, assembly);
 
-                                            o.Echoln(clog + (registerUpdateOnly? "update module-init" : "register into module-init") );
+                                            o.Echoln(clog + (registerUpdateOnly ? "update module-init" : "register into module-init"));
                                             var modInit = ModuleUtil.LoadModuleInitConfiguration(context);
 
                                             // remove others versions of the same module assembly
@@ -330,7 +336,7 @@ namespace OrbitalShell.Commands.Shell
                                                 LowerVersionId = lowerVersion,
                                                 IsEnabled = true
                                             };
-                                            
+
                                             if (!registerUpdateOnly || oldVersionExists)
                                                 modInit.List = modInit.List.Append(mod).ToArray();
 
@@ -356,11 +362,12 @@ namespace OrbitalShell.Commands.Shell
                             else
                                 o.Errorln("no module assembly found in package");
 
-                        } else 
-                            return ModuleErr(context,rd.ErrorReason);
-                    } 
-                    else 
-                        return ModuleErr(context,"module id is required");
+                        }
+                        else
+                            return ModuleErr(context, rd.ErrorReason);
+                    }
+                    else
+                        return ModuleErr(context, "module id is required");
                 }
 
                 // load/init module
@@ -374,7 +381,7 @@ namespace OrbitalShell.Commands.Shell
                         if (moduleSpecification != null && moduleSpecification.Info != null) o.Echoln($" Done : {moduleSpecification.Info.GetDescriptor(context)}");
                     }
                     else
-                        return ModuleErr(null,null);
+                        return ModuleErr(null, null);
                 }
 
                 // unload module (unregistered in session)
@@ -385,9 +392,9 @@ namespace OrbitalShell.Commands.Shell
 
                     _checkIsNotAKernelModule(n);
 
-                    if (context.CommandLineProcessor.ModuleManager.GetModuleByLowerPackageId(n.ToLower())!=null)
+                    if (context.CommandLineProcessor.ModuleManager.GetModuleByLowerPackageId(n.ToLower()) != null)
                     {
-                        moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, n );
+                        moduleSpecification = context.CommandLineProcessor.ModuleManager.UnregisterModule(context, n);
                         if (moduleSpecification != null) o.Echoln($"unloaded: {n} {moduleSpecification.Info?.GetDescriptor(context)}");
                     }
                     else
@@ -457,7 +464,7 @@ namespace OrbitalShell.Commands.Shell
                 return new CommandResult<List<ModuleSpecification>>(new List<ModuleSpecification> { });
         }
 
-        static CommandResult<List<ModuleSpecification>> ModuleErr(CommandEvaluationContext context,string reason)
+        static CommandResult<List<ModuleSpecification>> ModuleErr(CommandEvaluationContext context, string reason)
         {
             context?.Errorln(reason);
             return new CommandResult<List<ModuleSpecification>>(ReturnCode.Error, reason);

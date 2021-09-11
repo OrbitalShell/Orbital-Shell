@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace OrbitalShell.Lib
+namespace OrbitalShell.Lib.Extensions
 {
     /// <summary>
     /// types extensions

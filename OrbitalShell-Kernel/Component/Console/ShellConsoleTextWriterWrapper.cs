@@ -1,6 +1,7 @@
 using System.IO;
-using System;
+
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.Script;
 
 namespace OrbitalShell.Component.Console
@@ -11,7 +12,7 @@ namespace OrbitalShell.Component.Console
     public class ShellConsoleTextWriterWrapper : ConsoleTextWriterWrapper
     {
         public CommandEvaluationContext CommandEvaluationContext;
-        
+
         public override string ToString() => $"[shell console text writer wrapper - {base.ToString()}]";
 
         public ShellConsoleTextWriterWrapper(
@@ -81,7 +82,7 @@ namespace OrbitalShell.Component.Console
                         new EchoEvaluationContext(
                             (ConsoleTextWriterWrapper)CommandEvaluationContext.Out,
                             CommandEvaluationContext,
-                            new FormatingOptions(lineBreak, parseCommands)
+                            new FormatingOptions(lineBreak, parseCommands, true)
                         )
                     );
                     if (lineBreak) base.Echo("", true);  // TODO: formatting option not implemented ?

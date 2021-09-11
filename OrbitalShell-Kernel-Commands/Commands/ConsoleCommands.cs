@@ -5,6 +5,7 @@ using System.Text;
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Variable;
 
@@ -103,7 +104,7 @@ current print directives are:
                             new EchoEvaluationContext(
                                 context.Out,
                                 context,
-                                new FormatingOptions(!avoidLineBreak, raw)
+                                new FormatingOptions(!avoidLineBreak, raw, true)
                             ));
                     }
                 }

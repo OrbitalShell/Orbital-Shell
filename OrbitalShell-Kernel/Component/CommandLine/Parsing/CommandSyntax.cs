@@ -11,6 +11,7 @@ using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Lib;
+using OrbitalShell.Lib.Extensions;
 
 namespace OrbitalShell.Component.CommandLine.Parsing
 {

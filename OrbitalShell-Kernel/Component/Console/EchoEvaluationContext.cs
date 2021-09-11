@@ -1,4 +1,5 @@
 ﻿using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console.Formats;
 
 namespace OrbitalShell.Component.Console
 {

@@ -1,11 +1,11 @@
-﻿using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Console;
-using System;
-using System.Collections;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 
-namespace OrbitalShell.Lib
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+
+namespace OrbitalShell.Lib.Extensions
 {
     /// <summary>
     /// extensions methods for: output filtering
@@ -103,7 +103,8 @@ namespace OrbitalShell.Lib
 
                 // search extension method with interfaces types
 
-                if (mi == null) {
+                if (mi == null)
+                {
                     foreach (var it in t.GetInterfaces())
                     {
                         mi = mis.Where(x => x.Name == "Echo" && x.GetParameters()[0].ParameterType == it).FirstOrDefault();

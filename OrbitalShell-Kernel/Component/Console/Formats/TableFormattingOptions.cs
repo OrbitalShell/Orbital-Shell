@@ -1,6 +1,6 @@
 ﻿using OrbitalShell.Lib.Sys;
 
-namespace OrbitalShell.Component.Console
+namespace OrbitalShell.Component.Console.Formats
 {
     public class TableFormattingOptions
         : FormatingOptions,
@@ -20,6 +20,7 @@ namespace OrbitalShell.Component.Console
         public bool UnfoldItems = true;
         public int ColumnLeftMargin = 0;
         public int ColumnRightMargin = 4;
+        public bool UnfoldSubCategories = true;
 
         public TableFormattingOptions() { }
 
@@ -35,6 +36,7 @@ namespace OrbitalShell.Component.Console
             UnfoldItems = o.UnfoldItems;
             ColumnLeftMargin = o.ColumnLeftMargin;
             ColumnRightMargin = o.ColumnRightMargin;
+            UnfoldSubCategories = o.UnfoldSubCategories;
         }
 
         public TableFormattingOptions(
@@ -44,7 +46,8 @@ namespace OrbitalShell.Component.Console
             bool unfoldCategories = true,
             bool unfoldItems = true,
             int columnLeftMargin = 0,
-            int columnRightMargin = 4)
+            int columnRightMargin = 4,
+            bool unfoldSubCategories = true)
         {
             NoBorders = noBorders;
             PadLastColumn = padLastColumn;
@@ -53,6 +56,7 @@ namespace OrbitalShell.Component.Console
             UnfoldItems = unfoldItems;
             ColumnLeftMargin = columnLeftMargin;
             ColumnRightMargin = columnRightMargin;
+            UnfoldSubCategories = unfoldSubCategories;
         }
 
         public override TableFormattingOptions Clone()

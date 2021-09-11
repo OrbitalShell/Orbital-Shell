@@ -1,8 +1,10 @@
-using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Lib.FileSystem;
-using OrbitalShell.Component.Shell;
 using System.Collections.Generic;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Lib.FileSystem;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -42,7 +44,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                         path.FullName,
                         args,
                         out output,
-                        redirectStandardInput:true
+                        redirectStandardInput: true
                     );
             }
             return new CommandResult<(int retCode, string output)>((ret, output));

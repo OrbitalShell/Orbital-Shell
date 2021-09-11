@@ -1,33 +1,37 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib;
-using OrbitalShell.Lib.Data;
-using OrbitalShell.Lib.FileSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.Data;
+using OrbitalShell.Lib.FileSystem;
+
 using static OrbitalShell.Component.CommandLine.Reader.Interaction;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
 using static OrbitalShell.Lib.FileSystem.FileSystem;
 using static OrbitalShell.Lib.Str;
+
 using sc = System.Console;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.Shell;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OrbitalShell.Commands.FileSystem
 {
     /// <summary>
     /// file systems commands
     /// </summary>
-    #pragma warning disable CA1822 // Marquer les membres comme étant static
-    #pragma warning disable IDE0060 // Marquer les membres comme étant static
+#pragma warning disable CA1822 // Marquer les membres comme étant static
+#pragma warning disable IDE0060 // Marquer les membres comme étant static
     [Commands("commands related to files,directories,mounts/filesystems and disks")]
     [CommandsNamespace(CommandNamespace.fs)]
     public class FileSystemCommands : ICommandsDeclaringType
@@ -35,10 +39,10 @@ namespace OrbitalShell.Commands.FileSystem
         [Command("transform a windows path style to an unix path style (change path separators '\\' to '/')")]
         public CommandResult<string> ToUnixPath(
             CommandEvaluationContext context,
-            [Parameter("path to be transformed to a linux path style")] string path            
+            [Parameter("path to be transformed to a linux path style")] string path
             ) => new CommandResult<string>(FileSystemPath.UnescapePathSeparators(path));
 
-        [Command("search files, folders and text file content depending on search criteria")]      
+        [Command("search files, folders and text file content depending on search criteria")]
         public CommandResult<(List<FileSystemPath> items, FindCounts counts)> Find(
             CommandEvaluationContext context,
             [Parameter("search target: can be a folder or a file. If target is a file, the command must have a -c|--contains parameter (search in file)")] FileSystemPath path,
@@ -85,11 +89,11 @@ namespace OrbitalShell.Commands.FileSystem
         public CommandVoidResult Rmdir(
             CommandEvaluationContext context,
             [Parameter("path of the directory to be deleted")] DirectoryPath path,
-            [Option("r","recurse","recurse delete in sub folders, also delete files and sub folders")] bool recurse
+            [Option("r", "recurse", "recurse delete in sub folders, also delete files and sub folders")] bool recurse
             )
         {
             if (path.CheckExists(context))
-                Directory.Delete(path.FullName,recurse);            
+                Directory.Delete(path.FullName, recurse);
             return CommandVoidResult.Instance;
         }
 
@@ -377,7 +381,7 @@ namespace OrbitalShell.Commands.FileSystem
                             {
                                 if (interactive)
                                 {
-                                    if (Confirm(context,"rm: remove file " + item.GetPrintableName(recurse)) && !simulate)
+                                    if (Confirm(context, "rm: remove file " + item.GetPrintableName(recurse)) && !simulate)
                                     {
                                         if (!simulate) item.FileSystemInfo.Delete();
                                         deleted = true;

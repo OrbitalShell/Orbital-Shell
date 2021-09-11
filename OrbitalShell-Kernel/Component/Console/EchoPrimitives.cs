@@ -6,11 +6,13 @@ using System.Reflection;
 
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.EchoDirective;
 using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Lib;
+using OrbitalShell.Lib.Extensions;
 using OrbitalShell.Lib.Sys;
 
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
@@ -35,11 +37,23 @@ namespace OrbitalShell.Component.Console
             table.SetHeaderFormat("type", "{0}" + Tab);
             foreach (var value in values)
             {
-                AddIDataObjectToTable(context, table, value, options);
+                AddIDataObjectToTable(
+                    context,
+                    table,
+                    value,
+                    (TableFormattingOptions)options
+                        .Clone()
+                        .AddLevel());
             }
             if (container != null && options.UnfoldItems)
             {
-                AddObjectToTable(context, table, container, options);
+                AddObjectToTable(
+                    context,
+                    table,
+                    container,
+                    (TableFormattingOptions)options
+                        .Clone()
+                        .AddLevel());
             }
             return table;
         }
@@ -637,6 +651,11 @@ namespace OrbitalShell.Component.Console
         }
 
         public static void Echo(
+            this DataValue dataValue,
+            EchoEvaluationContext ctx
+            ) => Echo(dataValue?.Value, ctx);
+
+        public static void Echo(
             this DataObject dataObject,
             EchoEvaluationContext ctx
             ) => Echo((IDataObject)dataObject, ctx);
@@ -652,7 +671,17 @@ namespace OrbitalShell.Component.Console
             options ??= (TableFormattingOptions)
                 context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions)
                 .InitFrom(opts);
-            options = new TableFormattingOptions(options) { PadLastColumn = false };
+            options = new TableFormattingOptions(options)
+            {
+                PadLastColumn = false
+            };
+
+            if (!options.IsObjectDumpEnabled)
+            {
+                @out.Echo(dataObject?.ToString());
+                return;
+            }
+
             var attrs = dataObject.GetAttributes();
             attrs.Sort((x, y) => x.Name.CompareTo(y.Name));
 

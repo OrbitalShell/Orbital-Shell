@@ -1,11 +1,14 @@
-﻿using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static OrbitalShell.Lib.Str;
+
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Lib.Data;
+
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using static OrbitalShell.Lib.Str;
 
 namespace OrbitalShell.Lib.FileSystem
 {
@@ -13,7 +16,7 @@ namespace OrbitalShell.Lib.FileSystem
     /// os file system editing and helper operations
     /// </summary>
     public static partial class FileSystem
-    {        
+    {
         /// <summary>
         /// search items in file system
         /// </summary>

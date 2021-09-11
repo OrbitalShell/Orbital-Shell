@@ -1,15 +1,17 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.Console;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Variable;
+
 using static OrbitalShell.Component.Console.EchoPrimitives;
 using static OrbitalShell.Lib.Str;
-using OrbitalShell.Component.CommandLine;
 
 namespace OrbitalShell.Commands
 {

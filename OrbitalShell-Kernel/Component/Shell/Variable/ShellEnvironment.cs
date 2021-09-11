@@ -1,19 +1,23 @@
-﻿using OrbitalShell.Component.Shell.Data;
-using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib.FileSystem;
-using OrbitalShell.Lib.Sys;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using static OrbitalShell.Lib.Str;
-using System.Collections.Generic;
-using System.Data;
-using OrbitalShell.Component.Shell.Module.Data;
+
+using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.Shell.Hook;
+using OrbitalShell.Component.Shell.Module.Data;
 using OrbitalShell.Lib;
+using OrbitalShell.Lib.FileSystem;
+using OrbitalShell.Lib.Sys;
+
+using static OrbitalShell.Lib.Str;
+
 using interser = System.Runtime.InteropServices;
 
 namespace OrbitalShell.Component.Shell.Variable
@@ -30,7 +34,7 @@ namespace OrbitalShell.Component.Shell.Variable
         public ColorSettings Colors { get; protected set; }
 
         public TableFormattingOptions TableFormattingOptions => GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions);
-        
+
         public FileSystemPathFormattingOptions FileSystemPathFormattingOptions => GetValue<FileSystemPathFormattingOptions>(ShellEnvironmentVar.display_fileSystemPathFormattingOptions);
 
         public readonly ModuleInit ModuleInitModel;
@@ -104,7 +108,7 @@ namespace OrbitalShell.Component.Shell.Variable
 
             // shell settings (defaults) TODO: --> put in ICommandLineProcessorSettings mapped to json
 
-            AddValue(ShellEnvironmentVar.settings_module_providerUrls, new List<string> { 
+            AddValue(ShellEnvironmentVar.settings_module_providerUrls, new List<string> {
                 "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/dev/module-index-repository/module-list.json" });
             AddValue(ShellEnvironmentVar.settings_console_prompt, ANSI.RSTXTA + "> ");        // prompt   
             AddValue(ShellEnvironmentVar.settings_console_initialWindowWidth, -1);
@@ -424,7 +428,8 @@ namespace OrbitalShell.Component.Shell.Variable
             return tv;
         }
 
-        public T GetValue<T>(string varPath, string varName, bool throwException = true) {
+        public T GetValue<T>(string varPath, string varName, bool throwException = true)
+        {
             var v = GetDataValue(Nsp(varPath, varName), throwException);
             if (v.Value == null) return default;
             var tv = (T)(v.Value);

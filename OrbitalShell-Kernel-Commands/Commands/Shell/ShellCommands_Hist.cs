@@ -1,12 +1,14 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Lib.FileSystem;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell;
+using OrbitalShell.Lib.FileSystem;
+
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -70,13 +72,13 @@ namespace OrbitalShell.Commands.Shell
                     if (readFromFile)
                     {
                         var lines = File.ReadAllLines(file.FullName);
-                        foreach (var line in lines) context.CommandLineProcessor.CmdsHistory.HistoryAppend(context,line);
+                        foreach (var line in lines) context.CommandLineProcessor.CmdsHistory.HistoryAppend(context, line);
                         context.CommandLineProcessor.CmdsHistory.HistorySetIndex(-1, false);
                     }
                     if (appendFromFile)
                     {
                         var lines = File.ReadAllLines(file.FullName);
-                        foreach (var line in lines) if (!context.CommandLineProcessor.CmdsHistory.HistoryContains(line)) context.CommandLineProcessor.CmdsHistory.HistoryAppend(context,line);
+                        foreach (var line in lines) if (!context.CommandLineProcessor.CmdsHistory.HistoryContains(line)) context.CommandLineProcessor.CmdsHistory.HistoryAppend(context, line);
                         context.CommandLineProcessor.CmdsHistory.HistorySetIndex(-1, false);
                     }
                 }

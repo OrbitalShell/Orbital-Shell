@@ -6,6 +6,7 @@ using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.Shell.Variable;
@@ -212,7 +213,8 @@ namespace OrbitalShell.Commands.Shell
             {
                 UnfoldCategories = false,
                 UnfoldItems = false,
-                IsRawModeEnabled = true
+                IsRawModeEnabled = true,
+                IsObjectDumpEnabled = false
             };
             var props = new Dictionary<string, object>();
 
@@ -220,7 +222,7 @@ namespace OrbitalShell.Commands.Shell
             {
                 props.Add("name", o.Name);
                 props.Add("is read only", o.IsReadOnly);
-                props.Add("namespace", o.ObjectPath);
+                props.Add("namespace", o.ObjectPath);   // 
                 props.Add("has attributes", o.HasAttributes);
             }
             else
@@ -237,7 +239,7 @@ namespace OrbitalShell.Commands.Shell
             else
                 throw new Exception($"can't get information for a variable member");
 
-            Table dt = new Table();
+            Table dt = new();
             dt.AddColumns("property", "value")
                 .SetFormat("property", $"{_.ShellEnv.Colors.Label}{{0}}{Rdc}");
             dt.Columns[0].DataType = typeof(string);

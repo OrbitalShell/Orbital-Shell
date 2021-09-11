@@ -2,6 +2,7 @@
 using System.Linq;
 
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.Shell.Data;
 
 namespace OrbitalShell.Commands.NuGetServerApi
@@ -32,7 +33,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
                 + $"{r}Summary={Summary}{r}Title={Title}{r}IconUrl={IconUrl}{r}LicenseUrl={LicenseUrl}{r}ProjectUrl={ProjectUrl}"
                 + $"{r}TotalDownloads={TotalDownloads}{r}Verified={Verified}{r}Tags={string.Join(";", Tags)}"
                 + $"{r}Authors={string.Join(";", Authors)}{r}PackagesTypes={string.Join(";", PackageTypes.Select(x => x.ToString()))}"
-                + $"{r}Versions={Environment.NewLine+"  "+string.Join( Environment.NewLine + "  ", Versions.Select(x => x.ToString()))}{r}";
+                + $"{r}Versions={Environment.NewLine + "  " + string.Join(Environment.NewLine + "  ", Versions.Select(x => x.ToString()))}{r}";
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
             tb.AddRow("verified", Verified);
             tb.AddRow("packages types", PackageTypes);
             tb.AddRow("versions", Versions);
-            tb.Echo(new EchoEvaluationContext(context,options));
+            tb.Echo(new EchoEvaluationContext(context, options));
         }
     }
 }

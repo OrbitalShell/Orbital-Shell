@@ -1,28 +1,30 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.Console;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using static OrbitalShell.Component.CommandLine.Reader.Interaction;
-using static OrbitalShell.Lib.TextFileReader;
-using static OrbitalShell.Lib.Str;
-using sc = System.Console;
-using static OrbitalShell.Lib.FileSystem.FileSystem;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Lib.FileSystem;
-using OrbitalShell.Lib.Data;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.CommandLine;
+using OrbitalShell.Lib.Data;
+using OrbitalShell.Lib.FileSystem;
+
+using static OrbitalShell.Component.CommandLine.Reader.Interaction;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using static OrbitalShell.Lib.FileSystem.FileSystem;
+using static OrbitalShell.Lib.Str;
+using static OrbitalShell.Lib.TextFileReader;
+
+using sc = System.Console;
 
 namespace OrbitalShell.Commands.TextFile
 {
-    #pragma warning disable CA1822 // Marquer les membres comme étant static
+#pragma warning disable CA1822 // Marquer les membres comme étant static
 
     [Commands("commands related to text files")]
     [CommandsNamespace(CommandNamespace.tf)]
@@ -33,7 +35,7 @@ namespace OrbitalShell.Commands.TextFile
             CommandEvaluationContext context,
             [Parameter("file or folder path")] WildcardFilePath path,
             [Option("h", "hide-line-numbers", "hide line numbers")] bool hideLineNumbers,
-            [Option("r","raw","turn on raw output")] bool raw
+            [Option("r", "raw", "turn on raw output")] bool raw
             )
         {
             if (path.CheckExists(context))
@@ -43,7 +45,7 @@ namespace OrbitalShell.Commands.TextFile
                 var r = new List<TextFileInfo>();
                 foreach (var item in items)
                 {
-                    PrintFile(context, (FilePath)item, hideLineNumbers,raw);
+                    PrintFile(context, (FilePath)item, hideLineNumbers, raw);
                     r.Add(new TextFileInfo((FilePath)item, null, OSPlatform.Create("?"), null));
                 }
                 if (items.Count == 0)
@@ -133,8 +135,8 @@ namespace OrbitalShell.Commands.TextFile
                             var prefix = hideLineNumbers ? "" : (context.ShellEnv.Colors.Dark + "  " + (pos + decpos + i + 1).ToString().PadRight(linecollength, ' ') + "  ");
 
                             context.Out.Echo(prefix + context.ShellEnv.Colors.Default);
-                            context.Out.Echo( lines[pos + decpos + i] , true, raw);
-                            
+                            context.Out.Echo(lines[pos + decpos + i], true, raw);
+
                             i++;
                         }
                         context.Out.ShowCur();

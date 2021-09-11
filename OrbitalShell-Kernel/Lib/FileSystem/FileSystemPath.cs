@@ -1,15 +1,18 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using System;
-using System.IO;
-using static OrbitalShell.Lib.Str;
-using System.Globalization;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell.Variable;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Component.EchoDirective;
-using System.Reflection;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.EchoDirective;
+using OrbitalShell.Component.Shell.Variable;
+
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using static OrbitalShell.Lib.Str;
 
 namespace OrbitalShell.Lib.FileSystem
 {
@@ -175,7 +178,7 @@ namespace OrbitalShell.Lib.FileSystem
                 var rs = options.ShortPath ? FileSystemInfo.Name : UnescapePathSeparators(FileSystemInfo.FullName);
                 var q = rs.Contains(' ') ? "\"" : "";
                 rs = q + rs + q;
-                @out.Echo(rs,options.LineBreak,options.IsRawModeEnabled);
+                @out.Echo(rs, options.LineBreak, options.IsRawModeEnabled);
                 return;
             }
 
@@ -209,7 +212,7 @@ namespace OrbitalShell.Lib.FileSystem
                 }
                 attr = $" {dir}{ro}{sys}{h}{a} {size,10} {smoddat}  ";
             }
-            var name = options.ShortPath ? FileSystemInfo.Name : UnescapePathSeparators( FileSystemInfo.FullName );
+            var name = options.ShortPath ? FileSystemInfo.Name : UnescapePathSeparators(FileSystemInfo.FullName);
             var quote = name.Contains(' ') ? "\"" : "";
             var pdr = options.PaddingRight - name.Length;
             if (!string.IsNullOrWhiteSpace(quote)) pdr -= 2;
@@ -224,7 +227,7 @@ namespace OrbitalShell.Lib.FileSystem
 
         public override string ToString()
         {
-            return UnescapePathSeparators( FileSystemInfo.FullName );
+            return UnescapePathSeparators(FileSystemInfo.FullName);
         }
 
         public static string UnescapePathSeparators(string path) => (path == null) ? path : path.Replace('\\', '/');

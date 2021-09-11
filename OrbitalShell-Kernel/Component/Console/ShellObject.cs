@@ -4,6 +4,7 @@ using System.Text;
 
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib;
+using OrbitalShell.Lib.Extensions;
 
 using static OrbitalShell.Component.Console.EchoPrimitives;
 
