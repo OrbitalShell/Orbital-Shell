@@ -312,11 +312,7 @@ namespace OrbitalShell.Commands.Shell
             [Parameter(0, "variable name with or without namespace prefix", false)] string name
             )
         {
-            var path = name;
-            if (!VariableSyntax.HasValidRootNamespace(name))
-                path = Variables.Nsp(VariableNamespace.local, name);
-
-            if (!_.Variables.Get(path, out var @var, false))
+            if (!_.Variables.Get(name, out var @var, false))
                 throw new VariablePathNotFoundException(name);
 
             return new CommandResult<object>(
