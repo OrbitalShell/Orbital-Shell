@@ -1,11 +1,9 @@
-﻿using OrbitalShell.Component.CommandLine.Processor;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OrbitalShell.Component.Console
+﻿namespace OrbitalShell.Component.Console
 {
-    // TODO: still a draft ...
+    /// <summary>
+    /// dynamically map echo(object) calls to external implementations
+    /// <para>TO DO: implements mapping and conventions</para>
+    /// </summary>
     public class EchoPrimitiveMap
     {
         public bool MappedCall(
@@ -13,7 +11,16 @@ namespace OrbitalShell.Component.Console
             EchoEvaluationContext context
             )
         {
-            obj = obj ?? throw new NullReferenceException();
+            if (obj == null)
+            {
+                context.Out.Echo(
+                    EchoPrimitives.DumpNull(
+                        context.CommandEvaluationContext
+                        )
+                    , context.Options.LineBreak);
+                return true;
+            }
+
             return false;
         }
 

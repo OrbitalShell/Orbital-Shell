@@ -19,6 +19,9 @@ using static OrbitalShell.Component.EchoDirective.Shortcuts;
 
 namespace OrbitalShell.Component.Console
 {
+    /// <summary>
+    /// these class concentrates methods that 'echoize' any object depending on object type
+    /// </summary>
     public static partial class EchoPrimitives
     {
         #region echo table builders 
