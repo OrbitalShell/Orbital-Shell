@@ -287,12 +287,17 @@ namespace OrbitalShell.Component.Console
         // TODO: from config
         public static string NullText = "{null}";
 
+        public static string DbNullText = "{DbNull}";
+
         public static string DumpNull(CommandEvaluationContext context) => DumpAsText(context, null);
 
         public static string DumpAsText(CommandEvaluationContext context, object o, bool quoteStrings = true)
         {
             if (o == null)
-                return context.ShellEnv.Colors.Null + NullText + Rdc ?? null;
+                return context.ShellEnv.Colors.Null + NullText + Rdc;
+            if (o is DBNull)
+                return context.ShellEnv.Colors.Null + DbNullText + Rdc;
+
             if (o is string s && quoteStrings) return $"\"{s}\"";
             return o.ToString();
         }
@@ -756,11 +761,12 @@ namespace OrbitalShell.Component.Console
                     string s, s2;
                     if (table is Table t)
                     {
-                        s = @out.GetPrint(t.GetFormatedValue(context, table.Columns[i].ColumnName, cols[i]?.ToString())) ?? "";
-                        colLengths[i] = Math.Max(s.Length, colLengths[i]);
+                        s = @out.GetPrint(t.GetFormatedValue(context, table.Columns[i].ColumnName, cols[i])) ?? "";
+                        var length = s.Length;
+                        colLengths[i] = Math.Max(length, colLengths[i]);
                         s2 = @out.GetPrint(t.GetFormatedHeader(table.Columns[i].ColumnName)) ?? "";
                         colLengths[i] = Math.Max(s2.Length, colLengths[i]);
-                        if (i == cols.Length - 1) colLengths[i] = s.Length + 2;
+                        if (i == cols.Length - 1) colLengths[i] = length + 2;
                     }
                     else
                     {
@@ -807,7 +813,11 @@ namespace OrbitalShell.Component.Console
 
             // rows
 
-            string fhv(string header, string value) => (table is Table t) ? t.GetFormatedValue(context, header, value) : value;
+            string fhv(string header, object value) =>
+                (table is Table t) ?
+                    t.GetFormatedValue(context, header, value is DBNull ? null : value)
+                    : DumpAsText(context, value is DBNull ? null : value, false);
+
             foreach (var rw in table.Rows)
             {
                 if (context.CommandLineProcessor.CancellationTokenSource?.IsCancellationRequested is bool b && b)
@@ -823,8 +833,7 @@ namespace OrbitalShell.Component.Console
                 {
                     if (!options.NoBorders && i == 0) @out.Echo(colsep);
 
-                    var txt = (arr[i] == null) ? "" : arr[i].ToString();
-                    var fvalue = fhv(table.Columns[i].ColumnName, txt);
+                    var fvalue = fhv(table.Columns[i].ColumnName, arr[i]);
                     var o = arr[i];
 
                     MethodInfo mi = null;
