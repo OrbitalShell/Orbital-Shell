@@ -233,7 +233,10 @@ namespace OrbitalShell.Commands.Shell
                 props.Add("is read only", v.IsReadOnly);
                 props.Add("has attributes", v.HasAttributes);
                 props.Add("has value", v.HasValue);
+                if (v.HasValue && v.Value != null)
+                    props.Add("value type", v.Value.GetType().UnmangledName());
                 props.Add("namespace", v.ObjectPath);
+
                 props.Add("value", v.Value);
             }
             else
