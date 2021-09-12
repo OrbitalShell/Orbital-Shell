@@ -192,6 +192,22 @@ namespace OrbitalShell.Component.Console
         #region natives types
 
         public static void Echo(
+            DBNull obj,
+            EchoEvaluationContext ctx)
+        {
+            var (@out, context, options) = ctx;
+            if (context.EchoMap.MappedCall(obj, ctx)) return;
+
+            @out.Echo(
+                DumpAsText(
+                    ctx.CommandEvaluationContext,
+                    obj,
+                    false)
+                , (ctx.Options != null) && options.LineBreak
+                , false);
+        }
+
+        public static void Echo(
             string obj,
             EchoEvaluationContext ctx)
         {
@@ -286,7 +302,7 @@ namespace OrbitalShell.Component.Console
         // TODO: from config
         public static string NullText = "{null}";
 
-        public static string DbNullText = "{DbNull}";
+        public static string DbNullText = "{null}";
 
         public static string DumpNull(CommandEvaluationContext context) => DumpAsText(context, null);
 
