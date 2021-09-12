@@ -6,8 +6,8 @@ namespace OrbitalShell.Component.Console.Formats
         ShellObject,
         IClonable<FormatingOptions>
     {
-        static new FormatingOptions _instance;
-        public new static FormatingOptions Instance
+        static FormatingOptions _instance;
+        public static FormatingOptions Instance
         {
             get
             {

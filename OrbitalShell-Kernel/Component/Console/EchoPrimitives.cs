@@ -560,9 +560,9 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             // handle interfaces types : TODO: should be handlable throught EchoMap
-            if (obj is ICollection)
+            if (obj is ICollection collection)
             {
-                ((ICollection)obj).Echo(ctx);
+                collection.Echo(ctx);
                 return;
             }
 
@@ -570,7 +570,15 @@ namespace OrbitalShell.Component.Console
             if ((mi = obj.GetEchoMethod()) != null)
                 mi.InvokeEcho(obj, ctx);
             else
-                @out.Echo(obj.ToString(), (options != null) ? options.LineBreak : false);
+            {
+                // object fallback print before to string
+                if (!ctx.Options.IsObjectDumpEnabled
+                    || obj.GetType().GetMethod("ToString", BindingFlags.DeclaredOnly) != null)
+                    // if no dump allowed or owned by type: ToString method is called
+                    @out.Echo(obj.ToString(), options != null && options.LineBreak);
+                else
+                    EchoLowLevelObjectDump(obj, ctx);
+            }
         }
 
         #endregion
@@ -620,12 +628,21 @@ namespace OrbitalShell.Component.Console
             var (@out, context, options) = ctx;
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
-            ShellObject.Instance.EchoObj(obj, ctx);
+            ShellObject.EchoObj(obj, ctx);
         }
 
         #endregion
 
         #region variables & collections objects
+
+        private static void EchoLowLevelObjectDump(
+            object obj,
+            EchoEvaluationContext echoEvaluationContext)
+        {
+            var (@out, context, options) = echoEvaluationContext;
+            //@out.Echo(obj.ToString(), options != null && options.LineBreak);
+            ShellObject.EchoObj(obj, echoEvaluationContext);
+        }
 
         public static void DumpObject(
             string name,
@@ -865,7 +882,28 @@ namespace OrbitalShell.Component.Console
                         var l = @out.GetPrint(fvalue).Length;
                         var spc = (i == arr.Length - 1 && !options.PadLastColumn) ? "" : ("".PadRight(Math.Max(0, colLengths[i] - l), ' '));
                         @out.Echo("" + context.ShellEnv.Colors.Default);
-                        @out.Echo(fvalue);
+
+                        if (o is string)
+                        {
+                            Echo((string)o,
+                                new EchoEvaluationContext(
+                                    @out,
+                                    context,
+                                    new TableFormattingOptions(options)
+                                    {
+                                        LineBreak = false,
+                                        IsRawModeEnabled = false
+                                    }));
+                        }
+                        else
+                            Echo(o,
+                                new EchoEvaluationContext(
+                                    @out,
+                                    context,
+                                    new TableFormattingOptions(options)
+                                    {
+                                        LineBreak = false
+                                    }));
                         @out.Echo(spc + colsep);
                     }
                 }

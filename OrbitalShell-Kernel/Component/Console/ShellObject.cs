@@ -16,17 +16,6 @@ namespace OrbitalShell.Component.Console
     [DebuggerDisplay("shell object")]
     public class ShellObject : IShellObject
     {
-        public static ShellObject _instance;
-        public static ShellObject Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new ShellObject();
-                return _instance;
-            }
-        }
-
         /// <summary>
         /// Echo method
         /// </summary>
@@ -38,7 +27,7 @@ namespace OrbitalShell.Component.Console
         /// </summary>
         /// <param name="o"></param>
         /// <param name="context"></param>
-        public void EchoObj(
+        public static void EchoObj(
             object o,
             EchoEvaluationContext ctx
             )
@@ -60,7 +49,7 @@ namespace OrbitalShell.Component.Console
                 var value = m.Item2;
                 if (value != null && (mi = value.GetEchoMethod()) != null)
                 {
-                    mi.InvokeEcho(value, new EchoEvaluationContext(@out, context, null));
+                    mi.InvokeEcho(value, ctx);
                     @out.Echo(context.ShellEnv.Colors.Default + "");
                 }
                 else
