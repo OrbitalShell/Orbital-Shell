@@ -885,7 +885,7 @@ namespace OrbitalShell.Component.Console
 
                         if (o is string)
                         {
-                            Echo((string)o,
+                            Echo(fvalue,
                                 new EchoEvaluationContext(
                                     @out,
                                     context,
