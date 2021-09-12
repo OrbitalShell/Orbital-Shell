@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 
-using OrbitalShell.Component.CommandLine.Parsing;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.EchoDirective;
@@ -202,10 +201,10 @@ namespace OrbitalShell.Component.Console
             if (obj.Length == 0)
             {
                 obj = QuotedString(context, obj);
-                @out.Echo(obj, (ctx.Options != null) && ctx.Options.LineBreak, false);
+                @out.Echo(obj, (ctx.Options != null) && options.LineBreak, false);
             }
             else
-                @out.Echo(obj, (ctx.Options != null) && ctx.Options.LineBreak, (ctx.Options != null) && ctx.Options.IsRawModeEnabled);
+                @out.Echo(obj, (ctx.Options != null) && options.LineBreak, (ctx.Options != null) && ctx.Options.IsRawModeEnabled);
         }
 
         public static void Echo(
@@ -216,7 +215,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo("" + (obj ? context.ShellEnv.Colors.BooleanTrue : context.ShellEnv.Colors.BooleanFalse));
-            @out.Echo(obj.ToString().ToLower(), (ctx.Options != null) && ctx.Options.LineBreak);
+            @out.Echo(obj.ToString().ToLower(), (options != null) && options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -228,7 +227,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Integer}");
-            @out.Echo(obj.ToString(), (ctx.Options != null) && ctx.Options.LineBreak);
+            @out.Echo(obj.ToString(), options != null && options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -240,7 +239,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Double}");
-            @out.Echo(obj.ToString(), (ctx.Options != null) && ctx.Options.LineBreak);
+            @out.Echo(obj.ToString(), options != null && options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -252,7 +251,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Float}");
-            @out.Echo(obj.ToString(), (ctx.Options != null) && ctx.Options.LineBreak);
+            @out.Echo(obj.ToString(), options != null && options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -264,7 +263,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Decimal}");
-            @out.Echo(obj.ToString(), (ctx.Options != null) && ctx.Options.LineBreak);
+            @out.Echo(obj.ToString(), options != null && options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -276,7 +275,7 @@ namespace OrbitalShell.Component.Console
             if (context.EchoMap.MappedCall(obj, ctx)) return;
 
             @out.Echo($"{context.ShellEnv.Colors.Char}");
-            @out.Echo(obj, (ctx.Options != null) && ctx.Options.LineBreak);
+            @out.Echo(obj, options != null && ctx.Options.LineBreak);
             @out.Echo(Rdc);
         }
 
@@ -646,13 +645,11 @@ namespace OrbitalShell.Component.Console
 
             dt.AddNamePrefix("".PadLeft(TabLength));
 
-            CommandSyntax.TryCastToString(ctx, obj, out var strValue);
-
             dt.InsertRow(
                 0
                 , name
                 , obj.GetType().UnmangledName()
-                , strValue
+                , obj
                 );
 
             dt.Echo(new EchoEvaluationContext(@out, context, options));

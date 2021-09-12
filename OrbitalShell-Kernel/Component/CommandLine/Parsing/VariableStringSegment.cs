@@ -21,9 +21,10 @@ namespace OrbitalShell.Component.CommandLine.Parsing
         }
 
         public string FullSyntax
-            => Text.WrapIf(
-                IsNameCaptured
-                , VariableNameOpenCapture + ""
-                , VariableNameEndCapture + "");
+            => CommandLineSyntax.VariablePrefix +
+                Text.WrapIf(
+                    IsNameCaptured
+                    , VariableNameOpenCapture + ""
+                    , VariableNameEndCapture + "");
     }
 }
