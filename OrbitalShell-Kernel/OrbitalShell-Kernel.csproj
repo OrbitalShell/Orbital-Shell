@@ -81,7 +81,7 @@
 
   <ItemGroup>
     <Folder Include="Component\CommandLine\CommandModel\Attributes\" />
-    <Folder Include="Component\Console\NewFolder\" />
+    <Folder Include="Component\Console\Primitives\" />
     <Folder Include="Component\Shell\Hook\Attributes\" />
     <Folder Include="Component\Shell\Module\Attributes\" />
     <Folder Include="Component\Shell\Module\Command\" />

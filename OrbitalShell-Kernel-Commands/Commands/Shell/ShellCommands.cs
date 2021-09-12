@@ -1,7 +1,6 @@
-﻿using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.CommandLine.CommandModel;
+﻿using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Commands.Shell
 {
@@ -9,7 +8,7 @@ namespace OrbitalShell.Commands.Shell
     [CommandsNamespace(CommandNamespace.shell)]
     public partial class ShellCommands : ICommandsDeclaringType
     {
-        #region app
+        #region console app
 
         [Command("exit the shell")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.app)]

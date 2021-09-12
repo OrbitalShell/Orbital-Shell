@@ -128,7 +128,7 @@ namespace OrbitalShell.Commands.Shell
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
             [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
-            [Option("p", "parse", "echo string values in parsed mode (ansi and directives). By default strings objects are represented by raw text")] bool parsed = false
+            [Option("r", "raw", "enable raw output of values (turn off echo directives and object console outputs). Default is disabled")] bool rawMode = false
             )
         {
             object obj;
@@ -144,7 +144,7 @@ namespace OrbitalShell.Commands.Shell
             {
                 UnfoldCategories = unfoldNamespaces,
                 UnfoldItems = unfoldObjects,
-                IsRawModeEnabled = !parsed
+                IsRawModeEnabled = !rawMode
             };
 
             if (obj is DataValue value)
@@ -171,6 +171,35 @@ namespace OrbitalShell.Commands.Shell
                     return new CommandResult<List<IDataObject>>(null);
                 }
             }
+        }
+
+        [Command("dump an object from a namespace path or a value path")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
+        public CommandResult<List<IDataObject>> Dump(
+            CommandEvaluationContext _,
+            [Parameter(0, "variable namespace or value path below the root namespace", true)] string varPath,
+            [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
+            [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
+            [Option("r", "raw", "enable raw output of values (turn off echo directives and object console outputs). Default is disabled")] bool rawMode = false
+            )
+        {
+            object obj;
+            if (varPath == null)
+            {
+                varPath = "";
+                obj = _.Variables.RootObject;
+            }
+            else
+                _.Variables.GetObject(varPath, out obj);
+
+            var options = new TableFormattingOptions(_.ShellEnv.TableFormattingOptions)
+            {
+                UnfoldCategories = unfoldNamespaces,
+                UnfoldItems = unfoldObjects,
+                IsRawModeEnabled = !rawMode
+            };
+
+            return new CommandResult<List<IDataObject>>(null);
         }
 
         [Command("set a command alias if a name and a value is provided. If only the name is provided, clear the alias definition. it no parameters is specified, list all alias")]
