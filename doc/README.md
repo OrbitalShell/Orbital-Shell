@@ -289,18 +289,34 @@ There are a various subjects that can be treated:
 
 <br>
 
-## Orbital shell uses these libraries:
+## Orbital shell is built within these frameworks:
 
+- Microsoft.NetCore.App
+- console-app
+
+## Orbital shell is depending of these libraries:
+
+- Microsoft.NET.Sdk
 - Microsoft.CodeAnalysis.CSharp.Scripting
 - Microsoft.Extensions.ObjectPool
 - Microsoft.Extensions.Hosting
 - NewtonSoft.Json
 
+## Orbital Shell deamon is depending of these frameworks:
+
+- Microsoft.AspNetCore.App
+- Microsoft.NetCore.App
+
+## Orbital Shell deamon is depending of these libraries:
+
+- Microsoft.NET.Sdk.Web
+- Swashbuckle.AspNetCore
+
 <br>
 
 ## notice / caveat
 
-> The project orbital shell was dependent of the project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **ARCHIVED** since it has been integrated into the **orbital-shell** project repository as project **OrbitalShell-ConsoleApp**, so it is still under development but code has been moved to this repository
+> The project orbital shell was dependent of the framework project **DotNetConsoleAppToolkit**. Now the library *DotNetConsoleAppToolkit* project repository is **ARCHIVED** since it has been integrated into the **orbital-shell** project repository as project **OrbitalShell-ConsoleApp**, so it is still under development but code has been moved to this repository
 ![dot-net-console-app-toolkit](https://img.shields.io/badge/dotnet--console--app--toolkit-repository-lightgrey?style=plastic)
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
 ![version](https://img.shields.io/github/v/tag/franck-gaspoz/dotnet-console-app-toolkit?style=plastic)
