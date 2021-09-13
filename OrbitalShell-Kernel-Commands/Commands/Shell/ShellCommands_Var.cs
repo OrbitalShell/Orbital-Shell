@@ -30,7 +30,7 @@ namespace OrbitalShell.Commands.Shell
             [Parameter(0, "variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
             [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
-            [Option("p", "parsed", "echo string values in parsed mode (ansi and directives). By default strings objects are represented by raw text")] bool parsed = false
+            [Option("d", "--enable-decorators", "enable objects decorators")] bool enableObjectsDecorators = false
             )
         {
             object obj;
@@ -38,7 +38,7 @@ namespace OrbitalShell.Commands.Shell
                 _.Variables.GetObject(VariableNamespace.env + "", out obj);
             else
                 _.Variables.GetObject(VariableNamespace.env, varPath, out obj);
-            return DumpVarTable(_, VariableNamespace.env + varPath, obj, unfoldNamespaces, unfoldObjects, parsed);
+            return DumpVarTable(_, VariableNamespace.env + varPath, obj, unfoldNamespaces, unfoldObjects, enableObjectsDecorators);
         }
 
         [Command("outputs a table of local variables and values")]
@@ -128,7 +128,7 @@ namespace OrbitalShell.Commands.Shell
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
             [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
-            [Option("r", "raw", "enable raw output of values (turn off echo directives and object console outputs). Default is disabled")] bool rawMode = false
+            [Option("d", "--enable-decorators", "enable objects decorators")] bool enableObjectsDecorators = false
             )
         {
             object obj;
@@ -144,7 +144,7 @@ namespace OrbitalShell.Commands.Shell
             {
                 UnfoldCategories = unfoldNamespaces,
                 UnfoldItems = unfoldObjects,
-                IsRawModeEnabled = !rawMode
+                IsRawModeEnabled = !enableObjectsDecorators
             };
 
             if (obj is DataValue value)

@@ -664,16 +664,18 @@ namespace OrbitalShell.Component.Console
             string name,
             object obj,
             CommandEvaluationContext ctx,
-            EchoEvaluationContext _)
+            EchoEvaluationContext echoEvaluationContext)
         {
-            var (@out, context, opts) = _;
-            if (context.EchoMap.MappedCall(obj, _)) return;
+            var (@out, context, opts) = echoEvaluationContext;
+            if (context.EchoMap.MappedCall(obj, echoEvaluationContext)) return;
 
             var options = opts as TableFormattingOptions;
-            options ??= (TableFormattingOptions)
-                context.ShellEnv.GetValue<TableFormattingOptions>(ShellEnvironmentVar.display_tableFormattingOptions)
-                .InitFrom(opts);
+            options ??=
+                context.ShellEnv.GetValue<TableFormattingOptions>(
+                    ShellEnvironmentVar.display_tableFormattingOptions)
+                .Clone();
             options = new TableFormattingOptions(options) { PadLastColumn = false };
+
             var dt = GetVarsDataTable(context, obj, new List<IDataObject>(), options);
 
             dt.AddNamePrefix("".PadLeft(TabLength));

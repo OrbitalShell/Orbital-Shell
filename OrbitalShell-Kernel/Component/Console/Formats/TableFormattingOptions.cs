@@ -26,7 +26,7 @@ namespace OrbitalShell.Component.Console.Formats
 
         public TableFormattingOptions(FormatingOptions o) => InitFrom(o);
 
-        public TableFormattingOptions(TableFormattingOptions o)
+        public void InitFrom(TableFormattingOptions o)
         {
             base.InitFrom(o);
             NoBorders = o.NoBorders;
@@ -37,6 +37,11 @@ namespace OrbitalShell.Component.Console.Formats
             ColumnLeftMargin = o.ColumnLeftMargin;
             ColumnRightMargin = o.ColumnRightMargin;
             UnfoldSubCategories = o.UnfoldSubCategories;
+        }
+
+        public TableFormattingOptions(TableFormattingOptions o)
+        {
+            InitFrom(o);
         }
 
         public TableFormattingOptions(
