@@ -46,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repo-info", "repo-info", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{EF8C09D7-E024-40D1-87AB-948D73FDB10E}"
 	ProjectSection(SolutionItems) = preProject
+		doc\echo-primtives.md = doc\echo-primtives.md
 		doc\README.md = doc\README.md
 	EndProjectSection
 EndProject

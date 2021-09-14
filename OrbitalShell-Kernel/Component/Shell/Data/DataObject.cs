@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 /*
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
@@ -23,7 +24,7 @@ namespace OrbitalShell.Component.Shell.Data
         public DataObject Parent { get; set; }
 
         private readonly Dictionary<string, IDataObject> _attributes
-            = new Dictionary<string, IDataObject>();
+            = new();
 
         public bool IsReadOnly { get; private set; }
 
@@ -54,12 +55,7 @@ namespace OrbitalShell.Component.Shell.Data
         }
 
         public List<IDataObject> GetAttributes()
-        {
-            var r = new List<IDataObject>();
-            foreach (var attrkv in _attributes)
-                r.Add(attrkv.Value);
-            return r;
-        }
+            => _attributes.Values.ToList();
 
         public IDataObject Set(ArraySegment<string> path, object value, bool isReadOnly = false, Type type = null)
         {
@@ -151,6 +147,15 @@ namespace OrbitalShell.Component.Shell.Data
                 return GetPathOwner(path.Slice(1), out data);
             }
             return false;
+        }
+
+        public void Add(string name, bool isReadOnly = false)
+        {
+            if (_attributes.ContainsKey(name))
+                throw new ArgumentException($"'{name}' already exists in '{ObjectPath}'", nameof(name));
+
+            var o = new DataObject(name, isReadOnly);
+            _attributes.Add(name, o);
         }
     }
 

@@ -120,8 +120,8 @@ namespace OrbitalShell.Commands.Shell
 
         [Command("outputs a table of variables and values")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        [CommandAlias("loc", "vars local")]
-        [CommandAlias("glob", "vars global")]
+        [CommandAlias("loc", "var local")]
+        [CommandAlias("glob", "var global")]
         [CommandAlias("settings", "env settings")]
         public CommandResult<List<IDataObject>> Var(
             CommandEvaluationContext _,
@@ -292,6 +292,33 @@ namespace OrbitalShell.Commands.Shell
             dt.Echo(new EchoEvaluationContext(_.Out, _, options));
 
             return new CommandResult<IDataObject>(obj as IDataObject);
+        }
+
+        [Command("adds a namespace under a namespace")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
+        public CommandVoidResult Namespace(
+            CommandEvaluationContext _,
+            [Parameter(0, "namespace name with or without prefix", false)] string name
+            )
+        {
+            object obj;
+
+            var varName = VariableSyntax.GetVariableName(name);
+            if (string.IsNullOrWhiteSpace(varName))
+                throw new ArgumentException("name can't be empty", nameof(name));
+
+            var varPath = VariableSyntax.GetPath(name);
+            if (varPath == "")
+                obj = _.Variables.RootObject;
+            else
+                _.Variables.GetObject(varPath, out obj);
+
+            if (obj is DataValue || obj is not IDataObject dataObject)
+                throw new ArgumentException("can't create a namespace under a non namespace path", nameof(name));
+
+            dataObject.Add(varName);
+
+            return CommandVoidResult.Instance;
         }
 
         [Command("set the value of a shell variable, or display the name and values of shell variables")]

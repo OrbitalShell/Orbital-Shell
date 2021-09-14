@@ -170,5 +170,15 @@ namespace OrbitalShell.Component.CommandLine.Parsing
                 if (name.StartsWith(n)) return true;
             return false;
         }
+
+        public static string GetPath(string name)
+        {
+            if (name == null)
+                return null;
+            var t = SplitPath(name);
+            if (t.Length == 0)
+                return "";
+            return string.Join(VariableNamePathSeparator, t[0..^1]);
+        }
     }
 }

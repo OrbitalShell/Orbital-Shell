@@ -16,5 +16,6 @@ namespace OrbitalShell.Component.Shell.Data
         bool Has(ArraySegment<string> path, out object data);
         IDataObject Set(ArraySegment<string> path, object value, bool isReadOnly = false, Type type = null);
         void Unset(ArraySegment<string> path);
+        void Add(string name, bool isReadOnly = false);
     }
 }

@@ -15,6 +15,7 @@ namespace OrbitalShell.Component.Shell.Data
         { }
     }
 
+    // 🔥🔥🔥 TODO: DataValue generic ?? 🔥🔥🔥
     public sealed class DataValue<T>
     {
 
@@ -191,7 +192,7 @@ namespace OrbitalShell.Component.Shell.Data
                     Set(target, path.Slice(1), value);
             }
             else
-                throw new DataValueReadOnlyException(this);
+                throw new Exception($"path '{attrname}' doesn't exists in value '{ObjectPath}'");
             return r;
         }
 
@@ -257,5 +258,8 @@ namespace OrbitalShell.Component.Shell.Data
         }
 
         string ValueId => $"DataValue '{Name}'";
+
+        public void Add(string name, bool isReadOnly = false)
+            => throw new InvalidOperationException($"can't add property '{name}' to variable '{Name}'");
     }
 }
