@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Parsing.Sentence;
+using OrbitalShell.Component.CommandLine.Parsing.Value;
 using OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.Shell.Data

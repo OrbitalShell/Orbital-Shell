@@ -1,14 +1,12 @@
 ﻿using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
-using static OrbitalShell.Component.Console.ANSI;
 using OrbitalShell.Component.Parser.ANSI;
-using System;
-using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Commands.FileSystem;
-using System.Collections.Generic;
+using OrbitalShell.Component.Shell.Variable;
+
+using static OrbitalShell.Component.Console.ANSI;
 
 namespace OrbitalShell.Commands.Dev
 {

@@ -4,13 +4,14 @@ using System.Data;
 using System.Diagnostics;
 
 using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Variable;
 
-using static OrbitalShell.Component.Console.EchoPrimitives;
+using static OrbitalShell.Component.Console.Primitives.EchoPrimitives;
 using static OrbitalShell.Lib.Str;
 
 namespace OrbitalShell.Commands

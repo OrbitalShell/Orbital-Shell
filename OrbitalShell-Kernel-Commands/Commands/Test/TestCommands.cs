@@ -1,16 +1,19 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib.FileSystem;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using static OrbitalShell.Component.Console.ANSI;
-using static OrbitalShell.Lib.TextFileReader;
-using sc = System.Console;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.CommandLine;
+using OrbitalShell.Lib.FileSystem;
+
+using static OrbitalShell.Component.Console.ANSI;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using static OrbitalShell.Lib.TextFileReader;
+
+using sc = System.Console;
 
 namespace OrbitalShell.Commands.Test
 {

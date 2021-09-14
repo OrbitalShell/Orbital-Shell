@@ -3,11 +3,11 @@ using System.Reflection;
 using System.Threading;
 
 using OrbitalShell.Component.CommandLine.Batch;
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Parsing.Command;
+using OrbitalShell.Component.CommandLine.Parsing.Parser;
 using OrbitalShell.Component.CommandLine.Reader;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Component.Shell.Module;
 
 namespace OrbitalShell.Component.CommandLine.Processor
@@ -29,9 +29,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         // TODO: add IHookManager HookManager here
         // remove from module manager
-        
+
         ICommandLineProcessorSettings Settings { get; }
-        ISyntaxAnalyser SyntaxAnalyzer { get; }
+        ICommandSyntaxAnalyzer SyntaxAnalyzer { get; }
 
         bool ExistsInPath(
             CommandEvaluationContext context,

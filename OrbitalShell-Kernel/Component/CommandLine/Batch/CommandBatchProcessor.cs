@@ -1,7 +1,9 @@
-﻿using OrbitalShell.Component.CommandLine.Processor;
+﻿using System;
+
+using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib;
-using static OrbitalShell.Component.CommandLine.Parsing.CommandLineSyntax;
-using System;
+
+using static OrbitalShell.Component.CommandLine.Parsing.Sentence.CommandLineSyntax;
 
 namespace OrbitalShell.Component.CommandLine.Batch
 {

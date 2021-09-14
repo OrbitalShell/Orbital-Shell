@@ -1,5 +1,6 @@
-﻿using OrbitalShell.Component.CommandLine.Parsing;
-using System;
+﻿using System;
+
+using OrbitalShell.Component.CommandLine.Parsing.Parser;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -43,7 +44,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// </summary>
         public readonly string EvalErrorText;
 
-        public string ErrorReason => EvalError?.Message ?? EvalErrorText; 
+        public string ErrorReason => EvalError?.Message ?? EvalErrorText;
 
         /// <summary>
         /// cmd line expr. eval result

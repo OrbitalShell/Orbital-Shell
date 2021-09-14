@@ -1,31 +1,40 @@
-﻿using OrbitalShell.Component.CommandLine.Batch;
-using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.Shell.Data;
-using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.CommandLine.Pipeline;
-using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Component.Shell.Module;
-using lib = OrbitalShell.Lib;
-using OrbitalShell.Lib;
-using Microsoft.CodeAnalysis;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
-using static OrbitalShell.Component.CommandLine.Parsing.CommandLineParser;
-using cmdlr = OrbitalShell.Component.CommandLine.Reader;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
-using OrbitalShell.Lib.FileSystem;
 using System.Text;
-using OrbitalShell.Lib.Process;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Component.Shell.Hook;
+using System.Threading;
 using System.Threading.Tasks;
+
+using Microsoft.CodeAnalysis;
+
+using OrbitalShell.Component.CommandLine.Batch;
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Parsing.Command;
+using OrbitalShell.Component.CommandLine.Parsing.Command.Parameter;
+using OrbitalShell.Component.CommandLine.Parsing.Parser;
+using OrbitalShell.Component.CommandLine.Parsing.Pipeline;
+using OrbitalShell.Component.CommandLine.Parsing.Value;
+using OrbitalShell.Component.CommandLine.Parsing.Variable;
+using OrbitalShell.Component.CommandLine.Pipeline;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Data;
+using OrbitalShell.Component.Shell.Hook;
+using OrbitalShell.Component.Shell.Module;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.FileSystem;
+using OrbitalShell.Lib.Process;
+
+using static OrbitalShell.Component.CommandLine.Parsing.Sentence.CommandLineParser;
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+
+using cmdlr = OrbitalShell.Component.CommandLine.Reader;
+using lib = OrbitalShell.Lib;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -55,10 +64,10 @@ namespace OrbitalShell.Component.CommandLine.Processor
         /// shell args
         /// </summary>
         public string[] Args => (string[])_args?.Clone();
-                
+
         public bool IsInitialized { get; set; } = false;
 
-        public ISyntaxAnalyser SyntaxAnalyzer { get; protected set; }
+        public ICommandSyntaxAnalyzer SyntaxAnalyzer { get; protected set; }
 
         public CommandsHistory CmdsHistory { get; set; }
 
@@ -81,7 +90,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
         string[] _args;
 
         ICommandLineProcessorSettings _settings;
-        
+
         static int _instanceId = 0;
 
         #endregion
@@ -150,7 +159,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             IConsole console,
             ICommandBatchProcessor cbp,
             ICommandsAlias cal,
-            ISyntaxAnalyser sa,
+            ICommandSyntaxAnalyzer sa,
             IModuleManager modManager,
             IHookManager hookManager,
             IExternalParserExtension parserExt,
@@ -169,7 +178,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             HookManager = hookManager;
             _settings = settings;
             CommandBatchProcessor = cbp;
-            CommandsAlias = cal;            
+            CommandsAlias = cal;
         }
 
         public void SetArgs(string[] args) => _args = args;
@@ -737,7 +746,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                 int c = -1;
 
                 if (waitForExit)
-                {                    
+                {
                     if (redirectStandardInput)
                     {
                         inputTask = new Thread(
@@ -822,7 +831,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                         }
                     });
 
-                    pw.Process.WaitForExit();                    
+                    pw.Process.WaitForExit();
 
                     retCode = pw.Process.ExitCode;
 
@@ -832,7 +841,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     output = sb.ToString();
                 }
 
-                if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd)) 
+                if (context.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd))
                     context.Out.Echoln($"{context.ShellEnv.Colors.TaskInformation}process '{Path.GetFileName(comPath)}' exited with code: {retCode}(rdc)");
 
                 return retCode;
@@ -990,6 +999,6 @@ namespace OrbitalShell.Component.CommandLine.Processor
             return r;
         }
 
-#endregion
+        #endregion
     }
 }

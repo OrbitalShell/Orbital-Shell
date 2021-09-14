@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Console.Formats;
 using OrbitalShell.Component.Shell;

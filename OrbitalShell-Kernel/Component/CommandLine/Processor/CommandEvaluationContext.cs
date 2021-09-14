@@ -1,7 +1,9 @@
-﻿using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Component.Console;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.CompilerServices;
+
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Primitives;
+using OrbitalShell.Component.Shell.Variable;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {
@@ -14,7 +16,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
 
         public readonly Logger Logger;
 
-        public override string ToString() => $"[com eval ctx : id={ID} Out={Out} ]";        
+        public override string ToString() => $"[com eval ctx : id={ID} Out={Out} ]";
 
         /// <summary>
         /// context id
@@ -93,7 +95,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
             CommandLineProcessor = commandLineProcessor;
             SetStreams(@out, @in, err);
             InputData = inputData;
-           
+
             SetupShellEnvVar();
             Variables = new Variables((VariableNamespace.env, ShellEnv));
             ShellEnv.Initialize(this);

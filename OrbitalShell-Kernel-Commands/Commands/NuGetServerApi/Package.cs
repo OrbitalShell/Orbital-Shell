@@ -3,6 +3,7 @@ using System.Linq;
 
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.Console.Primitives;
 using OrbitalShell.Component.Shell.Data;
 
 namespace OrbitalShell.Commands.NuGetServerApi

@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 using OrbitalShell.Component.CommandLine.Processor;
 
-using static OrbitalShell.Component.Console.EchoPrimitives;
+using static OrbitalShell.Component.Console.Primitives.EchoPrimitives;
 
 namespace OrbitalShell.Component.Shell.Data
 {

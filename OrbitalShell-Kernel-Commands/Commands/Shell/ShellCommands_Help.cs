@@ -6,9 +6,11 @@ using System.Reflection;
 using System.Reflection.Metadata;
 
 using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
+using OrbitalShell.Component.CommandLine.Parsing.Sentence;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Primitives;
 using OrbitalShell.Component.EchoDirective;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Lib;

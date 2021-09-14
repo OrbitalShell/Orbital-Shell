@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Parsing.Sentence;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Lib;

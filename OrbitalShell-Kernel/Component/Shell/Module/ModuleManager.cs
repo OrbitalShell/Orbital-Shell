@@ -1,13 +1,14 @@
-using System.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+
 using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Hook;
-using System.Reflection;
-using System.IO;
-using OrbitalShell.Component.CommandLine.Parsing;
-using System;
 
 namespace OrbitalShell.Component.Shell.Module
 {
@@ -25,9 +26,9 @@ namespace OrbitalShell.Component.Shell.Module
         private readonly List<string> _loadedModules = new List<string>();
 
         private readonly Dictionary<string, Assembly> _loadedAssemblies = new Dictionary<string, Assembly>();
-        
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:remove not read private member", Justification = "<Wait future impl.>")]
-        readonly ISyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
+
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:remove not read private member", Justification = "<Wait future impl.>")]
+        //readonly ISyntaxAnalyser _syntaxAnalyzer = new SyntaxAnalyser();
 
         public IModuleCommandManager ModuleCommandManager { get; protected set; }
 
@@ -37,7 +38,7 @@ namespace OrbitalShell.Component.Shell.Module
 
         #region init
 
-        public ModuleManager(            
+        public ModuleManager(
             //ISyntaxAnalyser syntaxAnalyser,
             IModuleCommandManager modComManager,
             IHookManager modHookManager,
@@ -187,7 +188,7 @@ namespace OrbitalShell.Component.Shell.Module
                 ModuleHookManager.InvokeHooks(
                     context,
                     Hooks.ModuleInit,
-                    HookTriggerMode.FirstTimeOnly,                    
+                    HookTriggerMode.FirstTimeOnly,
                     (o) =>
                     {
                         moduleSpecification.IsInitialized = true;

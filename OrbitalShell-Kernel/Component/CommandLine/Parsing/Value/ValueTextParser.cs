@@ -1,0 +1,315 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Parsing.Sentence;
+using OrbitalShell.Lib;
+
+namespace OrbitalShell.Component.CommandLine.Parsing.Value
+{
+    public static class ValueTextParser
+    {
+        /// <summary>
+        /// try to convert a text representation to a typed valued according to a type specification
+        /// </summary>
+        /// <param name="ovalue">object (null,string) to translate to object real type</param>
+        /// <param name="ptype">real type expected</param>
+        /// <param name="defaultValue">default value used on type value instantiation default value. not used if null</param>
+        /// <param name="convertedValue">value converted to real type expected</param>
+        /// <param name="possibleValues">in case of fail, message indicating possible values for the expected type</param>
+        /// <param name="fallBackType">if given value if not a string, try to downcast to this type with precision lost if allowed</param>
+        /// <returns>true if success, false otherwise</returns>
+        public static bool ToTypedValue(
+            object ovalue,
+            Type ptype,
+            object defaultValue,
+            out object convertedValue,
+            out List<object> possibleValues,
+            Type fallBackType = null,
+            bool defaultReturnIdentityOk = false,
+            bool allowPrecisionLost = true
+            )
+        {
+            convertedValue = null;
+            possibleValues = null;
+            if (ovalue == null) return false;
+
+            bool result = false;
+            bool found = false;
+            possibleValues = null;
+            var customAttrType = ptype.GetCustomAttribute<CustomParameterType>();
+            var interfaces = ptype.GetInterfaces();
+
+            var h = ptype.GetInheritanceChain();
+
+            if (ptype.HasInterface(typeof(ICollection)) && ovalue is string s)
+            {
+                var genArgs = ptype.GenericTypeArguments;
+                if (genArgs.Length > 1) throw new Exception("generic type with more then 1 type argument is not supported: " + ptype.UnmangledName());
+                var argType = genArgs[0];
+                var lst = Activator.CreateInstance(ptype);
+                var met = ptype.GetMethod("Add");
+                if (met == null) throw new Exception($"the type {ptype.UnmangledName()} has no method 'Add' that would allow to use it as a collection parameter type");
+
+                var values = s.SplitNotUnslashed(CommandLineSyntax.ParameterTypeListValuesSeparator);
+                foreach (var val in values)
+                {
+                    if (ToTypedValue(val, argType, null, out var convertedVal, out var valPossibleValues, fallBackType, defaultReturnIdentityOk, allowPrecisionLost))
+                    {
+                        met.Invoke(lst, new object[] { convertedVal });
+                    }
+                    else
+                    {
+                        possibleValues = valPossibleValues;
+                        return false;
+                    }
+                }
+
+                convertedValue = lst;
+                return true;
+
+            }
+            else if (ptype.HasInterface(typeof(ICollection)) && ovalue.GetType().HasInterface(typeof(ICollection)))
+            {
+                var genArgs = ptype.GenericTypeArguments;
+                if (genArgs.Length > 1) throw new Exception("generic type with more then 1 type argument is not supported: " + ptype.UnmangledName());
+                var argType = genArgs[0];
+                var lst = Activator.CreateInstance(ptype);
+                var met = ptype.GetMethod("Add");
+                if (met == null) throw new Exception($"the type {ptype.UnmangledName()} has no method 'Add' that would allow to use it as a collection parameter type");
+
+                var values = ((ICollection)ovalue).GetEnumerator();
+                while (values.MoveNext())
+                {
+                    var val = values.Current;
+                    if (ToTypedValue(val, argType, null, out var convertedVal, out var valPossibleValues, fallBackType, defaultReturnIdentityOk, allowPrecisionLost))
+                    {
+                        met.Invoke(lst, new object[] { convertedVal });
+                    }
+                    else
+                    {
+                        possibleValues = valPossibleValues;
+                        return false;
+                    }
+                }
+
+                convertedValue = lst;
+                return true;
+            }
+            else if (ptype.IsEnum && ovalue is string str)
+            {
+                if (ptype.GetCustomAttribute<FlagsAttribute>() != null && str.Contains(CommandLineSyntax.ParameterTypeFlagEnumValuePrefixs))
+                {
+                    // flag enum Name
+                    var fvalues = str.SplitByPrefixsNotUnslashed(CommandLineSyntax.ParameterTypeFlagEnumValuePrefixs);
+                    object flag = (defaultValue == null) ? Activator.CreateInstance(ptype) : defaultValue;
+
+                    foreach (var fval in fvalues)
+                    {
+                        var val = fval.Substring(1);
+                        var flagEnabling = fval[0] == CommandLineSyntax.ParameterTypeFlagEnumValuePrefixEnabled;
+                        if (ToTypedValue(val, ptype, null, out var convertedVal, out var valPossibleValues, fallBackType, defaultReturnIdentityOk, allowPrecisionLost))
+                        {
+                            if (flagEnabling)
+                                flag = (int)flag + (int)convertedVal;
+                            else
+                                flag = (int)flag & ~((int)convertedVal);
+                        }
+                        else
+                        {
+                            possibleValues = valPossibleValues;
+                            return false;
+                        }
+                    }
+
+                    convertedValue = flag;
+                    return true;
+                }
+                else
+                {
+                    // support for any Enum type (expr = single val)
+                    // support for flag Enum type and expr = val1,...,valn (result is: Enum val1 | .. | valn) - test with: val.HasFlag(flagval)
+                    // support for Enum type and expr = val1,...,valn (result is: int val1 + .. + valn) - test with: val.HasFlag(flagval)
+                    if (Enum.TryParse(ptype, str, false, out convertedValue))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        possibleValues = Enum.GetNames(ptype).ToList<object>();
+                        return false;
+                    }
+                }
+            }
+            else if (customAttrType != null)
+            {
+                try
+                {
+                    convertedValue = Activator.CreateInstance(ptype, new object[] { ovalue });
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (ovalue is string value)
+                {
+                    if (ptype == typeof(int))
+                    {
+                        result = int.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(Int16))
+                    {
+                        result = Int16.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(Int32))
+                    {
+                        result = Int32.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(Int64))
+                    {
+                        result = Int64.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(UInt16))
+                    {
+                        result = UInt16.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(UInt32))
+                    {
+                        result = UInt32.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(UInt64))
+                    {
+                        result = UInt64.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(short))
+                    {
+                        result = short.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(long))
+                    {
+                        result = long.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(double))
+                    {
+                        result = double.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(float))
+                    {
+                        result = float.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(decimal))
+                    {
+                        result = decimal.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(string))
+                    {
+                        result = true;
+                        convertedValue = value;
+                        found = true;
+                    }
+                    if (ptype == typeof(bool))
+                    {
+                        result = bool.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(sbyte))
+                    {
+                        result = sbyte.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(byte))
+                    {
+                        result = byte.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(char))
+                    {
+                        result = char.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(Single))
+                    {
+                        result = Single.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                    if (ptype == typeof(DateTime))
+                    {
+                        result = DateTime.TryParse(value, out var intv);
+                        convertedValue = intv;
+                        found = true;
+                    }
+                }
+
+                // unknown type, not CustomParameter: converted value = original value
+                if (!found)
+                {
+                    if (allowPrecisionLost)
+                    {
+                        var valType = ovalue.GetType();
+                        // try to decrease precision with lost
+                        if (valType.IsValueType && valType.IsPrimitive)
+                        {
+                            if (valType.Name.Contains("64") && ptype.Name.Contains("32"))
+                            {
+                                if (ptype == typeof(Int32) && valType == typeof(Int64))
+                                {
+                                    // this is a common case implied by json deserializer which set int to 64bits as default
+
+                                    unchecked
+                                    {
+                                        var newVal = ((Int64)ovalue) & 0x00000000FFFFFFFFL;
+                                        convertedValue = (Int32)newVal;
+                                        if (!allowPrecisionLost && (Int64)convertedValue != (Int64)ovalue)
+                                            convertedValue = null;
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    result = defaultReturnIdentityOk;
+                    if (defaultReturnIdentityOk) convertedValue = ovalue;
+                }
+            }
+
+            return result;
+        }
+    }
+}

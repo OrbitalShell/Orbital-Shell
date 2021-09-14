@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.ObjectPool;
 
+using OrbitalShell.Component.CommandLine.Parsing.Parser;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
-using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Hook;
 using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Lib;
@@ -38,7 +38,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
         ICommandLineProcessor _commandLineProcessor;
         bool _ignoreNextKey = false;
 
-        public Func<IAsyncResult,ExpressionEvaluationResult> InputProcessor { get; set; }
+        public Func<IAsyncResult, ExpressionEvaluationResult> InputProcessor { get; set; }
 
         public IConsole Console { get; set; }
 
@@ -52,8 +52,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
 
         #region initialization operations
 
-        public CommandLineReader( )
-        {            
+        public CommandLineReader()
+        {
             _instanceId++;
 #if DBG_DI_INSTANCE
             System.Console.Out.WriteLine($"new CLR #{_InstanceId}");
@@ -68,7 +68,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
             _defaultPrompt = prompt ?? $"> ";
             Console = clp.Console;
             _commandLineProcessor = clp;
-            if (_commandLineProcessor != null && _commandLineProcessor != null) 
+            if (_commandLineProcessor != null && _commandLineProcessor != null)
                 _commandLineProcessor.CommandLineReader = this;
             Initialize(evalCommandDelegate);
         }
@@ -160,9 +160,9 @@ namespace OrbitalShell.Component.CommandLine.Reader
         {
             var s = (string)asyncResult.AsyncState;
             var expressionEvaluationResult = ProcessCommandLine(
-                s, 
-                _evalCommandDelegate, 
-                true, 
+                s,
+                _evalCommandDelegate,
+                true,
                 true
                 );
             return expressionEvaluationResult;
@@ -177,8 +177,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
         {
             var clp = _commandLineProcessor;
 
-            if (commandLine==null) return null;
-            
+            if (commandLine == null) return null;
+
             if (outputStartNextLine)
             {
                 Console.Out.LineBreak();
@@ -188,7 +188,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
             {
                 if (enablePrePostComOutput && clp != null)
                     Console.Out.Echo(clp.CommandEvaluationContext.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_clr_comPreAnalysisOutput));
-                
+
                 return null;
             }
 
@@ -202,7 +202,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 Console.Err.IsModified = false;
 
                 clp.ModuleManager.ModuleHookManager.InvokeHooks(
-                    clp.CommandEvaluationContext, Hooks.PreProcessCommandLine, commandLine );
+                    clp.CommandEvaluationContext, Hooks.PreProcessCommandLine, commandLine);
 
                 var task = Task.Run<ExpressionEvaluationResult>(
                     () => evalCommandDelegate(
@@ -229,7 +229,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 catch (OperationCanceledException)
                 {
                     clp.ModuleManager.ModuleHookManager.InvokeHooks<CommandLineReader>(
-                        clp.CommandEvaluationContext, Hooks.ProcessCommandLineCanceled ) ;
+                        clp.CommandEvaluationContext, Hooks.ProcessCommandLineCanceled);
 
                     expressionEvaluationResult = task.Result;
                     Console.Out.Warningln($"command canceled: {commandLine}");
@@ -239,12 +239,12 @@ namespace OrbitalShell.Component.CommandLine.Reader
             catch (Exception evalCommandException)
             {
                 clp.ModuleManager.ModuleHookManager.InvokeHooks(
-                    clp.CommandEvaluationContext,Hooks.ProcessCommandLineError);
+                    clp.CommandEvaluationContext, Hooks.ProcessCommandLineError);
                 Console.LogError(evalCommandException);
                 expressionEvaluationResult = new ExpressionEvaluationResult(
                     commandLine,
                     null,
-                    Parsing.ParseResultType.Empty,
+                    ParseResultType.Empty,
                     null,
                     (int)ReturnCode.Error,
                     evalCommandException,
@@ -258,7 +258,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                 sc.CancelKeyPress -= CancelKeyPress;
 
                 clp.ModuleManager.ModuleHookManager
-                    .InvokeHooks(clp.CommandEvaluationContext, Hooks.PostProcessCommandLine );
+                    .InvokeHooks(clp.CommandEvaluationContext, Hooks.PostProcessCommandLine);
 
                 // post com output
 
@@ -276,7 +276,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
             if (enableHistory)
                 clp.CmdsHistory.HistoryAppend(clp.CommandEvaluationContext, commandLine);
 
-            return expressionEvaluationResult;            
+            return expressionEvaluationResult;
         }
 
         private void CancelKeyPress(object sender, ConsoleCancelEventArgs e)
@@ -293,8 +293,8 @@ namespace OrbitalShell.Component.CommandLine.Reader
             prompt ??= _defaultPrompt;
             InputProcessor ??= ProcessInput;
             return BeginReadln(
-                new AsyncCallback((x) => InputProcessor(x)), 
-                prompt, 
+                new AsyncCallback((x) => InputProcessor(x)),
+                prompt,
                 waitForReaderExited);
         }
 
@@ -302,24 +302,25 @@ namespace OrbitalShell.Component.CommandLine.Reader
             string text,
             bool sendEnter = true,
             bool waitEndOfInput = true,
-            Action<IAsyncResult,ExpressionEvaluationResult> postInputProcessorCallback = null
+            Action<IAsyncResult, ExpressionEvaluationResult> postInputProcessorCallback = null
             )
         {
             _sentInput = text + ((sendEnter) ? Environment.NewLine : "");
             if (_inputReaderThread != null)
                 StopBeginReadln();
 
-            (IAsyncResult asyncResult,ExpressionEvaluationResult evalResult) result = default;
+            (IAsyncResult asyncResult, ExpressionEvaluationResult evalResult) result = default;
             InputProcessor ??= ProcessInput;
             BeginReadln(
-                (asyncResult) => {
+                (asyncResult) =>
+                {
                     var expressionEvaluationResult = InputProcessor?.Invoke(asyncResult);
-                    postInputProcessorCallback?.Invoke(asyncResult,expressionEvaluationResult);
-                    result = (asyncResult,expressionEvaluationResult);
+                    postInputProcessorCallback?.Invoke(asyncResult, expressionEvaluationResult);
+                    result = (asyncResult, expressionEvaluationResult);
                 },
-                _prompt, 
+                _prompt,
                 waitEndOfInput,
-                loop:false
+                loop: false
                 );
             return result;
         }
@@ -393,7 +394,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                 _readingStarted = true;
 
                                 context.CommandLineProcessor.ModuleManager.ModuleHookManager
-                                    .InvokeHooks(context, Hooks.BeginReadCommandLine );
+                                    .InvokeHooks(context, Hooks.BeginReadCommandLine);
                             }
                         }
                         var eol = false;
@@ -420,11 +421,11 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                     var keyPressedEventArgs = _keyEventArgsPool.Get();
                                     keyPressedEventArgs.Value = c;
                                     context.CommandLineProcessor.ModuleManager.ModuleHookManager
-                                        .InvokeHooks(context, Hooks.ReadCommandLineKeyPressed, keyPressedEventArgs );                                    
-                                    
-                                    #if dbg
+                                        .InvokeHooks(context, Hooks.ReadCommandLineKeyPressed, keyPressedEventArgs);
+
+#if dbg
                                     System.Diagnostics.Debug.WriteLine($"{c.KeyChar}={c.Key}");
-                                    #endif
+#endif
 
                                     #region handle special keys - edition mode, movement
 
@@ -457,7 +458,7 @@ namespace OrbitalShell.Component.CommandLine.Reader
                                         {
                                             printedStr = c.KeyChar + "";
                                             printed = true;
-                                        } 
+                                        }
 
                                         switch (c.Key)
                                         {

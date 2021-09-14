@@ -6,7 +6,9 @@ using System.Reflection;
 using System.Text;
 
 using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
+using OrbitalShell.Component.CommandLine.Parsing.Command;
+using OrbitalShell.Component.CommandLine.Parsing.Sentence;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Lib;
 
@@ -43,12 +45,12 @@ namespace OrbitalShell.Component.Shell.Module
 
         readonly IModuleSet _modules;
 
-        readonly ISyntaxAnalyser _syntaxAnalyzer;
+        readonly ICommandSyntaxAnalyzer _syntaxAnalyzer;
 
         #endregion
 
         public ModuleCommandManager(
-            ISyntaxAnalyser syntaxAnalyser,
+            ICommandSyntaxAnalyzer syntaxAnalyser,
             IModuleSet modules
             )
         {

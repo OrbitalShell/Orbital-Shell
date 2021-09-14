@@ -1,5 +1,5 @@
 using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Parsing.Parser;
 
 namespace OrbitalShell.Component.CommandLine.Processor
 {

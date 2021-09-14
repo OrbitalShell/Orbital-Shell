@@ -1,6 +1,6 @@
 ﻿//#define printDefaultValueInSyntax
 
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Parsing.Sentence;
 using OrbitalShell.Component.Console;
 
 using System.Reflection;

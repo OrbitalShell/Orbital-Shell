@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 
-using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Lib.FileSystem;

@@ -1,10 +1,5 @@
 ﻿//#define dbg
 
-using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Console;
-using OrbitalShell.Lib;
-using OrbitalShell.Lib.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,11 +9,19 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
-using static OrbitalShell.Lib.Str;
-using sc = System.Console;
-using static OrbitalShell.Component.EchoDirective.Shortcuts;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.CommandLine;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.FileSystem;
+
+using static OrbitalShell.Component.EchoDirective.Shortcuts;
+using static OrbitalShell.Lib.Str;
+
+using sc = System.Console;
 
 namespace OrbitalShell.Commands.TextEditor
 {
@@ -93,7 +96,7 @@ namespace OrbitalShell.Commands.TextEditor
                 else
                 {
                     _filePath = filePath;
-                }                
+                }
             }
             DisplayEditor();
             WaitAndProcessKeyPress();
@@ -576,7 +579,7 @@ namespace OrbitalShell.Commands.TextEditor
         {
             Context.Out.SetCursorPos(1, _barY);
             //Context.Out.EnableInvert();
-            Context.Out.Echo(Context.Out.ColorSettings.InteractionPanel+text);
+            Context.Out.Echo(Context.Out.ColorSettings.InteractionPanel + text);
             //Context.Out.Echo(text);
             //Context.Out.DisableTextDecoration();
         }

@@ -4,12 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using OrbitalShell.Component.CommandLine.Batch;
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Parsing.Command;
+using OrbitalShell.Component.CommandLine.Parsing.Parser;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.CommandLine.Reader;
-using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Hook;
-using OrbitalShell.Component.Shell.Init;
 using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Lib.Sys;
 
@@ -19,41 +18,41 @@ namespace OrbitalShell.Component.Shell.Init
     {
         public IServiceProvider ScopedServiceProvider { get; set; }
 
-        public IServiceScope ServiceScope { get;set;}
+        public IServiceScope ServiceScope { get; set; }
 
         public IHostBuilder InitializeServices(IHostBuilder hostBuilder)
         {
             hostBuilder.ConfigureServices(
                 (_, services) => services
                     .AddScoped
-                        <IShellArgsOptionBuilder,ShellArgsOptionBuilder>()
+                        <IShellArgsOptionBuilder, ShellArgsOptionBuilder>()
                     .AddScoped
-                        <IShellBootstrap,ShellBootstrap>()
+                        <IShellBootstrap, ShellBootstrap>()
                     .AddScoped
                         <ICommandLineProcessor, CommandLineProcessor>()
                     .AddScoped
                         <IServiceProviderScope, ServiceProviderScope>(
-                            serviceProvider => 
+                            serviceProvider =>
                                 new ServiceProviderScope(ScopedServiceProvider)
                             )
                     .AddScoped
-                        <ICommandsAlias,CommandsAlias>()
+                        <ICommandsAlias, CommandsAlias>()
                     .AddScoped
-                        <IModuleSet,ModuleSet>()
+                        <IModuleSet, ModuleSet>()
                     .AddScoped
-                        <ICommandBatchProcessor,CommandBatchProcessor>()
+                        <ICommandBatchProcessor, CommandBatchProcessor>()
                     .AddScoped
-                        <ISyntaxAnalyser,SyntaxAnalyser>()
+                        <ICommandSyntaxAnalyzer, CommandSyntaxAnalyser>()
                     .AddScoped
-                        <IModuleManager,ModuleManager>()
+                        <IModuleManager, ModuleManager>()
                     .AddScoped
-                        <IModuleCommandManager,ModuleCommandManager>()
+                        <IModuleCommandManager, ModuleCommandManager>()
                     .AddScoped
-                        <IHookManager,HookManager>()
+                        <IHookManager, HookManager>()
                     .AddScoped
                         <IExternalParserExtension, CommandLineProcessorExternalParserExtension>()
                     .AddScoped
-                        <ICommandLineReader,CommandLineReader>(
+                        <ICommandLineReader, CommandLineReader>(
                             serviceProvider =>
                             {
                                 var clr = new CommandLineReader();
@@ -63,7 +62,7 @@ namespace OrbitalShell.Component.Shell.Init
                                 return clr;
                             })
                     .AddScoped
-                        <IShellServiceHost,ShellServiceHost>()
+                        <IShellServiceHost, ShellServiceHost>()
                     );
             return hostBuilder;
         }

@@ -8,8 +8,10 @@ using Newtonsoft.Json;
 
 using OrbitalShell.Commands.Http;
 using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Primitives;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Lib.Data;
 using OrbitalShell.Lib.FileSystem;
@@ -19,7 +21,7 @@ using fs = OrbitalShell.Lib.FileSystem.FileSystem;
 namespace OrbitalShell.Commands.Tools.Shell
 {
     [Commands("tools dedicated to development of tools built upon the shell")]
-    [CommandsNamespace(CommandNamespace.tools,CommandNamespace.shell)]
+    [CommandsNamespace(CommandNamespace.tools, CommandNamespace.shell)]
     public class ToolsShellCommands : ICommandsDeclaringType
     {
         public const string moduleProjectTemplateRepositoryUrl = "https://github.com/OrbitalShell/OrbitalShell-Module-Template.git";
@@ -28,7 +30,7 @@ namespace OrbitalShell.Commands.Tools.Shell
 
         string _title(string text)
         {
-            var p = "".PadLeft(text.Length+2,' ');
+            var p = "".PadLeft(text.Length + 2, ' ');
             var spc = $"(b=darkgreen,f=black){p}(br)";
             var r = spc;
             r += $"(b=darkgreen,f=black) {text} (rdc)(br)";
@@ -39,27 +41,27 @@ namespace OrbitalShell.Commands.Tools.Shell
 
         string _(string text) => $"(f=green){text}(rdc)";
 
-        string Input(CommandEvaluationContext context,string prompt)
+        string Input(CommandEvaluationContext context, string prompt)
         {
             context.Out.Echo(prompt);
             return context.In.ReadLine();
         }
 
-        [Command("generates a new .net project for developing a shell module from the module project template","requires git command available in os")] 
+        [Command("generates a new .net project for developing a shell module from the module project template", "requires git command available in os")]
         [RequireOSCommand("git")]
         [RequireOSCommand("dotnet")]
-        public CommandVoidResult NewModule( 
+        public CommandVoidResult NewModule(
             CommandEvaluationContext context,
             [Parameter(0, "module ID")] string id,
-            [Parameter(1, "module project repository url (if not set do net set project repository properties, thus the project repo is not connected to any remote repository)",true)] string repoUrl = null,
-            [Option("o","out","output path",true,true)] DirectoryPath output = null,
-            [Option("i","in","take parameters from json input file",true,true)] string inputFile = defaultSettingsFileName,
-            [Option("f","force","delete target if already exists")] bool force = false,
-            [Option("s","skip-errors","skip ant error if possible")] bool skipErrors = false,
+            [Parameter(1, "module project repository url (if not set do net set project repository properties, thus the project repo is not connected to any remote repository)", true)] string repoUrl = null,
+            [Option("o", "out", "output path", true, true)] DirectoryPath output = null,
+            [Option("i", "in", "take parameters from json input file", true, true)] string inputFile = defaultSettingsFileName,
+            [Option("f", "force", "delete target if already exists")] bool force = false,
+            [Option("s", "skip-errors", "skip ant error if possible")] bool skipErrors = false,
             [Option(null, "no-git-init", "don't perform an initial init of the git repository - do not init the project as a git repository")] bool noInitRemote = false,
             [Option("project template url", "modproj-tpl-url", "module project template url", true, true)] string url = moduleProjectTemplateRepositoryUrl,
             [Option("project archive url", "modproj-arch-url", "module project archive template url", true, true)] string archUrl = moduleProjectTemplateArchiveUrl,
-            [Option(null,"preserve-curdir","preserve current dir")] bool preserveCurrentDir = false
+            [Option(null, "preserve-curdir", "preserve current dir")] bool preserveCurrentDir = false
             )
         {
             var o = context.Out;
@@ -85,13 +87,14 @@ namespace OrbitalShell.Commands.Tools.Shell
             try
             {
                 if (force && output.CheckExists()) Directory.Delete(output.FullName, true);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 o.Errorln(ex.Message);
                 if (!skipErrors) throw;
             }
 
-            o.Echoln(_subTitle("cloning module project repository",url));
+            o.Echoln(_subTitle("cloning module project repository", url));
             o.Echo(_("into: ")); output.Echo(ectx); o.Echoln("(br)");
 
             if (!noInitRemote)
@@ -106,7 +109,7 @@ namespace OrbitalShell.Commands.Tools.Shell
                 var downloadArchRes = context.CommandLineProcessor.Eval(context, @$"get ""{archUrl}"" -q -b");
                 var archFile = "tpl.zip";
                 var res = downloadArchRes.GetResult<HttpContentBody>();
-                
+
                 File.WriteAllBytes(
                     archFile,
                     (byte[])res.Content);
@@ -119,7 +122,7 @@ namespace OrbitalShell.Commands.Tools.Shell
                         var root = arc.Entries.First();
                         arc.Dispose();
                         var rootName = root.FullName.Replace("/", "");
-                        ZipFile.ExtractToDirectory(archFile,".",true);
+                        ZipFile.ExtractToDirectory(archFile, ".", true);
                         Directory.Move(rootName, targetId);
                         File.Delete(archFile);
                     });
@@ -215,10 +218,10 @@ namespace OrbitalShell.Commands.Tools.Shell
 
             #region setup project repository
 
-            o.Echoln(_subTitle("setup project repository", url)); o.Echoln();   
+            o.Echoln(_subTitle("setup project repository", url)); o.Echoln();
 
             var curDir = Environment.CurrentDirectory;
-            _try (()=>Environment.CurrentDirectory = output.FullName);
+            _try(() => Environment.CurrentDirectory = output.FullName);
 
             if (!noInitRemote && !ShellExec(context, skipErrors, "git", "remote remove origin", out result) && !skipErrors) return result;
 
@@ -243,14 +246,14 @@ namespace OrbitalShell.Commands.Tools.Shell
 
             #endregion
 
-            if (preserveCurrentDir) _try(()=>Environment.CurrentDirectory = curDir);
+            if (preserveCurrentDir) _try(() => Environment.CurrentDirectory = curDir);
 
-            o.Echoln(_subTitle($"module project has been generated",id));
+            o.Echoln(_subTitle($"module project has been generated", id));
 
             return result ?? CommandVoidResult.Instance;
         }
 
-        void _templateReplace(FieldInfo[] fields,ModuleSettings settings,ref string tpl)
+        void _templateReplace(FieldInfo[] fields, ModuleSettings settings, ref string tpl)
         {
             foreach (var field in fields)
             {
@@ -270,7 +273,7 @@ namespace OrbitalShell.Commands.Tools.Shell
             var @return = skipErrors
                 | context.CommandLineProcessor
                     .ShellExec(context, com, args, out CommandVoidResult result);
-            returnCommandResult = skipErrors? null : result;
+            returnCommandResult = skipErrors ? null : result;
             return @return;
         }
 

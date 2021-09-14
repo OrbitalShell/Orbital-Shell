@@ -1,19 +1,16 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Console;
-using static OrbitalShell.Component.Console.ANSI;
-using OrbitalShell.Component.Parser.ANSI;
-using System;
-using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Component.Shell;
-using OrbitalShell.Component.CommandLine;
-using OrbitalShell.Commands.FileSystem;
+﻿using System;
 using System.Collections.Generic;
+
+using OrbitalShell.Commands.FileSystem;
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Shell;
 
 namespace OrbitalShell.Commands.Dev
 {
     [Commands("for shell unit tests purposes")]
-    [CommandsNamespace(CommandNamespace.shell,CommandNamespace.test)]
+    [CommandsNamespace(CommandNamespace.shell, CommandNamespace.test)]
     public class UnitTestsCommands : ICommandsDeclaringType
     {
         [Command("command crash test (21/1/21)")]

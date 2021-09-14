@@ -1,4 +1,5 @@
-﻿using OrbitalShell.Lib.Sys;
+﻿using OrbitalShell.Component.Console.Primitives;
+using OrbitalShell.Lib.Sys;
 
 namespace OrbitalShell.Component.Console.Formats
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using OrbitalShell.Component.Console;
+﻿using OrbitalShell.Component.Console.Primitives;
 
 namespace OrbitalShell.Commands.Tools.Shell
 {
@@ -112,7 +108,7 @@ namespace OrbitalShell.Commands.Tools.Shell
         /// minimum shell version required
         /// </summary>     
         public string OrbitalshellKernelVersion = "1.0.9";
-        
+
         /// <summary>
         /// in: env.tools
         /// </summary>
@@ -128,7 +124,7 @@ namespace OrbitalShell.Commands.Tools.Shell
         /// </summary>
         /// <param name="id">module id (C# case)</param>
         /// <returns></returns>
-        public ModuleSettings AutoFill(string moduleId,string packageId=null)
+        public ModuleSettings AutoFill(string moduleId, string packageId = null)
         {
             ModuleID = moduleId;
             packageId ??= moduleId;
@@ -142,6 +138,6 @@ namespace OrbitalShell.Commands.Tools.Shell
             return this;
         }
 
-        static string CsName(string name) => name?.Replace("/", "")?.Replace("-","");
+        static string CsName(string name) => name?.Replace("/", "")?.Replace("-", "");
     }
 }

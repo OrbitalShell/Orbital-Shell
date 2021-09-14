@@ -1,10 +1,12 @@
-﻿using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Parsing;
-using OrbitalShell.Component.CommandLine.Processor;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.Parsing.Command.Parameter;
+using OrbitalShell.Component.CommandLine.Parsing.Parser;
+using OrbitalShell.Component.CommandLine.Parsing.Pipeline;
+using OrbitalShell.Component.CommandLine.Processor;
 
 namespace OrbitalShell.Component.CommandLine.Pipeline
 {
@@ -24,7 +26,7 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
             }
             return r;
         }
-        
+
         public static ExpressionEvaluationResult RunWorkUnit(
             CommandEvaluationContext context,
             PipelineParseResult pipelineParseResult
@@ -35,7 +37,7 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
             {
                 // capture the err output
                 context.Err.StartRecording();
-                
+
                 var r = InvokeCommand(context, syntaxParsingResult.CommandSyntax.CommandSpecification, syntaxParsingResult.MatchingParameters);
                 var res = r as ICommandResult;
                 var err_record = context.Err.StopRecording();
@@ -44,10 +46,10 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
                 // auto assign from Err stream if no error text provided
                 if (string.IsNullOrEmpty(res.ExecErrorText) && !string.IsNullOrEmpty(err_record)) err = err_record;
 
-                return 
-                    (res==null)?
-                        new ExpressionEvaluationResult(pipelineParseResult.Expr, null, ParseResultType.Valid, null, (int)ReturnCode.Error, null , "the command has returned a null result" ) :
-                        new ExpressionEvaluationResult(pipelineParseResult.Expr, null, ParseResultType.Valid, res.GetOuputData(), res.ReturnCode , null , err ) ;
+                return
+                    (res == null) ?
+                        new ExpressionEvaluationResult(pipelineParseResult.Expr, null, ParseResultType.Valid, null, (int)ReturnCode.Error, null, "the command has returned a null result") :
+                        new ExpressionEvaluationResult(pipelineParseResult.Expr, null, ParseResultType.Valid, res.GetOuputData(), res.ReturnCode, null, err);
             }
             catch (Exception commandInvokeError)
             {
@@ -56,7 +58,8 @@ namespace OrbitalShell.Component.CommandLine.Pipeline
                 context.Errorln(commandError.Message);
                 return new ExpressionEvaluationResult(pipelineParseResult.Expr, null, pipelineParseResult.ParseResult.ParseResultType, null, (int)ReturnCode.Error, commandError);
             }
-            finally {
+            finally
+            {
                 context.Err.StopRecording();
             }
         }

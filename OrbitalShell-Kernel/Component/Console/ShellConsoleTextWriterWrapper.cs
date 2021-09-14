@@ -2,6 +2,7 @@ using System.IO;
 
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.Console.Primitives;
 using OrbitalShell.Component.Script;
 
 namespace OrbitalShell.Component.Console

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Newtonsoft.Json;
-
-using OrbitalShell.Component.CommandLine.Parsing;
+using OrbitalShell.Component.CommandLine.Parsing.Value;
+using OrbitalShell.Component.CommandLine.Parsing.Variable;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Parser.Json;
 using OrbitalShell.Component.Shell.Data;
@@ -88,14 +87,14 @@ namespace OrbitalShell.Component.Shell.Init
         /// <returns>arg values or null</returns>
         public ShellArgValue GetArg(ShellArg arg)
         {
-            var shortIdx = Array.IndexOf(_args,arg.ShortOpt);
+            var shortIdx = Array.IndexOf(_args, arg.ShortOpt);
             var longIdx = Array.IndexOf(_args, arg.LongOpt);
             var idx = Math.Max(shortIdx, longIdx);
             if (idx == -1) return null;
             return new ShellArgValue(
-                arg, 
+                arg,
                 _args[idx], (idx + 1 < _args.Length) ? _args[idx + 1] : null)
-                { ArgIndex = idx };
+            { ArgIndex = idx };
         }
 
         /// <summary>
@@ -118,8 +117,8 @@ namespace OrbitalShell.Component.Shell.Init
             ref List<ShellArgValue> appliedArgs
             )
         {
-            ImportSettingsFromJSonFile(context,context.CommandLineProcessor.Settings.ShellSettingsFilePath);
-            ImportSettingsFromJSonFile(context,context.CommandLineProcessor.Settings.UserSettingsFilePath);
+            ImportSettingsFromJSonFile(context, context.CommandLineProcessor.Settings.ShellSettingsFilePath);
+            ImportSettingsFromJSonFile(context, context.CommandLineProcessor.Settings.UserSettingsFilePath);
 
             ShellArgValue importSettings;
             if ((importSettings = GetArg(ARG_IMPORT_SETTINGS)) != null)
@@ -147,7 +146,7 @@ namespace OrbitalShell.Component.Shell.Init
 
             foreach (var (name, value) in new JsonEventParser()
                 .ReadJSonObjectFromFile(path))
-                    SetVariableFromObjectValue(context, name, value);
+                SetVariableFromObjectValue(context, name, value);
 
             return this;
         }
@@ -162,7 +161,7 @@ namespace OrbitalShell.Component.Shell.Init
             ref List<ShellArgValue> appliedArgs
         )
         {
-            bool CheckArg(ShellArg arg,ref List<ShellArgValue>  aa)
+            bool CheckArg(ShellArg arg, ref List<ShellArgValue> aa)
             {
                 var argVal = GetArg(arg);
                 if (argVal == null) return false;
@@ -170,7 +169,7 @@ namespace OrbitalShell.Component.Shell.Init
                 return true;
             }
 
-            context.Settings.HasConsole = !CheckArg(ARG_NO_CONSOLE,ref appliedArgs);
+            context.Settings.HasConsole = !CheckArg(ARG_NO_CONSOLE, ref appliedArgs);
             context.Settings.IsInteractive = !CheckArg(ARG_NO_INTERACTIVE, ref appliedArgs);
             context.Settings.IsQuiet = CheckArg(ARG_QUIET, ref appliedArgs);
 
@@ -227,8 +226,8 @@ namespace OrbitalShell.Component.Shell.Init
         /// <param name="name">name including namespace</param>
         /// <param name="value">value that must be converted to var type an assigned to the var</param>
         public ShellArgsOptionBuilder SetShellEnvVariable(
-            CommandEvaluationContext context, 
-            string name, 
+            CommandEvaluationContext context,
+            string name,
             string value)
         {
             var tn = VariableSyntax.SplitPath(name);
@@ -254,15 +253,16 @@ namespace OrbitalShell.Component.Shell.Init
             string name,
             object value)
         {
-            if (context.Variables.GetValue(name,false) is DataValue val)
+            if (context.Variables.GetValue(name, false) is DataValue val)
             {
                 try
                 {
                     val.SetValue(value);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     context.Errorln($"set variable error: ({ex.Message}): {name}={value}");
-                }                    
+                }
             }
             else
                 context.Errorln($"variable not found: {Variables.Nsp(VariableNamespace.env, context.ShellEnv.Name, name)}");

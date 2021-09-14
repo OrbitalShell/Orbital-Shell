@@ -12,10 +12,11 @@ using Newtonsoft.Json;
 
 using OrbitalShell.Commands.FileSystem;
 using OrbitalShell.Commands.NuGetServerApi;
-using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
 using OrbitalShell.Component.Console.Formats;
+using OrbitalShell.Component.Console.Primitives;
 using OrbitalShell.Component.Shell;
 using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Component.Shell.Module;

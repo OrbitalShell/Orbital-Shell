@@ -1,19 +1,21 @@
-﻿using System;
-using OrbitalShell.Component.CommandLine.CommandModel;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Component.Shell;
-using System.Net.Http;
-using OrbitalShell.Component.Console;
-using Newtonsoft.Json;
-using OrbitalShell.Lib.FileSystem;
-using System.IO;
-using System.Net.Http.Headers;
+﻿using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+
+using Newtonsoft.Json;
+
+using OrbitalShell.Component.CommandLine.CommandModel;
+using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
+using OrbitalShell.Component.CommandLine.Processor;
+using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell;
+using OrbitalShell.Lib.FileSystem;
 
 namespace OrbitalShell.Commands.NuGetServerApi
 {
     [Commands("nuget http server api commands")]
-    [CommandsNamespace(CommandNamespace.net,CommandNamespace.http,"nuget")]
+    [CommandsNamespace(CommandNamespace.net, CommandNamespace.http, "nuget")]
     public class NuGetServerApiCommands : ICommandsDeclaringType
     {
         /// <summary>
@@ -30,7 +32,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
         public CommandResult<PackageVersions> NugetVer(
             CommandEvaluationContext context,
             [Parameter(0, "package (.nuget) ID")] string id,
-            [Option("q","quiet","mute output of result")] bool quiet = false,
+            [Option("q", "quiet", "mute output of result")] bool quiet = false,
             [Option("u", "get-url", "nuget server api query service template url", true, true)] string url = GetVerUrl
             )
         {
@@ -73,7 +75,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
             CommandEvaluationContext context,
             [Parameter(0, "package (.nuget) ID")] string id,
             [Parameter(1, "package version")] string ver,
-            [Option("o","output","output path",true,true)] string @out = ".",
+            [Option("o", "output", "output path", true, true)] string @out = ".",
             [Option("u", "download-url", "nuget server api query service template url", true, true)] string url = DownloadUrl
             )
         {
@@ -126,8 +128,8 @@ namespace OrbitalShell.Commands.NuGetServerApi
         [Command("push a nuget package")]
         public CommandResult<string> NugetPush(
             CommandEvaluationContext context,
-            [Parameter(0,"package (.nuget) file path")] FilePath pkgFile,
-            [Parameter(1,"target server api key")] string apiKey,
+            [Parameter(0, "package (.nuget) file path")] FilePath pkgFile,
+            [Parameter(1, "target server api key")] string apiKey,
             [Option("u", "push-url", "nuget server api push service url", true, true)] string url = PushUrl,
             [Option("p", "protocol-version", "nuget thir party client protocol version", true, true)] string protocolVersion = ProtocolVersion
             )
@@ -137,7 +139,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
             {
                 var ext = Path.GetExtension(pkgFile.FullName);
                 var atExt = ".nupkg";
-                if (ext.ToLower() != atExt )
+                if (ext.ToLower() != atExt)
                     context.Errorln($"bad file extension: '{ext}', should be '{atExt}'");
                 else
                 {
@@ -207,13 +209,13 @@ namespace OrbitalShell.Commands.NuGetServerApi
         [Command("call nuget web query service and output results")]
         public CommandResult<QueryResultRoot> NugetQuery(
             CommandEvaluationContext context,
-            [Parameter("the search terms to used to filter packages",true)] string query,
-            [Option("s","skip", "the number of results to skip, for pagination",true,true)] int skip=-1,
-            [Option("t","take", "the number of results to return, for pagination", true, true)] int take=-1,
-            [Option("r","pre-release", "true or false determining whether to include pre-release packages (default no)")] bool preRelease = false,
-            [Option("l","sem-ver-level", "a SemVer 1.0.0 version string", true, true)] string semVerLevel = "2.0.0",
-            [Option("p","package-type", "the package type to use to filter packages (added in SearchQueryService/3.5.0)",true,true)] string packageType = null,
-            [Option("u","query-url","nuget server api query service template url", true, true)] string url = QueryUrl
+            [Parameter("the search terms to used to filter packages", true)] string query,
+            [Option("s", "skip", "the number of results to skip, for pagination", true, true)] int skip = -1,
+            [Option("t", "take", "the number of results to return, for pagination", true, true)] int take = -1,
+            [Option("r", "pre-release", "true or false determining whether to include pre-release packages (default no)")] bool preRelease = false,
+            [Option("l", "sem-ver-level", "a SemVer 1.0.0 version string", true, true)] string semVerLevel = "2.0.0",
+            [Option("p", "package-type", "the package type to use to filter packages (added in SearchQueryService/3.5.0)", true, true)] string packageType = null,
+            [Option("u", "query-url", "nuget server api query service template url", true, true)] string url = QueryUrl
             )
         {
             QueryResultRoot @return = null;
@@ -235,7 +237,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
 
             context.Out.Echo(context.ShellEnv.Colors.Log + $"GET {queryString} ... ");
 
-            using var httpClient = new HttpClient();            
+            using var httpClient = new HttpClient();
             using var request = new HttpRequestMessage(new HttpMethod("GET"), queryString);
 
             var tsk = httpClient.SendAsync(request);
@@ -257,7 +259,7 @@ namespace OrbitalShell.Commands.NuGetServerApi
             }
             else
                 context.Errorln($"can't get response content: {result.ReasonPhrase}");
-            
+
 
             return new CommandResult<QueryResultRoot>(@return);
         }

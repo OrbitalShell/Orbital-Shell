@@ -4,6 +4,7 @@ using System.Reflection;
 
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Console.Primitives;
 
 namespace OrbitalShell.Lib.Extensions
 {
