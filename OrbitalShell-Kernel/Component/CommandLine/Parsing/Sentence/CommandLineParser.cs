@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using OrbitalShell.Component.CommandLine.Parsing.Command;
 using OrbitalShell.Component.CommandLine.Parsing.Parser;
@@ -13,12 +12,9 @@ using OrbitalShell.Component.CommandLine.Parsing.Variable;
 using OrbitalShell.Component.CommandLine.Pipeline;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
-using OrbitalShell.Component.Shell.Data;
 using OrbitalShell.Lib;
 
 using static OrbitalShell.Component.CommandLine.Parsing.Pipeline.PipelineParser;
-using static OrbitalShell.Component.CommandLine.Parsing.Sentence.CommandLineSyntax;
-using static OrbitalShell.Component.Shell.Variable.Variables;
 
 namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
 {
@@ -26,326 +22,20 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
     {
         public static StringComparison SyntaxMatchingRule { get; set; } = StringComparison.InvariantCultureIgnoreCase;
 
-        /// <summary>
-        /// split on SPACE " ' 
-        /// parse top level syntax of a command line
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="expr"></param>
-        /// <returns></returns>
-        public static StringSegment[] SplitExpr(
-            CommandEvaluationContext _,
-            string expr
-            )
-        {
-            if (expr == null) return Array.Empty<StringSegment>();
+        static VariableReplacer _variableReplacer = new();
 
-            var splits = new List<StringSegment>();
-            var t = expr.Trim().ToCharArray();
-            char prevc = SpaceSeparator;
-            int i = 0;
-            var inString = false;
-            var inSingleQuoteString = false;
-            var inDoubleQuoteString = false;
-            int beginCurStrIndex = 0;
-            var prevStr = "";
-            var k = t.Length;
-
-            // find a meta char for private coding that is not in the string - try char 0 or a random in 10000-20000
-            var metachar = FindMetaChar(ref expr);
-
-            while (i < k)
-            {
-                var c = t[i];
-                var isNeutralizer = c == NeutralizerSymbol;
-                var neutralizedBySymbol = prevc == NeutralizerSymbol;
-                bool isSeparator = IsTopLevelSeparator(c);
-
-                var isStringSeparator = !neutralizedBySymbol && (c == SingleQuote || c == DoubleQuote);
-                var isSingleQuoteStringSeparator = c == SingleQuote && !neutralizedBySymbol;
-                var isDoubleQuoteStringSeparator = c == DoubleQuote && !neutralizedBySymbol;
-
-                if (!inString)
-                {
-                    if (isStringSeparator)
-                    {
-                        prevStr = ((i - 1) >= beginCurStrIndex) ? new string(t[beginCurStrIndex..i]) : "";
-                        inSingleQuoteString = isSingleQuoteStringSeparator;
-                        inDoubleQuoteString = isDoubleQuoteStringSeparator;
-                        inString = true;
-                        beginCurStrIndex = i + 1;
-                    }
-
-                    if (isSeparator)
-                    {
-                        // end of non separator pattern + begin of separator pattern
-
-                        splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..i]), beginCurStrIndex, i - 1));
-
-                        // skip * separators
-                        beginCurStrIndex = i;
-                        while (IsTopLevelSeparator(t[++i])) ;
-
-                        splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..i]), beginCurStrIndex, i - 1));
-
-                        prevStr = "";
-                        beginCurStrIndex = i;
-                        i--;
-                    }
-                }
-                else
-                {
-                    if ((inSingleQuoteString && isSingleQuoteStringSeparator)
-                        || (inDoubleQuoteString && isDoubleQuoteStringSeparator))
-                    {
-                        if (i == t.Length - 1)
-                        {
-                            splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..i]), beginCurStrIndex, i - 1));
-                            prevStr = "";
-                            beginCurStrIndex = t.Length;
-                        }
-                        else
-                        {
-                            var t2 = t[0..(beginCurStrIndex - 1)].ToList();
-                            t2.AddRange(t[beginCurStrIndex..i].ToList());
-                            if (i < t.Length - 1)
-                                t2.AddRange(t[(i + 1)..t.Length].ToList());
-                            t = t2.ToArray();
-                            k = t.Length;
-                            beginCurStrIndex--;
-                            i -= 2;
-                        }
-                        inSingleQuoteString = inDoubleQuoteString = false;
-                        inString = false;
-                    }
-                }
-
-                if (isNeutralizer)
-                {
-                    // neutralizer symbol: should be removed from parsed split
-                    t[i] = metachar;
-                }
-
-                prevc = c;
-                i++;
-            }
-
-            if ((t.Length - 1) >= beginCurStrIndex)
-            {
-                splits.Add(new StringSegment(prevStr + new string(t[beginCurStrIndex..(t.Length)]), beginCurStrIndex, i - 1));
-                prevStr = "";
-            }
-#if debugParser
-            for (i = 0; i < splits.Count; i++)
-            {
-                context.Out.Echoln($"(f=darkcyan){i} : {splits[i]}");
-            }
-#endif
-            // remove splits that fit the separator pattern (length>=1) - keep any defined empty value: '' "" (length=0)
-
-            splits = splits.Where(x => !(string.IsNullOrWhiteSpace(x.Text) && x.Length >= 1)).ToList();     // TODO: ⚠️⚠️⚠️ must perform a real separator pattern matching check ⚠️⚠️⚠️
-
-            // clean up meta chars in splits
-
-            foreach (var split in splits)
-            {
-                split.SetText(split.Text.Replace($"{metachar}", ""));
-            }
-
-            return splits.ToArray();
-        }
-
-        /// <summary>
-        /// indicates if the char is a separator at top input stream level
-        /// <para>// TODO: ⚠️⚠️⚠️ handle here more separators: eol,cr,... ⚠️⚠️⚠️</para>
-        /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        private static bool IsTopLevelSeparator(char c)
-        {
-            return c == SpaceSeparator;
-        }
-
-        private static char FindMetaChar(ref string expr)
-        {
-            char metachar = (char)0;
-            var badmetachar = expr.Contains(metachar);
-            if (badmetachar)
-            {
-                var r = new Random();
-                while (badmetachar)
-                {
-                    metachar = (char)r.Next(10000, 20000);
-                    badmetachar = expr.Contains(metachar);
-                }
-            }
-
-            return metachar;
-        }
+        static SentenceSpliter _sentenceSpliter = new();
 
         public static int GetIndex(
             CommandEvaluationContext context,
             int position,
             string expr)
         {
-            var splits = SplitExpr(context, expr);
+            var splits = _sentenceSpliter.SplitExpr(context, expr);
             var n = 0;
             for (int i = 0; i <= position && i < splits.Length; i++)
                 n += splits[i].Length + ((i > 0) ? 1 : 0);
             return n;
-        }
-
-#if experiment
-        // TODO: remove or explain
-
-        public static void StoreReference(
-            CommandEvaluationContext context,
-            string reference,
-            object obj
-            )
-        {
-            context.Variables.Set(VariableNamespace.Local, reference, obj);
-        }
-
-        public static object GetReference(
-            CommandEvaluationContext context,
-            string reference
-            )
-        {
-            context.Variables.Get(VariableNamespace.Local, reference, out var value, false);
-            return value;
-        }
-#endif
-
-        /// <summary>
-        /// substitue any var ($..) found in expr (expr is a word from the command line)
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="expr"></param>
-        /// <returns></returns>
-        public static
-            (string expr, Dictionary<string, object> references)
-            SubstituteVariables(
-                CommandEvaluationContext _,
-                string expr
-            )
-        {
-            Dictionary<string, object> references = new Dictionary<string, object>();
-
-            /*
-             * if expr is equal to a single var ref :
-             *  - var (propagate object to the command...)
-             * if expr contains one or several var refs :
-             *  - var.ToString()
-             */
-            var origStr = new string(expr);
-            char[] t;
-            int totalRemaining;
-            int searchScopeEndIndex = expr.Length;
-
-            do
-            {
-                totalRemaining = 0;
-                var i = 0;
-                var vars = new List<VariableStringSegment>();
-                t = expr.ToCharArray();
-                int nextSearchScopeEndIndex = searchScopeEndIndex;
-                searchScopeEndIndex = Math.Min(t.Length, searchScopeEndIndex);
-
-                while (i < searchScopeEndIndex && i < t.Length)
-                {
-                    var c = t[i];
-                    char? previousChar = i > 0 ? t[i - 1] : null;
-
-                    if (c == CommandLineSyntax.VariablePrefix
-                        && previousChar != NeutralizerSymbol)
-                    {
-                        (string varName,
-                            int beginIndex,
-                            int lastIndex,
-                            bool isNameCaptured,
-                            int remaining,
-                            bool _) =
-                            VariableSyntax.ReadVariableName(
-                                ref t,
-                                i + 1,
-                                searchScopeEndIndex);
-                        totalRemaining += remaining;
-                        vars.Add(
-                            new VariableStringSegment(
-                                varName,
-                                beginIndex,
-                                lastIndex,
-                                lastIndex - beginIndex + 1,
-                                isNameCaptured
-                                ));
-                        i = lastIndex;
-                    }
-                    i++;
-                }
-                searchScopeEndIndex = nextSearchScopeEndIndex;
-
-                if (vars.Count > 0)
-                {
-                    var nexpr = new StringBuilder();
-                    int x = 0;
-                    VariableStringSegment lastvr = null;
-                    VariableStringSegment currentVr = null;
-                    foreach (var vr in vars)
-                    {
-                        currentVr = vr;
-                        lastvr = vr;
-                        nexpr.Append(expr[x..vr.X]);
-                        try
-                        {
-                            _.Variables.Get(vr.Text, out var value);
-
-                            // here: value is transformed by his ToString method
-                            // (var is substituted by its text)
-
-                            if (vars.Count == 1 &&
-                                (vr.FullSyntax == origStr))
-                            {
-                                // single var (no conversion)
-                                // keep var ref in place (arbitrary convention)
-                                var varName = origStr;
-                                nexpr.Append(varName);
-                                references.AddOrReplace(varName, value);
-                            }
-                            else
-                            {
-                                var o = (value is DataValue dv) ? dv?.Value : value;
-                                if (o == null)
-                                    nexpr.Append(o);
-                                else
-                                {
-                                    CommandSyntax.TryCastToString(_, o, out var strValue);
-                                    nexpr.Append(strValue);
-                                }
-                            }
-                        }
-                        catch (VariablePathNotFoundException ex)
-                        {
-                            _.Errorln(ex.Message);
-                            // Bash convention: replace name by empty
-                            nexpr.Append("");
-                        }
-                        x = vr.Y + 1;
-                        totalRemaining--;
-                    }
-
-                    if (lastvr != null)
-                        nexpr.Append(
-                            (x < expr.Length) ?
-                                expr[x..]
-                                : "");
-
-                    expr = nexpr.ToString();
-                }
-
-            } while (totalRemaining > 0);
-
-            return (expr, references);
         }
 
         public static PipelineParseResults ParseCommandLine(
@@ -362,7 +52,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
             expr = expr.Trim();
             if (string.IsNullOrWhiteSpace(expr)) return new PipelineParseResults(new PipelineParseResult(parseResults));
 
-            var splits0 = SplitExpr(context, expr);
+            var splits0 = _sentenceSpliter.SplitExpr(context, expr);
 
             // TODO: add splits to debug var in debug mode
 
@@ -384,7 +74,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
                         && workUnit.Segments.Count == 1)
                 {
                     expr = alias;
-                    splits0 = SplitExpr(context, expr);
+                    splits0 = _sentenceSpliter.SplitExpr(context, expr);
                     pipeline = GetPipeline(context, splits0);
                     workUnit = pipeline;
                 }
@@ -394,7 +84,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
                     splits.Clear();
                     foreach (var split in workUnit.Segments)
                     {
-                        (string argExpr2, Dictionary<string, object> refs) = SubstituteVariables(context, split.Text);
+                        (string argExpr2, Dictionary<string, object> refs) = _variableReplacer.SubstituteVariables(context, split.Text);
                         foreach (var kv in refs) references.AddOrReplace(kv.Key, kv.Value);
                         splits.Add(new StringSegment(argExpr2, split.X, split.Y, refs));
                     }
