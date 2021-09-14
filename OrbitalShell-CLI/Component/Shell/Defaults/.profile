@@ -10,10 +10,11 @@ echo "(df=gray)" -n
 
 #prompt "(RSTXTA)(b8=19) (b8=20) (exec=System.Environment.CurrentDirectory) (b8=19,f8=46) (b8=18) (b8=17) (br)(f=yellow) > (rdc)"
 #prompt "(RSTXTA)(f=cyan)(uon)(exec=System.Environment.CurrentDirectory)(tdoff)(br) (f=yellow,b=darkblue)>(rdc) "
-prompt "(RSTXTA)(f=green)(uon)(exec=[[OrbitalShell.Lib.FileSystem.FileSystemPath.UnescapePathSeparators(System.Environment.CurrentDirectory)]])(tdoff)(br)(f=black,b=green)>(rdc) "
+#prompt "(RSTXTA)(f=green)(uon)(exec=[[OrbitalShell.Lib.FileSystem.FileSystemPath.UnescapePathSeparators(System.Environment.CurrentDirectory)]])(tdoff)(br)(f=black,b=green)>(rdc) "
 #prompt "(RSTXTA)(b8=19) (b8=20) $USERDOMAIN (b8=19,f8=46) (b8=18,f=yellow)>(b8=17) (rdc)"
 #prompt "(RSTXTA)(f=cyan)$USERDOMAIN (f=white)> (rdc)"
 #prompt "(RSTXTA) > "
+prompt "(RSTXTA)(b8=18) (b8=19) (b8=30)O(b8=20)rbital (b8=30)S(b8=20)hell(b8=19,f8=46) (b8=18,f=yellow)>(b8=17) (rdc)"
 
 # samples
 
@@ -40,9 +41,9 @@ alias dirs "dir -r -d"
 
 # add usefull variables to shell environment
 
-set scripts $shell/scripts
+var scripts $shell/scripts
 
 # advice(s)
 
-echo "TIP: try module -f to list available modules, module -i {moduleId} to install a module in the shell, module -u {moduleId} to update an installed module, module --update-all [--check-only] to check/update all modules"
+echo "(f=yellow) TIP : (rdc) try module -f to list available modules, module -i {moduleId} to install a module in the shell, module -u {moduleId} to update an installed module, module --update-all [--check-only] to check/update all modules"
 echo ""

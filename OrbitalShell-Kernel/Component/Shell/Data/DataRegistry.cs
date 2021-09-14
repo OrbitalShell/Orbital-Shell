@@ -10,9 +10,9 @@ namespace OrbitalShell.Component.Shell.Data
     public class DataRegistry
     {
         readonly Dictionary<string, object> _objects
-            = new Dictionary<string, object>();
+            = new();
 
-        public readonly DataObject RootObject = new DataObject("root");
+        public readonly DataObject RootObject = new("root");
 
         public List<IDataObject> GetDataValues() => RootObject.GetAttributes();
 

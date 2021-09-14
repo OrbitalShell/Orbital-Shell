@@ -123,7 +123,7 @@ namespace OrbitalShell.Commands.Shell
         [CommandAlias("loc", "var local")]
         [CommandAlias("glob", "var global")]
         [CommandAlias("settings", "env settings")]
-        public CommandResult<List<IDataObject>> Var(
+        public CommandResult<List<IDataObject>> Vars(
             CommandEvaluationContext _,
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
@@ -321,9 +321,9 @@ namespace OrbitalShell.Commands.Shell
             return CommandVoidResult.Instance;
         }
 
-        [Command("set the value of a shell variable, or display the name and values of shell variables")]
+        [Command("set the value of a shell variable or a value property. creates a new variable and namespaces if necessary")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<object> Set(
+        public CommandResult<object> Var(
             CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name,
             [Parameter(1, "value that must be assigned to the variable", false)] object value,
@@ -370,7 +370,7 @@ namespace OrbitalShell.Commands.Shell
 
         [Command("returns a variable value. The value is stored in the variables env.$lastComResult and _./")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<object> GetValue(
+        public CommandResult<object> Val(
             CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name
             )
@@ -385,7 +385,7 @@ namespace OrbitalShell.Commands.Shell
             );
         }
 
-        [Command("unset the value of shell variables. can not unset namespace, only variables")]
+        [Command("unset shell variables and namespaces")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
         public CommandResult<object> Unset(
             CommandEvaluationContext _,

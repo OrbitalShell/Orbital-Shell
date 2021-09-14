@@ -1,8 +1,8 @@
 ﻿#!orbsh
 # build/publish orbital shell binaries
 
-set version 1.0.9
-set nugetext .nupkg
+var version 1.0.9
+var nugetext .nupkg
 
 cls
 echo "(b=darkgreen,f=black)                                      "
