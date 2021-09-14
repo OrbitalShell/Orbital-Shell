@@ -14,6 +14,7 @@ report of main cases:
 ||| object | ``EchoPrimitives.DumpObject``
 **echo** || string | ``context.Out.Echo``
 ||| object | ``object.Echo``
+|||| ``{byType}.Echo``
 
 report for sub methods:
 
@@ -21,6 +22,7 @@ report for sub methods:
 | -- | -- | -- | -- |
 **DumpObject** | DataTable.Echo<br>GetVarsDataTable<br>AddIDataObjectToTable<br>AddObjectToTable | null | ``DumpAsText``
 ||| DataValue | ``object.Echo``
+|||| ``{byType}.Echo``
 
 ## output decoration layers
 

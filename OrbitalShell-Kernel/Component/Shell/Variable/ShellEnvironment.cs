@@ -109,6 +109,7 @@ namespace OrbitalShell.Component.Shell.Variable
             // shell settings (defaults) TODO: --> put in ICommandLineProcessorSettings mapped to json
 
             AddValue(ShellEnvironmentVar.settings_module_providerUrls, new List<string> {
+                // TODO: store as a const !
                 "https://raw.githubusercontent.com/OrbitalShell/Orbital-Shell/dev/module-index-repository/module-list.json" });
             AddValue(ShellEnvironmentVar.settings_console_prompt, ANSI.RSTXTA + "> ");        // prompt   
             AddValue(ShellEnvironmentVar.settings_console_initialWindowWidth, -1);

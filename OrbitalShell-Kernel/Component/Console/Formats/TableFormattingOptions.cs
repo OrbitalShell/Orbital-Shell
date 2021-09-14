@@ -17,7 +17,7 @@ namespace OrbitalShell.Component.Console.Formats
         public bool PadLastColumn = true;
         public TableLayout Layout = TableLayout.HeaderHorizontalSeparator;
         public bool UnfoldCategories = true;
-        public bool UnfoldItems = true;
+        public bool UnfoldItems = false;
         public int ColumnLeftMargin = 0;
         public int ColumnRightMargin = 4;
         public bool UnfoldSubCategories = true;
