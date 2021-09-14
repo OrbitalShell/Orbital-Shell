@@ -129,7 +129,7 @@ namespace OrbitalShell.Commands.Shell
             [Parameter(0, "variable namespace or value path below the root namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
             [Option("o", "unfold-value", "unfold values of type object")] bool unfoldObjects = false,
-            [Option("d", "--enable-decorators", "enable objects decorators")] bool enableObjectsDecorators = false
+            [Option("d", "enable-decorators", "enable objects decorators")] bool enableObjectsDecorators = false
             )
         {
             object obj;
@@ -328,7 +328,7 @@ namespace OrbitalShell.Commands.Shell
             CommandEvaluationContext _,
             [Parameter(0, "variable name with or without namespace prefix", false)] string name,
             [Parameter(1, "value that must be assigned to the variable", false)] object value,
-            [Parameter(2, "name of the object type to be used in order to convert the provided value (on first assign, will assign a type to the variable. default type is object", true)] string typeLabel = null,
+            [Parameter(2, "name of the object type to be used in order to convert the provided value (on first assign, will assign a type to the variable). default type is object", true)] string typeLabel = null,
             [Option("r", "read-only", "for a new variable, set it read only")] bool readOnly = false,
             [Option("c", "copy", "do not affect 'value', copy the value from the variable named 'value'")] bool copy = false
             )
