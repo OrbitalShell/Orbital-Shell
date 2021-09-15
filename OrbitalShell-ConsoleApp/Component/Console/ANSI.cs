@@ -1,4 +1,5 @@
 ﻿using System;
+
 using OrbitalShell.Component.Parser.ANSI;
 
 namespace OrbitalShell.Component.Console
@@ -629,7 +630,7 @@ namespace OrbitalShell.Component.Console
         }
 
         /// <summary>
-        /// TODO: returns true if the sequence starts by a ANSI sequence
+        /// TODO: returns true if the sequence starts by an ANSI sequence
         /// <para>from https://en.wikipedia.org/wiki/ANSI_escape_code</para>
         /// </summary>
         /// <param name="s">string to be analyzed</param>

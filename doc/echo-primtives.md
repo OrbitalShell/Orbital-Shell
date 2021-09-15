@@ -1,5 +1,7 @@
 # Echo Primitives
 
+``Echo Primitives`` are code units that transforms a data to an ANSII/VT100 characters sequence.
+
 ## call paths
 
 report of main cases:

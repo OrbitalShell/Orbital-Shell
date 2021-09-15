@@ -110,6 +110,16 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
             '\n'
         };
 
+        /// <summary>
+        /// escaped characters at top level
+        /// </summary>
+        public static (char source, char target)[] EscapedCharacters =
+        {
+            ('r','\r'),
+            ('n','\n'),
+            ('t','\t')
+        };
+
         public static char[] NeutralizableTopLevelSeparators =
         {
             // string separators
