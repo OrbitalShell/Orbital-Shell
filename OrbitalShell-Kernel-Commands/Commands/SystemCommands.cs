@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 
 using OrbitalShell.Component.CommandLine.CommandModel;
 using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
@@ -20,6 +21,21 @@ namespace OrbitalShell.Commands
     [CommandsNamespace(CommandNamespace.sys)]
     public class SystemCommands : ICommandsDeclaringType
     {
+        [Command("kill a process identified by PID")]
+        public CommandVoidResult Kill(
+            CommandEvaluationContext context,
+            [Parameter(0, "process identifier")] int pid
+            )
+        {
+            var process = Process
+                .GetProcesses()
+                .FirstOrDefault(x => x.Id == pid);
+            if (process == null)
+                throw new InvalidOperationException($"No such process");
+
+            return CommandVoidResult.Instance;
+        }
+
         [Command("print a report of current processes")]
         public CommandResult<List<Process>> Ps(
             CommandEvaluationContext context,

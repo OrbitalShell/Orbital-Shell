@@ -4,7 +4,6 @@ using System.Linq;
 
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
-using OrbitalShell.Lib.Extensions;
 
 using static OrbitalShell.Component.CommandLine.Parsing.Sentence.CommandLineSyntax;
 
@@ -152,10 +151,10 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
                             if (NeutralizableTopLevelSeparators.Contains(nc))
                                 t[i] = metachar;
 
-                            if (EscapedCharacters.TryGet(x => x.source == nc, out var escaping))
+                            if (EscapedCharacters.TryGetValue(nc, out var escaping))
                             {
                                 t[i] = metachar;
-                                t[i + 1] = escaping.target;
+                                t[i + 1] = escaping;
                             }
                         }
                     }

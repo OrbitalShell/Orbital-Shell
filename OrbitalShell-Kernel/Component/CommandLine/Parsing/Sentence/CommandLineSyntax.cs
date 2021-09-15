@@ -113,12 +113,13 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
         /// <summary>
         /// escaped characters at top level
         /// </summary>
-        public static (char source, char target)[] EscapedCharacters =
-        {
-            ('r','\r'),
-            ('n','\n'),
-            ('t','\t')
-        };
+        public static Dictionary<char, char> EscapedCharacters =
+            new()
+            {
+                { 'r', '\r' },
+                { 'n', '\n' },
+                { 't', '\t' }
+            };
 
         public static char[] NeutralizableTopLevelSeparators =
         {

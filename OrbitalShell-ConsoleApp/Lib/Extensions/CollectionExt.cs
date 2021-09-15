@@ -11,8 +11,9 @@ namespace OrbitalShell.Lib.Extensions
             Func<TSource, bool> predicate,
             out TSource firstOrDefault)
         {
-            firstOrDefault = source.FirstOrDefault(x => predicate(x));
-            return firstOrDefault != null;
+            var lst = source.Where(x => predicate(x));
+            firstOrDefault = source.FirstOrDefault();
+            return source.Any();
         }
 
         public static bool TryGet<TSource>(
@@ -20,8 +21,9 @@ namespace OrbitalShell.Lib.Extensions
             Func<TSource, int, bool> predicate,
             out TSource firstOrDefault)
         {
-            firstOrDefault = source.Where((x, i) => predicate(x, i)).FirstOrDefault();
-            return firstOrDefault != null;
+            var lst = source.Where((x, i) => predicate(x, i));
+            firstOrDefault = source.FirstOrDefault();
+            return source.Any();
         }
     }
 }
