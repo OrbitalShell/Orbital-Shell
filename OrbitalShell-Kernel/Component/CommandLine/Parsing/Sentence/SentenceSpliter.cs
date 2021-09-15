@@ -136,7 +136,22 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
                 if (isNeutralizer)
                 {
                     // neutralizer symbol: should be removed from parsed split
-                    t[i] = metachar;
+                    char? nextChar = i < t.Length - 1 ? t[i + 1] : null;
+
+                    if (nextChar != null)
+                    {
+                        var nc = nextChar.Value;
+                        if (TopLevelNeutralizedSubstitutions.TryGetValue(nc, out var newChars))
+                        {
+                            t[i] = newChars.c0 == 0 ? metachar : newChars.c0;
+                            t[i + 1] = newChars.c1 == 0 ? metachar : newChars.c1;
+                        }
+                        else
+                        {
+                            if (NeutralizableTopLevelSeparators.Contains(nc))
+                                t[i] = metachar;
+                        }
+                    }
                 }
 
                 prevc = c;

@@ -110,6 +110,21 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
             '\n'
         };
 
+        public static char[] NeutralizableTopLevelSeparators =
+        {
+            // string separators
+            DoubleQuote,
+            SingleQuote,
+        };
+
+        public static Dictionary<char, (char c0, char c1)> TopLevelNeutralizedSubstitutions =
+            new()
+            {
+                // NeutralizerSymbol {char} -> char char
+                // 0 for metachar (on right of ->)
+                { NeutralizerSymbol, (NeutralizerSymbol, (char)0) }
+            };
+
         public static string InputRedirect = "1>";
 
         public static char[] CommonOperators =
