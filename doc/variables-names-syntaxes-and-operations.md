@@ -1,3 +1,8 @@
+Orbital Shell - [Technical Documentation](tech-doc.md)
+
+<hr>
+<br>
+
 # Variables names syntaxes and operations
 
 ## bsh/ksh standard:
