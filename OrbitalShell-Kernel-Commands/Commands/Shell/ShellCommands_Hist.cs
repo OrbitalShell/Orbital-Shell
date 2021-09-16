@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -51,27 +50,21 @@ namespace OrbitalShell.Commands.Shell
 
             var histo = hist.Skip(first - 1).Take(last - first + 1);
             var max = hist.Count.ToString().Length;
-            int i = first;
             var f = DefaultForegroundCmd;
-            List<string> output = new();
             string hp;
-
-            foreach (var h in histo)
-            {
-                if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
-                    break;
-                hp = h;
-                if (!omit)
-                    hp = $"{context.ShellEnv.Colors.Numeric}{i.ToString().PadRight(max + 2, ' ')}{f} {h}";
-                i++;
-            }
 
             if (list)
             {
                 // list
 
-                foreach (var h in output)
-                    context.Out.Echoln(h);
+                var i = first;
+                foreach (var h in histo)
+                {
+                    if (!omit)
+                        context.Out.Echo($"{context.ShellEnv.Colors.Numeric}{i.ToString().PadRight(max + 2, ' ')}{f}");
+                    context.Out.ConsolePrint(h, true);
+                    i++;
+                }
             }
             else
             {
@@ -80,7 +73,7 @@ namespace OrbitalShell.Commands.Shell
                 var tmpFile = Path.GetTempFileName();
                 File.WriteAllLines(
                     tmpFile,
-                    output);
+                    histo);
 
                 if (string.IsNullOrWhiteSpace(editor))
                     context.ShellEnv.GetValue<string>(ShellEnvironmentVar.FC);
@@ -90,6 +83,8 @@ namespace OrbitalShell.Commands.Shell
                 context.CommandLineProcessor.Eval(
                     context,
                     $"{editor} \"{tmpFile.Unslash()}\"{(editor == "edit" ? " -r" : "")}");
+
+                File.Delete(tmpFile);
             }
 
             return CommandVoidResult.Instance;
