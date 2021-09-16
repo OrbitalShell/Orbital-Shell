@@ -26,7 +26,7 @@ namespace OrbitalShell.Commands.Shell
     {
         [Command("outputs a table of environment variables and values")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.var)]
-        public CommandResult<List<IDataObject>> Env(
+        public CommandResult<List<IDataObject>> Envs(
             CommandEvaluationContext _,
             [Parameter(0, "variable namespace or value path below the 'Env' namespace. if specified and exists, output is built from this point, otherwise outputs all variables from env root", true)] string varPath,
             [Option("u", "unfold-namespace", "unfold namespaces")] bool unfoldNamespaces = false,
