@@ -21,7 +21,7 @@ namespace OrbitalShell.Commands
     [CommandsNamespace(CommandNamespace.sys)]
     public class SystemCommands : ICommandsDeclaringType
     {
-        [Command("kill a process identified by PID")]
+        [Command("kill a process identified by pid")]
         public CommandVoidResult Kill(
             CommandEvaluationContext context,
             [Parameter(0, "process identifier")] int pid
