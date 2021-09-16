@@ -128,7 +128,8 @@ namespace OrbitalShell.Component.Shell.Variable
             || _dataRegistry.Get(Nsp(VariableNamespace.local, path), out value)
             || _dataRegistry.Get(Nsp(VariableNamespace._, path), out value)
             || _dataRegistry.Get(Nsp(VariableNamespace.global, path), out value)
-            || _dataRegistry.Get(Nsp(VariableNamespace.env, path), out value);
+            || _dataRegistry.Get(Nsp(VariableNamespace.env, path), out value)
+            || _dataRegistry.Get(Nsp(VariableNamespace.env, ShellEnvironmentNamespace.os + "", path), out value);
 
             if (!r && throwException)
                 throw new VariablePathNotFoundException(path);
