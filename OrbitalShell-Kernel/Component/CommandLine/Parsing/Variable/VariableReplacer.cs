@@ -6,6 +6,7 @@ using OrbitalShell.Component.CommandLine.Parsing.Command;
 using OrbitalShell.Component.CommandLine.Parsing.Sentence;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell.Data;
+using OrbitalShell.Component.Shell.Variable;
 using OrbitalShell.Lib;
 
 using static OrbitalShell.Component.CommandLine.Parsing.Sentence.CommandLineSyntax;
@@ -27,7 +28,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Variable
                 string expr
             )
         {
-            Dictionary<string, object> references = new Dictionary<string, object>();
+            Dictionary<string, object> references = new();
 
             /*
              * if expr is equal to a single var ref :
@@ -93,10 +94,15 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Variable
                         currentVr = vr;
                         lastvr = vr;
                         nexpr.Append(expr[x..vr.X]);
-                        try
-                        {
-                            _.Variables.Get(vr.Text, out var value);
 
+                        var varExists = _.Variables.Get(vr.Text, out var value, false);
+                        if (!varExists
+                            && _.ShellEnv.IsOptionSetted(ShellEnvironmentVar.settings_clp_emitErrorWhenVariablePathNotFound))
+                            // variable not found, exception
+                            throw new VariablePathNotFoundException(vr.Text);
+
+                        if (varExists)
+                        {
                             // here: value is transformed by his ToString method
                             // (var is substituted by its text)
 
@@ -121,12 +127,12 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Variable
                                 }
                             }
                         }
-                        catch (VariablePathNotFoundException ex)
+                        else
                         {
-                            _.Errorln(ex.Message);
-                            // Bash convention: replace name by empty
+                            // variable not found, no exception
                             nexpr.Append("");
                         }
+
                         x = vr.Y + 1;
                         totalRemaining--;
                     }

@@ -320,6 +320,11 @@
         settings_clp_shellExecBatchExt = 10105,
 
         /// <summary>
+        /// emit an error when a variable path doesn't exists
+        /// </summary>
+        settings_clp_emitErrorWhenVariablePathNotFound = 10108,
+
+        /// <summary>
         /// module repositories list (urls)
         /// </summary>
         settings_module_providerUrls = 10106,

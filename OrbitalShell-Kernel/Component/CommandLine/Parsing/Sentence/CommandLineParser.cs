@@ -85,8 +85,11 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
                     foreach (var split in workUnit.Segments)
                     {
                         (string argExpr2, Dictionary<string, object> refs) = _variableReplacer.SubstituteVariables(context, split.Text);
-                        foreach (var kv in refs) references.AddOrReplace(kv.Key, kv.Value);
-                        splits.Add(new StringSegment(argExpr2, split.X, split.Y, refs));
+                        foreach (var kv in refs)
+                            references.AddOrReplace(kv.Key, kv.Value);
+                        splits
+                            .Add(
+                            new StringSegment(argExpr2, split.X, split.Y, refs));
                     }
 
                     parseResults.Add(

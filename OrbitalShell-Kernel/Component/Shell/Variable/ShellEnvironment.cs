@@ -123,12 +123,15 @@ namespace OrbitalShell.Component.Shell.Variable
             AddValue(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessStart, false);
             AddValue(ShellEnvironmentVar.settings_clp_enableShellExecTraceProcessEnd, false);
             AddValue(ShellEnvironmentVar.settings_clp_shellExecBatchExt, ".sh");
+            AddValue(ShellEnvironmentVar.settings_clp_emitErrorWhenVariablePathNotFound, false);
+
             AddValue(ShellEnvironmentVar.settings_console_banner_path,
                 Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                         context.CommandLineProcessor.Settings.KernelCommandsRootNamespace,
                         nameof(CommandLineProcessor),
                         "banner-4.txt"));
+
             AddValue(ShellEnvironmentVar.settings_console_banner_isEnabled, true);
             AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex, 21); // 202);// 167);
             AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex2, 49); // 202);// 167);
