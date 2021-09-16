@@ -26,6 +26,14 @@ namespace OrbitalShell.Lib
 
         #endregion
 
+        /// <summary>
+        /// transforms \ to \\
+        /// </summary>
+        /// <param name="s">string</param>
+        /// <returns></returns>
+        public static string Unslash(this string s)
+            => s.Replace(@"\", @"\\");
+
         public static List<string> SplitNotUnslashed(this string s, char c)
         {
             var r = new List<string>();

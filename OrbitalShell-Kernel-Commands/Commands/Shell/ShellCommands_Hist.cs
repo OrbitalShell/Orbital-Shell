@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -6,6 +7,8 @@ using System.Reflection.Metadata;
 using OrbitalShell.Component.CommandLine.CommandModel.Attributes;
 using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Shell;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Lib;
 using OrbitalShell.Lib.FileSystem;
 
 using static OrbitalShell.Component.EchoDirective.Shortcuts;
@@ -15,11 +18,85 @@ namespace OrbitalShell.Commands.Shell
     /// <summary>
     /// ShellCommands_Hist.cs
     /// </summary>
+    [SuppressMessage("Performance", "CA1822:Marquer les membres comme étant static", Justification = "<En attente>")]
     public partial class ShellCommands
     {
+        [Command("display or execute commands from the history list")]
+        [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
+        public CommandVoidResult Fc(
+            CommandEvaluationContext context,
+            //[MinValue][MaxValue]
+            [Parameter(0, "range first index (min is 1)", true, -1)] int first,
+            [Parameter(1, "range last index", true, -1)] int last,
+
+            [Option("e", "editor", "select which editor to use.  Default is $FC, edit", true, true)] string editor,
+
+            [Option("l", "list", "omit line numbers when listing")] bool list,
+            [Option("r", "reverse", "reverse the order of the lines (newest listed first)")] bool reverse,
+            [Option("n", "omit", "omit line numbers when listing")] bool omit
+
+            )
+        {
+            var hist = context.CommandLineProcessor.CmdsHistory.History;
+
+            if (first == -1 && last == -1)
+            {
+                first = 1;
+                last = hist.Count;
+            }
+
+            if ((first != -1 && last == -1) || (first == -1 && last != -1)
+                || first < 1 || last > hist.Count)
+                throw new InvalidDataException("history specification out of range");
+
+            var histo = hist.Skip(first - 1).Take(last - first + 1);
+            var max = hist.Count.ToString().Length;
+            int i = first;
+            var f = DefaultForegroundCmd;
+            List<string> output = new();
+            string hp;
+
+            foreach (var h in histo)
+            {
+                if (context.CommandLineProcessor.CancellationTokenSource.IsCancellationRequested)
+                    break;
+                hp = h;
+                if (!omit)
+                    hp = $"{context.ShellEnv.Colors.Numeric}{i.ToString().PadRight(max + 2, ' ')}{f} {h}";
+                i++;
+            }
+
+            if (list)
+            {
+                // list
+
+                foreach (var h in output)
+                    context.Out.Echoln(h);
+            }
+            else
+            {
+                // editor
+
+                var tmpFile = Path.GetTempFileName();
+                File.WriteAllLines(
+                    tmpFile,
+                    output);
+
+                if (string.IsNullOrWhiteSpace(editor))
+                    context.ShellEnv.GetValue<string>(ShellEnvironmentVar.FC);
+                if (string.IsNullOrWhiteSpace(editor))
+                    editor = "edit";
+
+                context.CommandLineProcessor.Eval(
+                    context,
+                    $"{editor} \"{tmpFile.Unslash()}\"{(editor == "edit" ? " -r" : "")}");
+            }
+
+            return CommandVoidResult.Instance;
+        }
+
         [Command("displays the commands history list or manipulate it")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
-        [SuppressMessage("Performance", "CA1822:Marquer les membres comme étant static", Justification = "<En attente>")]
         public CommandVoidResult History(
             CommandEvaluationContext context,
             [Option("i", "invoke", "invoke the command at the entry number in the history list", true, true)] int num,
@@ -100,7 +177,6 @@ namespace OrbitalShell.Commands.Shell
         [Command("repeat the previous command if there is one, else does nothing")]
         [CommandName("!!")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
-        [SuppressMessage("Performance", "CA1822:Marquer les membres comme étant static", Justification = "<En attente>")]
         public CommandResult<string> HistoryPreviousCommand(
             CommandEvaluationContext context
             )
@@ -114,7 +190,6 @@ namespace OrbitalShell.Commands.Shell
         [Command("repeat the command specified by absolute or relative line number in command history list")]
         [CommandName("!")]
         [CommandNamespace(CommandNamespace.shell, CommandNamespace.history)]
-        [SuppressMessage("Performance", "CA1822:Marquer les membres comme étant static", Justification = "<En attente>")]
         public CommandResult<string> HistoryPreviousCommand(
             CommandEvaluationContext context,
             [Parameter("line number in the command history list if positive, else current command minus n if negative (! -1 equivalent to !!)")] int n

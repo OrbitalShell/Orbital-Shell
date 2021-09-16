@@ -352,44 +352,44 @@
         /// <summary>
         /// user profile folder path
         /// </summary>
-        userProfile = 25,
+        PROFILE = 25,
 
         /// <summary>
         /// path from system path
         /// </summary>
-        path = 11000,
+        PATH = 11000,
 
         /// <summary>
         /// path ext from system path
         /// </summary>
-        pathExt = 11001,
+        PATHEXT = 11001,
 
         /// <summary>
         /// path ext to be added to system path
         /// </summary>
-        pathExtInit = 11002,
+        PATHEXTINIT = 11002,
 
         /// <summary>
         /// modules path
         /// </summary>
-        modules = 11003,
+        MODULES = 11003,
 
         /// <summary>
         /// shell init path
         /// </summary>
-        init = 11004,
+        INIT = 11004,
 
         // traditional bash variables
 
         /// <summary>
         /// user os home path
         /// </summary>
-        home = 26,
+        HOME = 26,
 
         /// <summary>
         /// shell home path (binaries and content)
         /// </summary>
-        shell = 27,
+        SHELL = 27,
 
         /// <summary>
         /// shell version
@@ -415,5 +415,11 @@
         /// shell licence name
         /// </summary>
         SHELL__LICENSE = 32,
+
+        // fc editor
+        FC = 11005,
+
+        // temp path
+        TMP = 11006
     }
 }

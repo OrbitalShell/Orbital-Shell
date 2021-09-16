@@ -1,17 +1,19 @@
-﻿using OrbitalShell.Component.Shell.Variable;
-using OrbitalShell.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using cons = System.Console;
-using OrbitalShell.Component.Shell.Hook;
-using OrbitalShell.Component.CommandLine.Processor;
-using OrbitalShell.Lib.FileSystem;
-using OrbitalShell.Component.Shell.Module;
 using System.Linq;
+using System.Reflection;
+
+using OrbitalShell.Component.CommandLine.Processor;
 using OrbitalShell.Component.Console;
+using OrbitalShell.Component.Shell.Hook;
+using OrbitalShell.Component.Shell.Module;
 using OrbitalShell.Component.Shell.Module.Data;
+using OrbitalShell.Component.Shell.Variable;
+using OrbitalShell.Lib;
+using OrbitalShell.Lib.FileSystem;
+
+using cons = System.Console;
 
 namespace OrbitalShell.Component.Shell.Init
 {
@@ -94,7 +96,7 @@ namespace OrbitalShell.Component.Shell.Init
             )
         {
             _clp.Init(args, settings, context);
-            
+
             context = _clp.CommandEvaluationContext;    // get final clp command evaluation context
 
             context.Logger.MuteLogErrors = true;
@@ -107,7 +109,7 @@ namespace OrbitalShell.Component.Shell.Init
             _shellArgsOptionBuilder
                 .SetCommandOperationContextOptions(context, ref appliedSettings)
                 .SetCommandLineProcessorOptions(context, ref appliedSettings)
-                .ImportSettingsFromJSon(context,ref appliedSettings);
+                .ImportSettingsFromJSon(context, ref appliedSettings);
 
             // init from settings
 
@@ -266,8 +268,8 @@ namespace OrbitalShell.Component.Shell.Init
             var prompt = ctx.ShellEnv.GetValue<string>(ShellEnvironmentVar.settings_console_prompt);
             clp.CommandLineReader.SetDefaultPrompt(prompt);
 
-            var pathexts = ctx.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.pathExt);
-            var pathextinit = ctx.ShellEnv.GetDataValue(ShellEnvironmentVar.pathExtInit);
+            var pathexts = ctx.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.PATHEXT);
+            var pathextinit = ctx.ShellEnv.GetDataValue(ShellEnvironmentVar.PATHEXTINIT);
             var pathextinittext = (string)pathextinit.Value;
             if (!string.IsNullOrWhiteSpace(pathextinittext)) pathextinittext += ShellEnvironment.SystemPathSeparator;
             pathextinittext += settings.PathExtInit.Replace(";", ShellEnvironment.SystemPathSeparator);
@@ -356,7 +358,7 @@ namespace OrbitalShell.Component.Shell.Init
         }
 
         public void CreateUserSettingsFile()
-        {            
+        {
             var createUserSettingsFile = !File.Exists(_clp.Settings.UserSettingsFilePath);
             if (createUserSettingsFile)
                 _clp.CommandEvaluationContext.Logger.Info(_clp.CommandEvaluationContext.ShellEnv.Colors.Log + $"creating user settings file: '{FileSystemPath.UnescapePathSeparators(_clp.Settings.UserProfileFilePath)}' ... ", true, false);

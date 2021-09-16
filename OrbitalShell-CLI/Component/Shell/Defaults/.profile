@@ -22,8 +22,8 @@ prompt "(RSTXTA)(b8=18) (b8=19) (b8=30)O(b8=20)rbital (b8=30)S(b8=20)hell(b8=19,
 
 # dev aliases
 
-alias proj "cd '$shell/../../../..'"
-alias vsproj "cd \"$home/documents/visual studio 2019/projects/applications\""
+alias proj "cd '$SHELL/../../../..'"
+alias vsproj "cd \"$HOME/documents/visual studio 2019/projects/applications\""
 
 # git aliases
 
@@ -33,7 +33,7 @@ alias ga "git add . && git status"
 
 # modules aliases
 
-alias mf "find $modules --top --fullname --dir"
+alias mf "find $MODULES --top --fullname --dir"
 
 # command aliases
 
@@ -41,7 +41,7 @@ alias dirs "dir -r -d"
 
 # add usefull variables to shell environment
 
-var scripts $shell/scripts
+var scripts $SHELL/scripts
 
 # advice(s)
 

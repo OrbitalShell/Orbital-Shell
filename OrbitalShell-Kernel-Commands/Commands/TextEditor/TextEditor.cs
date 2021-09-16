@@ -83,11 +83,12 @@ namespace OrbitalShell.Commands.TextEditor
         [Command("text editor")]
         public CommandVoidResult Edit(
             CommandEvaluationContext context,
-            [Parameter("path of an existing or of a new file. the path directory must exists", true)] FilePath filePath
+            [Parameter("path of an existing or of a new file. the path directory must exists", true)] FilePath filePath,
+            [Option("r", "raw", "raw mode")] bool raw
             )
         {
             Context = context;
-            Init(context);
+            Init(context, raw);
             if (filePath == null || filePath.CheckPathExists(context))
             {
                 InitEditor();
@@ -103,10 +104,10 @@ namespace OrbitalShell.Commands.TextEditor
             return new CommandVoidResult();
         }
 
-        void Init(CommandEvaluationContext context)
+        void Init(CommandEvaluationContext context, bool raw)
         {
             Console = context.CommandLineProcessor.Console;
-            _rawMode = false;
+            _rawMode = raw;
             _exitAll = false;
             _errorStream = new MemoryStream();
             _errorStreamWriter = new StreamWriter(_errorStream);

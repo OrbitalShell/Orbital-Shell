@@ -234,7 +234,7 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     if (!Path.IsPathFullyQualified(bannerPath))
                         bannerPath =
                             Path.Combine(
-                                context.ShellEnv.GetValue<DirectoryPath>(ShellEnvironmentVar.shell)
+                                context.ShellEnv.GetValue<DirectoryPath>(ShellEnvironmentVar.SHELL)
                                     .FullName,
                                 bannerPath);
 
@@ -413,9 +413,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
             string cmdName,
             out string filePath)
         {
-            var paths = context.ShellEnv.GetValue<List<DirectoryPath>>(ShellEnvironmentVar.path).Clone();
+            var paths = context.ShellEnv.GetValue<List<DirectoryPath>>(ShellEnvironmentVar.PATH).Clone();
             paths.Insert(0, new DirectoryPath(Environment.CurrentDirectory));
-            var pathExts = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.pathExt);
+            var pathExts = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.PATHEXT);
             var searchedPaths = new List<string>();
             int i = 0;
             foreach (var path in paths)
@@ -452,9 +452,9 @@ namespace OrbitalShell.Component.CommandLine.Processor
                     bool filterExtOnPathExt = false,
                     StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
         {
-            var paths = context.ShellEnv.GetValue<List<DirectoryPath>>(ShellEnvironmentVar.path).Clone();
+            var paths = context.ShellEnv.GetValue<List<DirectoryPath>>(ShellEnvironmentVar.PATH).Clone();
             paths.Insert(0, new DirectoryPath(Environment.CurrentDirectory));
-            var pathExts = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.pathExt);
+            var pathExts = context.ShellEnv.GetValue<List<string>>(ShellEnvironmentVar.PATHEXT);
             var searchedPaths = new List<string>();
             int i = 0;
             filePath = new List<FilePath>();

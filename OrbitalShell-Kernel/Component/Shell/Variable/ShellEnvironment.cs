@@ -77,16 +77,16 @@ namespace OrbitalShell.Component.Shell.Variable
 
             // bash vars (extended)
 
-            AddValue(ShellEnvironmentVar.shell, new DirectoryPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), true);
+            AddValue(ShellEnvironmentVar.SHELL, new DirectoryPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), true);
             AddValue(ShellEnvironmentVar.SHELL__VERSION, context.CommandLineProcessor.Settings.AppVersion, true);
             AddValue(ShellEnvironmentVar.SHELL__NAME, context.CommandLineProcessor.Settings.AppName, true);
             AddValue(ShellEnvironmentVar.SHELL__LONG__NAME, context.CommandLineProcessor.Settings.AppLongName, true);
             AddValue(ShellEnvironmentVar.SHELL__EDITOR, context.CommandLineProcessor.Settings.AppEditor, true);
             AddValue(ShellEnvironmentVar.SHELL__LICENSE, context.CommandLineProcessor.Settings.AppLicense, true);
-            AddValue(ShellEnvironmentVar.home, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), true);
-            AddValue(ShellEnvironmentVar.modules, new DirectoryPath(CommandLineProcessorSettings.ModulesFolderPath), true);
-            AddValue(ShellEnvironmentVar.init, new DirectoryPath(context.CommandLineProcessor.Settings.ShellAppDataPath), true);
-            AddValue(ShellEnvironmentVar.userProfile, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataRoamingUserFolderPath), true);
+            AddValue(ShellEnvironmentVar.HOME, new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), true);
+            AddValue(ShellEnvironmentVar.MODULES, new DirectoryPath(CommandLineProcessorSettings.ModulesFolderPath), true);
+            AddValue(ShellEnvironmentVar.INIT, new DirectoryPath(context.CommandLineProcessor.Settings.ShellAppDataPath), true);
+            AddValue(ShellEnvironmentVar.PROFILE, new DirectoryPath(context.CommandLineProcessor.Settings.AppDataRoamingUserFolderPath), true);
             var path = GetSystemPath();
             var pathExt = GetSystemPathExt();
             var pl = new List<DirectoryPath>();
@@ -95,16 +95,17 @@ namespace OrbitalShell.Component.Shell.Variable
             {
                 var paths = path.Split(SystemPathSeparator).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => Environment.ExpandEnvironmentVariables(x));
                 var dps = paths.Select(x => new DirectoryPath(x)).ToList();
-                dps.Add(new DirectoryPath(Path.Combine(GetValue<DirectoryPath>(ShellEnvironmentVar.shell).FullName, "scripts")));
+                dps.Add(new DirectoryPath(Path.Combine(GetValue<DirectoryPath>(ShellEnvironmentVar.SHELL).FullName, "scripts")));
                 pl.AddRange(dps);
             }
             if (pathExt != null)
             {
                 plx.AddRange(pathExt.Split(SystemPathSeparator));
             }
-            AddValue(ShellEnvironmentVar.path, pl);
-            AddValue(ShellEnvironmentVar.pathExt, plx);
-            AddValue(ShellEnvironmentVar.pathExtInit, "");
+            AddValue(ShellEnvironmentVar.PATH, pl);
+            AddValue(ShellEnvironmentVar.PATHEXT, plx);
+            AddValue(ShellEnvironmentVar.PATHEXTINIT, "");
+            AddValue(ShellEnvironmentVar.TMP, Path.GetTempPath());
 
             // shell settings (defaults) TODO: --> put in ICommandLineProcessorSettings mapped to json
 
@@ -132,6 +133,10 @@ namespace OrbitalShell.Component.Shell.Variable
             AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex, 21); // 202);// 167);
             AddValue(ShellEnvironmentVar.settings_console_banner_startColorIndex2, 49); // 202);// 167);
             AddValue(ShellEnvironmentVar.settings_console_banner_colorIndexStep, 6); // 1);// 167);
+
+            // old linux vars
+
+            AddValue(ShellEnvironmentVar.FC, "edit");
 
             InitializeSpecialVars(context);
 
