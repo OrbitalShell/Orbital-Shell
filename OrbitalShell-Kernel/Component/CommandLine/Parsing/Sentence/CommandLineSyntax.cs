@@ -4,6 +4,7 @@ using OrbitalShell.Component.CommandLine.Pipeline;
 
 namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
     public class CommandLineSyntax
     {
         // -- top level parser
@@ -12,6 +13,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
         public static char DoubleQuote = '"';
         public static char NeutralizerSymbol = '\\';
         public static char SpaceSeparator = ' ';
+
         public static char BatchCommentBegin = '#';
 
         public static char VariablePrefix = '$';
@@ -23,12 +25,20 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
 
         public static string RedirectInput = "<";
         public static string RedirectOutput = ">";
+        public static string InputRedirect = "1>";
         public static string RedirectUnion = "&>";
+
         public static string HereScript = "<<";
 
+        public static char BackgroundTask = '&';
+
+        public static char CommandSubstSeparator = '`';
+        public static char CommandExtendedSubstBeginSeparator = '(';
+        public static char CommandExtendedSubstEndSeparator = ')';
+
         public static string StdErr = "2" + RedirectOutput;
-        public static List<string> StdOut = new List<string> { "1" + RedirectOutput, RedirectOutput };
-        public static List<string> StdIn = new List<string> { "0" + RedirectInput, RedirectInput };
+        public static List<string> StdOut = new() { "1" + RedirectOutput, RedirectOutput };
+        public static List<string> StdIn = new() { "0" + RedirectInput, RedirectInput };
 
         public static char CommandGroupSeparator = ';';
         public static char CommandGroupBegin = '(';
@@ -64,7 +74,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
         /// <summary>
         /// any prefix for flag value (value prefix) in parameter of type enum flag
         /// </summary>
-        public static List<char> ParameterTypeFlagEnumValuePrefixs = new List<char> { ParameterTypeFlagEnumValuePrefixEnabled, ParameterTypeFlagEnumValuePrefixDisabled };
+        public static List<char> ParameterTypeFlagEnumValuePrefixs = new() { ParameterTypeFlagEnumValuePrefixEnabled, ParameterTypeFlagEnumValuePrefixDisabled };
 
         public static bool IsNotAnOperator(string s) =>
             !IsRedirectOutput(s) &&
@@ -98,6 +108,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
             }
         }
 
+
         // -----
 
         public static char[] TopLevelSeparators = {
@@ -105,7 +116,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
             DoubleQuote,
             SingleQuote,
             NeutralizerSymbol,
-            '&',        // ❓❓❓ TODO: why ? pipeline ? ❓❓❓
+            //BackgroundTask,
             '\r',
             '\n'
         };
@@ -118,6 +129,7 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
             {
                 { 'r', '\r' },
                 { 'n', '\n' },
+                { 'n', '\b' },
                 { 't', '\t' }
             };
 
@@ -135,8 +147,6 @@ namespace OrbitalShell.Component.CommandLine.Parsing.Sentence
                 // 0 for metachar (on right of ->)
                 { NeutralizerSymbol, (NeutralizerSymbol, (char)0) }
             };
-
-        public static string InputRedirect = "1>";
 
         public static char[] CommonOperators =
         {
